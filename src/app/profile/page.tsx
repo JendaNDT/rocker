@@ -1,0 +1,142 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { AiSettings } from "@/components/AiSettings";
+import { AudioInputSettings } from "@/components/AudioInputSettings";
+import { LayoutModeSwitcher } from "@/components/LayoutModeSwitcher";
+import { ProgressDetail } from "@/components/profile/ProgressDetail";
+import type { Notation } from "@/lib/pitch";
+import { useSettingsStore } from "@/stores/settingsStore";
+
+const SEGMENT_ACTIVE =
+  "rounded-md bg-neutral-800 px-3 py-1.5 text-sm text-amber-500";
+const SEGMENT_IDLE =
+  "rounded-md px-3 py-1.5 text-sm text-neutral-400 transition-colors hover:text-neutral-100";
+
+const NOTATION_OPTIONS: { value: Notation; label: string }[] = [
+  { value: "english", label: "Mezinárodní (B)" },
+  { value: "german", label: "Německá (H)" },
+];
+
+export default function ProfilePage() {
+  const zenMode = useSettingsStore((state) => state.zenMode);
+  const setZenMode = useSettingsStore((state) => state.setZenMode);
+  const notation = useSettingsStore((state) => state.notation);
+  const setNotation = useSettingsStore((state) => state.setNotation);
+  const setOnboarded = useSettingsStore((state) => state.setOnboarded);
+
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  // Before hydration the prerendered HTML uses the defaults.
+  const zen = hydrated && zenMode;
+  const activeNotation = hydrated ? notation : "english";
+
+  return (
+    <div className="mx-auto max-w-3xl p-6">
+      <h1 className="text-3xl font-bold tracking-tight">Profil</h1>
+      <p className="mt-1 text-neutral-400">Nastavení aplikace.</p>
+
+      <section className="mt-8">
+        <h2 className="text-lg font-semibold">Zobrazení</h2>
+        <p className="mt-1 text-sm text-neutral-400">
+          Jak se má aplikace zobrazovat. „Automaticky" se přizpůsobí velikosti
+          okna.
+        </p>
+        <div className="mt-3">
+          <LayoutModeSwitcher />
+        </div>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="text-lg font-semibold">Zvuk a vstup</h2>
+        <p className="mt-1 text-sm text-neutral-400">
+          Odkud aplikace poslouchá kytaru.
+        </p>
+        <div className="mt-3">
+          <AudioInputSettings />
+        </div>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="text-lg font-semibold">AI tutor</h2>
+        <p className="mt-1 text-sm text-neutral-400">
+          Chat „zeptej se" na techniku, cvičení nebo zvuk. Volitelné — funguje
+          na vlastní bezplatný klíč Google Gemini.
+        </p>
+        <div className="mt-3">
+          <AiSettings />
+        </div>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="text-lg font-semibold">Notace</h2>
+        <p className="mt-1 text-sm text-neutral-400">
+          Jak aplikace pojmenovává tóny. Německá notace používá „H" pro tón
+          mezinárodně značený „B".
+        </p>
+        <div className="mt-3 inline-flex rounded-lg border border-neutral-800 p-1">
+          {NOTATION_OPTIONS.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => setNotation(option.value)}
+              className={
+                activeNotation === option.value
+                  ? SEGMENT_ACTIVE
+                  : SEGMENT_IDLE
+              }
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="text-lg font-semibold">Zen režim</h2>
+        <p className="mt-1 text-sm text-neutral-400">
+          Skryje gamifikaci — statistiky, streaky, denní plán i achievementy.
+          Pokrok se měří dál, appka ho jen nezobrazuje.
+        </p>
+        <label className="mt-3 flex items-center gap-2 text-sm text-neutral-300">
+          <input
+            type="checkbox"
+            checked={zen}
+            onChange={(event) => setZenMode(event.target.checked)}
+            className="h-4 w-4 accent-amber-500"
+          />
+          Zapnout Zen režim
+        </label>
+      </section>
+
+      {!zen && (
+        <section className="mt-8">
+          <h2 className="text-lg font-semibold">Pokrok</h2>
+          <p className="mt-1 text-sm text-neutral-400">
+            Tvoje cvičební statistiky. Achievementy najdeš na úvodní obrazovce.
+          </p>
+          <div className="mt-3">
+            <ProgressDetail />
+          </div>
+        </section>
+      )}
+
+      <section className="mt-8">
+        <h2 className="text-lg font-semibold">Úvod</h2>
+        <p className="mt-1 text-sm text-neutral-400">
+          Úvodní průvodce nastavením aplikace. Můžeš ho projít znovu.
+        </p>
+        <button
+          type="button"
+          onClick={() => setOnboarded(false)}
+          className="mt-3 rounded-lg border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm transition-colors hover:border-neutral-700"
+        >
+          Projít úvod znovu
+        </button>
+      </section>
+    </div>
+  );
+}

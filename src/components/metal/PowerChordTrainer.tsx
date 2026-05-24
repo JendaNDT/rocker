@@ -1,0 +1,374 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { audioEngine } from "@/audio/AudioEngine";
+import { metronome } from "@/audio/metronome";
+import { POWER_CHORD_EXERCISES } from "@/lib/metalExercises";
+import type { PowerChordExercise } from "@/lib/metalExercises";
+import { getPowerChord } from "@/lib/powerChords";
+import type { PowerChord } from "@/lib/powerChords";
+import {
+  activeChordId,
+  advanceBeat,
+  nextChordId,
+  roundProgress,
+  startPowerChordTrainer,
+} from "@/lib/powerChordTrainer";
+import type { PowerChordTrainerState } from "@/lib/powerChordTrainer";
+import { type Notation, pitchClassName } from "@/lib/pitch";
+import { clampBpm } from "@/lib/tempo";
+import { useHydrated } from "@/lib/useHydrated";
+import { useMetronomeStore } from "@/stores/metronomeStore";
+import { useProgressStore } from "@/stores/progressStore";
+import { useSettingsStore } from "@/stores/settingsStore";
+
+// Open string names, low E (index 0) to high E (index 5).
+const STRING_NAMES = ["E", "A", "D", "G", "B", "E"];
+
+// Mini-neck geometry (SVG user units).
+const NECK_FRETS = 12;
+const FRET_W = 24;
+const STRING_GAP = 13;
+const MARGIN_LEFT = 24;
+const MARGIN_TOP = 12;
+const MARGIN_BOTTOM = 16;
+const NECK_W = MARGIN_LEFT + (NECK_FRETS + 1) * FRET_W + 4;
+const NECK_H = MARGIN_TOP + STRING_GAP * 5 + MARGIN_BOTTOM;
+const INLAY_FRETS = [3, 5, 7, 9, 12];
+
+const SEGMENT_ACTIVE =
+  "rounded-md bg-neutral-800 px-3 py-1.5 text-sm text-amber-500";
+const SEGMENT_IDLE =
+  "rounded-md px-3 py-1.5 text-sm text-neutral-400 transition-colors hover:text-neutral-100";
+
+function stringY(stringIndex: number): number {
+  return MARGIN_TOP + stringIndex * STRING_GAP;
+}
+
+function fretCenterX(fret: number): number {
+  return MARGIN_LEFT + fret * FRET_W + FRET_W / 2;
+}
+
+/** Small fretboard strip showing a power chord (root, fifth, octave). */
+function PowerChordNeck({
+  chord,
+  name,
+}: {
+  chord: PowerChord;
+  name: string;
+}) {
+  const shape = [
+    { stringIndex: chord.rootStringIndex, fret: chord.rootFret, root: true },
+    {
+      stringIndex: chord.rootStringIndex + 1,
+      fret: chord.rootFret + 2,
+      root: false,
+    },
+    {
+      stringIndex: chord.rootStringIndex + 2,
+      fret: chord.rootFret + 2,
+      root: false,
+    },
+  ];
+
+  return (
+    <svg
+      viewBox={`0 0 ${NECK_W} ${NECK_H}`}
+      className="w-full max-w-md"
+      role="img"
+      aria-label={`Pozice power chordu ${name} na hmatníku`}
+    >
+      {/* Strings */}
+      {STRING_NAMES.map((name, index) => (
+        <g key={index}>
+          <line
+            x1={MARGIN_LEFT}
+            y1={stringY(index)}
+            x2={MARGIN_LEFT + (NECK_FRETS + 1) * FRET_W}
+            y2={stringY(index)}
+            stroke="#525252"
+            strokeWidth={1}
+          />
+          <text
+            x={MARGIN_LEFT - 8}
+            y={stringY(index) + 3}
+            textAnchor="end"
+            fontSize={8}
+            fill="#737373"
+          >
+            {name}
+          </text>
+        </g>
+      ))}
+
+      {/* Nut and fret wires */}
+      {Array.from({ length: NECK_FRETS + 1 }, (_, k) => {
+        const x = MARGIN_LEFT + (k + 1) * FRET_W;
+        return (
+          <line
+            key={k}
+            x1={x}
+            y1={stringY(0)}
+            x2={x}
+            y2={stringY(5)}
+            stroke={k === 0 ? "#a3a3a3" : "#404040"}
+            strokeWidth={k === 0 ? 2 : 1}
+          />
+        );
+      })}
+
+      {/* Inlay fret numbers */}
+      {INLAY_FRETS.map((fret) => (
+        <text
+          key={fret}
+          x={fretCenterX(fret)}
+          y={NECK_H - 4}
+          textAnchor="middle"
+          fontSize={7}
+          fill="#737373"
+        >
+          {fret}
+        </text>
+      ))}
+
+      {/* Power chord dots */}
+      {shape.map((note, index) => (
+        <circle
+          key={index}
+          cx={fretCenterX(note.fret)}
+          cy={stringY(note.stringIndex)}
+          r={5}
+          fill={note.root ? "#f59e0b" : "#92400e"}
+        />
+      ))}
+    </svg>
+  );
+}
+
+/**
+ * Power Chord Trainer — plays a sequence of power chords against the shared
+ * metronome. Each metronome beat advances the pure engine
+ * (src/lib/powerChordTrainer.ts); a completed round records the tempo via
+ * progressStore.recordBpm. Optionally ramps the tempo up 5% per round.
+ */
+export function PowerChordTrainer() {
+  const [state, setState] = useState<PowerChordTrainerState>(() =>
+    startPowerChordTrainer(POWER_CHORD_EXERCISES[0], false),
+  );
+
+  // Mirror of the latest state, so the beat effect reads it without stale
+  // closures and without re-subscribing on every state change.
+  const stateRef = useRef(state);
+  stateRef.current = state;
+  const prevBeatRef = useRef(-1);
+
+  const isPlaying = useMetronomeStore((store) => store.isPlaying);
+  const currentBeat = useMetronomeStore((store) => store.currentBeat);
+
+  const bpmRecords = useProgressStore((store) => store.bpmRecords);
+  const storedNotation = useSettingsStore((store) => store.notation);
+  const hydrated = useHydrated();
+  const record = hydrated ? bpmRecords[state.exercise.id] : undefined;
+  const notation = hydrated ? storedNotation : "english";
+
+  // Advance the engine once per metronome beat.
+  useEffect(() => {
+    if (!isPlaying) {
+      prevBeatRef.current = -1;
+      return;
+    }
+    if (currentBeat < 0 || currentBeat === prevBeatRef.current) return;
+    prevBeatRef.current = currentBeat;
+
+    const prev = stateRef.current;
+    const next = advanceBeat(prev);
+    if (next.roundsCompleted > prev.roundsCompleted) {
+      // Record the tempo the just-finished round was actually played at.
+      useProgressStore.getState().recordBpm(prev.exercise.id, prev.bpm);
+    }
+    setState(next);
+  }, [currentBeat, isPlaying]);
+
+  // Keep the metronome tempo in sync with the engine (manual changes and the
+  // per-round speed-up both flow through state.bpm).
+  useEffect(() => {
+    if (isPlaying) metronome.setBpm(state.bpm);
+  }, [state.bpm, isPlaying]);
+
+  // Stop the shared metronome when leaving the trainer.
+  useEffect(() => () => metronome.stop(), []);
+
+  function togglePlay() {
+    if (metronome.getState().isPlaying) {
+      metronome.stop();
+      return;
+    }
+    void (async () => {
+      const context = await audioEngine.getOutputContext();
+      setState((current) => ({
+        ...current,
+        elapsedBeats: 0,
+        roundsCompleted: 0,
+      }));
+      prevBeatRef.current = -1;
+      metronome.setSubdivision(1);
+      metronome.setBeatsPerBar(4);
+      metronome.setBpm(stateRef.current.bpm);
+      metronome.start(context);
+    })();
+  }
+
+  function chooseExercise(exercise: PowerChordExercise) {
+    metronome.stop();
+    prevBeatRef.current = -1;
+    setState((current) =>
+      startPowerChordTrainer(exercise, current.speedUpEnabled),
+    );
+  }
+
+  function adjustBpm(delta: number) {
+    setState((current) => ({
+      ...current,
+      bpm: clampBpm(current.bpm + delta),
+    }));
+  }
+
+  function setSpeedUp(enabled: boolean) {
+    setState((current) => ({ ...current, speedUpEnabled: enabled }));
+  }
+
+  const activeChord = getPowerChord(activeChordId(state));
+  const nextChord = getPowerChord(nextChordId(state));
+  const progressPercent = Math.round(roundProgress(state) * 100);
+  const activeName = activeChord
+    ? `${pitchClassName(activeChord.rootMidi, notation)}5`
+    : "—";
+  const nextName = nextChord
+    ? `${pitchClassName(nextChord.rootMidi, notation)}5`
+    : "—";
+
+  return (
+    <div>
+      {/* Exercise picker */}
+      <div className="inline-flex flex-wrap rounded-lg border border-neutral-800 p-1">
+        {POWER_CHORD_EXERCISES.map((exercise) => (
+          <button
+            key={exercise.id}
+            type="button"
+            onClick={() => chooseExercise(exercise)}
+            className={
+              exercise.id === state.exercise.id
+                ? SEGMENT_ACTIVE
+                : SEGMENT_IDLE
+            }
+          >
+            {exercise.name}
+          </button>
+        ))}
+      </div>
+      <p className="mt-2 text-sm text-neutral-400">
+        {state.exercise.description}
+      </p>
+
+      {/* Current chord */}
+      <div className="mt-6 rounded-xl border border-neutral-800 bg-neutral-900 p-5">
+        <div className="flex items-baseline justify-between">
+          <div>
+            <div className="text-xs text-neutral-500">Hraj teď</div>
+            <div className="text-4xl font-bold tracking-tight text-amber-500">
+              {activeName}
+            </div>
+            {activeChord && (
+              <div className="mt-1 text-sm text-neutral-400">
+                {6 - activeChord.rootStringIndex}. struna,{" "}
+                {activeChord.rootFret === 0
+                  ? "naprázdno"
+                  : `${activeChord.rootFret}. pražec`}
+              </div>
+            )}
+          </div>
+          <div className="text-right">
+            <div className="text-xs text-neutral-500">Příští</div>
+            <div className="text-xl font-semibold text-neutral-300">
+              {nextName}
+            </div>
+          </div>
+        </div>
+
+        {activeChord && (
+          <div className="mt-4 flex justify-center">
+            <PowerChordNeck chord={activeChord} name={activeName} />
+          </div>
+        )}
+
+        {/* Round progress */}
+        <div className="mt-4">
+          <div className="h-2 overflow-hidden rounded-full bg-neutral-800">
+            <div
+              className="h-full bg-amber-500 transition-all duration-100"
+              style={{ width: `${progressPercent}%` }}
+            />
+          </div>
+          <div className="mt-1 text-xs text-neutral-500">
+            Odehraná kola: {state.roundsCompleted}
+          </div>
+        </div>
+      </div>
+
+      {/* Tempo */}
+      <div className="mt-6 flex items-center justify-center gap-3">
+        <button
+          type="button"
+          aria-label="Snížit tempo"
+          onClick={() => adjustBpm(-5)}
+          className="h-10 w-10 rounded-lg border border-neutral-800 bg-neutral-900 text-lg transition-colors hover:border-neutral-700"
+        >
+          −
+        </button>
+        <div className="text-center">
+          <div className="text-3xl font-bold tabular-nums">{state.bpm}</div>
+          <div className="text-xs text-neutral-500">BPM</div>
+        </div>
+        <button
+          type="button"
+          aria-label="Zvýšit tempo"
+          onClick={() => adjustBpm(5)}
+          className="h-10 w-10 rounded-lg border border-neutral-800 bg-neutral-900 text-lg transition-colors hover:border-neutral-700"
+        >
+          +
+        </button>
+      </div>
+
+      {record !== undefined && (
+        <p className="mt-2 text-center text-sm text-neutral-400">
+          Tvůj rekord v tomto cvičení: {record} BPM
+        </p>
+      )}
+
+      <label className="mt-4 flex items-center justify-center gap-2 text-sm text-neutral-300">
+        <input
+          type="checkbox"
+          checked={state.speedUpEnabled}
+          onChange={(event) => setSpeedUp(event.target.checked)}
+          className="h-4 w-4 accent-amber-500"
+        />
+        Postupně zrychlovat (+5 % po každém kole)
+      </label>
+
+      {/* Start / stop */}
+      <div className="mt-6 flex justify-center">
+        <button
+          type="button"
+          onClick={togglePlay}
+          className={
+            isPlaying
+              ? "rounded-lg border border-neutral-800 bg-neutral-900 px-10 py-3 text-base font-semibold transition-colors hover:border-neutral-700"
+              : "rounded-lg bg-amber-500 px-10 py-3 text-base font-semibold text-neutral-950 transition-colors hover:bg-amber-400"
+          }
+        >
+          {isPlaying ? "Zastavit" : "Spustit"}
+        </button>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+/* Dark mode is the default for Rocker (low-light practice rooms). */
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background-color: #0a0a0a;
+  color: #ededed;
+  -webkit-font-smoothing: antialiased;
+}

@@ -1,0 +1,57 @@
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { DEFAULT_TUNING_ID } from "@/audio/tunings";
+import type { Notation } from "@/lib/pitch";
+
+/**
+ * How the app chrome (navigation) is laid out.
+ * - "auto"    — follows the window size (CSS media queries)
+ * - "desktop" — always the side rail, regardless of window size
+ * - "mobile"  — always the bottom bar, regardless of window size
+ */
+export type LayoutMode = "auto" | "desktop" | "mobile";
+
+export type Handedness = "right" | "left";
+
+interface SettingsState {
+  layoutMode: LayoutMode;
+  setLayoutMode: (mode: LayoutMode) => void;
+  /** Selected guitar tuning id (see src/audio/tunings.ts). */
+  tuningId: string;
+  setTuningId: (id: string) => void;
+  /** Playing hand — flips chord diagrams for left-handed players. */
+  handedness: Handedness;
+  setHandedness: (handedness: Handedness) => void;
+  /** Hides gamification (dashboard, achievements) for a calmer, focused app. */
+  zenMode: boolean;
+  setZenMode: (zenMode: boolean) => void;
+  /** Note naming: international ("english", B) or German/Czech ("german", H). */
+  notation: Notation;
+  setNotation: (notation: Notation) => void;
+  /** Whether the first-run onboarding has been completed or skipped. */
+  onboarded: boolean;
+  setOnboarded: (onboarded: boolean) => void;
+}
+
+/**
+ * Persistent app settings. Stored in localStorage under "rocker-settings".
+ */
+export const useSettingsStore = create<SettingsState>()(
+  persist(
+    (set) => ({
+      layoutMode: "auto",
+      setLayoutMode: (mode) => set({ layoutMode: mode }),
+      tuningId: DEFAULT_TUNING_ID,
+      setTuningId: (id) => set({ tuningId: id }),
+      handedness: "right",
+      setHandedness: (handedness) => set({ handedness }),
+      zenMode: false,
+      setZenMode: (zenMode) => set({ zenMode }),
+      notation: "english",
+      setNotation: (notation) => set({ notation }),
+      onboarded: false,
+      setOnboarded: (onboarded) => set({ onboarded }),
+    }),
+    { name: "rocker-settings" },
+  ),
+);

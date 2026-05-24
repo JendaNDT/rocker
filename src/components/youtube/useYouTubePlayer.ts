@@ -1,0 +1,68 @@
+"use client";
+
+import { useCallback, useEffect, useRef, useState } from "react";
+import { loadYouTubeApi } from "@/lib/youtubeApi";
+
+export interface YouTubePlayerControls {
+  ready: boolean;
+  load: (videoId: string) => void;
+  setRate: (rate: number) => void;
+  seekTo: (seconds: number) => void;
+  getCurrentTime: () => number;
+  getDuration: () => number;
+}
+
+/**
+ * Creates and manages a YouTube IFrame player attached to the element with
+ * the given id. The element is replaced by the player iframe.
+ */
+export function useYouTubePlayer(containerId: string): YouTubePlayerControls {
+  const playerRef = useRef<YT.Player | null>(null);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    void loadYouTubeApi().then((yt) => {
+      if (cancelled) return;
+      playerRef.current = new yt.Player(containerId, {
+        width: "100%",
+        height: "100%",
+        playerVars: { rel: 0, modestbranding: 1 },
+        events: {
+          onReady: () => {
+            if (!cancelled) setReady(true);
+          },
+        },
+      });
+    });
+
+    return () => {
+      cancelled = true;
+      playerRef.current?.destroy();
+      playerRef.current = null;
+    };
+  }, [containerId]);
+
+  const load = useCallback((videoId: string) => {
+    playerRef.current?.loadVideoById(videoId);
+  }, []);
+
+  const setRate = useCallback((rate: number) => {
+    playerRef.current?.setPlaybackRate(rate);
+  }, []);
+
+  const seekTo = useCallback((seconds: number) => {
+    playerRef.current?.seekTo(seconds, true);
+  }, []);
+
+  const getCurrentTime = useCallback(() => {
+    return playerRef.current?.getCurrentTime() ?? 0;
+  }, []);
+
+  const getDuration = useCallback(() => {
+    return playerRef.current?.getDuration() ?? 0;
+  }, []);
+
+  return { ready, load, setRate, seekTo, getCurrentTime, getDuration };
+}
