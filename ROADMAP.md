@@ -185,9 +185,19 @@ strukturovanými daty o cvičení, ne jako analýza surového zvuku.
 
 ## Fáze 5 — Pokročilý zvuk
 
-### ⬜ Bod 15 — AlphaTab integrace
+### ✅ Bod 15 — AlphaTab integrace
 Prohlížeč Guitar Pro / MusicXML souborů s přehráváním, scroll s kurzorem,
 loopem a zvýrazněním na hmatníku. Uživatel nahrává vlastní soubory.
+*Stav:* hotovo. Obrazovka `/notation` („Noty"): nahrání vlastního Guitar
+Pro / MusicXML souboru, vykreslení tabulatury i not (`@coderline/alphatab`),
+přehrávání přes MIDI syntezátor (SONiVOX soundfont) s kurzorem, A/B smyčka,
+zpomalení tempa. `tsc` i testy ověřené; reálný test v prohlížeči je na
+Jendovi. Zvýraznění běží v samotném zápisu (kurzor) — samostatný hmatníkový
+vizualizér součástí není.
+*Rozhodnutí:* vykreslování i audio na hlavním vlákně (`core.useWorkers:
+false`, player ScriptProcessor výstup) — obchází bundlování AlphaTab Web
+Workeru a Audio Workletu, jejichž oficiální webpack plugin s Turbopackem
+nesedí. Font (Bravura) a soundfont (SONiVOX) ručně v `public/alphatab/`.
 
 ### ⬜ Bod 16 — Ampsim a efekty
 Kytarové efekty a simulace aparátu ve Web Audio (JS-Rocks / Pedalboard.js).

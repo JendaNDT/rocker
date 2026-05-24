@@ -16,6 +16,7 @@ export const SCREENS: Screen[] = [
   { href: "/tutor", label: "AI tutor", description: "Zeptej se na cokoliv o hraní." },
   { href: "/metal", label: "Metal", description: "Trenažéry pro rock a metal." },
   { href: "/library", label: "Knihovna", description: "Akordy, stupnice, riffy." },
+  { href: "/notation", label: "Noty", description: "Prohlížeč tabulatur a not." },
   { href: "/youtube", label: "YouTube", description: "Cvičení podle videa se smyčkou." },
   { href: "/recorder", label: "Nahrávání", description: "Nahraj a porovnej si hru." },
   { href: "/live", label: "Live", description: "Hraní bez rušení." },

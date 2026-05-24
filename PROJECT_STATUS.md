@@ -11,14 +11,15 @@ Perzistence localStorage (přes Zustand persist) pro malá data včetně pokroku
 IndexedDB (přes `idb`) pro velké bloby — nahrávky, od Bodu 11.
 
 ## ⏭️ Příští krok
-Široké MVP (body 1–13) i celá **Fáze 4 (Bod 14 — AI tutor) jsou hotové**.
+Hotové: Široké MVP (body 1–13), Fáze 4 (Bod 14 — AI tutor) i **Bod 15
+(AlphaTab — prohlížeč Guitar Pro / MusicXML souborů)**.
 
-Obrazovka AI tutor má tři režimy: chat „zeptej se", generátor cvičení a
-zpětná vazba z dat. Doporučený další krok: **beta test s 5–10 lidmi**
-(začátečníci i středně pokročilí), pak Fáze 5 (Bod 15 — AlphaTab).
+Beta test s 5–10 lidmi je **vědomě odložený** (Jenda ho zatím neprovede;
+lze kdykoliv později). Další podle roadmapy: **Bod 16 (ampsim a efekty)**.
 
-Reálný test generátoru a zpětné vazby je na Jendovi: `npm run dev` →
-obrazovka „AI tutor" → režimy „Plán cvičení" a „Zpětná vazba".
+Reálný test na Jendovi (`npm run dev`): AI tutor (režimy „Plán cvičení",
+„Zpětná vazba") a obrazovka „Noty" — nahrání Guitar Pro souboru,
+přehrávání, smyčka, tempo.
 
 Zbývá také starší ruční test se zvukem a kytarou:
 - **Palm Mute Studio** (Metal → Palm mute) — prahy v `useMuteDetector.ts`
@@ -35,8 +36,8 @@ spolupráce), pak tento soubor.
 
 ## ✅ Hotovo
 Hotovo **13 z 13 bodů MVP** (+ rozšíření 1b) — **Široké MVP je kompletní**.
-Fáze 1–4 dokončené. Aktuálně **267 automatických testů**, vše prochází;
-`tsc` čistý.
+Fáze 1–4 dokončené, Fáze 5 rozpracovaná (Bod 15 hotový). Aktuálně **267
+automatických testů**, vše prochází; `tsc` čistý.
 
 - Příprava — prostudované 3 rešeršní dokumenty, `ARCHITECTURE.md`, `ROADMAP.md`
 - **Bod 1** — PWA skořápka: Next.js projekt, manifest, service worker,
@@ -81,6 +82,13 @@ Fáze 1–4 dokončené. Aktuálně **267 automatických testů**, vše procház
   pokrok). **Zpětná vazba z dat** — `feedback.ts` + `FeedbackPanel`, AI
   poradna nad pokrokem. BYOK — vlastní bezplatný Gemini klíč, voláno přímo
   z prohlížeče bez serveru
+- **Bod 15** — AlphaTab integrace (začátek Fáze 5): obrazovka `/notation`
+  („Noty"). Uživatel nahraje vlastní Guitar Pro / MusicXML soubor, AlphaTab
+  vykreslí tabulaturu i noty, přehrává přes MIDI syntezátor (SONiVOX
+  soundfont) s kurzorem, A/B smyčkou a zpomalením. Knihovna
+  `@coderline/alphatab`; vykreslování i audio na hlavním vlákně
+  (`useWorkers: false`, ScriptProcessor výstup); font a soundfont
+  v `public/alphatab/`
 
 ## 📝 TODO
 ### MVP (Široké MVP, nutné pro v1) — body 1–13
@@ -88,10 +96,14 @@ Fáze 1–4 dokončené. Aktuálně **267 automatických testů**, vše procház
 
 ### Fáze 4 — hotová
 - ✅ Bod 14 (AI tutor) — chat „zeptej se", generátor cvičení, zpětná vazba
-- Beta test s 5–10 lidmi ← **doporučený další krok**, pak Fáze 5
+- Beta test s 5–10 lidmi — **vědomě odložený**, lze provést kdykoliv později
 
-### Backlog (později) — body 15–22
-- Body 15–18: AlphaTab, ampsim, multi-track, stem separation
+### Probíhá — Fáze 5
+- ✅ Bod 15 (AlphaTab) — prohlížeč Guitar Pro / MusicXML souborů
+- Bod 16 (ampsim a efekty) ← **další**
+
+### Backlog (později) — body 16–22
+- Body 16–18: ampsim, multi-track, stem separation
 - Body 19–22: AR vizualizér, hmatníkové hry, profil Soltonu, sdílení
 - Drobnost: tvary akordů v drop ladění (odloženo z Bodu 5)
 
@@ -137,13 +149,23 @@ Fáze 1–4 dokončené. Aktuálně **267 automatických testů**, vše procház
   placené i pro uživatele s předplatným, Gemini má free tier. „Zpětná vazba
   na nahrávku" bude pojatá jako rada nad strukturovanými daty o cvičení, ne
   jako analýza surového zvuku (v prohlížeči nespolehlivá).
+- **AlphaTab — vše na hlavním vlákně (Bod 15):** prohlížeč Guitar Pro /
+  MusicXML běží na knihovně `@coderline/alphatab`. Vykreslování i audio
+  syntéza jdou na hlavním vlákně (`core.useWorkers: false`, player
+  `outputMode` ScriptProcessor) — AlphaTab je jinak citlivý na bundling
+  (Web Worker, Audio Worklet) a jeho oficiální pomocník je webpack plugin,
+  který s Turbopackem nesedí. Hlavní vlákno je pro jednu skladbu
+  dostačující a obchází celé bundlování workerů. Font (Bravura) a soundfont
+  (SONiVOX) jsou ručně zkopírované do `public/alphatab/`.
 - **Co neděláme:** vlastní DB tabů, stem separation v prohlížeči, online
   multiplayer jam, iOS-specifické funkce.
 
 ## 📁 Mapa kódu
-- `src/app/` — stránky (11 obrazovek, App Router)
+- `src/app/` — stránky (12 obrazovek, App Router)
 - `src/components/` — React komponenty (po doménách: tuner, metronome,
-  library, practice, youtube, dashboard, profile, recorder, metal, tutor)
+  library, practice, youtube, dashboard, profile, recorder, metal, tutor,
+  notation)
+- `public/alphatab/` — font Bravura a SONiVOX soundfont pro AlphaTab (Bod 15)
 - `src/audio/` — audio vrstva (AudioEngine, metronome, gallopPlayer,
   riffPlayer, pitchDetector, muteAnalyzer, chordPlayer, countIn, tunings,
   recorder)
