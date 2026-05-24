@@ -254,10 +254,23 @@ má (Bod 5), 3D verze by přidala velkou závislost s malou učební hodnotou.
 ### ⬜ Bod 20 — Mirror-AR vizualizér
 Z prvního rešeršního dokumentu — kamera + MediaPipe Hands promítá barevné
 body prstokladu na zrcadlený obraz. Experimentální, volitelná vrstva.
+*Stav:* vědomě vynechaný. Experimentální volitelná vrstva s velkou
+závislostí (MediaPipe Hands) a nejistou učební hodnotou — appka už má 2D
+hmatník (Bod 5) i hry (Bod 19). Lze se k němu vrátit později.
 
-### ⬜ Bod 21 — Profil nástroje Solton Double Cut
+### ✅ Bod 21 — Profil nástroje Solton Double Cut
 "Digitální pas" kytary, tónový poradce (krk/kobylka, gain, EQ tipy).
 Profil je poradní, ne dogmatický — uživatel modifikace ručně potvrzuje.
+*Stav:* hotovo. Obrazovka `/instrument` („Kytara"): editovatelná karta
+profilu (název, tělo, snímače krk/střed/kobylka × humbucker/single/P90,
+menzura, ladění, struny, poznámky; Zustand persist) a tónový poradce —
+vybereš styl (7 stylů) a appka poradí snímač, gain a EQ přizpůsobené
+snímačům profilu. Logika v `src/lib/instrument.ts` (s testy). Poradce jen
+radí, nic sám nemění. `tsc` i testy ověřené.
+*Rozhodnutí:* profil pojatý jako obecná editovatelná šablona (varianta B)
+— žádné specifikace Soltonu se nepředvyplňují (neznámá značka, nešlo
+ověřit), uživatel si profil vyplní sám. Výchozí hodnoty jsou jen rozumný
+základ k přepsání.
 
 ### ⬜ Bod 22 — Sdílení a organizace
 Share-a-riff (export riffu jako odkaz), songbook organizér se složkami a štítky.

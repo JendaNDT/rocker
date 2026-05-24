@@ -1,5 +1,5 @@
 # Rocker – Project Status
-*Naposled aktualizováno: 24. 05. 2026*
+*Naposled aktualizováno: 25. 05. 2026*
 
 ## 🎯 Co to je
 PWA kytarový asistent pro učení a hraní na elektrickou kytaru. Funguje na PC
@@ -11,12 +11,15 @@ Perzistence localStorage (přes Zustand persist) pro malá data včetně pokroku
 IndexedDB (přes `idb`) pro velké bloby — nahrávky, od Bodu 11.
 
 ## ⏭️ Příští krok
-Hotové (v kódu): Široké MVP (body 1–13), Fáze 4 (Bod 14), Body 15–17
-a **Bod 19 (vizuální učení — „Hry")**.
+Hotové (v kódu): Široké MVP (body 1–13), Fáze 4 (Bod 14), Body 15–17,
+**Bod 19 (vizuální učení — „Hry")** a **Bod 21 (profil nástroje —
+„Kytara")**.
 
-Beta test s 5–10 lidmi i Bod 18 (stem separation) jsou **vědomě odložené**
-(Bod 18 — placená API, serverová závislost, špatně sedí principu „bez
-serveru"). Pokračuje se Fází 6 — **Bod 20 (Mirror-AR vizualizér)**.
+Beta test s 5–10 lidmi, Bod 18 (stem separation) i Bod 20 (Mirror-AR
+vizualizér) jsou **vědomě odložené / vynechané** (Bod 18 — placená API,
+serverová závislost; Bod 20 — experimentální vrstva s velkou závislostí
+MediaPipe a nejistou hodnotou). Zbývá poslední **Bod 22 (sdílení
+a organizace)**.
 
 **Nutné reálné testy na Jendovi** (`npm run dev`) — neověřená audio práce
 se hromadí, hodila by se jedna seance s kytarou:
@@ -40,8 +43,8 @@ spolupráce), pak tento soubor.
 ## ✅ Hotovo
 Hotovo **13 z 13 bodů MVP** (+ rozšíření 1b) — **Široké MVP je kompletní**.
 Fáze 1–4 dokončené, Fáze 5 rozpracovaná (Body 15–17 hotové), Fáze 6
-zahájená (Bod 19 hotový). Aktuálně **295 automatických testů**, vše
-prochází; `tsc` čistý.
+rozpracovaná (Body 19 a 21 hotové, Bod 20 vynechán). Aktuálně
+**306 automatických testů**, vše prochází; `tsc` čistý.
 
 - Příprava — prostudované 3 rešeršní dokumenty, `ARCHITECTURE.md`, `ROADMAP.md`
 - **Bod 1** — PWA skořápka: Next.js projekt, manifest, service worker,
@@ -111,6 +114,14 @@ prochází; `tsc` čistý.
   rozpoznávání intervalů a kvality akordů sluchem (přes syntézu z Bodu 5).
   Logika v `fretboardGame.ts` a `earTraining.ts` (s testy). 3D Three.js
   vizualizér vědomě vynechán
+- **Bod 21** — profil nástroje: obrazovka `/instrument` („Kytara").
+  **Karta profilu** — editovatelná (název, tělo, snímače krk/střed/kobylka
+  × humbucker/single/P90, menzura, ladění, struny, poznámky), uložená
+  v localStorage (Zustand persist, na načtení `sanitizeProfile`).
+  **Tónový poradce** — vybereš styl (7 stylů), appka poradí snímač, gain
+  a EQ přizpůsobené snímačům profilu. Logika v `src/lib/instrument.ts`
+  (s testy). Poradce jen radí, nic sám nemění. Bod 20 (Mirror-AR) vědomě
+  vynechán
 
 ## 📝 TODO
 ### MVP (Široké MVP, nutné pro v1) — body 1–13
@@ -128,11 +139,11 @@ prochází; `tsc` čistý.
 
 ### Probíhá — Fáze 6
 - ✅ Bod 19 (vizuální učení — hmatníková hra, ear training)
-- Bod 20 (Mirror-AR vizualizér) ← **další**
+- Bod 20 (Mirror-AR vizualizér) — **vědomě vynechán**
+- ✅ Bod 21 (profil nástroje — „Kytara", tónový poradce)
+- Bod 22 (sdílení a organizace) ← **další**
 
-### Backlog (později) — body 21–22
-- Body 21–22: profil Soltonu, sdílení
-- Body 19–22: AR vizualizér, hmatníkové hry, profil Soltonu, sdílení
+### Backlog (později)
 - Drobnost: tvary akordů v drop ladění (odloženo z Bodu 5)
 
 ## 🏗️ Klíčová rozhodnutí
@@ -189,10 +200,10 @@ prochází; `tsc` čistý.
   multiplayer jam, iOS-specifické funkce.
 
 ## 📁 Mapa kódu
-- `src/app/` — stránky (16 obrazovek, App Router)
+- `src/app/` — stránky (17 obrazovek, App Router)
 - `src/components/` — React komponenty (po doménách: tuner, metronome,
   library, practice, youtube, dashboard, profile, recorder, metal, tutor,
-  notation, amp, studio, looper, games)
+  notation, amp, studio, looper, games, instrument)
 - `public/alphatab/` — font Bravura a SONiVOX soundfont pro AlphaTab (Bod 15)
 - `src/audio/` — audio vrstva (AudioEngine, metronome, gallopPlayer,
   riffPlayer, pitchDetector, muteAnalyzer, chordPlayer, countIn, tunings,
@@ -202,8 +213,10 @@ prochází; `tsc` čistý.
   practiceTime, recordings, recordingsDb, powerChords, metalExercises,
   metalRiffs, powerChordTrainer, gallopTrainer, palmMute, breakReminder,
   ampPresets, multitrack, wav, loopMix, fretboardGame, earTraining,
-  ai/ — Gemini klient, prompty, generátor plánu, typy) — sem patří testy
+  instrument, ai/ — Gemini klient, prompty, generátor plánu, typy) — sem
+  patří testy
 - `src/stores/` — Zustand stores (settings, audio, metronome, lessonProgress,
-  ytLoop, progress, recordings, gallopPlayer, riffPlayer, ai, chat)
+  ytLoop, progress, recordings, gallopPlayer, riffPlayer, ai, chat,
+  instrument)
 - `ARCHITECTURE.md` · `ROADMAP.md` · `AGENTS.md` · `SKILL.md` — projektové
   dokumenty
