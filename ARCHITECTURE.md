@@ -25,10 +25,11 @@ pořadí) je v `ROADMAP.md`.
 
 > **Poznámka k Next.js:** Třetí rešeršní dokument doporučoval Vite. Next.js je
 > plně použitelný a je to tvoje volba — jen pojede v režimu statického exportu,
-> protože v MVP nepotřebujeme server. Většina stránek bude "client component"
-> (`'use client'`), protože jádro aplikace je audio běžící v prohlížeči. Až
-> přidáme AI (Fáze 4), buď půjde přes BYOK přímo z prohlížeče (bez serveru),
-> nebo doplníme jednu serverless funkci.
+> protože nepotřebujeme server. Většina stránek je "client component"
+> (`'use client'`), protože jádro aplikace je audio běžící v prohlížeči. AI
+> tutor (Fáze 4, Bod 14) nakonec server nepotřebuje vůbec — volá Gemini přes
+> BYOK přímo z prohlížeče (nativní endpoint posílá CORS hlavičky); aplikace
+> zůstala čistě statická PWA.
 
 ---
 
@@ -90,6 +91,11 @@ Oddělené malé stores podle domény (aktuální stav):
 - `progressStore` — odcvičené minuty, streaky, achievementy, BPM rekordy
   (persist do localStorage).
 - `recordingsStore` — zrcadlo seznamu nahrávek; zdrojem pravdy je IndexedDB.
+- `aiStore` — nastavení AI tutora: Gemini API klíč a stav (persist do
+  localStorage) — Bod 14.
+- `chatStore` — historie AI chatu (persist do localStorage) — Bod 14.
+- `instrumentStore` — profil nástroje pro obrazovku „Kytara" (persist do
+  localStorage, na načtení projde type guardem) — Bod 21.
 
 Stores se vzorem „zrcadlo" (`audioStore`, `metronomeStore`,
 `gallopPlayerStore`, `riffPlayerStore`, `recordingsStore`) jen odrážejí stav
@@ -115,6 +121,18 @@ s `persist` přežijí restart.
   + kalibrace).
 - **Break reminder** (Bod 13) — `breakReminder` hlídá souvislý cvičební čas
   a po 45 minutách doporučí přestávku.
+- **AI tutor** (Bod 14) — vrstva `src/lib/ai/`: Gemini klient (čistý fetch,
+  bez SDK), prompty, generátor cvičebního plánu (JSON režim), zpětná vazba
+  nad strukturovanými daty o pokroku. BYOK, volá Gemini přímo z prohlížeče.
+- **Hudební hry** (Bod 19) — `fretboardGame` (hmatníková hra: tón → pozice)
+  a `earTraining` (rozpoznávání intervalů a kvality akordů) jako čisté,
+  testovatelné enginy.
+- **Profil nástroje a tónový poradce** (Bod 21) — `instrument`: typ profilu
+  kytary, výchozí hodnoty, type guard a poradce `recommendTone` (styl →
+  doporučený snímač, gain, EQ, přizpůsobené snímačům profilu).
+- **Pomocná logika pokročilého zvuku** — `ampPresets` (presety aparátu,
+  Bod 16), `multitrack` (immutabilní model multi-track projektu) a `loopMix`
+  (skládání smyček) z Bodu 17, `wav` (kódování WAV).
 
 ### 2.5 Audio engine
 
@@ -134,7 +152,7 @@ Statická data dodaná s aplikací jako JSON soubory (žádný backend):
 
 - **localStorage** (přes Zustand persist) — malá strukturovaná data:
   nastavení, ladění, pokrok (minuty, streaky, achievementy), dokončené lekce,
-  uložené YouTube loopy.
+  uložené YouTube loopy, nastavení a historie AI tutora, profil nástroje.
 - **IndexedDB** (přes knihovnu `idb`) — velké bloby: **nahrávky** (od
   Bodu 11). Vrstva `src/lib/recordingsDb.ts`.
 
@@ -199,6 +217,10 @@ Každý nástroj je samostatný procesor zapojený do enginu:
 | Gallop přehrávač | Web Audio scheduler s lookahead (Bod 12) | přehrává gallop buňku ve smyčce, stejná technika jako metronom |
 | Přehrávač riffů | Web Audio scheduler + syntéza tónů (Bod 12) | přehrává tab riffu syntetizovanými tóny v nastavitelném tempu |
 | Palm Mute detektor | `AnalyserNode` FFT → spektrální těžiště (Bod 12) | „jas" zvuku; kalibrace na konkrétní sestavu |
+| AlphaTab přehrávač | `@coderline/alphatab` (Bod 15) | prohlížeč Guitar Pro / MusicXML; vykreslování i MIDI syntéza na hlavním vlákně (`useWorkers: false`) |
+| Ampsim řetězec | Web Audio uzly — `ampChain` (Bod 16) | pre-gain, zkreslení (WaveShaper), 3-pásmový EQ, filtrová simulace reproboxu, delay |
+| Multi-track engine | MediaRecorder + `OfflineAudioContext` (Bod 17) | nahrávání stop přes sebe, mixdown a export do WAV |
+| Loop pedál | `AudioBufferSourceNode` s `loop=true` (Bod 17) | bezešvá smyčka, vrstvení dalších vrstev přes ni |
 
 ### 3.4 Metronom — proč pozor
 
@@ -228,14 +250,24 @@ real-time ampsim (Fáze 5) skryje nebo označí jako "preview only".
 > nepoužívá ASIO, takže reálně bude horší než nativně naměřených ~9 ms.
 > Doporučuju změřit na tvém konkrétním PC hned v Bodu 2.
 
-### 3.6 Profil výstupní úrovně Solton Double Cut
+### 3.6 Vstupní úroveň a profil nástroje
 
-Tvoje kytara má podle veřejných zdrojů P.A.F.-orientované snímače — tedy
-**střední, ne high-output** úroveň. Důsledky pro engine:
+Konkrétní specifikace kytary Solton Double Cut **se nepodařilo ověřit** —
+je to neznámá značka a spolehlivé veřejné zdroje k ní nejsou. Engine proto
+o snímačích ani výstupní úrovni nic nepředpokládá. (Dřívější verze tohoto
+dokumentu uváděla „P.A.F.-orientované snímače" — to byl neověřený údaj
+a byl odstraněn.)
 
-- Na M-Track Solo: gain cca 40–50 %, kontrolovat clipping LED.
-- Detekce funguje líp na **čistém** signálu než přes zkreslení (distorze
-  přidává harmonické, které matou detekci výšky).
+Místo pevného předpokladu má aplikace od Bodu 21 obrazovku „Kytara"
+(`/instrument`) s **editovatelným profilem nástroje** — uživatel si snímače
+a parametry zadá sám. Profil je poradní, ne dogmatický.
+
+Obecné, na konkrétní kytaře nezávislé zásady pro engine:
+
+- Na M-Track Solo nastavit gain tak, aby signál neclipoval — kontrolovat
+  clipping LED a vizuální indikátor úrovně.
+- Detekce výšky tónu funguje líp na **čistém** signálu než přes zkreslení
+  (distorze přidává harmonické, které matou detekci).
 - Onboarding (Bod 13) obsahuje krok s nastavením vstupu a vizuálním
   indikátorem úrovně; Palm Mute Studio má navíc vlastní kalibraci jasu.
 
@@ -243,7 +275,7 @@ Tvoje kytara má podle veřejných zdrojů P.A.F.-orientované snímače — ted
 
 ## 4. Datový model
 
-Skutečný stav úložiště (k Bodu 13). Záměr je: malá strukturovaná data
+Skutečný stav úložiště (k Bodu 21). Záměr je: malá strukturovaná data
 v localStorage, velké bloby v IndexedDB.
 
 ### IndexedDB (přes `idb`) — velké bloby
@@ -263,6 +295,9 @@ zatím v DB nejsou — riff trainer čte soubor přímo z disku při každém ot
 | `rocker-lesson-progress` | dokončené lekce |
 | `rocker-progress` | odcvičené minuty po dnech, streaky, achievementy, BPM rekordy |
 | `rocker-yt-loops` | uložené YouTube loopy: videoId, start/end, rychlost, štítek |
+| `rocker-ai` | nastavení AI tutora: Gemini API klíč a stav (Bod 14) |
+| `rocker-chat` | historie AI chatu (Bod 14) |
+| `rocker-instrument` | profil nástroje: tělo, snímače, menzura, ladění, struny, poznámky (Bod 21) |
 
 Pokrok, streaky a achievementy byly v původním návrhu plánované do IndexedDB;
 jsou to ale malá strukturovaná data, takže šly vědomě do localStorage —
@@ -278,16 +313,25 @@ záznam se zahodí, aplikace nespadne.
 Vychází z UX konceptu z rešeršních dokumentů — dva dominantní režimy:
 **Cvičení** (bohaté na vedení) a **Live** (minimální, rychlé).
 
+Skutečný stav navigace — 17 obrazovek (zdroj pravdy je `src/lib/screens.ts`):
+
 | Route | Obrazovka | Účel |
 |---|---|---|
 | `/` | Domů | denní plán, streak, "Naladit", "Pokračovat", rychlý vstup do Live |
 | `/tuner` | Ladička | chromatická + vedená podle ladění, displej v centech |
 | `/metronome` | Metronom | BPM, takty, akcenty, tap tempo |
 | `/practice` | Cvičení | lekce + riff trainer + Surgical mode |
+| `/tutor` | AI tutor | chat, generátor cvičení, zpětná vazba (Bod 14) |
+| `/games` | Hry | hmatníková hra a ear training (Bod 19) |
 | `/metal` | Metal | rock/metal trenažéry: power chord, gallop, palm mute |
+| `/amp` | Aparát | ampsim a efekty, presety (Bod 16) |
+| `/instrument` | Kytara | profil nástroje a tónový poradce (Bod 21) |
 | `/library` | Knihovna | akordy, stupnice, riffy (tab + zpomalení, Stojan režim) |
+| `/notation` | Noty | prohlížeč Guitar Pro / MusicXML souborů (Bod 15) |
 | `/youtube` | YouTube player | A/B loop, slow-down, štítky sekcí |
 | `/recorder` | Nahrávání | nahrání take-u, přehrání, A/B srovnání |
+| `/studio` | Studio | multi-track nahrávání přes sebe (Bod 17) |
+| `/looper` | Looper | loop pedál se smyčkováním (Bod 17) |
 | `/live` | Live mód | velká tlačítka: ladička, metronom, rec — bez rušení |
 | `/profile` | Profil | nastavení, vstupní zařízení, export/smazání dat |
 
@@ -305,7 +349,7 @@ ladička + metronom (floating action button).
 
 ## 6. Struktura složek
 
-Skutečná struktura projektu (k Bodu 13). Sedm vrstev ze sekce 2 je
+Skutečná struktura projektu (k Bodu 21). Sedm vrstev ze sekce 2 je
 **koncepční** — nemá vlastní složku každá. Doménová logika, statický obsah,
 IndexedDB vrstva i čisté utility se sloučily do `src/lib/`; bylo to
 jednodušší a pro vibecoding přehlednější než řada malých složek.
@@ -315,22 +359,25 @@ rocker/
 ├── public/
 │   ├── manifest.json
 │   ├── sw.js                # ručně psaný service worker
+│   ├── alphatab/            # font Bravura + SONiVOX soundfont (Bod 15)
 │   └── icons/
 ├── src/
-│   ├── app/                 # Next.js App Router — stránky (10 obrazovek)
+│   ├── app/                 # Next.js App Router — stránky (17 obrazovek)
 │   ├── components/          # React komponenty (UI vrstva), po doménách
 │   ├── audio/               # audio vrstva (5): AudioEngine, metronome,
 │   │                        #   gallopPlayer, riffPlayer, pitchDetector,
 │   │                        #   muteAnalyzer, chordPlayer, countIn,
-│   │                        #   tunings, recorder
+│   │                        #   tunings, recorder, ampChain,
+│   │                        #   multitrackEngine, loopPedal
 │   ├── lib/                 # doménová logika (4), data/obsah (6),
-│   │                        #   IndexedDB vrstva (7), čisté utility +
-│   │                        #   testy *.test.ts
+│   │                        #   IndexedDB vrstva (7), čisté utility,
+│   │                        #   ai/ (Gemini klient) + testy *.test.ts
 │   └── stores/              # Zustand stores (vrstva 3)
 ├── ARCHITECTURE.md
 ├── ROADMAP.md
 ├── AGENTS.md
 ├── SKILL.md
+├── PROJECT_STATUS.md
 └── package.json
 ```
 
@@ -349,13 +396,14 @@ Z rešeršních dokumentů — tyto body je třeba respektovat od začátku:
 - **Soukromí by default.** Vše lokálně v prohlížeči, žádné účty, žádné
   odesílání dat. To je velká výhoda — v profilu bude tlačítko "exportovat data"
   a "smazat vše".
-- **Oprávnění kontextově.** Mikrofon (a později kamera pro AR) se žádá až těsně
-  před použitím, s vysvětlením.
-- **Generické názvy presetů.** Až přijdou ampsim presety (Fáze 5), žádné cizí
-  značky aparátů bez licence — vlastní popisné názvy.
-- **Open-source licence.** Hlídat licence audio knihoven. Pitchy, AlphaTab,
-  SoundTouch.js jsou v pořádku; pozor na knihovny pod GPL/AGPL, pokud bude
-  aplikace někdy komerční.
+- **Oprávnění kontextově.** Mikrofon se žádá až těsně před použitím,
+  s vysvětlením.
+- **Generické názvy presetů.** Ampsim presety (Bod 16) mají vlastní popisné
+  názvy (Čistý / Crunch / Lead / Metal) — žádné cizí značky aparátů bez
+  licence.
+- **Open-source licence.** Hlídat licence audio knihoven. Pitchy
+  a `@coderline/alphatab` jsou v pořádku; pozor na knihovny pod GPL/AGPL,
+  pokud bude aplikace někdy komerční.
 
 ---
 
