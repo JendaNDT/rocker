@@ -166,14 +166,15 @@ fallback, ošetření výpadku IndexedDB. `tsc` i 230 testů ověřené.
 
 ## Fáze 4 — AI vrstva (po MVP)
 
-### 🔨 Bod 14 — AI tutor
+### ✅ Bod 14 — AI tutor
 AI chat "zeptej se", generátor denních cvičení, zpětná vazba na cvičení.
 Režim BYOK — uživatel zadá vlastní bezplatný Gemini API klíč.
-*Stav:* rozpracováno. Hotová první část — **chat „zeptej se"**: AI vrstva
-v `src/lib/ai/`, store `aiStore`, nastavení klíče v Profilu, obrazovka
-chatu `/tutor`. `tsc` i testy ověřené; reálný test s živým klíčem je na
-Jendovi. Zbývá nepovinné doladění chatu (streamování odpovědí, ukládání
-historie) a další části (generátor cvičení, zpětná vazba z dat).
+*Stav:* hotovo. Obrazovka AI tutor (`/tutor`) má tři režimy: **chat „zeptej
+se"** (navržené otázky, ukládaná historie, streamování odpovědí), **generátor
+cvičení** (`planGenerator` + `PlanPanel` — plán na míru) a **zpětná vazba
+z dat** (`feedback.ts` + `FeedbackPanel` — AI poradna nad pokrokem). AI
+vrstva v `src/lib/ai/`, stores `aiStore` a `chatStore`. `tsc` i testy
+ověřené; chat ověřen reálným testem.
 *Rozhodnutí:* poskytovatel **Google Gemini** (free tier, bez platební
 karty), **BYOK**, voláno **přímo z prohlížeče bez serveru** — nativní
 Gemini endpoint posílá CORS hlavičky, proxy není potřeba; appka zůstává

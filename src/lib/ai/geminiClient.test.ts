@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { sendChat } from "./geminiClient";
+import { sendChat, streamChat } from "./geminiClient";
 import type { ChatMessage } from "./types";
 
 const API_BASE = "https://gemini.test/v1beta";
@@ -189,5 +189,143 @@ describe("sendChat", () => {
 
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.error).toContain("odpověď");
+  });
+});
+
+/** One Gemini SSE event carrying the given text chunk. */
+function sseEvent(text: string): string {
+  const body = { candidates: [{ content: { parts: [{ text }] } }] };
+  return `data: ${JSON.stringify(body)}\n\n`;
+}
+
+/** A fake streaming Response whose body yields the given raw chunks. */
+function sseResponse(
+  chunks: string[],
+  init?: { ok?: boolean; status?: number },
+): Response {
+  const encoder = new TextEncoder();
+  const stream = new ReadableStream<Uint8Array>({
+    start(controller) {
+      for (const chunk of chunks) controller.enqueue(encoder.encode(chunk));
+      controller.close();
+    },
+  });
+  return {
+    ok: init?.ok ?? true,
+    status: init?.status ?? 200,
+    body: stream,
+  } as unknown as Response;
+}
+
+describe("streamChat", () => {
+  it("accumulates text from multiple SSE events", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () =>
+        sseResponse([sseEvent("Nalaď "), sseEvent("kytaru.")]),
+      ),
+    );
+
+    const result = await streamChat({
+      apiKey: "key-123",
+      model: "gemini-2.5-flash",
+      history: HISTORY,
+      apiBase: API_BASE,
+      onChunk: () => {},
+    });
+
+    expect(result).toEqual({ ok: true, text: "Nalaď kytaru." });
+  });
+
+  it("calls onChunk with the growing cumulative text", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () =>
+        sseResponse([sseEvent("Nalaď "), sseEvent("kytaru.")]),
+      ),
+    );
+
+    const chunks: string[] = [];
+    await streamChat({
+      apiKey: "key-123",
+      model: "gemini-2.5-flash",
+      history: HISTORY,
+      apiBase: API_BASE,
+      onChunk: (text) => chunks.push(text),
+    });
+
+    expect(chunks).toEqual(["Nalaď ", "Nalaď kytaru."]);
+  });
+
+  it("handles an SSE event split across two stream chunks", async () => {
+    const event = sseEvent("Odpověď");
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () =>
+        sseResponse([event.slice(0, 12), event.slice(12)]),
+      ),
+    );
+
+    const result = await streamChat({
+      apiKey: "key-123",
+      model: "gemini-2.5-flash",
+      history: HISTORY,
+      apiBase: API_BASE,
+      onChunk: () => {},
+    });
+
+    expect(result).toEqual({ ok: true, text: "Odpověď" });
+  });
+
+  it("maps a 400 response to a bad-key message", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => sseResponse([], { ok: false, status: 400 })),
+    );
+
+    const result = await streamChat({
+      apiKey: "key-123",
+      model: "gemini-2.5-flash",
+      history: HISTORY,
+      apiBase: API_BASE,
+      onChunk: () => {},
+    });
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error).toContain("klíč");
+  });
+
+  it("reports an empty answer when the stream carries no text", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => sseResponse([])),
+    );
+
+    const result = await streamChat({
+      apiKey: "key-123",
+      model: "gemini-2.5-flash",
+      history: HISTORY,
+      apiBase: API_BASE,
+      onChunk: () => {},
+    });
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error).toContain("odpověď");
+  });
+
+  it("reports a missing API key without calling the network", async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+
+    const result = await streamChat({
+      apiKey: "   ",
+      model: "gemini-2.5-flash",
+      history: HISTORY,
+      apiBase: API_BASE,
+      onChunk: () => {},
+    });
+
+    expect(result.ok).toBe(false);
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });

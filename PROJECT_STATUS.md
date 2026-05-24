@@ -11,17 +11,14 @@ Perzistence localStorage (přes Zustand persist) pro malá data včetně pokroku
 IndexedDB (přes `idb`) pro velké bloby — nahrávky, od Bodu 11.
 
 ## ⏭️ Příští krok
-Široké MVP (body 1–13) je hotové. Probíhá **Fáze 4 — Bod 14 (AI tutor)**.
+Široké MVP (body 1–13) i celá **Fáze 4 (Bod 14 — AI tutor) jsou hotové**.
 
-Hotová je první část Bodu 14: **AI chat „zeptej se"** (Google Gemini, BYOK).
-Příští krok: **reálný test chatu s živým klíčem** — na Macu `npm run dev`,
-pak Profil → sekce „AI tutor" → vložit vlastní Gemini klíč → „Otestovat
-spojení" → obrazovka „AI tutor" → položit otázku. Tím se naostro ověří
-volání Gemini přímo z prohlížeče.
+Obrazovka AI tutor má tři režimy: chat „zeptej se", generátor cvičení a
+zpětná vazba z dat. Doporučený další krok: **beta test s 5–10 lidmi**
+(začátečníci i středně pokročilí), pak Fáze 5 (Bod 15 — AlphaTab).
 
-Pak nepovinné doladění chatu (Krok 4: streamování odpovědí, ukládání
-historie) a další části Bodu 14 (generátor denních cvičení, zpětná vazba
-z dat). Beta test s 5–10 lidmi zůstává doporučený před dalšími fázemi.
+Reálný test generátoru a zpětné vazby je na Jendovi: `npm run dev` →
+obrazovka „AI tutor" → režimy „Plán cvičení" a „Zpětná vazba".
 
 Zbývá také starší ruční test se zvukem a kytarou:
 - **Palm Mute Studio** (Metal → Palm mute) — prahy v `useMuteDetector.ts`
@@ -38,8 +35,8 @@ spolupráce), pak tento soubor.
 
 ## ✅ Hotovo
 Hotovo **13 z 13 bodů MVP** (+ rozšíření 1b) — **Široké MVP je kompletní**.
-Fáze 1, 2 i 3 dokončené. Probíhá Fáze 4 (Bod 14). Aktuálně **246
-automatických testů**, vše prochází; `tsc` čistý.
+Fáze 1–4 dokončené. Aktuálně **267 automatických testů**, vše prochází;
+`tsc` čistý.
 
 - Příprava — prostudované 3 rešeršní dokumenty, `ARCHITECTURE.md`, `ROADMAP.md`
 - **Bod 1** — PWA skořápka: Next.js projekt, manifest, service worker,
@@ -76,20 +73,22 @@ automatických testů**, vše prochází; `tsc` čistý.
   upozornění na přestávku po 45 min, Zen režim, přepínač notace H/B,
   Stojan režim (celoobrazovkový tab riffu), onboarding s úvodní audio
   kalibrací, fallbacky (webkitAudioContext, výpadek IndexedDB)
-- **Bod 14 (rozpracováno)** — AI tutor, část 1: chat „zeptej se". AI vrstva
-  v `src/lib/ai/` (Gemini klient, systémový prompt tutora, typy), store
-  `aiStore`, nastavení klíče v Profilu (`AiSettings`), obrazovka chatu
-  `/tutor`. BYOK — uživatel zadá vlastní bezplatný Gemini klíč; volá se
-  přímo z prohlížeče, bez serveru
+- **Bod 14** — AI tutor (konec Fáze 4): obrazovka `/tutor` se třemi režimy.
+  **Chat „zeptej se"** — AI vrstva v `src/lib/ai/`, `aiStore`, nastavení
+  klíče v Profilu (`AiSettings`), navržené otázky, ukládaná historie
+  (`chatStore`), streamování odpovědí. **Generátor cvičení** —
+  `planGenerator` + `PlanPanel`, AI sestaví plán na míru (čas + zaměření +
+  pokrok). **Zpětná vazba z dat** — `feedback.ts` + `FeedbackPanel`, AI
+  poradna nad pokrokem. BYOK — vlastní bezplatný Gemini klíč, voláno přímo
+  z prohlížeče bez serveru
 
 ## 📝 TODO
 ### MVP (Široké MVP, nutné pro v1) — body 1–13
 - ✅ Body 1–13 (viz Hotovo) — **Široké MVP hotové**
 
-### Probíhá — Fáze 4
-- Bod 14 (AI tutor): chat „zeptej se" hotový; zbývá reálný test, doladění
-  chatu, generátor cvičení, zpětná vazba ← **další**
-- Beta test s 5–10 lidmi zůstává doporučený před Fází 5
+### Fáze 4 — hotová
+- ✅ Bod 14 (AI tutor) — chat „zeptej se", generátor cvičení, zpětná vazba
+- Beta test s 5–10 lidmi ← **doporučený další krok**, pak Fáze 5
 
 ### Backlog (později) — body 15–22
 - Body 15–18: AlphaTab, ampsim, multi-track, stem separation
@@ -142,9 +141,9 @@ automatických testů**, vše prochází; `tsc` čistý.
   multiplayer jam, iOS-specifické funkce.
 
 ## 📁 Mapa kódu
-- `src/app/` — stránky (10 obrazovek, App Router)
+- `src/app/` — stránky (11 obrazovek, App Router)
 - `src/components/` — React komponenty (po doménách: tuner, metronome,
-  library, practice, youtube, dashboard, profile, recorder, metal)
+  library, practice, youtube, dashboard, profile, recorder, metal, tutor)
 - `src/audio/` — audio vrstva (AudioEngine, metronome, gallopPlayer,
   riffPlayer, pitchDetector, muteAnalyzer, chordPlayer, countIn, tunings,
   recorder)
@@ -152,8 +151,8 @@ automatických testů**, vše prochází; `tsc` čistý.
   surgicalEngine, exercises, youtube, progress, achievements, dailyPlan,
   practiceTime, recordings, recordingsDb, powerChords, metalExercises,
   metalRiffs, powerChordTrainer, gallopTrainer, palmMute, breakReminder,
-  ai/ — Gemini klient, systémový prompt, typy chatu) — sem patří testy
+  ai/ — Gemini klient, prompty, generátor plánu, typy) — sem patří testy
 - `src/stores/` — Zustand stores (settings, audio, metronome, lessonProgress,
-  ytLoop, progress, recordings, gallopPlayer, riffPlayer, ai)
+  ytLoop, progress, recordings, gallopPlayer, riffPlayer, ai, chat)
 - `ARCHITECTURE.md` · `ROADMAP.md` · `AGENTS.md` · `SKILL.md` — projektové
   dokumenty

@@ -29,6 +29,8 @@ export interface SendChatOptions {
   history: ChatMessage[];
   /** Optional cancellation signal. */
   signal?: AbortSignal;
+  /** System instruction — defaults to the guitar-tutor prompt. */
+  systemPrompt?: string;
   /** API base URL override — defaults to GEMINI_API_BASE; set in tests. */
   apiBase?: string;
 }
@@ -61,9 +63,9 @@ interface GeminiResponse {
 }
 
 /** Builds the Gemini request body from the conversation history. */
-function buildBody(history: ChatMessage[]) {
+function buildBody(history: ChatMessage[], systemPrompt: string) {
   return {
-    systemInstruction: { parts: [{ text: TUTOR_SYSTEM_PROMPT }] },
+    systemInstruction: { parts: [{ text: systemPrompt }] },
     contents: history.map((message) => ({
       role: message.role,
       parts: [{ text: message.text }],
@@ -86,14 +88,28 @@ function mapHttpError(status: number): string {
   return ERR_SERVER;
 }
 
-/** Extracts the assistant's reply text from a Gemini response. */
-function extractText(data: GeminiResponse | null): string {
+/** Joins the text parts of a Gemini response candidate (no trimming). */
+function rawText(data: GeminiResponse | null): string {
   const parts = data?.candidates?.[0]?.content?.parts;
   if (!Array.isArray(parts)) return "";
   return parts
     .map((part) => (typeof part.text === "string" ? part.text : ""))
-    .join("")
-    .trim();
+    .join("");
+}
+
+/** Extracts the assistant's reply text from a Gemini response. */
+function extractText(data: GeminiResponse | null): string {
+  return rawText(data).trim();
+}
+
+/** Parses one SSE `data:` payload into its text piece, or "" if none. */
+function parseSseData(payload: string): string {
+  if (!payload || payload === "[DONE]") return "";
+  try {
+    return rawText(JSON.parse(payload) as GeminiResponse);
+  } catch {
+    return "";
+  }
 }
 
 /**
@@ -120,7 +136,9 @@ export async function sendChat(
         "Content-Type": "application/json",
         "x-goog-api-key": key,
       },
-      body: JSON.stringify(buildBody(history)),
+      body: JSON.stringify(
+        buildBody(history, options.systemPrompt ?? TUTOR_SYSTEM_PROMPT),
+      ),
       signal,
     });
   } catch {
@@ -144,6 +162,91 @@ export async function sendChat(
   }
 
   const text = extractText(data);
+  if (!text) return { ok: false, error: ERR_EMPTY };
+
+  return { ok: true, text };
+}
+
+/** Arguments for {@link streamChat} — same as sendChat plus a chunk callback. */
+export interface StreamChatOptions extends SendChatOptions {
+  /** Called with the full reply text so far each time more of it arrives. */
+  onChunk: (textSoFar: string) => void;
+}
+
+/**
+ * Like {@link sendChat}, but streams the reply: `onChunk` is called with the
+ * growing text as it arrives from Gemini's SSE endpoint. Resolves with the
+ * final ChatResult. Never throws — failures come back as { ok: false, error }.
+ */
+export async function streamChat(
+  options: StreamChatOptions,
+): Promise<ChatResult> {
+  const { apiKey, model, history, signal, onChunk } = options;
+  const apiBase = options.apiBase ?? GEMINI_API_BASE;
+
+  const key = apiKey.trim();
+  if (!key) return { ok: false, error: ERR_NO_KEY };
+
+  const url = `${apiBase}/models/${model}:streamGenerateContent?alt=sse`;
+
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-goog-api-key": key,
+      },
+      body: JSON.stringify(
+        buildBody(history, options.systemPrompt ?? TUTOR_SYSTEM_PROMPT),
+      ),
+      signal,
+    });
+  } catch {
+    if (signal?.aborted) return { ok: false, error: ERR_ABORTED };
+    return { ok: false, error: ERR_NETWORK };
+  }
+
+  if (!response.ok) {
+    return { ok: false, error: mapHttpError(response.status) };
+  }
+  if (!response.body) {
+    return { ok: false, error: ERR_SERVER };
+  }
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  let fullText = "";
+
+  try {
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+
+      // SSE events are newline-delimited; process every complete line and
+      // keep the unfinished tail in the buffer for the next read.
+      let newlineIndex = buffer.indexOf("\n");
+      while (newlineIndex !== -1) {
+        const line = buffer.slice(0, newlineIndex).trim();
+        buffer = buffer.slice(newlineIndex + 1);
+        if (line.startsWith("data:")) {
+          const piece = parseSseData(line.slice(5).trim());
+          if (piece) {
+            fullText += piece;
+            onChunk(fullText);
+          }
+        }
+        newlineIndex = buffer.indexOf("\n");
+      }
+    }
+  } catch {
+    if (signal?.aborted) return { ok: false, error: ERR_ABORTED };
+    return { ok: false, error: ERR_NETWORK };
+  }
+
+  const text = fullText.trim();
   if (!text) return { ok: false, error: ERR_EMPTY };
 
   return { ok: true, text };
