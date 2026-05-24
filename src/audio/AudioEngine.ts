@@ -74,6 +74,14 @@ class AudioEngine {
   }
 
   /**
+   * The live input source node, or null if the input is not running. Used by
+   * the amp / effects chain (Bod 16) to process the raw guitar signal.
+   */
+  getInputSource(): MediaStreamAudioSourceNode | null {
+    return this.source;
+  }
+
+  /**
    * Returns the shared AudioContext for output use (metronome, playback),
    * creating and resuming it on demand. Does not open the microphone.
    */

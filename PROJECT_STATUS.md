@@ -11,15 +11,19 @@ Perzistence localStorage (přes Zustand persist) pro malá data včetně pokroku
 IndexedDB (přes `idb`) pro velké bloby — nahrávky, od Bodu 11.
 
 ## ⏭️ Příští krok
-Hotové: Široké MVP (body 1–13), Fáze 4 (Bod 14 — AI tutor) i **Bod 15
-(AlphaTab — prohlížeč Guitar Pro / MusicXML souborů)**.
+Hotové (v kódu): Široké MVP (body 1–13), Fáze 4 (Bod 14 — AI tutor),
+Bod 15 (AlphaTab) a **Bod 16 (ampsim a efekty)**.
 
-Beta test s 5–10 lidmi je **vědomě odložený** (Jenda ho zatím neprovede;
-lze kdykoliv později). Další podle roadmapy: **Bod 16 (ampsim a efekty)**.
+Beta test s 5–10 lidmi je **vědomě odložený**. Další podle roadmapy:
+**Bod 17 (multi-track nahrávání a loop pedál)**.
 
-Reálný test na Jendovi (`npm run dev`): AI tutor (režimy „Plán cvičení",
-„Zpětná vazba") a obrazovka „Noty" — nahrání Guitar Pro souboru,
-přehrávání, smyčka, tempo.
+**Nutné reálné testy na Jendovi** (`npm run dev`):
+- **Bod 16 (Aparát) — zvuk ani latence NEOVĚŘENÉ.** Postaveno vědomě
+  naslepo na žádost (Jenda zatím nemohl testovat). Až bude moct, otevře
+  „Aparát" na Macu s kytarou a sluchátky; podle výsledku se zvuk doladí,
+  nebo přehodnotí živý monitoring.
+- AI tutor (režimy „Plán cvičení", „Zpětná vazba") a „Noty" (nahrání
+  Guitar Pro souboru, přehrávání, smyčka, tempo).
 
 Zbývá také starší ruční test se zvukem a kytarou:
 - **Palm Mute Studio** (Metal → Palm mute) — prahy v `useMuteDetector.ts`
@@ -36,8 +40,8 @@ spolupráce), pak tento soubor.
 
 ## ✅ Hotovo
 Hotovo **13 z 13 bodů MVP** (+ rozšíření 1b) — **Široké MVP je kompletní**.
-Fáze 1–4 dokončené, Fáze 5 rozpracovaná (Bod 15 hotový). Aktuálně **267
-automatických testů**, vše prochází; `tsc` čistý.
+Fáze 1–4 dokončené, Fáze 5 rozpracovaná (Body 15–16 hotové v kódu).
+Aktuálně **270 automatických testů**, vše prochází; `tsc` čistý.
 
 - Příprava — prostudované 3 rešeršní dokumenty, `ARCHITECTURE.md`, `ROADMAP.md`
 - **Bod 1** — PWA skořápka: Next.js projekt, manifest, service worker,
@@ -89,6 +93,12 @@ automatických testů**, vše prochází; `tsc` čistý.
   `@coderline/alphatab`; vykreslování i audio na hlavním vlákně
   (`useWorkers: false`, ScriptProcessor výstup); font a soundfont
   v `public/alphatab/`
+- **Bod 16 (kód hotový, zvuk neověřený)** — ampsim a efekty: obrazovka
+  `/amp` („Aparát"). Živý vstup kytary → `AmpChain` (pre-gain, zkreslení,
+  3-pásmový EQ, filtrová simulace reproboxu, delay) → výstup. Presety
+  s generickými názvy (Čistý / Crunch / Lead / Metal), posuvníky všech
+  parametrů. Audio na hlavním vlákně (ScriptProcessor). POZOR: postaveno
+  naslepo — zvuk a latence čekají na reálný test s kytarou
 
 ## 📝 TODO
 ### MVP (Široké MVP, nutné pro v1) — body 1–13
@@ -100,10 +110,11 @@ automatických testů**, vše prochází; `tsc` čistý.
 
 ### Probíhá — Fáze 5
 - ✅ Bod 15 (AlphaTab) — prohlížeč Guitar Pro / MusicXML souborů
-- Bod 16 (ampsim a efekty) ← **další**
+- ✅ Bod 16 (ampsim a efekty) — kód hotový, zvuk čeká na ověření
+- Bod 17 (multi-track nahrávání a loop pedál) ← **další**
 
-### Backlog (později) — body 16–22
-- Body 16–18: ampsim, multi-track, stem separation
+### Backlog (později) — body 17–22
+- Body 17–18: multi-track, stem separation
 - Body 19–22: AR vizualizér, hmatníkové hry, profil Soltonu, sdílení
 - Drobnost: tvary akordů v drop ladění (odloženo z Bodu 5)
 
@@ -161,19 +172,20 @@ automatických testů**, vše prochází; `tsc` čistý.
   multiplayer jam, iOS-specifické funkce.
 
 ## 📁 Mapa kódu
-- `src/app/` — stránky (12 obrazovek, App Router)
+- `src/app/` — stránky (13 obrazovek, App Router)
 - `src/components/` — React komponenty (po doménách: tuner, metronome,
   library, practice, youtube, dashboard, profile, recorder, metal, tutor,
-  notation)
+  notation, amp)
 - `public/alphatab/` — font Bravura a SONiVOX soundfont pro AlphaTab (Bod 15)
 - `src/audio/` — audio vrstva (AudioEngine, metronome, gallopPlayer,
   riffPlayer, pitchDetector, muteAnalyzer, chordPlayer, countIn, tunings,
-  recorder)
+  recorder, ampChain)
 - `src/lib/` — čistá logika a data (pitch, tempo, chords, scales, lessons,
   surgicalEngine, exercises, youtube, progress, achievements, dailyPlan,
   practiceTime, recordings, recordingsDb, powerChords, metalExercises,
   metalRiffs, powerChordTrainer, gallopTrainer, palmMute, breakReminder,
-  ai/ — Gemini klient, prompty, generátor plánu, typy) — sem patří testy
+  ampPresets, ai/ — Gemini klient, prompty, generátor plánu, typy)
+  — sem patří testy
 - `src/stores/` — Zustand stores (settings, audio, metronome, lessonProgress,
   ytLoop, progress, recordings, gallopPlayer, riffPlayer, ai, chat)
 - `ARCHITECTURE.md` · `ROADMAP.md` · `AGENTS.md` · `SKILL.md` — projektové

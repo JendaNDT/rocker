@@ -199,10 +199,23 @@ false`, player ScriptProcessor výstup) — obchází bundlování AlphaTab Web
 Workeru a Audio Workletu, jejichž oficiální webpack plugin s Turbopackem
 nesedí. Font (Bravura) a soundfont (SONiVOX) ručně v `public/alphatab/`.
 
-### ⬜ Bod 16 — Ampsim a efekty
+### ✅ Bod 16 — Ampsim a efekty
 Kytarové efekty a simulace aparátu ve Web Audio (JS-Rocks / Pedalboard.js).
 Generické názvy presetů. Primárně pro PC + M-Track Solo; na Androidu jen
 "tone preview", ne live monitoring (latence).
+*Stav:* kód hotový. Obrazovka `/amp` („Aparát"): živý vstup kytary →
+efektový řetězec `AmpChain` (pre-gain, zkreslení, 3-pásmový EQ, filtrová
+simulace reproboxu, delay) → výstup. Presety s generickými názvy (Čistý /
+Crunch / Lead / Metal), posuvníky všech parametrů. `tsc` i testy ověřené.
+**POZOR: zvuk ani latence nejsou ověřené** — postaveno vědomě naslepo na
+žádost (Jenda zatím nemohl testovat). Až bude moct, otevře „Aparát" na
+Macu s kytarou a sluchátky; podle výsledku se zvuk doladí, nebo přehodnotí
+živý monitoring.
+*Rozhodnutí:* efektový řetězec přímo na uzlech Web Audio, žádná knihovna
+(JS-Rocks/Pedalboard.js jen jako inspirace). Simulace reproboxu filtrová,
+ne přes IR soubor (bez externí závislosti a licence). Audio na hlavním
+vlákně (ScriptProcessor výstup) — obchází audio worklet, konzistentní
+s AlphaTabem.
 
 ### ⬜ Bod 17 — Multi-track nahrávání a loop pedál
 Nahrávání více stop s overdubem, mixdown, emulátor loop pedálu.
