@@ -232,14 +232,24 @@ projekt žije v paměti session — uložením je export.
 ### ⬜ Bod 18 — Stem separation
 Rozdělení skladby na stopy (zpěv/bicí/basa/kytara) přes externí API
 (Moises / LALAL.AI) v režimu BYOK. Nikdy v prohlížeči lokálně.
+*Stav:* vědomě odložený. Stem separation API jsou placené (žádný free
+tier — na rozdíl od Gemini u Bodu 14) a serverově orientované (nahrání
+souboru → async job → stažení stop) — z prohlížeče nejspíš nejdou volat
+a vyžadovaly by proxy server. Špatně sedí principu „zdarma, lokálně, bez
+serveru". Lze se k němu vrátit, kdyby projekt někdy server získal.
 
 ---
 
 ## Fáze 6 — Rozšíření
 
-### ⬜ Bod 19 — Vizuální učení
+### ✅ Bod 19 — Vizuální učení
 3D vizualizér hmatníku (Three.js), hry na zapamatování hmatníku, ear training
 (intervaly, kvalita akordů).
+*Stav:* hotovo. Obrazovka `/games` („Hry") se dvěma režimy: hmatníková hra
+(appka pojmenuje tón, hráč klikne na hmatník) a ear training (rozpoznávání
+intervalů a kvality akordů sluchem, přes syntézu z Bodu 5). `tsc` i testy
+ověřené. **3D Three.js vizualizér vědomě vynechán** — appka už 2D hmatník
+má (Bod 5), 3D verze by přidala velkou závislost s malou učební hodnotou.
 
 ### ⬜ Bod 20 — Mirror-AR vizualizér
 Z prvního rešeršního dokumentu — kamera + MediaPipe Hands promítá barevné
