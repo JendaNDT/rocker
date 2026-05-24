@@ -217,8 +217,17 @@ ne přes IR soubor (bez externí závislosti a licence). Audio na hlavním
 vlákně (ScriptProcessor výstup) — obchází audio worklet, konzistentní
 s AlphaTabem.
 
-### ⬜ Bod 17 — Multi-track nahrávání a loop pedál
+### ✅ Bod 17 — Multi-track nahrávání a loop pedál
 Nahrávání více stop s overdubem, mixdown, emulátor loop pedálu.
+*Stav:* kód hotový. Obrazovka `/studio` („Studio") — multi-track recorder:
+nahrávání stop přes sebe (overdub), přehrání všech, u stopy ztlumení /
+hlasitost / smazání, mixdown a export do WAV. Obrazovka `/looper` — loop
+pedál: nahraj smyčku, bezešvě se opakuje, vrstvi přes ni. `tsc` i testy
+ověřené. **POZOR: zvuk a overdub nejsou ověřené** — postaveno vědomě
+naslepo, čeká test s kytarou (latence způsobí drobný posun vrstev).
+*Rozhodnutí:* engine staví na recorderu z Bodu 11. Smyčka se opakuje přes
+`loop=true` (bezešvé), WAV export přes `OfflineAudioContext`. Multi-track
+projekt žije v paměti session — uložením je export.
 
 ### ⬜ Bod 18 — Stem separation
 Rozdělení skladby na stopy (zpěv/bicí/basa/kytara) přes externí API
