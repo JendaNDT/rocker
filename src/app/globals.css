@@ -1,11 +1,11 @@
-@import "tailwindcss";
-@import "./theme-tokens.css";
-
 /* ---------- Fonts ----------
-   Když nechceš čekat na CDN při prvním renderu, dej import přes
-   next/font v layout.tsx místo @import. Tady to mám jednoduše.
+   Font @import musí být úplně nahoře — všechna @import pravidla musí
+   v CSS předcházet jakémukoliv jinému pravidlu (theme-tokens.css se
+   vkládá jako pravidla, takže font import nesmí být až za ním).
 */
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..700,30..100&family=Bodoni+Moda:ital,wght@0,400..900;1,400..900&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&family=Special+Elite&display=swap');
+@import "tailwindcss";
+@import "./theme-tokens.css";
 
 /* ---------- Tailwind theme proxy ----------
    Tailwind v4 čte tyto proměnné a vystavuje je jako utility classes.
