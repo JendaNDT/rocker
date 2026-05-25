@@ -56,15 +56,22 @@ Rozhodnuto: widget metronom **nezastavuje** při odchodu z Cvičení — stejně
 jako plný metronom, klik běží dál napříč navigací (je to tentýž metronom).
 Zatím jen na Cvičení; Metal vynechán (Power Chord trainer engine řídí sám).
 
-## Fáze C — Riff trainer + YouTube → „Hraj se skladbou"
+## Fáze C — Riff trainer + YouTube → „Hraj se skladbou" ✅ HOTOVO (2026-05-25)
 
 Riff trainer (přehrávání vlastního MP3/WAV se zpomalením a smyčkou) a
 YouTube přehrávač dělají **tutéž činnost ze dvou zdrojů**. Sloučí se do
 jednoho nástroje „Hraj se skladbou" s přepínačem zdroje (vlastní soubor /
-YouTube) a sdíleným ovládáním (zpomalení, A/B smyčka).
+YouTube).
 
 **Riziko:** střední–vyšší — dva různé přehrávací enginy (souborový vs.
 YouTube IFrame API) pod jedním UI; sahá se na dvě funkční věci.
+
+**Hotovo (2026-05-25):** YouTube přehrávač vytažen do komponenty
+`YouTubePlayer`. Záložka „Riff trainer" v Cvičení přejmenována na „Hraj se
+skladbou" + přepínač zdroje (Vlastní soubor / YouTube). `/youtube` odebrán
+ze `screens.ts`, route přesměrovává na `/practice`. Enginy zůstaly oddělené
+(souborový vs. YouTube) — sloučeno na úrovni jednoho místa a přepínače,
+ne hluboká fúze. Trade-off: přepnutí zdroje resetuje druhý přehrávač.
 
 ## Fáze D — Nahrávací nástroje do jedné sekce
 
@@ -94,7 +101,7 @@ infrastruktuře.
 |---|---|---|---|
 | A | Kytara → Profil | S | ✅ hotovo |
 | B | Metronom kontextově | M | ✅ hotovo |
-| C | Riff trainer + YouTube | L | střední–vyšší |
+| C | Riff trainer + YouTube | L | ✅ hotovo |
 | D | Nahrávací nástroje do jedné sekce | M–L | střední |
 | E | Nahrávání v Aparátu | M | střední |
 

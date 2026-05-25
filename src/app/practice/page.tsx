@@ -7,17 +7,19 @@ import { RiffTrainer } from "@/components/practice/RiffTrainer";
 import { SurgicalTrainer } from "@/components/practice/SurgicalTrainer";
 import { PageContainer } from "@/components/PageContainer";
 import { useWakeLock } from "@/components/useWakeLock";
+import { YouTubePlayer } from "@/components/youtube/YouTubePlayer";
 import { useResolvedLayoutMode } from "@/lib/layout";
 import { stageCompletion } from "@/lib/lessonEngine";
 import { getLesson, STAGES } from "@/lib/lessons";
 import { useHydrated } from "@/lib/useHydrated";
 import { useLessonProgressStore } from "@/stores/lessonProgressStore";
 
-type Tab = "lessons" | "riff" | "surgical";
+type Tab = "lessons" | "play" | "surgical";
+type PlaySource = "file" | "youtube";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "lessons", label: "Lekce" },
-  { id: "riff", label: "Riff trainer" },
+  { id: "play", label: "Hraj se skladbou" },
   { id: "surgical", label: "Přesný trénink" },
 ];
 
@@ -37,6 +39,7 @@ export default function PracticePage() {
   useWakeLock();
 
   const [tab, setTab] = useState<Tab>("lessons");
+  const [playSource, setPlaySource] = useState<PlaySource>("file");
   const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
 
   const completedLessonIds = useLessonProgressStore(
@@ -130,9 +133,30 @@ export default function PracticePage() {
         </div>
       )}
 
-      {tab === "riff" && (
+      {tab === "play" && (
         <div className="mt-8">
-          <RiffTrainer />
+          <div className="text-sm font-medium text-text">Zdroj</div>
+          <div className="mt-2 inline-flex rounded-lg border border-line p-1">
+            <button
+              type="button"
+              onClick={() => setPlaySource("file")}
+              className={
+                playSource === "file" ? SEGMENT_ACTIVE : SEGMENT_IDLE
+              }
+            >
+              Vlastní soubor
+            </button>
+            <button
+              type="button"
+              onClick={() => setPlaySource("youtube")}
+              className={
+                playSource === "youtube" ? SEGMENT_ACTIVE : SEGMENT_IDLE
+              }
+            >
+              YouTube
+            </button>
+          </div>
+          {playSource === "file" ? <RiffTrainer /> : <YouTubePlayer />}
         </div>
       )}
 
