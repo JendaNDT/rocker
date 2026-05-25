@@ -115,7 +115,7 @@ rozpracovaná (Body 19 a 21 hotové, Bod 20 vynechán). Aktuálně
   Logika v `fretboardGame.ts` a `earTraining.ts` (s testy). 3D Three.js
   vizualizér vědomě vynechán
 - **3 přepínatelné vzhledy** (mimo roadmapu — vizuální nadstavba,
-  větev `feature/vzhledy`, neslitá do `main`). Témata **Studio**
+  slito do `main` 25. 05. 2026, vizuálně ověřeno Jendou). Témata **Studio**
   (tube amp, serif, mosaz), **Vintage** (staré studio, papír, mosazné
   cvočky) a **Glassy** (frosted gradient), každé v režimu Světlý /
   Tmavý / Auto-OS. Volba v `/profile → Vzhled`, persistuje se přes
@@ -125,8 +125,7 @@ rozpracovaná (Body 19 a 21 hotové, Bod 20 vynechán). Aktuálně
   obrazovek přemigrováno z `bg-neutral-*` na theme-aware třídy
   (`bg-surface`, `text-accent`…). Vintage cvočky přes `VintageFrame`,
   Glassy frosted blur plošně přes CSS. Postaveno z design handoff
-  balíčku; `tsc` čistý, 306 testů prochází. **Neověřeno vizuálně** —
-  čeká Jendův proklik v `npm run dev`
+  balíčku; `tsc` čistý, 306 testů prochází, vizuálně ověřeno
 - **Bod 21** — profil nástroje: obrazovka `/instrument` („Kytara").
   **Karta profilu** — editovatelná (název, tělo, snímače krk/střed/kobylka
   × humbucker/single/P90, menzura, ladění, struny, poznámky), uložená
@@ -160,7 +159,6 @@ rozpracovaná (Body 19 a 21 hotové, Bod 20 vynechán). Aktuálně
 - Drobnost: tvary akordů v drop ladění (odloženo z Bodu 5)
 - Témově specifické widgety vzhledů — VU metr, knoby, papírový displej
   not, beat-mince (viz Klíčová rozhodnutí)
-- Slít větev `feature/vzhledy` do `main` po Jendově vizuálním ověření
 
 ## 🏗️ Klíčová rozhodnutí
 *(Aby ses k tomu zase zbytečně nevracel.)*
