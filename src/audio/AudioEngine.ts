@@ -32,10 +32,16 @@ const INITIAL_STATE: AudioEngineState = {
 
 // Guitar input must stay raw. These voice-call DSP features would mangle the
 // signal and ruin pitch detection, so they are explicitly disabled.
+//
+// channelCount: 1 forces mono capture. A two-input interface (e.g. M-Track
+// Solo) otherwise yields a 2-channel stream with the guitar on a single
+// channel; passed straight through, that plays out of only one speaker.
+// A mono stream up-mixes to both channels on a stereo output.
 const RAW_AUDIO_CONSTRAINTS: MediaTrackConstraints = {
   echoCancellation: false,
   noiseSuppression: false,
   autoGainControl: false,
+  channelCount: 1,
 };
 
 type Listener = (state: AudioEngineState) => void;

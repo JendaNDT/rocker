@@ -147,8 +147,14 @@ hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
   displej not, mosazné beat-mince)
 
 ## 🐛 Známé bugy
-Žádné. Audit vnitřní logiky neodhalil kritický bug; nalezené drobnosti
-byly opraveny.
+Žádné otevřené. Audit vnitřní logiky neodhalil kritický bug; nalezené
+drobnosti byly opraveny.
+
+Opraveno z reálné zpětné vazby (2026-05-25): dvouvstupový interface
+posílal dvoukanálový stream s kytarou jen v jednom kanálu — zvuk hrál
+jen z jednoho repráku. `RAW_AUDIO_CONSTRAINTS` v `AudioEngine.ts` má
+nově `channelCount: 1` (mono snímání, na stereo výstupu se zkopíruje do
+obou kanálů). Čeká ověření reálným testem se zvukem.
 
 ## 🏗️ Klíčová rozhodnutí
 *(Aby ses k tomu zase zbytečně nevracel.)*
