@@ -44,7 +44,7 @@ spolupráce), pak tento soubor.
 Hotovo **13 z 13 bodů MVP** (+ rozšíření 1b) — **Široké MVP je kompletní**.
 Fáze 1–4 dokončené, Fáze 5 rozpracovaná (Body 15–17 hotové), Fáze 6
 rozpracovaná (Body 19 a 21 hotové, Bod 20 vynechán). Aktuálně
-**306 automatických testů**, vše prochází; `tsc` čistý.
+**315 automatických testů**, vše prochází; `tsc` čistý.
 
 - Příprava — prostudované 3 rešeršní dokumenty, `ARCHITECTURE.md`, `ROADMAP.md`
 - **Bod 1** — PWA skořápka: Next.js projekt, manifest, service worker,
@@ -125,7 +125,19 @@ rozpracovaná (Body 19 a 21 hotové, Bod 20 vynechán). Aktuálně
   obrazovek přemigrováno z `bg-neutral-*` na theme-aware třídy
   (`bg-surface`, `text-accent`…). Vintage cvočky přes `VintageFrame`,
   Glassy frosted blur plošně přes CSS. Postaveno z design handoff
-  balíčku; `tsc` čistý, 306 testů prochází, vizuálně ověřeno
+  balíčku; `tsc` čistý, 315 testů prochází, vizuálně ověřeno
+- **Audit vnitřní logiky + opravy** (větev `fix/audit-opravy`, čeká na
+  slití do `main`). Proběhl kompletní audit logiky (audio, lib, AI,
+  stores, komponenty) — **žádný kritický bug**. Opraveno ve 4 dávkách:
+  hydratační guard `VintageFrame`; sanitizace persistovaných dat
+  v `settingsStore` i `recordingsDb`; prázdná historie chatu →
+  srozumitelná chyba a dozpracování streamu v `geminiClient`; strop
+  minut v `planGenerator`; `onerror` v `recorder.ts`; úklid při
+  odmountu (`RecorderControls`, `ChatPanel`, `RiffTrainer`); změna
+  taktu metronomu za běhu; odpočet `countIn` z audio hodin; guard
+  prázdného cellu v `gallopPlayer`; Looper a Studio se počítají do
+  odcvičených minut. +9 testů pro `recordingsDb` (nová vývojová
+  závislost `fake-indexeddb`, jen pro testy)
 - **Bod 21** — profil nástroje: obrazovka `/instrument` („Kytara").
   **Karta profilu** — editovatelná (název, tělo, snímače krk/střed/kobylka
   × humbucker/single/P90, menzura, ladění, struny, poznámky), uložená

@@ -27,6 +27,14 @@ export function ChatPanel() {
   const [streaming, setStreaming] = useState("");
 
   const endRef = useRef<HTMLDivElement>(null);
+  const mountedRef = useRef(true);
+
+  // Track mount state so an in-flight stream can't update an unmounted panel.
+  useEffect(() => {
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
   // Keep the latest message in view as the conversation grows.
   useEffect(() => {
@@ -42,13 +50,19 @@ export function ChatPanel() {
       apiKey,
       model,
       history,
-      onChunk: (text) => setStreaming(text),
+      onChunk: (text) => {
+        if (mountedRef.current) setStreaming(text);
+      },
     });
-    setStreaming("");
-    setBusy(false);
+    // A finished reply is saved to the store even if the user navigated away;
+    // component-state updates are skipped once the panel has unmounted.
     if (result.ok) {
       addMessage({ role: "model", text: result.text });
-    } else {
+    }
+    if (!mountedRef.current) return;
+    setStreaming("");
+    setBusy(false);
+    if (!result.ok) {
       setError(result.error);
     }
   }

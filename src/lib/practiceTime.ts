@@ -3,8 +3,8 @@
 
 /**
  * Routes whose time counts as practice. Browsing the chord library or the
- * profile is not practice; playing along on these screens is. Recorder and
- * live are excluded for now.
+ * profile is not practice; playing along on these screens is — including the
+ * looper and the multi-track studio. Recorder and live are excluded.
  */
 export const PRACTICE_ROUTES: readonly string[] = [
   "/tuner",
@@ -12,6 +12,8 @@ export const PRACTICE_ROUTES: readonly string[] = [
   "/practice",
   "/metal",
   "/youtube",
+  "/looper",
+  "/studio",
 ];
 
 /**

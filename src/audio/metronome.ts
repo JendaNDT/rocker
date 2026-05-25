@@ -70,10 +70,14 @@ class Metronome {
 
   setBeatsPerBar(beatsPerBar: number): void {
     this.setState({ beatsPerBar });
+    // Re-align to a downbeat: a mid-play change shrinks ticksPerBar() and the
+    // running currentTick could otherwise land on a stray, mis-accented tick.
+    if (this.state.isPlaying) this.currentTick = 0;
   }
 
   setSubdivision(subdivision: number): void {
     this.setState({ subdivision });
+    if (this.state.isPlaying) this.currentTick = 0;
   }
 
   setAccentFirst(accentFirst: boolean): void {

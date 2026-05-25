@@ -81,7 +81,7 @@ export const STAGES: Stage[] = [
           {
             kind: "note",
             title: "Spodní struna E",
-            body: "Zahraj nejsilnější (nejvyšší) strunu naprázdno. Aplikace poslouchá a potvrdí správný tón.",
+            body: "Zahraj nejsilnější (nejtlustší) strunu naprázdno. Aplikace poslouchá a potvrdí správný tón.",
             targetMidi: 40,
             targetLabel: "E (6. struna)",
           },

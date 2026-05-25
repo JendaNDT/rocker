@@ -42,6 +42,14 @@ export function RecorderControls() {
     return () => window.clearInterval(id);
   }, [isRecording]);
 
+  // If the user navigates away mid-recording, stop the recorder so it doesn't
+  // keep running in the background with the input held open.
+  useEffect(() => {
+    return () => {
+      if (recorder.isRecording()) void recorder.stop();
+    };
+  }, []);
+
   async function enableInput() {
     setLocalError(null);
     if (permission !== "granted") {

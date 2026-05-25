@@ -69,6 +69,14 @@ class GallopPlayer {
 
   /** Sets the rhythm cell (note lengths in beats). */
   setCell(cell: number[]): void {
+    // Reject an empty cell or non-positive note lengths: a zero-length note
+    // never advances nextNoteTime and would freeze the scheduler in a loop.
+    if (
+      cell.length === 0 ||
+      cell.some((length) => !Number.isFinite(length) || length <= 0)
+    ) {
+      return;
+    }
     this.cell = cell;
   }
 

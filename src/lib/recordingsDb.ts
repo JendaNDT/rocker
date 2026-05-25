@@ -38,8 +38,12 @@ function getDb(): Promise<IDBPDatabase<RockerDB>> {
 
 /** Stores a recording, overwriting any existing one with the same id. */
 export async function saveRecording(recording: Recording): Promise<void> {
+  // Sanitize before writing so the store only ever holds clean data (sorted
+  // markers, no malformed fields) — not just clean data on read.
+  const safe = sanitizeRecording(recording);
+  if (!safe) return;
   const db = await getDb();
-  await db.put(STORE, recording);
+  await db.put(STORE, safe);
 }
 
 /** Metadata for every stored recording, newest first. Corrupt rows dropped. */
@@ -78,5 +82,9 @@ export async function updateRecording(
   const db = await getDb();
   const existing = sanitizeRecording(await db.get(STORE, id));
   if (!existing) return;
-  await db.put(STORE, { ...existing, ...patch });
+  // Re-sanitize the merged result: a patch can carry unsorted or malformed
+  // markers, and those must not reach the store.
+  const merged = sanitizeRecording({ ...existing, ...patch });
+  if (!merged) return;
+  await db.put(STORE, merged);
 }

@@ -51,6 +51,8 @@ const ERR_EMPTY =
 const ERR_NETWORK =
   "Nepodařilo se spojit se serverem. Zkontroluj připojení k internetu.";
 const ERR_ABORTED = "Dotaz byl zrušen.";
+const ERR_NO_MESSAGE =
+  "Není žádná zpráva k odeslání. Napiš nejdřív otázku.";
 
 // --- Gemini response shape (only the fields we read) ---------------------
 
@@ -125,6 +127,9 @@ export async function sendChat(
 
   const key = apiKey.trim();
   if (!key) return { ok: false, error: ERR_NO_KEY };
+  // An empty conversation would make Gemini reject the request with a 400,
+  // which mapHttpError would mistranslate into a misleading "bad key" error.
+  if (history.length === 0) return { ok: false, error: ERR_NO_MESSAGE };
 
   const url = `${apiBase}/models/${model}:generateContent`;
 
@@ -186,6 +191,9 @@ export async function streamChat(
 
   const key = apiKey.trim();
   if (!key) return { ok: false, error: ERR_NO_KEY };
+  // An empty conversation would make Gemini reject the request with a 400,
+  // which mapHttpError would mistranslate into a misleading "bad key" error.
+  if (history.length === 0) return { ok: false, error: ERR_NO_MESSAGE };
 
   const url = `${apiBase}/models/${model}:streamGenerateContent?alt=sse`;
 
@@ -244,6 +252,17 @@ export async function streamChat(
   } catch {
     if (signal?.aborted) return { ok: false, error: ERR_ABORTED };
     return { ok: false, error: ERR_NETWORK };
+  }
+
+  // The final SSE event can arrive without a trailing newline, so a last
+  // `data:` line may still be sitting in the buffer — process it too.
+  const tail = buffer.trim();
+  if (tail.startsWith("data:")) {
+    const piece = parseSseData(tail.slice(5).trim());
+    if (piece) {
+      fullText += piece;
+      onChunk(fullText);
+    }
   }
 
   const text = fullText.trim();

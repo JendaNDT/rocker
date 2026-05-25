@@ -135,6 +135,9 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
+/** Upper bound for a single plan block — clamps absurd AI-returned values. */
+const MAX_ITEM_MINUTES = 180;
+
 /** Coerces an unknown value into a GeneratedPlanItem, or null if malformed. */
 function sanitizePlanItem(value: unknown): GeneratedPlanItem | null {
   if (!isPlainObject(value)) return null;
@@ -144,11 +147,14 @@ function sanitizePlanItem(value: unknown): GeneratedPlanItem | null {
   if (typeof minutes !== "number" || !Number.isFinite(minutes)) return null;
   const rounded = Math.round(minutes);
   if (rounded <= 0) return null;
+  // The AI can return an absurd duration; cap it so one block can't blow
+  // past the time the user actually asked for.
+  const safeMinutes = Math.min(rounded, MAX_ITEM_MINUTES);
   const href =
     typeof screen === "string" && screen in SCREEN_HREF
       ? SCREEN_HREF[screen]
       : null;
-  return { title, detail, minutes: rounded, href };
+  return { title, detail, minutes: safeMinutes, href };
 }
 
 /**

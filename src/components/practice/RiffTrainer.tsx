@@ -32,6 +32,7 @@ export function RiffTrainer() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const objectUrlRef = useRef<string | null>(null);
   const loopCountRef = useRef(0);
+  const mountedRef = useRef(true);
 
   const [fileName, setFileName] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -46,9 +47,10 @@ export function RiffTrainer() {
   const [countInBpm, setCountInBpm] = useState(90);
   const [rampEnabled, setRampEnabled] = useState(false);
 
-  // Release the object URL when the component goes away.
+  // Release the object URL and mark unmounted when the component goes away.
   useEffect(() => {
     return () => {
+      mountedRef.current = false;
       if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
     };
   }, []);
@@ -131,6 +133,7 @@ export function RiffTrainer() {
     if (countInEnabled) {
       setCountingIn(true);
       void playCountIn(COUNT_IN_BEATS, countInBpm).then(() => {
+        if (!mountedRef.current) return;
         setCountingIn(false);
         void audio.play();
       });

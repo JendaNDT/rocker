@@ -61,6 +61,13 @@ class Recorder {
     mediaRecorder.ondataavailable = (event) => {
       if (event.data.size > 0) this.chunks.push(event.data);
     };
+    // If recording fails (e.g. the input track ends), drop the recorder so
+    // isRecording() turns false and a later stop() returns null instead of
+    // hanging forever on an onstop that will never fire.
+    mediaRecorder.onerror = () => {
+      this.mediaRecorder = null;
+      this.chunks = [];
+    };
 
     mediaRecorder.start();
     this.mediaRecorder = mediaRecorder;
@@ -80,15 +87,28 @@ class Recorder {
     }
 
     return new Promise((resolve) => {
+      let settled = false;
+      const finish = (result: RecordingResult | null) => {
+        if (settled) return;
+        settled = true;
+        this.mediaRecorder = null;
+        this.chunks = [];
+        resolve(result);
+      };
       mediaRecorder.onstop = () => {
         const durationSec = (performance.now() - this.startTime) / 1000;
         const mimeType = mediaRecorder.mimeType || "audio/webm";
         const blob = new Blob(this.chunks, { type: mimeType });
-        this.mediaRecorder = null;
-        this.chunks = [];
-        resolve({ blob, durationSec, mimeType });
+        finish({ blob, durationSec, mimeType });
       };
-      mediaRecorder.stop();
+      // If the recorder errors instead of stopping cleanly, resolve with null
+      // so the caller (loop pedal / multitrack) never hangs on the await.
+      mediaRecorder.onerror = () => finish(null);
+      try {
+        mediaRecorder.stop();
+      } catch {
+        finish(null);
+      }
     });
   }
 }

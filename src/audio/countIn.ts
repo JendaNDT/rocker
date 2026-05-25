@@ -26,6 +26,14 @@ export async function playCountIn(beats: number, bpm: number): Promise<void> {
     oscillator.stop(time + 0.06);
   }
 
-  const totalMs = (lead + beats * interval) * 1000;
-  await new Promise((resolve) => setTimeout(resolve, totalMs));
+  // Wait against the AudioContext clock, not a single wall-clock setTimeout:
+  // a timer that fires late would start playback after the downbeat. Re-check
+  // each step so the count-in resolves right on the audio clock's end time.
+  const endTime = startAt + beats * interval;
+  while (context.currentTime < endTime) {
+    const remainingMs = (endTime - context.currentTime) * 1000;
+    await new Promise((resolve) =>
+      setTimeout(resolve, Math.min(remainingMs, 50)),
+    );
+  }
 }
