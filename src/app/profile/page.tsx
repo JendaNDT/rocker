@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { AiSettings } from "@/components/AiSettings";
 import { AudioInputSettings } from "@/components/AudioInputSettings";
+import { DataBackup } from "@/components/DataBackup";
 import { LayoutModeSwitcher } from "@/components/LayoutModeSwitcher";
 import { ThemePicker } from "@/components/ThemePicker";
 import { ProgressDetail } from "@/components/profile/ProgressDetail";
@@ -135,6 +136,16 @@ export default function ProfilePage() {
           </div>
         </section>
       )}
+
+      <section className="mt-8">
+        <h2 className="text-lg font-semibold">Záloha dat</h2>
+        <p className="mt-1 text-sm text-dim">
+          Ulož si nastavení a pokrok do souboru, nebo je obnov ze zálohy.
+        </p>
+        <div className="mt-3">
+          <DataBackup />
+        </div>
+      </section>
 
       <section className="mt-8">
         <h2 className="text-lg font-semibold">Úvod</h2>

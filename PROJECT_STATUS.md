@@ -44,7 +44,7 @@ spolupráce), pak tento soubor.
 Hotovo **13 z 13 bodů MVP** (+ rozšíření 1b) — **Široké MVP je kompletní**.
 Fáze 1–4 dokončené, Fáze 5 rozpracovaná (Body 15–17 hotové), Fáze 6
 rozpracovaná (Body 19 a 21 hotové, Bod 20 vynechán). Aktuálně
-**325 automatických testů**, vše prochází; `tsc` čistý.
+**334 automatických testů**, vše prochází; `tsc` čistý.
 
 - Příprava — prostudované 3 rešeršní dokumenty, `ARCHITECTURE.md`, `ROADMAP.md`
 - **Bod 1** — PWA skořápka: Next.js projekt, manifest, service worker,
@@ -125,7 +125,7 @@ rozpracovaná (Body 19 a 21 hotové, Bod 20 vynechán). Aktuálně
   obrazovek přemigrováno z `bg-neutral-*` na theme-aware třídy
   (`bg-surface`, `text-accent`…). Vintage cvočky přes `VintageFrame`,
   Glassy frosted blur plošně přes CSS. Postaveno z design handoff
-  balíčku; `tsc` čistý, 325 testů prochází, vizuálně ověřeno
+  balíčku; `tsc` čistý, 334 testů prochází, vizuálně ověřeno
 - **Audit vnitřní logiky + opravy** (větev `fix/audit-opravy`, čeká na
   slití do `main`). Proběhl kompletní audit logiky (audio, lib, AI,
   stores, komponenty) — **žádný kritický bug**. Opraveno ve 4 dávkách:
@@ -155,6 +155,14 @@ rozpracovaná (Body 19 a 21 hotové, Bod 20 vynechán). Aktuálně
   na slití). Úvodní průvodce má 4 kroky — po uvítání přibyl krok
   „Vyber si vzhled" s existující komponentou `ThemePicker` (3 témata
   + světlý/tmavý/auto)
+- **Záloha dat** (větev `feature/zaloha-dat`, čeká na slití). Sekce
+  „Záloha dat" v Profilu — „Zálohovat" stáhne JSON se všemi `rocker-*`
+  klíči z localStorage (nastavení, pokrok, profil kytary, lekce, YT
+  smyčky, AI), „Obnovit ze zálohy" je po potvrzení přepíše a appku
+  načte znovu. Logika v `src/lib/backup.ts` (s testy), UI
+  `DataBackup.tsx`. Nahrávky (IndexedDB) vědomě mimo zálohu — zůstávají
+  malé a rychlé. Obnova bere jen známé klíče (nelze vložit cizí
+  localStorage)
 - **Upozornění na novou verzi** (větev `feature/update-prompt`, čeká na
   slití). Ručně psaný `sw.js` novou verzi tiše nepřebírá — počká; po
   nasazení appka ukáže lištu „Je k dispozici nová verze / Načíst",
