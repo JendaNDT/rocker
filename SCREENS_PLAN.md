@@ -41,16 +41,20 @@ změny.
 `ToneAdvisor`) na plnou šířku nad nastaveními; `instrument/page.tsx`
 klientské přesměrování na `/profile`.
 
-## Fáze B — Metronom: kontextová dostupnost
+## Fáze B — Metronom: kontextová dostupnost ✅ HOTOVO (2026-05-25)
 
 Metronom **zůstává** samostatným nástrojem (vlastní obrazovka) — používá se
 i mimo lekce. Navíc se zpřístupní přímo na cvičebních obrazovkách: kompaktní
 vyvolatelný metronomový panel, ať uživatel nemusí odcházet z cvičení.
 
-**K rozhodnutí:** přesná podoba — sbalovací panel? na kterých obrazovkách
-(Cvičení, Metal, …)? Doladí se na začátku fáze.
-
 **Riziko:** střední — nová sdílená komponenta; metronomový engine se nemění.
+
+**Hotovo (2026-05-25):** komponenta `MetronomeWidget` — sbalovací kompaktní
+metronom (BPM ±, naťukání tempa, `BeatIndicator`, přehrát/stop) na obrazovce
+Cvičení. Sdílí engine i uložené nastavení s plnou obrazovkou Metronom.
+Rozhodnuto: widget metronom **nezastavuje** při odchodu z Cvičení — stejně
+jako plný metronom, klik běží dál napříč navigací (je to tentýž metronom).
+Zatím jen na Cvičení; Metal vynechán (Power Chord trainer engine řídí sám).
 
 ## Fáze C — Riff trainer + YouTube → „Hraj se skladbou"
 
@@ -89,7 +93,7 @@ infrastruktuře.
 | Fáze | Co | Velikost | Riziko |
 |---|---|---|---|
 | A | Kytara → Profil | S | ✅ hotovo |
-| B | Metronom kontextově | M | střední |
+| B | Metronom kontextově | M | ✅ hotovo |
 | C | Riff trainer + YouTube | L | střední–vyšší |
 | D | Nahrávací nástroje do jedné sekce | M–L | střední |
 | E | Nahrávání v Aparátu | M | střední |

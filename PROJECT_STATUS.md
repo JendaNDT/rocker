@@ -151,8 +151,10 @@ hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
 - **Sloučení obrazovek** — plán v `SCREENS_PLAN.md` (5 fází, konsolidace
   informační architektury z přání uživatele). **Fáze A hotová
   (2026-05-25):** profil nástroje (Kytara) přesunut do Profilu jako sekce,
-  `/instrument` přesměrovává. Zbývá B (metronom kontextově), C (riff trainer
-  + YouTube), D (nahrávací nástroje do jedné sekce), E (nahrávání v Aparátu).
+  `/instrument` přesměrovává. **Fáze B hotová (2026-05-25):** kompaktní
+  metronom (`MetronomeWidget`) na obrazovce Cvičení, sdílí engine i nastavení
+  s plným metronomem. Zbývá C (riff trainer + YouTube), D (nahrávací nástroje
+  do jedné sekce), E (nahrávání v Aparátu).
 - **Bod 22 — sdílení a organizace** (poslední bod roadmapy) — share-a-riff,
   songbook organizér
 - Beta test s 5–10 lidmi — vědomě odložený

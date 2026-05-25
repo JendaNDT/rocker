@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { MetronomeWidget } from "@/components/metronome/MetronomeWidget";
 import { LessonPlayer } from "@/components/practice/LessonPlayer";
 import { RiffTrainer } from "@/components/practice/RiffTrainer";
 import { SurgicalTrainer } from "@/components/practice/SurgicalTrainer";
@@ -79,6 +80,10 @@ export default function PracticePage() {
             {item.label}
           </button>
         ))}
+      </div>
+
+      <div className="mt-6">
+        <MetronomeWidget />
       </div>
 
       {tab === "lessons" && (
