@@ -36,7 +36,7 @@ Než příští session začne: přečíst `AGENTS.md` a `SKILL.md` (pravidla
 spolupráce), pak tento soubor.
 
 ## ✅ Hotovo
-**374 automatických testů**, vše prochází; `tsc` čistý. Roadmapa: Fáze 0–4
+**379 automatických testů**, vše prochází; `tsc` čistý. Roadmapa: Fáze 0–4
 hotové, Fáze 5 hotová (body 15–17; 18 vynechán), Fáze 6 z velké části
 hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
 
@@ -126,6 +126,11 @@ hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
   Čekají na ruční vizuální ověření Jendou.
 
 ## 📝 TODO
+- **Provázání funkcí** — komplexní plán v `INTERCONNECT_PLAN.md` (4 fáze,
+  od snadných výher po sjednocení audio enginů). Vznikl z auditu
+  provázanosti; nic v něm nejsou opravy bugů, jen chytřejší propojení.
+  **Fáze A hotová (2026-05-25):** Hry a Aparát se počítají do odcvičených
+  minut; AI chat „zeptej se" dostává kontext o cvičení. Na řadě fáze B.
 - **Bod 22 — sdílení a organizace** (poslední bod roadmapy) — share-a-riff,
   songbook organizér
 - Beta test s 5–10 lidmi — vědomě odložený
@@ -244,7 +249,7 @@ byly opraveny.
   metalRiffs, powerChordTrainer, gallopTrainer, palmMute, breakReminder,
   ampPresets, multitrack, wav, loopMix, fretboardGame, earTraining,
   instrument, backup, useHydrated, ai/ — Gemini klient, prompty, generátor
-  plánu, typy) — vedle leží testy `*.test.ts`
+  plánu, kontext o cvičení, typy) — vedle leží testy `*.test.ts`
 - `src/stores/` — Zustand stores (settings, audio, metronome,
   metronomeSettings, lessonProgress, ytLoop, progress, recordings,
   gallopPlayer, riffPlayer, ai, chat, instrument)

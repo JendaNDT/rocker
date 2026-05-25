@@ -13,7 +13,13 @@ describe("isPracticeRoute", () => {
     expect(isPracticeRoute("/library")).toBe(false);
     expect(isPracticeRoute("/profile")).toBe(false);
     expect(isPracticeRoute("/recorder")).toBe(false);
+    expect(isPracticeRoute("/notation")).toBe(false);
     expect(isPracticeRoute("/live")).toBe(false);
+  });
+
+  it("counts the games and amp screens as practice", () => {
+    expect(isPracticeRoute("/games")).toBe(true);
+    expect(isPracticeRoute("/amp")).toBe(true);
   });
 
   it("tolerates a trailing slash", () => {

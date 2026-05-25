@@ -1,19 +1,36 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { buildPracticeContext } from "@/lib/ai/context";
 import { streamChat } from "@/lib/ai/geminiClient";
-import { SUGGESTED_QUESTIONS } from "@/lib/ai/prompts";
+import { SUGGESTED_QUESTIONS, TUTOR_SYSTEM_PROMPT } from "@/lib/ai/prompts";
 import type { ChatMessage } from "@/lib/ai/types";
+import { STAGES } from "@/lib/lessons";
 import { useAiStore } from "@/stores/aiStore";
 import { useChatStore } from "@/stores/chatStore";
+import { useLessonProgressStore } from "@/stores/lessonProgressStore";
+import { useProgressStore } from "@/stores/progressStore";
+
+const TOTAL_LESSONS = STAGES.flatMap((stage) => stage.lessons).length;
 
 /**
  * The "Zeptat se" chat panel of the AI tutor screen. Assumes an API key is
- * set — the parent screen gates on that. Part of Bod 14.
+ * set — the parent screen gates on that. Part of Bod 14. The chat's system
+ * prompt carries a short practice-context block so answers fit where the
+ * learner actually is (feature-interconnection plan, A2).
  */
 export function ChatPanel() {
   const apiKey = useAiStore((state) => state.apiKey);
   const model = useAiStore((state) => state.model);
+
+  // Practice data — feeds the context block appended to the system prompt.
+  const completedLessonIds = useLessonProgressStore(
+    (state) => state.completedLessonIds,
+  );
+  const dailyMinutes = useProgressStore((state) => state.dailyMinutes);
+  const unlockedAchievements = useProgressStore(
+    (state) => state.unlockedAchievements,
+  );
 
   const messages = useChatStore((state) => state.messages);
   const setMessages = useChatStore((state) => state.setMessages);
@@ -46,10 +63,18 @@ export function ChatPanel() {
     setBusy(true);
     setError(null);
     setStreaming("");
+    // Rebuilt per request so it reflects the learner's current progress.
+    const context = buildPracticeContext({
+      completedLessons: completedLessonIds.length,
+      totalLessons: TOTAL_LESSONS,
+      dailyMinutes,
+      achievementCount: unlockedAchievements.length,
+    });
     const result = await streamChat({
       apiKey,
       model,
       history,
+      systemPrompt: `${TUTOR_SYSTEM_PROMPT}\n\n${context}`,
       onChunk: (text) => {
         if (mountedRef.current) setStreaming(text);
       },

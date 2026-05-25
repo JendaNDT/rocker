@@ -4,7 +4,9 @@
 /**
  * Routes whose time counts as practice. Browsing the chord library or the
  * profile is not practice; playing along on these screens is — including the
- * looper and the multi-track studio. Recorder and live are excluded.
+ * looper, the multi-track studio, the fretboard/ear-training games and the
+ * amp simulator. Recorder, notation viewer and live are excluded: browsing
+ * sheet music or replaying takes is not active playing.
  */
 export const PRACTICE_ROUTES: readonly string[] = [
   "/tuner",
@@ -14,6 +16,8 @@ export const PRACTICE_ROUTES: readonly string[] = [
   "/youtube",
   "/looper",
   "/studio",
+  "/games",
+  "/amp",
 ];
 
 /**
