@@ -1,14 +1,21 @@
-// Rocker service worker — hand-written, no build step.
+// Rocker service worker — hand-written.
 //
 // Strategy:
-//   - install:  precache the minimal app shell
+//   - install:  precache the minimal app shell. A new version does NOT take
+//               over immediately — it waits until the user accepts the
+//               update (the page posts "SKIP_WAITING").
 //   - navigate: network-first, fall back to cache when offline
 //   - other GET: cache-first, then network (and cache the result)
 //
 // Hashed Next.js assets are cached at runtime as they are first requested,
 // so after one online visit the app works fully offline.
+//
+// VERSION is replaced at build time by scripts/stamp-sw.mjs, so every deploy
+// ships a byte-different sw.js — that is what lets the browser detect a new
+// version and the app offer the update.
 
-const CACHE = "rocker-v1";
+const VERSION = "DEV";
+const CACHE = `rocker-${VERSION}`;
 
 const APP_SHELL = [
   "/",
@@ -18,12 +25,7 @@ const APP_SHELL = [
 ];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches
-      .open(CACHE)
-      .then((cache) => cache.addAll(APP_SHELL))
-      .then(() => self.skipWaiting()),
-  );
+  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(APP_SHELL)));
 });
 
 self.addEventListener("activate", (event) => {
@@ -37,6 +39,14 @@ self.addEventListener("activate", (event) => {
       )
       .then(() => self.clients.claim()),
   );
+});
+
+// The page sends this once the user accepts the update, so the waiting
+// worker activates right away instead of on the next cold start.
+self.addEventListener("message", (event) => {
+  if (event.data === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
 });
 
 self.addEventListener("fetch", (event) => {

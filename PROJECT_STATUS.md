@@ -146,6 +146,14 @@ rozpracovaná (Body 19 a 21 hotové, Bod 20 vynechán). Aktuálně
   čárka na ukazateli hlasitosti pro vizuální kalibraci. `tsc` čistý,
   320 testů. Pozn.: bere jen tichý okolní zvuk, hlasitý ruch přímo
   u mikrofonu software neodfiltruje
+- **Upozornění na novou verzi** (větev `feature/update-prompt`, čeká na
+  slití). Ručně psaný `sw.js` novou verzi tiše nepřebírá — počká; po
+  nasazení appka ukáže lištu „Je k dispozici nová verze / Načíst",
+  klik pošle workeru `SKIP_WAITING` a po převzetí jednorázově reloadne.
+  Aby prohlížeč novou verzi vůbec poznal, build razítkuje `sw.js`
+  unikátní verzí (`scripts/stamp-sw.mjs`, volá se z `npm run build`).
+  Detekce + lišta v `ServiceWorkerRegister.tsx`. Bez nových testů —
+  je to celé kolem prohlížečového API, žádná čistá logika
 - **Bod 21** — profil nástroje: obrazovka `/instrument` („Kytara").
   **Karta profilu** — editovatelná (název, tělo, snímače krk/střed/kobylka
   × humbucker/single/P90, menzura, ladění, struny, poznámky), uložená
