@@ -141,10 +141,10 @@ hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
 - **Rozšíření Aparátu** — plán v `AMP_PLAN.md` (4 fáze: vlastní presety,
   nové efekty, UX a vizualizace, pedalboard). Vznikl z přání reálného
   uživatele. **Fáze A hotová (2026-05-25):** uložitelné vlastní presety
-  (`ampPresetsStore`). **Fáze B z části hotová (2026-05-25):** B1 kompresor,
+  (`ampPresetsStore`). **Fáze B hotová (2026-05-25):** B1 kompresor,
   B2 typy zkreslení (overdrive/distortion/fuzz) a reproboxů (modern/vintage/
-  open) — vše v kódu, sluchem NEOVĚŘENO, doladí se podle odezvy uživatele.
-  Zbývá B3 (reverb) a B4 (modulace).
+  open), B3 reverb, B4 chorus — vše v kódu, sluchem NEOVĚŘENO, doladí se
+  podle odezvy uživatele. Na řadě fáze C (UX a vizualizace).
 - **Bod 22 — sdílení a organizace** (poslední bod roadmapy) — share-a-riff,
   songbook organizér
 - Beta test s 5–10 lidmi — vědomě odložený

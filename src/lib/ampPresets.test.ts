@@ -20,9 +20,18 @@ describe("AMP_PRESETS", () => {
 
   it("keeps every preset's values within the expected ranges", () => {
     for (const preset of AMP_PRESETS) {
-      const { compression, drive, bass, mid, treble, delay, level } =
-        preset.settings;
-      for (const value of [compression, drive, delay, level]) {
+      const {
+        compression,
+        drive,
+        bass,
+        mid,
+        treble,
+        delay,
+        reverb,
+        chorus,
+        level,
+      } = preset.settings;
+      for (const value of [compression, drive, delay, reverb, chorus, level]) {
         expect(value).toBeGreaterThanOrEqual(0);
         expect(value).toBeLessThanOrEqual(1);
       }
@@ -61,6 +70,8 @@ describe("sanitizeAmpSettings", () => {
       treble: 0.1,
       cabinet: "vintage",
       delay: 0.4,
+      reverb: 0.3,
+      chorus: 0.2,
       level: 0.6,
     };
     expect(sanitizeAmpSettings(settings)).toEqual(settings);

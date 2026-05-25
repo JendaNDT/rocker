@@ -60,6 +60,8 @@ function applyToChain(chain: AmpChain, settings: AmpSettings): void {
   chain.setTreble(settings.treble);
   chain.setCabinet(settings.cabinet);
   chain.setDelayMix(settings.delay);
+  chain.setReverbMix(settings.reverb);
+  chain.setChorusMix(settings.chorus);
   chain.setLevel(settings.level);
 }
 
@@ -366,6 +368,8 @@ export function AmpStudio() {
             {slider("Středy", "mid", true)}
             {slider("Výšky", "treble", true)}
             {slider("Delay", "delay", false)}
+            {slider("Dozvuk", "reverb", false)}
+            {slider("Chorus", "chorus", false)}
             {slider("Hlasitost", "level", false)}
           </div>
         </div>

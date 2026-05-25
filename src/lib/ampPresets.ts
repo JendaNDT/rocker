@@ -9,8 +9,8 @@ export type CabinetType = "modern" | "vintage" | "open";
 
 /**
  * The amp parameters a preset configures. Numeric values are normalized:
- * compression, drive, delay and level run 0..1; the EQ bands (bass/mid/treble)
- * run -1..1. `distortion` and `cabinet` are enums.
+ * compression, drive, delay, reverb, chorus and level run 0..1; the EQ bands
+ * (bass/mid/treble) run -1..1. `distortion` and `cabinet` are enums.
  */
 export interface AmpSettings {
   compression: number;
@@ -21,6 +21,8 @@ export interface AmpSettings {
   treble: number;
   cabinet: CabinetType;
   delay: number;
+  reverb: number;
+  chorus: number;
   level: number;
 }
 
@@ -40,22 +42,22 @@ export const AMP_PRESETS: AmpPreset[] = [
   {
     id: "clean",
     name: "Čistý",
-    settings: { compression: 0, drive: 0.1, distortion: "distortion", bass: 0.1, mid: 0, treble: 0.15, cabinet: "modern", delay: 0.1, level: 0.6 },
+    settings: { compression: 0, drive: 0.1, distortion: "distortion", bass: 0.1, mid: 0, treble: 0.15, cabinet: "modern", delay: 0.1, reverb: 0, chorus: 0, level: 0.6 },
   },
   {
     id: "crunch",
     name: "Crunch",
-    settings: { compression: 0, drive: 0.45, distortion: "distortion", bass: 0.1, mid: 0.2, treble: 0.1, cabinet: "modern", delay: 0, level: 0.5 },
+    settings: { compression: 0, drive: 0.45, distortion: "distortion", bass: 0.1, mid: 0.2, treble: 0.1, cabinet: "modern", delay: 0, reverb: 0, chorus: 0, level: 0.5 },
   },
   {
     id: "lead",
     name: "Lead",
-    settings: { compression: 0, drive: 0.7, distortion: "distortion", bass: 0, mid: 0.35, treble: 0.2, cabinet: "modern", delay: 0.35, level: 0.5 },
+    settings: { compression: 0, drive: 0.7, distortion: "distortion", bass: 0, mid: 0.35, treble: 0.2, cabinet: "modern", delay: 0.35, reverb: 0, chorus: 0, level: 0.5 },
   },
   {
     id: "metal",
     name: "Metal",
-    settings: { compression: 0, drive: 0.92, distortion: "distortion", bass: 0.35, mid: -0.3, treble: 0.3, cabinet: "modern", delay: 0, level: 0.45 },
+    settings: { compression: 0, drive: 0.92, distortion: "distortion", bass: 0.35, mid: -0.3, treble: 0.3, cabinet: "modern", delay: 0, reverb: 0, chorus: 0, level: 0.45 },
   },
 ];
 
@@ -134,6 +136,8 @@ export function sanitizeAmpSettings(value: unknown): AmpSettings {
     treble: numField(obj.treble, -1, 1, DEFAULT_SETTINGS.treble),
     cabinet: enumField(obj.cabinet, CABINET_TYPES, DEFAULT_SETTINGS.cabinet),
     delay: numField(obj.delay, 0, 1, DEFAULT_SETTINGS.delay),
+    reverb: numField(obj.reverb, 0, 1, DEFAULT_SETTINGS.reverb),
+    chorus: numField(obj.chorus, 0, 1, DEFAULT_SETTINGS.chorus),
     level: numField(obj.level, 0, 1, DEFAULT_SETTINGS.level),
   };
 }

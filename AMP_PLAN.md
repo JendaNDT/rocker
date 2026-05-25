@@ -59,11 +59,14 @@ princip jako u ostatních uložených dat).
 
 ---
 
-## Fáze B — Nové efekty
+## Fáze B — Nové efekty ✅ HOTOVO (2026-05-25)
 
 Jádro plánu a uživatelovo přání. Každý efekt = jeden krok, postavit
-a otestovat sluchem, pak teprve další. Každý efekt dostane přepínač
-zapnuto/vypnuto. Pořadí od nejsnazšího/nejlevnějšího po náročnější.
+a otestovat sluchem, pak teprve další. Pořadí od nejsnazšího po náročnější.
+
+Vše hotové v kódu, sluchem NEOVĚŘENO — doladí se podle odezvy uživatele.
+Místo zvláštního přepínače u/vypnuto má každý efekt posuvník, kde 0 =
+vypnuto (vyhne se přepojování uzlů za běhu).
 
 ### B1 — Kompresor ✅
 `DynamicsCompressorNode` — hotový uzel Web Audio. Srovná dynamiku, sluší
@@ -85,14 +88,22 @@ Vintage / Otevřený), `setCabinet` přenastaví filtry, volič v UI. Enumy
 `distortion` a `cabinet` v `AmpSettings`, sanitizace je ověřuje. Vestavěné
 presety na „distortion" + „modern" — zní jako dosud.
 
-### B3 — Reverb
+### B3 — Reverb ✅
 `ConvolverNode` se syntetizovanou impulzní odezvou (generovaný doznívající
 šum — žádný externí IR soubor, drží rozhodnutí Bodu 16). Velký efekt na
-vjem prostoru. + přepínač + ovládání mixu.
+vjem prostoru.
 
-### B4 — Modulace (chorus)
-LFO modulovaný delay = chorus (případně flanger / phaser jako varianty).
-Rozechvěje a oživí zvuk. + přepínač + ovládání.
+**Hotovo (2026-05-25):** `ConvolverNode` s generovanou IR (~2,2 s
+doznívajícího stereo šumu), paralelní send vedle delaye, posuvník „Dozvuk"
+(0 = vypnuto). `AmpSettings.reverb`, sanitizace.
+
+### B4 — Modulace (chorus) ✅
+LFO modulovaný delay = chorus. Rozechvěje a oživí zvuk.
+
+**Hotovo (2026-05-25):** krátký delay (~20 ms) modulovaný LFO (sinus
+0,8 Hz), paralelní send, posuvník „Chorus" (0 = vypnuto).
+`AmpSettings.chorus`, sanitizace. Flanger/phaser jako varianty vědomě
+vynechány — chorus jako univerzální modulace stačí, lze doplnit později.
 
 ---
 
@@ -133,8 +144,8 @@ toho, jestli reálně chybí. Klidně vynechat.
 | A | A2 — UI presetů | S | ✅ hotovo |
 | B | B1 — kompresor | S | ✅ hotovo (test sluchem čeká) |
 | B | B2 — typy zkreslení a reproboxů | M | ✅ hotovo (test sluchem čeká) |
-| B | B3 — reverb | M | střední |
-| B | B4 — modulace (chorus) | M | střední |
+| B | B3 — reverb | M | ✅ hotovo (test sluchem čeká) |
+| B | B4 — modulace (chorus) | M | ✅ hotovo (test sluchem čeká) |
 | C | C1 — indikátory úrovně | S | nízké |
 | C | C2 — vizualizér | S–M | nízké |
 | C | C3 — A/B porovnání | S | nízké |

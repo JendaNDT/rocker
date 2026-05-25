@@ -4,8 +4,9 @@
 //   input -> compressor -> preGain -> distortion -> 3-band EQ -> cabinet sim
 //   -> output
 // The compressor sits at the front (compressor-pedal position) and is
-// transparent at amount 0. The cabinet output also feeds a feedback delay
-// mixed back into the output. The output is wired straight to the speakers.
+// transparent at amount 0. The cabinet output also feeds a feedback delay,
+// a reverb and an LFO-modulated chorus, all mixed back into the output. The
+// output is wired straight to the speakers.
 //
 // The cabinet is modelled with fixed filters (high/low-pass + a presence
 // peak) rather than an impulse response — no external IR file, no licensing,
@@ -82,15 +83,34 @@ const CABINETS: Record<CabinetType, CabinetSpec> = {
   },
 };
 
+/**
+ * Builds a synthetic reverb impulse response — a couple of seconds of stereo
+ * noise with a smooth exponential decay. No external IR file or licensing.
+ */
+function makeReverbImpulse(context: BaseAudioContext): AudioBuffer {
+  const { sampleRate } = context;
+  const length = Math.floor(sampleRate * 2.2);
+  const impulse = context.createBuffer(2, length, sampleRate);
+  for (let channel = 0; channel < 2; channel += 1) {
+    const data = impulse.getChannelData(channel);
+    for (let i = 0; i < length; i += 1) {
+      const decay = Math.exp((-5 * i) / length);
+      data[i] = (Math.random() * 2 - 1) * decay;
+    }
+  }
+  return impulse;
+}
+
 /** Clamps a value into the [min, max] range. */
 function clamp(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
 }
 
 /**
- * A guitar effects chain: drive, three-band EQ, a filter-based cabinet
- * simulation and a feedback delay. Connect a source to {@link input}; the
- * chain's output is wired straight to the context's speakers.
+ * A guitar effects chain: compressor, drive, three-band EQ, a filter-based
+ * cabinet simulation, a feedback delay, a reverb and a chorus. Connect a
+ * source to {@link input}; the chain's output is wired straight to the
+ * speakers.
  */
 export class AmpChain {
   /** Entry node — connect the guitar source here. */
@@ -108,6 +128,12 @@ export class AmpChain {
   private readonly delay: DelayNode;
   private readonly delayFeedback: GainNode;
   private readonly delayWet: GainNode;
+  private readonly convolver: ConvolverNode;
+  private readonly reverbWet: GainNode;
+  private readonly chorusDelay: DelayNode;
+  private readonly chorusLfo: OscillatorNode;
+  private readonly chorusDepth: GainNode;
+  private readonly chorusWet: GainNode;
   private readonly output: GainNode;
 
   constructor(context: BaseAudioContext) {
@@ -164,6 +190,23 @@ export class AmpChain {
     this.delayWet = context.createGain();
     this.delayWet.gain.value = 0;
 
+    // Reverb — convolution with a synthetic impulse response.
+    this.convolver = context.createConvolver();
+    this.convolver.buffer = makeReverbImpulse(context);
+    this.reverbWet = context.createGain();
+    this.reverbWet.gain.value = 0;
+
+    // Chorus — a short delay whose time is wobbled by a slow LFO.
+    this.chorusDelay = context.createDelay(0.1);
+    this.chorusDelay.delayTime.value = 0.02;
+    this.chorusLfo = context.createOscillator();
+    this.chorusLfo.type = "sine";
+    this.chorusLfo.frequency.value = 0.8;
+    this.chorusDepth = context.createGain();
+    this.chorusDepth.gain.value = 0.0025;
+    this.chorusWet = context.createGain();
+    this.chorusWet.gain.value = 0;
+
     this.output = context.createGain();
     this.output.gain.value = 0.5;
 
@@ -187,6 +230,20 @@ export class AmpChain {
     this.delayFeedback.connect(this.delay);
     this.delay.connect(this.delayWet);
     this.delayWet.connect(this.output);
+
+    // Reverb send, parallel to the delay, returned wet to the output.
+    this.cabPresence.connect(this.convolver);
+    this.convolver.connect(this.reverbWet);
+    this.reverbWet.connect(this.output);
+
+    // Chorus send: the LFO modulates the short delay's time; the wobbled
+    // signal returns wet to the output.
+    this.chorusLfo.connect(this.chorusDepth);
+    this.chorusDepth.connect(this.chorusDelay.delayTime);
+    this.cabPresence.connect(this.chorusDelay);
+    this.chorusDelay.connect(this.chorusWet);
+    this.chorusWet.connect(this.output);
+    this.chorusLfo.start();
 
     this.output.connect(context.destination);
   }
@@ -240,6 +297,16 @@ export class AmpChain {
     this.delayWet.gain.value = clamp(amount, 0, 1) * 0.6;
   }
 
+  /** Reverb mix — `amount` runs 0 (dry) to 1 (full reverb). */
+  setReverbMix(amount: number): void {
+    this.reverbWet.gain.value = clamp(amount, 0, 1) * 0.6;
+  }
+
+  /** Chorus mix — `amount` runs 0 (dry) to 1 (full chorus). */
+  setChorusMix(amount: number): void {
+    this.chorusWet.gain.value = clamp(amount, 0, 1) * 0.7;
+  }
+
   /** Output level — `value` runs 0 to 1. */
   setLevel(value: number): void {
     this.output.gain.value = clamp(value, 0, 1);
@@ -261,8 +328,15 @@ export class AmpChain {
       this.delay,
       this.delayFeedback,
       this.delayWet,
+      this.convolver,
+      this.reverbWet,
+      this.chorusDelay,
+      this.chorusLfo,
+      this.chorusDepth,
+      this.chorusWet,
       this.output,
     ];
+    this.chorusLfo.stop();
     for (const node of nodes) {
       node.disconnect();
     }
