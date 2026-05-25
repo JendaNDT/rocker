@@ -61,6 +61,8 @@ Sample-accurate scheduler (lookahead, žádný `setTimeout`). 40–240 BPM, takt
 (Web Vibration API na Androidu).
 *Výsledek:* spolehlivý metronom bez driftu.
 *Stav:* hotovo — build, `tsc` i testy (28) ověřené. Reálný test je na Jendovi.
+*Pozn.:* metronom byl později rozšířen nad rámec původního zadání — viz
+sekce „Mimo roadmapu" níže (rozšířený metronom).
 
 ### ✅ Bod 5 — Knihovna akordů a stupnic
 SVG diagramy akordů (open, barré, power), prstoklad, barré indikátor, audio
@@ -313,6 +315,14 @@ Nahrávky (IndexedDB) nejsou součástí — soubor zůstává malý.
 ### ✅ Nasazení na Vercel
 Aplikace je živě na `rocker-rust.vercel.app`, s automatickým deployem
 z větve `main`.
+
+### ✅ Rozšířený metronom
+Metronom (Bod 4) rozšířen o: 7 taktových měr (2/4, 3/4, 4/4, 5/4, 6/8, 7/8,
+12/8), klikací akcentový vzor (každá doba: přízvuk / normální / ztišená),
+5 syntetizovaných zvuků (Klasik, Dřevo, Pípnutí, Cvak, Hi-hat), oddělenou
+hlasitost metronomu a přízvuku, trenažér tempa (progresivní zrychlování
+a „cvičné ticho" — gap trainer) a presety s persistencí nastavení mezi
+spuštěními. Detaily v `PROJECT_STATUS.md`.
 
 ---
 

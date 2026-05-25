@@ -15,8 +15,9 @@ IndexedDB (přes `idb`) pro velké bloby — nahrávky.
 ## ⏭️ Příští krok
 Roadmapa je prakticky hotová — body 1–21 dokončené (18 a 20 vědomě
 vynechané), zbývá poslední **Bod 22 (sdílení a organizace)**. Nad rámec
-roadmapy přibylo 5 vylepšení (vzhledy, šumová brána + autokalibrace,
-upozornění na verzi, krok vzhledu v úvodu, záloha dat) — vše nasazené.
+roadmapy přibylo 6 vylepšení (vzhledy, šumová brána + autokalibrace,
+upozornění na verzi, krok vzhledu v úvodu, záloha dat, rozšířený
+metronom) — vše nasazené.
 
 Otevřené úkoly:
 - **Bod 22 (sdílení a organizace)** — poslední bod roadmapy. Záloha dat
@@ -35,7 +36,7 @@ Než příští session začne: přečíst `AGENTS.md` a `SKILL.md` (pravidla
 spolupráce), pak tento soubor.
 
 ## ✅ Hotovo
-**334 automatických testů**, vše prochází; `tsc` čistý. Roadmapa: Fáze 0–4
+**374 automatických testů**, vše prochází; `tsc` čistý. Roadmapa: Fáze 0–4
 hotové, Fáze 5 hotová (body 15–17; 18 vynechán), Fáze 6 z velké části
 hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
 
@@ -104,6 +105,15 @@ hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
   pokroku do JSON souboru. Bez nahrávek (IndexedDB), aby zůstal malý
 - **Nasazení na Vercel** — živě na `rocker-rust.vercel.app`, automatický
   deploy z `main`
+- **Rozšířený metronom** — Bod 4 rozšířen: 7 taktových měr (2/4, 3/4,
+  4/4, 5/4, 6/8, 7/8, 12/8), klikací akcentový vzor (každá doba přízvuk /
+  normální / ztišená), 5 syntetizovaných zvuků (Klasik, Dřevo, Pípnutí,
+  Cvak, Hi-hat), oddělená hlasitost metronomu a přízvuku, trenažér tempa
+  (progresivní zrychlování + „cvičné ticho" / gap trainer) a presety
+  s persistencí. Engine `src/audio/metronome.ts`, čistá logika
+  `src/lib/metronomeConfig.ts` + `metronomePresets.ts` (s testy),
+  persistovaný store `src/stores/metronomeSettingsStore.ts`, komponenty
+  v `src/components/metronome/`. Zvuk a UI čekají na ruční ověření Jendou.
 
 ## 📝 TODO
 - **Bod 22 — sdílení a organizace** (poslední bod roadmapy) — share-a-riff,
@@ -178,6 +188,19 @@ byly opraveny.
   `rocker-*` z localStorage do JSON souboru. Nahrávky (IndexedDB bloby)
   vědomě mimo — soubor by byl velký; nahrávky jdou exportovat jednotlivě.
   Obnova přepíše a přijme jen známé klíče (cizí soubor nic nepropašuje).
+- **Rozšířený metronom — perzistence vedle enginu, ne v něm:** engine
+  `metronome.ts` zůstává běhový zdroj pravdy. Uložené nastavení a presety
+  žijí v samostatném persistovaném storu `metronomeSettingsStore`. Důvod:
+  Power Chord Trainer řídí stejný engine přímo (nastavuje si 4/4 a
+  čtvrťové doby) — kdyby perzistence byla v enginu, trenažér by Jendovi
+  přepsal uložené nastavení. Obrazovka metronomu při otevření nahraje
+  `config` ze storu do enginu a po každé uživatelské změně zapíše stav
+  enginu zpět; trenažér store nečte ani nezapisuje.
+- **Rozšířený metronom — zvuky syntetizované, žádné soubory:** všech 5
+  zvuků (včetně Hi-hat) se syntetizuje ve Web Audio — drží se původního
+  rozhodnutí Bodu 4. Hi-hat je bílý šum přes horní propust, ne navzorkovaná
+  bicí souprava. Skutečný sample by znamenal zvukový soubor v `public/`;
+  lze doplnit později, kdyby syntéza po poslechu nestačila.
 - **Co neděláme:** vlastní DB tabů, stem separation v prohlížeči, online
   multiplayer jam, iOS-specifické funkce.
 
@@ -194,16 +217,17 @@ byly opraveny.
   riffPlayer, pitchDetector — detekce tónů + šumová brána, muteAnalyzer,
   chordPlayer, countIn, tunings, recorder, ampChain, multitrackEngine,
   loopPedal)
-- `src/lib/` — čistá logika a data (pitch, tempo, chords, scales, lessons,
+- `src/lib/` — čistá logika a data (pitch, tempo, metronomeConfig,
+  metronomePresets, chords, scales, lessons,
   surgicalEngine, exercises, youtube, progress, achievements, dailyPlan,
   practiceTime, recordings, recordingsDb, powerChords, metalExercises,
   metalRiffs, powerChordTrainer, gallopTrainer, palmMute, breakReminder,
   ampPresets, multitrack, wav, loopMix, fretboardGame, earTraining,
   instrument, backup, useHydrated, ai/ — Gemini klient, prompty, generátor
   plánu, typy) — vedle leží testy `*.test.ts`
-- `src/stores/` — Zustand stores (settings, audio, metronome, lessonProgress,
-  ytLoop, progress, recordings, gallopPlayer, riffPlayer, ai, chat,
-  instrument)
+- `src/stores/` — Zustand stores (settings, audio, metronome,
+  metronomeSettings, lessonProgress, ytLoop, progress, recordings,
+  gallopPlayer, riffPlayer, ai, chat, instrument)
 - `scripts/stamp-sw.mjs` — razítkuje `sw.js` verzí při buildu
 - `public/sw.js` — ručně psaný service worker; `public/alphatab/` — font
   Bravura a SONiVOX soundfont (Bod 15)

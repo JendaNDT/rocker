@@ -4,15 +4,19 @@ import { useEffect, useRef, useState } from "react";
 import { audioEngine } from "@/audio/AudioEngine";
 import { metronome } from "@/audio/metronome";
 import { BeatIndicator } from "@/components/metronome/BeatIndicator";
+import { PresetPanel } from "@/components/metronome/PresetPanel";
+import { TrainerPanel } from "@/components/metronome/TrainerPanel";
 import { useWakeLock } from "@/components/useWakeLock";
+import type {
+  GapConfig,
+  MetronomePreset,
+  RampConfig,
+} from "@/lib/metronomeConfig";
+import { CLICK_SOUNDS, TIME_SIGNATURES } from "@/lib/metronomeConfig";
 import { bpmFromTaps, clampBpm, MAX_BPM, MIN_BPM } from "@/lib/tempo";
+import { useHydrated } from "@/lib/useHydrated";
 import { useMetronomeStore } from "@/stores/metronomeStore";
-
-const BAR_OPTIONS = [
-  { label: "4/4", beats: 4 },
-  { label: "3/4", beats: 3 },
-  { label: "6/8", beats: 6 },
-];
+import { useMetronomeSettingsStore } from "@/stores/metronomeSettingsStore";
 
 const SUBDIVISION_OPTIONS = [
   { label: "Čtvrťové", value: 1 },
@@ -37,11 +41,38 @@ export default function MetronomePage() {
   const bpm = useMetronomeStore((state) => state.bpm);
   const beatsPerBar = useMetronomeStore((state) => state.beatsPerBar);
   const subdivision = useMetronomeStore((state) => state.subdivision);
-  const accentFirst = useMetronomeStore((state) => state.accentFirst);
+  const accentPattern = useMetronomeStore((state) => state.accentPattern);
+  const sound = useMetronomeStore((state) => state.sound);
+  const volume = useMetronomeStore((state) => state.volume);
+  const accentVolume = useMetronomeStore((state) => state.accentVolume);
   const currentBeat = useMetronomeStore((state) => state.currentBeat);
+  const ramp = useMetronomeStore((state) => state.ramp);
+  const gap = useMetronomeStore((state) => state.gap);
+
+  const persistConfig = useMetronomeSettingsStore((state) => state.setConfig);
+  const presets = useMetronomeSettingsStore((state) => state.presets);
+  const savePreset = useMetronomeSettingsStore((state) => state.savePreset);
+  const deletePreset = useMetronomeSettingsStore((state) => state.deletePreset);
+  const hydrated = useHydrated();
 
   const [haptics, setHaptics] = useState(false);
   const tapsRef = useRef<number[]>([]);
+
+  // Load the saved configuration into the engine once on mount. The engine is
+  // a singleton shared with the Power Chord Trainer, which leaves its own
+  // tempo behind — re-applying here restores the user's metronome settings.
+  useEffect(() => {
+    const config = useMetronomeSettingsStore.getState().config;
+    metronome.setBpm(config.bpm);
+    metronome.setBeatsPerBar(config.beatsPerBar);
+    metronome.setSubdivision(config.subdivision);
+    metronome.setAccentPattern(config.accentPattern);
+    metronome.setSound(config.sound);
+    metronome.setVolume(config.volume);
+    metronome.setAccentVolume(config.accentVolume);
+    metronome.setRamp(config.ramp);
+    metronome.setGap(config.gap);
+  }, []);
 
   // Vibrate on each beat when haptics are enabled (Android only — desktop
   // and iOS simply ignore navigator.vibrate).
@@ -52,11 +83,33 @@ export default function MetronomePage() {
     }
   }, [currentBeat, haptics, isPlaying]);
 
+  // Mirrors the engine's current configuration into the persistent store, so
+  // it survives a reload. Called after every user-initiated change.
+  function syncConfig() {
+    const state = metronome.getState();
+    persistConfig({
+      bpm: state.bpm,
+      beatsPerBar: state.beatsPerBar,
+      subdivision: state.subdivision,
+      accentPattern: state.accentPattern,
+      sound: state.sound,
+      volume: state.volume,
+      accentVolume: state.accentVolume,
+      ramp: state.ramp,
+      gap: state.gap,
+    });
+  }
+
   function togglePlay() {
     void (async () => {
       const context = await audioEngine.getOutputContext();
       metronome.toggle(context);
     })();
+  }
+
+  function changeBpm(value: number) {
+    metronome.setBpm(value);
+    syncConfig();
   }
 
   function handleTap() {
@@ -69,9 +122,79 @@ export default function MetronomePage() {
     if (taps.length > MAX_TAPS) taps.shift();
 
     const tapped = bpmFromTaps(taps);
-    if (tapped !== null) {
-      metronome.setBpm(clampBpm(tapped));
+    if (tapped !== null) changeBpm(clampBpm(tapped));
+  }
+
+  function changeTimeSignature(beats: number, accents: typeof accentPattern) {
+    metronome.setBeatsPerBar(beats);
+    metronome.setAccentPattern(accents);
+    syncConfig();
+  }
+
+  function changeSubdivision(value: number) {
+    metronome.setSubdivision(value);
+    syncConfig();
+  }
+
+  function cycleAccent(beat: number) {
+    metronome.cycleAccent(beat);
+    syncConfig();
+  }
+
+  function changeSound(value: (typeof CLICK_SOUNDS)[number]["id"]) {
+    metronome.setSound(value);
+    syncConfig();
+  }
+
+  function changeVolume(value: number) {
+    metronome.setVolume(value);
+    syncConfig();
+  }
+
+  function changeAccentVolume(value: number) {
+    metronome.setAccentVolume(value);
+    syncConfig();
+  }
+
+  function changeRamp(patch: Partial<RampConfig>) {
+    metronome.setRamp(patch);
+    syncConfig();
+  }
+
+  function changeGap(patch: Partial<GapConfig>) {
+    metronome.setGap(patch);
+    syncConfig();
+  }
+
+  function applyPreset(preset: MetronomePreset) {
+    metronome.setBpm(preset.bpm);
+    metronome.setBeatsPerBar(preset.beatsPerBar);
+    metronome.setSubdivision(preset.subdivision);
+    metronome.setAccentPattern(preset.accentPattern);
+    metronome.setSound(preset.sound);
+    metronome.setVolume(preset.volume);
+    metronome.setAccentVolume(preset.accentVolume);
+    metronome.setRamp(preset.ramp);
+    metronome.setGap(preset.gap);
+    syncConfig();
+  }
+
+  function handleSavePreset(name: string) {
+    // Make sure the store holds the latest engine state before snapshotting.
+    syncConfig();
+    savePreset(name);
+  }
+
+  function handleDeletePreset(id: string) {
+    const preset = presets.find((item) => item.id === id);
+    const label = preset ? `„${preset.name}"` : "tento preset";
+    if (
+      typeof window !== "undefined" &&
+      !window.confirm(`Smazat preset ${label}?`)
+    ) {
+      return;
     }
+    deletePreset(id);
   }
 
   return (
@@ -88,7 +211,7 @@ export default function MetronomePage() {
         <button
           type="button"
           aria-label="Snížit tempo"
-          onClick={() => metronome.setBpm(bpm - 1)}
+          onClick={() => changeBpm(bpm - 1)}
           className="h-10 w-10 rounded-lg border border-line bg-surface text-lg transition-colors hover:border-line-strong"
         >
           −
@@ -98,14 +221,14 @@ export default function MetronomePage() {
           min={MIN_BPM}
           max={MAX_BPM}
           value={bpm}
-          onChange={(event) => metronome.setBpm(Number(event.target.value))}
+          onChange={(event) => changeBpm(Number(event.target.value))}
           aria-label="Tempo"
           className="flex-1 accent-accent"
         />
         <button
           type="button"
           aria-label="Zvýšit tempo"
-          onClick={() => metronome.setBpm(bpm + 1)}
+          onClick={() => changeBpm(bpm + 1)}
           className="h-10 w-10 rounded-lg border border-line bg-surface text-lg transition-colors hover:border-line-strong"
         >
           +
@@ -124,17 +247,24 @@ export default function MetronomePage() {
 
       <div className="mt-8">
         <div className="text-sm font-medium text-text">Takt</div>
-        <div className="mt-2 inline-flex rounded-lg border border-line p-1">
-          {BAR_OPTIONS.map((option) => (
+        <div className="mt-2 inline-flex flex-wrap rounded-lg border border-line p-1">
+          {TIME_SIGNATURES.map((signature) => (
             <button
-              key={option.label}
+              key={signature.id}
               type="button"
-              onClick={() => metronome.setBeatsPerBar(option.beats)}
+              onClick={() =>
+                changeTimeSignature(
+                  signature.beatsPerBar,
+                  signature.defaultAccents,
+                )
+              }
               className={
-                beatsPerBar === option.beats ? SEGMENT_ACTIVE : SEGMENT_IDLE
+                beatsPerBar === signature.beatsPerBar
+                  ? SEGMENT_ACTIVE
+                  : SEGMENT_IDLE
               }
             >
-              {option.label}
+              {signature.label}
             </button>
           ))}
         </div>
@@ -147,7 +277,7 @@ export default function MetronomePage() {
             <button
               key={option.value}
               type="button"
-              onClick={() => metronome.setSubdivision(option.value)}
+              onClick={() => changeSubdivision(option.value)}
               className={
                 subdivision === option.value ? SEGMENT_ACTIVE : SEGMENT_IDLE
               }
@@ -158,16 +288,95 @@ export default function MetronomePage() {
         </div>
       </div>
 
-      <div className="mt-6 space-y-2">
-        <label className="flex items-center gap-2 text-sm text-text">
+      <div className="mt-6">
+        <div className="text-sm font-medium text-text">Zvuk</div>
+        <div className="mt-2 inline-flex flex-wrap rounded-lg border border-line p-1">
+          {CLICK_SOUNDS.map((option) => (
+            <button
+              key={option.id}
+              type="button"
+              onClick={() => changeSound(option.id)}
+              className={sound === option.id ? SEGMENT_ACTIVE : SEGMENT_IDLE}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-6 space-y-4">
+        <div>
+          <div className="flex justify-between text-sm font-medium text-text">
+            <span>Hlasitost metronomu</span>
+            <span className="text-dim tabular-nums">
+              {Math.round(volume * 100)} %
+            </span>
+          </div>
           <input
-            type="checkbox"
-            checked={accentFirst}
-            onChange={(event) => metronome.setAccentFirst(event.target.checked)}
-            className="h-4 w-4 accent-accent"
+            type="range"
+            min={0}
+            max={1}
+            step={0.01}
+            value={volume}
+            onChange={(event) => changeVolume(Number(event.target.value))}
+            aria-label="Hlasitost metronomu"
+            className="mt-1 w-full accent-accent"
           />
-          Akcent na první dobu
-        </label>
+        </div>
+        <div>
+          <div className="flex justify-between text-sm font-medium text-text">
+            <span>Hlasitost přízvuku</span>
+            <span className="text-dim tabular-nums">
+              {Math.round(accentVolume * 100)} %
+            </span>
+          </div>
+          <input
+            type="range"
+            min={0}
+            max={1}
+            step={0.01}
+            value={accentVolume}
+            onChange={(event) => changeAccentVolume(Number(event.target.value))}
+            aria-label="Hlasitost přízvuku"
+            className="mt-1 w-full accent-accent"
+          />
+        </div>
+      </div>
+
+      <div className="mt-8">
+        <div className="text-sm font-medium text-text">Přízvuky</div>
+        <div className="mt-3">
+          <BeatIndicator
+            accentPattern={accentPattern}
+            currentBeat={currentBeat}
+            onCycle={cycleAccent}
+          />
+        </div>
+      </div>
+
+      <div className="mt-8">
+        <div className="text-sm font-medium text-text">Trenažér tempa</div>
+        <div className="mt-3">
+          <TrainerPanel
+            ramp={ramp}
+            gap={gap}
+            onChangeRamp={changeRamp}
+            onChangeGap={changeGap}
+          />
+        </div>
+      </div>
+
+      <div className="mt-6">
+        <PresetPanel
+          presets={presets}
+          hydrated={hydrated}
+          onSave={handleSavePreset}
+          onApply={applyPreset}
+          onDelete={handleDeletePreset}
+        />
+      </div>
+
+      <div className="mt-6">
         <label className="flex items-center gap-2 text-sm text-text">
           <input
             type="checkbox"
@@ -177,10 +386,6 @@ export default function MetronomePage() {
           />
           Vibrace na dobu (mobil)
         </label>
-      </div>
-
-      <div className="mt-10">
-        <BeatIndicator beatsPerBar={beatsPerBar} currentBeat={currentBeat} />
       </div>
 
       <div className="mt-8 flex justify-center">
