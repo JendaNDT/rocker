@@ -119,6 +119,9 @@ export class AmpChain {
   /** Post-effects analyser — a read-only tap for meters and visualisers. */
   readonly outputAnalyser: AnalyserNode;
 
+  /** Post-effects MediaStream — lets a MediaRecorder capture the amped sound. */
+  readonly recordingStream: MediaStream;
+
   private readonly compressor: DynamicsCompressorNode;
   private readonly preGain: GainNode;
   private readonly shaper: WaveShaperNode;
@@ -138,8 +141,9 @@ export class AmpChain {
   private readonly chorusDepth: GainNode;
   private readonly chorusWet: GainNode;
   private readonly output: GainNode;
+  private readonly mediaStreamDest: MediaStreamAudioDestinationNode;
 
-  constructor(context: BaseAudioContext) {
+  constructor(context: AudioContext) {
     this.input = context.createGain();
 
     // Compressor at the front (compressor-pedal position). Defaults are
@@ -218,6 +222,12 @@ export class AmpChain {
     this.outputAnalyser = context.createAnalyser();
     this.outputAnalyser.fftSize = 2048;
 
+    // The output also taps into a MediaStream destination, so a MediaRecorder
+    // can capture the processed (post-effects) sound. The audible path is
+    // unaffected — this is just an extra sink.
+    this.mediaStreamDest = context.createMediaStreamDestination();
+    this.recordingStream = this.mediaStreamDest.stream;
+
     // Main chain.
     this.input.connect(this.compressor);
     this.compressor.connect(this.preGain);
@@ -255,6 +265,7 @@ export class AmpChain {
 
     this.output.connect(context.destination);
     this.output.connect(this.outputAnalyser);
+    this.output.connect(this.mediaStreamDest);
   }
 
   /** Compression amount — `amount` runs 0 (transparent) to 1 (heavy). */
@@ -345,6 +356,7 @@ export class AmpChain {
       this.chorusWet,
       this.output,
       this.outputAnalyser,
+      this.mediaStreamDest,
     ];
     this.chorusLfo.stop();
     for (const node of nodes) {

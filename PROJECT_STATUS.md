@@ -157,7 +157,10 @@ hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
   sloučeny do záložky „Hraj se skladbou" v Cvičení (přepínač zdroje),
   `/youtube` přesměrovává. **Fáze D hotová (2026-05-25):** Nahrávky, Studio
   a Looper sloučeny do obrazovky „Nahrávání" se záložkami; `/studio`
-  a `/looper` přesměrovávají. Zbývá E (nahrávání v Aparátu).
+  a `/looper` přesměrovávají. **Fáze E hotová (2026-05-25):** Aparát umí
+  nahrát zaaparátovaný zvuk (odbočka z výstupu → `MediaRecorder` →
+  `recordingsStore`), take se objeví v Nahrávání. Plán sloučení obrazovek
+  je tím celý hotový.
 - **Bod 22 — sdílení a organizace** (poslední bod roadmapy) — share-a-riff,
   songbook organizér
 - Beta test s 5–10 lidmi — vědomě odložený

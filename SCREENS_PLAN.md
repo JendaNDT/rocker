@@ -87,7 +87,7 @@ záložkami Nahrávky / Studio / Looper. `/studio` a `/looper` odebrány ze
 `screens.ts`, route přesměrovávají na `/recorder`. Funkční komponenty
 (`Studio`, `LoopPedal`, recorder) beze změny.
 
-## Fáze E — Nahrávání v Aparátu
+## Fáze E — Nahrávání v Aparátu ✅ HOTOVO (2026-05-25)
 
 Nová funkce: záznam **zaaparátovaného** zvuku. Dnešní Nahrávky zaznamenávají
 suchý vstup; v Aparátu chce uživatel nahrát to, co slyší po efektech.
@@ -97,6 +97,12 @@ Odbočka z výstupu efektového řetězce (`MediaStreamAudioDestinationNode`) �
 
 **Riziko:** střední — nová audio cesta, ale staví na existující nahrávací
 infrastruktuře.
+
+**Hotovo (2026-05-25):** `AmpChain` má `MediaStreamAudioDestinationNode`
+na výstupu, zpřístupněný jako `recordingStream`; konstruktor bere
+`AudioContext`. `AmpStudio` má tlačítko Nahrát/Zastavit s počítadlem času,
+take ukládá přes sdílený `recorder` a `recordingsStore` (název „Aparát N").
+Nahrávání se zastaví při vypnutí efektu i odchodu z obrazovky.
 
 ---
 
@@ -108,7 +114,7 @@ infrastruktuře.
 | B | Metronom kontextově | M | ✅ hotovo |
 | C | Riff trainer + YouTube | L | ✅ hotovo |
 | D | Nahrávací nástroje do jedné sekce | M–L | ✅ hotovo |
-| E | Nahrávání v Aparátu | M | střední |
+| E | Nahrávání v Aparátu | M | ✅ hotovo |
 
 Návrh: stavět A → E (od nejmenšího/nejméně rizikového). A je rozehřátí,
 E je jako poslední, protože nová nahrávka logicky zapadne do sjednocené

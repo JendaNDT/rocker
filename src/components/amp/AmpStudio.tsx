@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AmpChain } from "@/audio/ampChain";
 import { audioEngine } from "@/audio/AudioEngine";
+import { recorder } from "@/audio/recorder";
 import { SignalLevelMeter } from "@/components/amp/SignalLevelMeter";
 import { SignalScope } from "@/components/amp/SignalScope";
 import { InputLevelMeter } from "@/components/InputLevelMeter";
@@ -15,8 +16,10 @@ import {
   type CabinetType,
   type DistortionType,
 } from "@/lib/ampPresets";
+import { type Recording, formatDuration } from "@/lib/recordings";
 import { useAmpPresetsStore } from "@/stores/ampPresetsStore";
 import { useAudioStore } from "@/stores/audioStore";
+import { useRecordingsStore } from "@/stores/recordingsStore";
 
 // Parameter sliders: two columns on desktop, stacked on mobile.
 const SLIDER_GRID = {
@@ -91,16 +94,27 @@ export function AmpStudio() {
   // A/B compare — two stored tone snapshots the user can flip between.
   const [slotA, setSlotA] = useState<AmpSettings | null>(null);
   const [slotB, setSlotB] = useState<AmpSettings | null>(null);
+  // Recording the amped output into the shared recordings store.
+  const [recording, setRecording] = useState(false);
+  const [savingTake, setSavingTake] = useState(false);
+  const [takeElapsed, setTakeElapsed] = useState(0);
 
   const latencyMs = useAudioStore((state) => state.latencyMs);
   const layoutMode = useResolvedLayoutMode();
   const userPresets = useAmpPresetsStore((state) => state.presets);
   const savePreset = useAmpPresetsStore((state) => state.savePreset);
   const deletePreset = useAmpPresetsStore((state) => state.deletePreset);
+  const addRecording = useRecordingsStore((state) => state.addRecording);
+  const recordingsCount = useRecordingsStore(
+    (state) => state.recordings.length,
+  );
+  const recordingsLoaded = useRecordingsStore((state) => state.loaded);
+  const loadRecordings = useRecordingsStore((state) => state.load);
 
-  // Tear down the audio graph when leaving the screen.
+  // Tear down the audio graph (and any running recording) when leaving.
   useEffect(() => {
     return () => {
+      if (recorder.isRecording()) void recorder.stop();
       const chain = chainRef.current;
       if (chain) {
         audioEngine.getInputSource()?.disconnect(chain.input);
@@ -109,6 +123,23 @@ export function AmpStudio() {
       }
     };
   }, []);
+
+  // Load the recordings list so a new amp take gets a correct number and
+  // shows up alongside the others in the Nahrávání screen.
+  useEffect(() => {
+    if (!recordingsLoaded) void loadRecordings();
+  }, [recordingsLoaded, loadRecordings]);
+
+  // Live elapsed timer while an amp take is being recorded.
+  useEffect(() => {
+    if (!recording) return;
+    const startedAt = performance.now();
+    setTakeElapsed(0);
+    const id = window.setInterval(() => {
+      setTakeElapsed((performance.now() - startedAt) / 1000);
+    }, 200);
+    return () => window.clearInterval(id);
+  }, [recording]);
 
   async function start() {
     if (starting || active) return;
@@ -127,7 +158,8 @@ export function AmpStudio() {
       setError("Zvukový vstup není dostupný.");
       return;
     }
-    const chain = new AmpChain(source.context);
+    const context = await audioEngine.getOutputContext();
+    const chain = new AmpChain(context);
     applyToChain(chain, settings);
     source.connect(chain.input);
     chainRef.current = chain;
@@ -135,7 +167,9 @@ export function AmpStudio() {
     setActive(true);
   }
 
-  function stop() {
+  async function stop() {
+    // Finish and save a take in progress before tearing the chain down.
+    if (recorder.isRecording()) await stopTake();
     const chain = chainRef.current;
     if (chain) {
       audioEngine.getInputSource()?.disconnect(chain.input);
@@ -144,6 +178,35 @@ export function AmpStudio() {
     }
     setOutputAnalyser(null);
     setActive(false);
+  }
+
+  /** Starts capturing the amped (post-effects) output. */
+  function startTake() {
+    const chain = chainRef.current;
+    if (!chain || recorder.isRecording()) return;
+    if (recorder.start(chain.recordingStream)) {
+      setRecording(true);
+    }
+  }
+
+  /** Stops the take and saves the amped recording to the recordings store. */
+  async function stopTake() {
+    setSavingTake(true);
+    const result = await recorder.stop();
+    setRecording(false);
+    if (result) {
+      const take: Recording = {
+        id: crypto.randomUUID(),
+        name: `Aparát ${recordingsCount + 1}`,
+        createdAt: Date.now(),
+        durationSec: result.durationSec,
+        mimeType: result.mimeType,
+        markers: [],
+        blob: result.blob,
+      };
+      await addRecording(take);
+    }
+    setSavingTake(false);
   }
 
   function applyPreset(preset: AmpPreset) {
@@ -280,6 +343,38 @@ export function AmpStudio() {
               label="Úroveň výstupu"
             />
             <SignalScope analyser={outputAnalyser} active={active} />
+          </div>
+
+          <div className="rounded-lg border border-line bg-bg p-3">
+            <div className="flex flex-wrap items-center gap-3">
+              {recording ? (
+                <button
+                  type="button"
+                  onClick={() => void stopTake()}
+                  disabled={savingTake}
+                  className="rounded-lg border border-line-strong bg-surface px-5 py-2 text-sm font-semibold transition-colors hover:border-line-strong disabled:opacity-60"
+                >
+                  Zastavit nahrávání
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={startTake}
+                  disabled={savingTake}
+                  className="flex items-center gap-2 rounded-lg bg-danger px-5 py-2 text-sm font-semibold text-text transition-colors hover:bg-danger disabled:opacity-60"
+                >
+                  <span className="h-2.5 w-2.5 rounded-full bg-surface" />
+                  Nahrát
+                </button>
+              )}
+              <span className="text-sm text-dim">
+                {recording
+                  ? `Nahrávám ${formatDuration(takeElapsed)}`
+                  : savingTake
+                    ? "Ukládám…"
+                    : "Záznam zvuku po efektech — uloží se do Nahrávání."}
+              </span>
+            </div>
           </div>
 
           <div>
