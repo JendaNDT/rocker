@@ -65,14 +65,25 @@ Jádro plánu a uživatelovo přání. Každý efekt = jeden krok, postavit
 a otestovat sluchem, pak teprve další. Každý efekt dostane přepínač
 zapnuto/vypnuto. Pořadí od nejsnazšího/nejlevnějšího po náročnější.
 
-### B1 — Kompresor
+### B1 — Kompresor ✅
 `DynamicsCompressorNode` — hotový uzel Web Audio. Srovná dynamiku, sluší
-čistému zvuku a funku. Triviální uzel, velký přínos. + přepínač.
+čistému zvuku a funku. Triviální uzel, velký přínos.
 
-### B2 — Víc typů zkreslení a reproboxů
+**Hotovo (2026-05-25):** `DynamicsCompressorNode` na začátku řetězce
+(pozice kompresorového pedálu), posuvník „Komprese" 0–100 %. Na 0 % je
+průhledný (poměr 1:1) — místo zvláštního přepínače, vyhne se přepojování
+uzlů za běhu. 4 vestavěné presety mají `compression: 0`.
+
+### B2 — Víc typů zkreslení a reproboxů ✅
 Overdrive / distortion / fuzz jako varianty křivky `WaveShaper` + volič
 typu. Víc reproboxů = jiná nastavení filtrů simulace (jiný „cab").
 Využívá uzly, které už v řetězci jsou — žádný nový typ uzlu.
+
+**Hotovo (2026-05-25):** B2a — tři křivky zkreslení (overdrive / distortion
+/ fuzz), `setDistortionType`, volič v UI. B2b — tři reproboxy (Moderní /
+Vintage / Otevřený), `setCabinet` přenastaví filtry, volič v UI. Enumy
+`distortion` a `cabinet` v `AmpSettings`, sanitizace je ověřuje. Vestavěné
+presety na „distortion" + „modern" — zní jako dosud.
 
 ### B3 — Reverb
 `ConvolverNode` se syntetizovanou impulzní odezvou (generovaný doznívající
@@ -120,8 +131,8 @@ toho, jestli reálně chybí. Klidně vynechat.
 |---|---|---|---|
 | A | A1 — store presetů | S | ✅ hotovo |
 | A | A2 — UI presetů | S | ✅ hotovo |
-| B | B1 — kompresor | S | střední (slepé DSP, test sluchem) |
-| B | B2 — typy zkreslení a reproboxů | M | střední |
+| B | B1 — kompresor | S | ✅ hotovo (test sluchem čeká) |
+| B | B2 — typy zkreslení a reproboxů | M | ✅ hotovo (test sluchem čeká) |
 | B | B3 — reverb | M | střední |
 | B | B4 — modulace (chorus) | M | střední |
 | C | C1 — indikátory úrovně | S | nízké |

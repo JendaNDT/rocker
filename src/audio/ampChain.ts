@@ -11,17 +11,76 @@
 // peak) rather than an impulse response — no external IR file, no licensing,
 // and enough to tame the harsh "fizz" of raw WaveShaper distortion.
 
-/** Builds a WaveShaper distortion curve. `k` is the amount (~1 to ~100). */
-function makeDistortionCurve(k: number): Float32Array<ArrayBuffer> {
+import type { CabinetType, DistortionType } from "@/lib/ampPresets";
+
+/** Builds a 2048-sample WaveShaper curve from a per-sample shaping function. */
+function buildCurve(
+  shape: (x: number) => number,
+): Float32Array<ArrayBuffer> {
   const samples = 2048;
   const curve = new Float32Array(samples);
-  const deg = Math.PI / 180;
   for (let i = 0; i < samples; i += 1) {
     const x = (i * 2) / samples - 1;
-    curve[i] = ((3 + k) * x * 20 * deg) / (Math.PI + k * Math.abs(x));
+    curve[i] = shape(x);
   }
   return curve;
 }
+
+/** Builds the medium-hard "distortion" curve. `k` is the amount (~1..~100). */
+function makeDistortionCurve(k: number): Float32Array<ArrayBuffer> {
+  const deg = Math.PI / 180;
+  return buildCurve(
+    (x) => ((3 + k) * x * 20 * deg) / (Math.PI + k * Math.abs(x)),
+  );
+}
+
+// WaveShaper curves per distortion character: a soft, smooth overdrive; the
+// existing medium "distortion"; and a hard, near-square fuzz. Built once.
+const DISTORTION_CURVES: Record<DistortionType, Float32Array<ArrayBuffer>> = {
+  overdrive: buildCurve((x) => Math.tanh(x * 2)),
+  distortion: makeDistortionCurve(40),
+  fuzz: buildCurve((x) => Math.tanh(x * 9)),
+};
+
+/** Filter settings of one cabinet simulation. */
+interface CabinetSpec {
+  /** High-pass cutoff in Hz — trims sub-bass rumble. */
+  highpass: number;
+  /** Low-pass cutoff in Hz — tames the harsh top "fizz". */
+  lowpass: number;
+  /** Presence peak centre frequency in Hz. */
+  presenceFreq: number;
+  /** Presence peak Q. */
+  presenceQ: number;
+  /** Presence peak gain in dB. */
+  presenceGain: number;
+}
+
+// Cabinet voicings: a balanced modern cab, a darker/warmer vintage cab and
+// a brighter open-sounding cab. "modern" matches the original fixed values.
+const CABINETS: Record<CabinetType, CabinetSpec> = {
+  modern: {
+    highpass: 85,
+    lowpass: 5500,
+    presenceFreq: 3000,
+    presenceQ: 0.7,
+    presenceGain: 3,
+  },
+  vintage: {
+    highpass: 90,
+    lowpass: 4200,
+    presenceFreq: 2400,
+    presenceQ: 0.7,
+    presenceGain: 1.5,
+  },
+  open: {
+    highpass: 75,
+    lowpass: 7000,
+    presenceFreq: 3600,
+    presenceQ: 0.8,
+    presenceGain: 4.5,
+  },
+};
 
 /** Clamps a value into the [min, max] range. */
 function clamp(value: number, min: number, max: number): number {
@@ -68,7 +127,7 @@ export class AmpChain {
 
     this.shaper = context.createWaveShaper();
     this.shaper.oversample = "4x";
-    this.shaper.curve = makeDistortionCurve(40);
+    this.shaper.curve = DISTORTION_CURVES.distortion;
 
     // Three-band tone stack.
     this.bass = context.createBiquadFilter();
@@ -84,21 +143,18 @@ export class AmpChain {
     this.treble.type = "highshelf";
     this.treble.frequency.value = 3500;
 
-    // Cabinet simulation — fixed filters that shape the raw distortion into
-    // a speaker-like tone.
+    // Cabinet simulation — filters that shape the raw distortion into a
+    // speaker-like tone. Their values are set by setCabinet() below.
     this.cabHighpass = context.createBiquadFilter();
     this.cabHighpass.type = "highpass";
-    this.cabHighpass.frequency.value = 85;
 
     this.cabLowpass = context.createBiquadFilter();
     this.cabLowpass.type = "lowpass";
-    this.cabLowpass.frequency.value = 5500;
 
     this.cabPresence = context.createBiquadFilter();
     this.cabPresence.type = "peaking";
-    this.cabPresence.frequency.value = 3000;
-    this.cabPresence.Q.value = 0.7;
-    this.cabPresence.gain.value = 3;
+
+    this.setCabinet("modern");
 
     // Feedback delay.
     this.delay = context.createDelay(1);
@@ -149,6 +205,11 @@ export class AmpChain {
     this.preGain.gain.value = 1 + clamp(amount, 0, 1) * 24;
   }
 
+  /** Distortion character — swaps the waveshaper curve. */
+  setDistortionType(type: DistortionType): void {
+    this.shaper.curve = DISTORTION_CURVES[type];
+  }
+
   /** Bass EQ — `amount` runs -1 (cut) to 1 (boost). */
   setBass(amount: number): void {
     this.bass.gain.value = clamp(amount, -1, 1) * 12;
@@ -162,6 +223,16 @@ export class AmpChain {
   /** Treble EQ — `amount` runs -1 (cut) to 1 (boost). */
   setTreble(amount: number): void {
     this.treble.gain.value = clamp(amount, -1, 1) * 12;
+  }
+
+  /** Cabinet character — retunes the cabinet-simulation filters. */
+  setCabinet(type: CabinetType): void {
+    const cab = CABINETS[type];
+    this.cabHighpass.frequency.value = cab.highpass;
+    this.cabLowpass.frequency.value = cab.lowpass;
+    this.cabPresence.frequency.value = cab.presenceFreq;
+    this.cabPresence.Q.value = cab.presenceQ;
+    this.cabPresence.gain.value = cab.presenceGain;
   }
 
   /** Delay mix — `amount` runs 0 (dry) to 1 (full echo). */

@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
   AMP_PRESETS,
+  CABINET_TYPES,
   DEFAULT_AMP_PRESET,
+  DISTORTION_TYPES,
   sanitizeAmpSettings,
   sanitizeUserPresets,
 } from "./ampPresets";
@@ -34,6 +36,18 @@ describe("AMP_PRESETS", () => {
   it("uses one of the presets as the default", () => {
     expect(AMP_PRESETS).toContain(DEFAULT_AMP_PRESET);
   });
+
+  it("gives every preset a valid distortion type", () => {
+    for (const preset of AMP_PRESETS) {
+      expect(DISTORTION_TYPES).toContain(preset.settings.distortion);
+    }
+  });
+
+  it("gives every preset a valid cabinet type", () => {
+    for (const preset of AMP_PRESETS) {
+      expect(CABINET_TYPES).toContain(preset.settings.cabinet);
+    }
+  });
 });
 
 describe("sanitizeAmpSettings", () => {
@@ -41,9 +55,11 @@ describe("sanitizeAmpSettings", () => {
     const settings = {
       compression: 0.25,
       drive: 0.5,
+      distortion: "fuzz",
       bass: -0.3,
       mid: 0.2,
       treble: 0.1,
+      cabinet: "vintage",
       delay: 0.4,
       level: 0.6,
     };
@@ -68,6 +84,24 @@ describe("sanitizeAmpSettings", () => {
     expect(sanitizeAmpSettings(null)).toEqual(DEFAULT_AMP_PRESET.settings);
     expect(sanitizeAmpSettings("nonsense")).toEqual(
       DEFAULT_AMP_PRESET.settings,
+    );
+  });
+
+  it("validates the distortion type", () => {
+    expect(sanitizeAmpSettings({ distortion: "fuzz" }).distortion).toBe(
+      "fuzz",
+    );
+    expect(sanitizeAmpSettings({ distortion: "laser" }).distortion).toBe(
+      DEFAULT_AMP_PRESET.settings.distortion,
+    );
+  });
+
+  it("validates the cabinet type", () => {
+    expect(sanitizeAmpSettings({ cabinet: "vintage" }).cabinet).toBe(
+      "vintage",
+    );
+    expect(sanitizeAmpSettings({ cabinet: "spaceship" }).cabinet).toBe(
+      DEFAULT_AMP_PRESET.settings.cabinet,
     );
   });
 });

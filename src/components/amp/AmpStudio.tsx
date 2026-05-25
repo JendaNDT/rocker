@@ -9,6 +9,8 @@ import {
   DEFAULT_AMP_PRESET,
   type AmpPreset,
   type AmpSettings,
+  type CabinetType,
+  type DistortionType,
 } from "@/lib/ampPresets";
 import { useAmpPresetsStore } from "@/stores/ampPresetsStore";
 import { useAudioStore } from "@/stores/audioStore";
@@ -29,13 +31,34 @@ const SEGMENT_ACTIVE =
 const SEGMENT_IDLE =
   "rounded-md px-3 py-1.5 text-sm text-dim transition-colors hover:text-text";
 
+/** Keys of AmpSettings whose value is a number — the slider-driven params. */
+type NumericAmpKey = {
+  [K in keyof AmpSettings]: AmpSettings[K] extends number ? K : never;
+}[keyof AmpSettings];
+
+/** Distortion-type options for the selector, in chain order of intensity. */
+const DISTORTION_OPTIONS: { type: DistortionType; label: string }[] = [
+  { type: "overdrive", label: "Overdrive" },
+  { type: "distortion", label: "Distortion" },
+  { type: "fuzz", label: "Fuzz" },
+];
+
+/** Cabinet options for the selector. */
+const CABINET_OPTIONS: { type: CabinetType; label: string }[] = [
+  { type: "modern", label: "Moderní" },
+  { type: "vintage", label: "Vintage" },
+  { type: "open", label: "Otevřený" },
+];
+
 /** Pushes every parameter of a settings object onto the chain. */
 function applyToChain(chain: AmpChain, settings: AmpSettings): void {
   chain.setCompression(settings.compression);
   chain.setDrive(settings.drive);
+  chain.setDistortionType(settings.distortion);
   chain.setBass(settings.bass);
   chain.setMid(settings.mid);
   chain.setTreble(settings.treble);
+  chain.setCabinet(settings.cabinet);
   chain.setDelayMix(settings.delay);
   chain.setLevel(settings.level);
 }
@@ -130,7 +153,7 @@ export function AmpStudio() {
     if (presetId === id) setPresetId(null);
   }
 
-  function setParam(key: keyof AmpSettings, value: number) {
+  function setParam(key: NumericAmpKey, value: number) {
     const next = { ...settings, [key]: value };
     setSettings(next);
     // Moving a slider takes the tone off any named preset.
@@ -138,8 +161,22 @@ export function AmpStudio() {
     if (chainRef.current) applyToChain(chainRef.current, next);
   }
 
+  function setDistortion(type: DistortionType) {
+    const next = { ...settings, distortion: type };
+    setSettings(next);
+    setPresetId(null);
+    if (chainRef.current) applyToChain(chainRef.current, next);
+  }
+
+  function setCabinet(type: CabinetType) {
+    const next = { ...settings, cabinet: type };
+    setSettings(next);
+    setPresetId(null);
+    if (chainRef.current) applyToChain(chainRef.current, next);
+  }
+
   /** Renders one parameter slider. Bipolar params (EQ) run -100..100. */
-  function slider(label: string, key: keyof AmpSettings, bipolar: boolean) {
+  function slider(label: string, key: NumericAmpKey, bipolar: boolean) {
     const display = Math.round(settings[key] * 100);
     return (
       <div key={key}>
@@ -277,6 +314,48 @@ export function AmpStudio() {
               >
                 Uložit jako preset
               </button>
+            </div>
+          </div>
+
+          <div>
+            <div className="text-sm font-medium text-text">
+              Typ zkreslení
+            </div>
+            <div className="mt-2 inline-flex flex-wrap rounded-lg border border-line p-1">
+              {DISTORTION_OPTIONS.map((option) => (
+                <button
+                  key={option.type}
+                  type="button"
+                  onClick={() => setDistortion(option.type)}
+                  className={
+                    settings.distortion === option.type
+                      ? SEGMENT_ACTIVE
+                      : SEGMENT_IDLE
+                  }
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <div className="text-sm font-medium text-text">Reprobox</div>
+            <div className="mt-2 inline-flex flex-wrap rounded-lg border border-line p-1">
+              {CABINET_OPTIONS.map((option) => (
+                <button
+                  key={option.type}
+                  type="button"
+                  onClick={() => setCabinet(option.type)}
+                  className={
+                    settings.cabinet === option.type
+                      ? SEGMENT_ACTIVE
+                      : SEGMENT_IDLE
+                  }
+                >
+                  {option.label}
+                </button>
+              ))}
             </div>
           </div>
 
