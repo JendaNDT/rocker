@@ -24,6 +24,5 @@ export const SCREENS: Screen[] = [
   { href: "/recorder", label: "Nahrávání", description: "Nahraj a porovnej si hru." },
   { href: "/studio", label: "Studio", description: "Multi-track nahrávání přes sebe." },
   { href: "/looper", label: "Looper", description: "Loop pedál se smyčkováním." },
-  { href: "/live", label: "Live", description: "Hraní bez rušení." },
   { href: "/profile", label: "Profil", description: "Nastavení a tvoje data." },
 ];

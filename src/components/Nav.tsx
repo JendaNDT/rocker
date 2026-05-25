@@ -21,6 +21,11 @@ const TITLE: Record<LayoutMode, string> = {
   mobile: "hidden",
 };
 
+// Profile is reached through the permanent settings cog (SettingsButton) in
+// the top-right corner, so it is left out of the nav to avoid a duplicate
+// entry. It still appears in the home screen's "Vše v aplikaci" grid.
+const NAV_SCREENS = SCREENS.filter((screen) => screen.href !== "/profile");
+
 // Individual nav item.
 const ITEM: Record<LayoutMode, string> = {
   auto: "flex shrink-0 items-center justify-center px-4 py-3 text-xs whitespace-nowrap transition-colors md:justify-start md:px-5 md:text-sm",
@@ -40,7 +45,7 @@ export function Nav({ layout }: { layout: LayoutMode }) {
   return (
     <nav className={CONTAINER[layout]}>
       <div className={TITLE[layout]}>Rocker</div>
-      {SCREENS.map((screen) => {
+      {NAV_SCREENS.map((screen) => {
         const active = pathname === screen.href;
         return (
           <Link
