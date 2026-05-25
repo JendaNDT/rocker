@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { AudioInputSettings } from "@/components/AudioInputSettings";
+import { ThemePicker } from "@/components/ThemePicker";
 import { useSettingsStore } from "@/stores/settingsStore";
 
-const STEP_COUNT = 3;
+const STEP_COUNT = 4;
 
 /**
  * First-run onboarding (Bod 13). A full-screen guide shown until the user
@@ -57,13 +58,28 @@ export function Onboarding() {
                 pokrok a procvičíš rockové i metalové techniky.
               </p>
               <p className="mt-3 text-dim">
-                Pojď si appku ve dvou krocích nastavit — ať za chvíli hraješ
+                Pojď si appku v pár krocích nastavit — ať za chvíli hraješ
                 první riff.
               </p>
             </div>
           )}
 
           {step === 1 && (
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight">
+                Vyber si vzhled
+              </h2>
+              <p className="mt-3 text-text">
+                Rocker umí tři vzhledy — vyber si ten, který ti sedí.
+                Změnit ho můžeš kdykoliv později v Profilu.
+              </p>
+              <div className="mt-4">
+                <ThemePicker />
+              </div>
+            </div>
+          )}
+
+          {step === 2 && (
             <div>
               <h2 className="text-2xl font-bold tracking-tight">
                 Připoj kytaru
@@ -83,7 +99,7 @@ export function Onboarding() {
             </div>
           )}
 
-          {step === 2 && (
+          {step === 3 && (
             <div>
               <h2 className="text-2xl font-bold tracking-tight">
                 Tvůj první riff

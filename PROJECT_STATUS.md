@@ -151,6 +151,10 @@ rozpracovaná (Body 19 a 21 hotové, Bod 20 vynechán). Aktuálně
   appka 2 s poslouchá vstup, najde špičku hluku místnosti a nastaví
   bránu kousek nad ni (`recommendedNoiseGate` v `pitchDetector`,
   s testy). Ruční posuvník zůstává pro doladění
+- **Krok výběru vzhledu v úvodu** (větev `feature/uvod-vzhled`, čeká
+  na slití). Úvodní průvodce má 4 kroky — po uvítání přibyl krok
+  „Vyber si vzhled" s existující komponentou `ThemePicker` (3 témata
+  + světlý/tmavý/auto)
 - **Upozornění na novou verzi** (větev `feature/update-prompt`, čeká na
   slití). Ručně psaný `sw.js` novou verzi tiše nepřebírá — počká; po
   nasazení appka ukáže lištu „Je k dispozici nová verze / Načíst",
