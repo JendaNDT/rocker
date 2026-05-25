@@ -151,10 +151,14 @@ hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
 drobnosti byly opraveny.
 
 Opraveno z reálné zpětné vazby (2026-05-25): dvouvstupový interface
-posílal dvoukanálový stream s kytarou jen v jednom kanálu — zvuk hrál
-jen z jednoho repráku. `RAW_AUDIO_CONSTRAINTS` v `AudioEngine.ts` má
-nově `channelCount: 1` (mono snímání, na stereo výstupu se zkopíruje do
-obou kanálů). Čeká ověření reálným testem se zvukem.
+posílal dvoukanálový stream s kytarou jen v jednom kanálu — Aparát hrál
+jen z jednoho repráku. `RAW_AUDIO_CONSTRAINTS` dostal `channelCount: 1`,
+ale ten některé prohlížeče ignorují; spolehlivá oprava je v audio grafu
+`AudioEngine.ts` — `ChannelSplitter` + `GainNode` sečtou vstupní kanály
+do mono (`getInputSource()` vrací ten mono uzel), stereo výstup ho
+zkopíruje do obou stran. Čeká ověření reálným testem se zvukem.
+Pozn.: nahrávání ve Studiu/Looperu jede přes `MediaRecorder` napřímo ze
+streamu — má teoreticky stejnou jednostrannou vadu, samostatná oprava.
 
 ## 🏗️ Klíčová rozhodnutí
 *(Aby ses k tomu zase zbytečně nevracel.)*

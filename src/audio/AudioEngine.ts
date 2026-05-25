@@ -53,6 +53,8 @@ class AudioEngine {
   private stream: MediaStream | null = null;
   private source: MediaStreamAudioSourceNode | null = null;
   private analyser: AnalyserNode | null = null;
+  private splitter: ChannelSplitterNode | null = null;
+  private monoMix: GainNode | null = null;
 
   getState(): AudioEngineState {
     return this.state;
@@ -80,11 +82,13 @@ class AudioEngine {
   }
 
   /**
-   * The live input source node, or null if the input is not running. Used by
-   * the amp / effects chain (Bod 16) to process the raw guitar signal.
+   * The mono-summed live input node, or null if the input is not running.
+   * Used by the amp / effects chain (Bod 16) to process the guitar signal.
+   * Input channels are summed to mono here, so a two-channel interface (with
+   * the guitar on a single channel) does not play from one speaker only.
    */
-  getInputSource(): MediaStreamAudioSourceNode | null {
-    return this.source;
+  getInputSource(): AudioNode | null {
+    return this.monoMix;
   }
 
   /**
@@ -203,9 +207,23 @@ class AudioEngine {
       analyser.fftSize = 8192;
       source.connect(analyser);
 
+      // Sum the input channels into a true mono signal. A two-input interface
+      // delivers a 2-channel stream with the guitar on a single channel;
+      // passed straight through it plays from one speaker only. Splitting the
+      // channels and summing them into one gain node yields mono, which the
+      // stereo output then up-mixes to both speakers. The amp / effects chain
+      // reads this node via getInputSource().
+      const splitter = context.createChannelSplitter(2);
+      const monoMix = context.createGain();
+      source.connect(splitter);
+      splitter.connect(monoMix, 0);
+      splitter.connect(monoMix, 1);
+
       this.stream = stream;
       this.source = source;
       this.analyser = analyser;
+      this.splitter = splitter;
+      this.monoMix = monoMix;
 
       // Detect the device being unplugged mid-session.
       stream.getAudioTracks()[0]?.addEventListener("ended", () => {
@@ -232,9 +250,13 @@ class AudioEngine {
   async stop(): Promise<void> {
     this.source?.disconnect();
     this.analyser?.disconnect();
+    this.splitter?.disconnect();
+    this.monoMix?.disconnect();
     this.stream?.getTracks().forEach((track) => track.stop());
     this.source = null;
     this.analyser = null;
+    this.splitter = null;
+    this.monoMix = null;
     this.stream = null;
     if (this.state.status === "running" || this.state.status === "starting") {
       this.setState({ status: "idle" });
