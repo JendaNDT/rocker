@@ -1,4 +1,4 @@
-import { getTuning } from "@/audio/tunings";
+import type { Tuning } from "@/audio/tunings";
 import { type Notation, pitchClassName } from "@/lib/pitch";
 import { scaleOffset } from "@/lib/scales";
 import type { Scale } from "@/lib/scales";
@@ -12,8 +12,8 @@ const ROW_H = 22;
 const OPEN_X = 28; // x of open-string notes (left of the nut)
 const LABEL_X = 9;
 
-const STRINGS = getTuning("standard").strings; // low E .. high E
-const ROWS = STRINGS.length; // 6
+// A 6-string guitar — every tuning in TUNINGS has six strings.
+const ROWS = 6;
 const NECK_RIGHT = LEFT + FRETS * FRET_W;
 const NECK_BOTTOM = TOP + (ROWS - 1) * ROW_H;
 const VIEW_W = NECK_RIGHT + 14;
@@ -30,18 +30,22 @@ function noteX(fret: number): number {
 }
 
 /**
- * Horizontal fretboard that lights up the notes of a scale. The root note is
- * shown filled; the other scale notes are dimmer. High E is the top row.
+ * Horizontal fretboard that lights up the notes of a scale, using the open
+ * strings of the given tuning. The root note is shown filled; the other scale
+ * notes are dimmer. The highest string is the top row.
  */
 export function Fretboard({
   scale,
   rootPitchClass,
   notation,
+  tuning,
 }: {
   scale: Scale;
   rootPitchClass: number;
   notation: Notation;
+  tuning: Tuning;
 }) {
+  const strings = tuning.strings;
   return (
     <svg
       viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
@@ -98,7 +102,7 @@ export function Fretboard({
       {/* Strings, labels and note dots — top row is the high E string. */}
       {Array.from({ length: ROWS }, (_, row) => {
         const stringIndex = ROWS - 1 - row;
-        const open = STRINGS[stringIndex];
+        const open = strings[stringIndex];
         const y = rowY(row);
 
         return (

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { audioEngine } from "@/audio/AudioEngine";
 import { metronome } from "@/audio/metronome";
+import { DEFAULT_TUNING_ID, getTuning } from "@/audio/tunings";
 import { POWER_CHORD_EXERCISES } from "@/lib/metalExercises";
 import type { PowerChordExercise } from "@/lib/metalExercises";
 import { getPowerChord } from "@/lib/powerChords";
@@ -21,9 +22,6 @@ import { useHydrated } from "@/lib/useHydrated";
 import { useMetronomeStore } from "@/stores/metronomeStore";
 import { useProgressStore } from "@/stores/progressStore";
 import { useSettingsStore } from "@/stores/settingsStore";
-
-// Open string names, low E (index 0) to high E (index 5).
-const STRING_NAMES = ["E", "A", "D", "G", "B", "E"];
 
 // Mini-neck geometry (SVG user units).
 const NECK_FRETS = 12;
@@ -53,9 +51,12 @@ function fretCenterX(fret: number): number {
 function PowerChordNeck({
   chord,
   name,
+  stringNames,
 }: {
   chord: PowerChord;
   name: string;
+  /** Open-string names of the active tuning, low to high. */
+  stringNames: string[];
 }) {
   const shape = [
     { stringIndex: chord.rootStringIndex, fret: chord.rootFret, root: true },
@@ -79,7 +80,7 @@ function PowerChordNeck({
       aria-label={`Pozice power chordu ${name} na hmatníku`}
     >
       {/* Strings */}
-      {STRING_NAMES.map((name, index) => (
+      {stringNames.map((name, index) => (
         <g key={index}>
           <line
             x1={MARGIN_LEFT}
@@ -167,9 +168,17 @@ export function PowerChordTrainer() {
 
   const bpmRecords = useProgressStore((store) => store.bpmRecords);
   const storedNotation = useSettingsStore((store) => store.notation);
+  const storedTuningId = useSettingsStore((store) => store.tuningId);
   const hydrated = useHydrated();
   const record = hydrated ? bpmRecords[state.exercise.id] : undefined;
   const notation = hydrated ? storedNotation : "english";
+  // Active tuning — power chord roots and the mini-neck string labels are
+  // resolved against it. Before hydration use the default tuning.
+  const tuning = getTuning(hydrated ? storedTuningId : DEFAULT_TUNING_ID);
+  const openMidi = tuning.strings.map((string) => string.midi);
+  const stringNames = tuning.strings.map((string) =>
+    pitchClassName(string.midi, notation),
+  );
 
   // Advance the engine once per metronome beat.
   useEffect(() => {
@@ -237,8 +246,8 @@ export function PowerChordTrainer() {
     setState((current) => ({ ...current, speedUpEnabled: enabled }));
   }
 
-  const activeChord = getPowerChord(activeChordId(state));
-  const nextChord = getPowerChord(nextChordId(state));
+  const activeChord = getPowerChord(activeChordId(state), openMidi);
+  const nextChord = getPowerChord(nextChordId(state), openMidi);
   const progressPercent = Math.round(roundProgress(state) * 100);
   const activeName = activeChord
     ? `${pitchClassName(activeChord.rootMidi, notation)}5`
@@ -297,7 +306,11 @@ export function PowerChordTrainer() {
 
         {activeChord && (
           <div className="mt-4 flex justify-center">
-            <PowerChordNeck chord={activeChord} name={activeName} />
+            <PowerChordNeck
+              chord={activeChord}
+              name={activeName}
+              stringNames={stringNames}
+            />
           </div>
         )}
 

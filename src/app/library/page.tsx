@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { DEFAULT_TUNING_ID, getTuning } from "@/audio/tunings";
 import { ChordCard } from "@/components/library/ChordCard";
 import { RiffLibrary } from "@/components/library/RiffLibrary";
 import { ScaleExplorer } from "@/components/library/ScaleExplorer";
@@ -35,10 +36,13 @@ export default function LibraryPage() {
   const handedness = useSettingsStore((state) => state.handedness);
   const setHandedness = useSettingsStore((state) => state.setHandedness);
   const notation = useSettingsStore((state) => state.notation);
+  const tuningId = useSettingsStore((state) => state.tuningId);
   const hydrated = useHydrated();
   const layoutMode = useResolvedLayoutMode();
   const mirror = hydrated && handedness === "left";
   const activeNotation = hydrated ? notation : "english";
+  // Before hydration use the default tuning so prerendered HTML matches.
+  const activeTuning = getTuning(hydrated ? tuningId : DEFAULT_TUNING_ID);
 
   const visibleChords = CHORDS.filter((chord) => chord.category === category);
 
@@ -124,7 +128,7 @@ export default function LibraryPage() {
 
       {tab === "scales" && (
         <div className="mt-6">
-          <ScaleExplorer notation={activeNotation} />
+          <ScaleExplorer notation={activeNotation} tuning={activeTuning} />
         </div>
       )}
 

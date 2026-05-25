@@ -33,6 +33,15 @@ describe("powerChordAt", () => {
     expect(chord.rootMidi).toBe(45);
     expect(chord.id).toBe("a-0");
   });
+
+  it("resolves the pitch against a non-standard tuning", () => {
+    const dropD = [38, 45, 50, 55, 59, 64];
+    const chord = powerChordAt(0, 0, dropD);
+    expect(chord.rootMidi).toBe(38);
+    expect(chord.rootName).toBe("D");
+    expect(chord.name).toBe("D5");
+    expect(chord.id).toBe("e-0");
+  });
 });
 
 describe("powerChordMidiNotes", () => {
@@ -59,5 +68,11 @@ describe("getPowerChord", () => {
 
   it("returns undefined for an unknown id", () => {
     expect(getPowerChord("zzz")).toBeUndefined();
+  });
+
+  it("resolves the chord's pitch against a non-standard tuning", () => {
+    const dropD = [38, 45, 50, 55, 59, 64];
+    expect(getPowerChord("e-0", dropD)?.name).toBe("D5");
+    expect(getPowerChord("e-0")?.name).toBe("E5");
   });
 });

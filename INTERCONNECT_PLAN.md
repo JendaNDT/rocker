@@ -130,7 +130,7 @@ a (přes nepovinné `instrumentSummary`) k dotazu generátoru plánu.
 
 ---
 
-## Fáze C — Ladění napříč appkou
+## Fáze C — Ladění napříč appkou ✅ HOTOVO (2026-05-25)
 
 ### C1 — Knihovna respektuje zvolené ladění
 
@@ -149,6 +149,11 @@ ladění. V Drop D appka pořád ukazuje standard.
 
 **Riziko:** střední — práce s výškami tónů, hlídat přepočet.
 
+**✅ Hotovo (2026-05-25):** `Fretboard` dostal prop `tuning` a čte struny
+z něj; `ScaleExplorer` ho prožene, `library/page.tsx` předá aktivní ladění
+s hydratační pojistkou. Akordové diagramy zůstávají standardní (jiné ladění
+= jiný akord).
+
 ### C2 — Metalové trenažéry respektují ladění
 
 **Co:** Power Chord a Gallop trainer počítají pozice napevno
@@ -162,6 +167,12 @@ tóny power chordů / názvy tónů.
 
 **Riziko:** střední. **Nižší priorita** — power chord je tvar, ladění mění
 hlavně zobrazené názvy tónů. Klidně až nakonec, nebo vynechat.
+
+**✅ Hotovo (2026-05-25):** Jenda zvolil C2 udělat. `powerChordAt`
+a `getPowerChord` dostaly nepovinný `openMidi`; oba trenažéry předají
+aktivní ladění, Power Chord trainer bere i popisky strun mini-hmatníku
+z ladění. Trenažéry jsou metronomové (ne detektorové), takže šlo čistě
+o správné názvy tónů — žádná detekční logika.
 
 ---
 
@@ -199,12 +210,12 @@ duplicita začne reálně překážet při údržbě. Klidně odložit nebo vyne
 | A | A2 — chat kontext | S | nízké | ✅ hotovo |
 | B | B1 — ladění profilu | M | střední | ✅ hotovo (varianta b) |
 | B | B2 — AI čte profil | S–M | nízké–stř. | ✅ hotovo |
-| C | C1 — knihovna a ladění | M | střední | po B1 |
-| C | C2 — trenažéry a ladění | M | střední | nízká priorita |
+| C | C1 — knihovna a ladění | M | střední | ✅ hotovo |
+| C | C2 — trenažéry a ladění | M | střední | ✅ hotovo |
 | D | D1 — sdílený scheduler | L | vysoké | zvážit, zda vůbec |
 
-Fáze A i B hotové (2026-05-25). Na řadě je fáze C, fázi D nechat jako
-otevřenou otázku.
+Fáze A, B i C hotové (2026-05-25). Zbývá jen fáze D — otevřená otázka
+(viz níže), sporná návratnost.
 
 ## Otevřené otázky k probrání s Jendou
 

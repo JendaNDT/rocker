@@ -1,12 +1,19 @@
 "use client";
 
 import { useState } from "react";
+import type { Tuning } from "@/audio/tunings";
 import { Fretboard } from "@/components/library/Fretboard";
 import { type Notation, pitchClassName } from "@/lib/pitch";
 import { DEFAULT_SCALE_ID, getScale, SCALES } from "@/lib/scales";
 
 /** Root picker + scale picker + fretboard. */
-export function ScaleExplorer({ notation }: { notation: Notation }) {
+export function ScaleExplorer({
+  notation,
+  tuning,
+}: {
+  notation: Notation;
+  tuning: Tuning;
+}) {
   const [scaleId, setScaleId] = useState<string>(DEFAULT_SCALE_ID);
   const [rootPitchClass, setRootPitchClass] = useState<number>(9); // A
 
@@ -62,6 +69,7 @@ export function ScaleExplorer({ notation }: { notation: Notation }) {
           scale={scale}
           rootPitchClass={rootPitchClass}
           notation={notation}
+          tuning={tuning}
         />
       </div>
     </div>

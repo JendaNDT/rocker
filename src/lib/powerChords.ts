@@ -49,13 +49,16 @@ export function midiToPitchClass(midi: number): string {
 
 /**
  * Builds a movable power chord whose root sits at the given string and fret.
- * rootStringIndex must be 0 (low E) or 1 (A).
+ * rootStringIndex must be 0 (low E) or 1 (A). The sounding pitch is resolved
+ * against `openMidi` — the open-string MIDI notes of the active tuning,
+ * defaulting to standard tuning.
  */
 export function powerChordAt(
   rootStringIndex: number,
   rootFret: number,
+  openMidi: readonly number[] = STANDARD_OPEN_MIDI,
 ): PowerChord {
-  const rootMidi = STANDARD_OPEN_MIDI[rootStringIndex] + rootFret;
+  const rootMidi = openMidi[rootStringIndex] + rootFret;
   const rootName = midiToPitchClass(rootMidi);
   const stringLetter = rootStringIndex === 0 ? "e" : "a";
   return {
@@ -86,7 +89,16 @@ export const POWER_CHORDS: PowerChord[] = [
   ),
 ];
 
-/** Looks up a power chord by its id. */
-export function getPowerChord(id: string): PowerChord | undefined {
-  return POWER_CHORDS.find((chord) => chord.id === id);
+/**
+ * Looks up a power chord by its id and resolves its pitch against the given
+ * tuning's open-string MIDI (defaults to standard tuning). The chord shape —
+ * string and fret — is tuning-independent; only the sounding pitch changes.
+ */
+export function getPowerChord(
+  id: string,
+  openMidi: readonly number[] = STANDARD_OPEN_MIDI,
+): PowerChord | undefined {
+  const base = POWER_CHORDS.find((chord) => chord.id === id);
+  if (!base) return undefined;
+  return powerChordAt(base.rootStringIndex, base.rootFret, openMidi);
 }

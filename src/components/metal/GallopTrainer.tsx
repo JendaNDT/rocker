@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { audioEngine } from "@/audio/AudioEngine";
 import { gallopPlayer } from "@/audio/gallopPlayer";
+import { DEFAULT_TUNING_ID, getTuning } from "@/audio/tunings";
 import { GALLOP_EXERCISES } from "@/lib/metalExercises";
 import type { GallopExercise } from "@/lib/metalExercises";
 import {
@@ -55,9 +56,15 @@ export function GallopTrainer() {
 
   const bpmRecords = useProgressStore((store) => store.bpmRecords);
   const storedNotation = useSettingsStore((store) => store.notation);
+  const storedTuningId = useSettingsStore((store) => store.tuningId);
   const hydrated = useHydrated();
   const record = hydrated ? bpmRecords[state.exercise.id] : undefined;
   const notation = hydrated ? storedNotation : "english";
+  // Power chord root is resolved against the active tuning. Before
+  // hydration use the default tuning so prerendered HTML matches.
+  const openMidi = getTuning(
+    hydrated ? storedTuningId : DEFAULT_TUNING_ID,
+  ).strings.map((string) => string.midi);
 
   // Advance the engine once per played gallop cell.
   useEffect(() => {
@@ -123,7 +130,7 @@ export function GallopTrainer() {
     setState((current) => ({ ...current, speedUpEnabled: enabled }));
   }
 
-  const chord = getPowerChord(state.exercise.chordId);
+  const chord = getPowerChord(state.exercise.chordId, openMidi);
   const chordName = chord
     ? `${pitchClassName(chord.rootMidi, notation)}5`
     : "—";
