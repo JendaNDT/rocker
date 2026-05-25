@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { EarTraining } from "@/components/games/EarTraining";
 import { FretboardGame } from "@/components/games/FretboardGame";
+import { PageContainer } from "@/components/PageContainer";
 
 /** Which game is shown. */
 type Mode = "fretboard" | "ear";
@@ -16,7 +17,7 @@ export default function GamesPage() {
   const [mode, setMode] = useState<Mode>("fretboard");
 
   return (
-    <div className="mx-auto max-w-3xl p-6">
+    <PageContainer size="focused">
       <h1 className="text-3xl font-bold tracking-tight">Hry</h1>
       <p className="mt-1 text-dim">
         Procvič si orientaci po hmatníku a sluch.
@@ -42,6 +43,6 @@ export default function GamesPage() {
       <div className="mt-4">
         {mode === "fretboard" ? <FretboardGame /> : <EarTraining />}
       </div>
-    </div>
+    </PageContainer>
   );
 }

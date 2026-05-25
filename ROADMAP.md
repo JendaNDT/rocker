@@ -324,6 +324,14 @@ hlasitost metronomu a přízvuku, trenažér tempa (progresivní zrychlování
 a „cvičné ticho" — gap trainer) a presety s persistencí nastavení mezi
 spuštěními. Detaily v `PROJECT_STATUS.md`.
 
+### ✅ Responzivní PC rozvržení
+Všech 16 obrazovek dostalo rozvržení pro PC — dosud měla appka na počítači
+stejný úzký sloupec jako na mobilu. Řízeno stejným přepínačem
+Počítač/Mobil/Automaticky jako navigace. Obrazovky bohaté na obsah jsou
+na PC dvousloupcové, fokusované nástroje mají umírněnou šířku, knihovna
+a noty využijí plnou šířku. Mobil zůstává jednosloupcový. Detaily
+v `PROJECT_STATUS.md`.
+
 ---
 
 ## Shrnutí fází

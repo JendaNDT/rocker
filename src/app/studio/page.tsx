@@ -1,10 +1,11 @@
 "use client";
 
+import { PageContainer } from "@/components/PageContainer";
 import { Studio } from "@/components/studio/Studio";
 
 export default function StudioPage() {
   return (
-    <div className="mx-auto max-w-3xl p-6">
+    <PageContainer>
       <h1 className="text-3xl font-bold tracking-tight">Studio</h1>
       <p className="mt-1 text-dim">
         Nahrávej stopy přes sebe — vrstvi podklad, sólo a další nápady.
@@ -12,6 +13,6 @@ export default function StudioPage() {
       <div className="mt-6">
         <Studio />
       </div>
-    </div>
+    </PageContainer>
   );
 }

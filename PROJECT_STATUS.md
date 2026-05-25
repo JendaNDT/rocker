@@ -15,9 +15,9 @@ IndexedDB (přes `idb`) pro velké bloby — nahrávky.
 ## ⏭️ Příští krok
 Roadmapa je prakticky hotová — body 1–21 dokončené (18 a 20 vědomě
 vynechané), zbývá poslední **Bod 22 (sdílení a organizace)**. Nad rámec
-roadmapy přibylo 6 vylepšení (vzhledy, šumová brána + autokalibrace,
+roadmapy přibylo 7 vylepšení (vzhledy, šumová brána + autokalibrace,
 upozornění na verzi, krok vzhledu v úvodu, záloha dat, rozšířený
-metronom) — vše nasazené.
+metronom, responzivní PC rozvržení) — vše nasazené.
 
 Otevřené úkoly:
 - **Bod 22 (sdílení a organizace)** — poslední bod roadmapy. Záloha dat
@@ -114,6 +114,16 @@ hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
   `src/lib/metronomeConfig.ts` + `metronomePresets.ts` (s testy),
   persistovaný store `src/stores/metronomeSettingsStore.ts`, komponenty
   v `src/components/metronome/`. Zvuk a UI čekají na ruční ověření Jendou.
+- **Responzivní PC rozvržení** — všech 16 obrazovek dostalo rozvržení
+  pro PC, řízené stejným přepínačem Počítač/Mobil/Automaticky jako
+  navigace (`useResolvedLayoutMode`). Tři znovupoužitelné díly:
+  `src/components/PageContainer.tsx` (šířka obsahu — `wide` xl→5xl,
+  `focused` umírněný 3xl) a `src/components/SplitColumns.tsx`
+  (dvousloupcové rozvržení, na mobilu se složí). Obrazovky se dělí na
+  dvousloupcové na PC (metronom, úvod, profil, aparát, studio, kytara,
+  youtube, nahrávky, cvičení), fokusované (metal, looper, hry, ladička,
+  tutor) a široké (knihovna, noty). Mobil zůstává jednosloupcový.
+  Čekají na ruční vizuální ověření Jendou.
 
 ## 📝 TODO
 - **Bod 22 — sdílení a organizace** (poslední bod roadmapy) — share-a-riff,
@@ -201,6 +211,15 @@ byly opraveny.
   rozhodnutí Bodu 4. Hi-hat je bílý šum přes horní propust, ne navzorkovaná
   bicí souprava. Skutečný sample by znamenal zvukový soubor v `public/`;
   lze doplnit později, kdyby syntéza po poslechu nestačila.
+- **Responzivní PC rozvržení — řídí se přepínačem, ne jen šířkou okna:**
+  rozvržení obsahu čte `useResolvedLayoutMode()` (stejný hook jako
+  navigace), takže volba Počítač/Mobil/Automaticky řídí i obsah, ne jen
+  navigaci. „Auto" používá CSS breakpoint `lg:`. Mode-aware třídy se píšou
+  jako objekt `{ desktop, mobile, auto }` s celými literály tříd — Tailwind
+  neumí skládat názvy tříd za běhu (`grid-cols-${n}` by purge nezachytil).
+  `PageContainer` má dvě velikosti: `wide` (xl→5xl, pro dvousloupcové
+  obrazovky) a `focused` (3xl, pro soustředěné nástroje, kde by plná šířka
+  obsah jen roztáhla).
 - **Co neděláme:** vlastní DB tabů, stem separation v prohlížeči, online
   multiplayer jam, iOS-specifické funkce.
 
@@ -212,7 +231,8 @@ byly opraveny.
   notation, amp, studio, looper, games, instrument). Napříč appkou:
   `ThemeProvider`, `ThemePicker`, `VintageFrame` (vzhledy),
   `ServiceWorkerRegister` (registrace SW + lišta nové verze),
-  `DataBackup`, `AudioInputSettings`, `InputLevelMeter`, `Onboarding`
+  `DataBackup`, `AudioInputSettings`, `InputLevelMeter`, `Onboarding`,
+  `PageContainer` + `SplitColumns` (responzivní PC rozvržení)
 - `src/audio/` — audio vrstva (AudioEngine, metronome, gallopPlayer,
   riffPlayer, pitchDetector — detekce tónů + šumová brána, muteAnalyzer,
   chordPlayer, countIn, tunings, recorder, ampChain, multitrackEngine,

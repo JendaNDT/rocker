@@ -5,6 +5,7 @@ import { useState } from "react";
 import { ChatPanel } from "@/components/tutor/ChatPanel";
 import { FeedbackPanel } from "@/components/tutor/FeedbackPanel";
 import { PlanPanel } from "@/components/tutor/PlanPanel";
+import { PageContainer } from "@/components/PageContainer";
 import { useHydrated } from "@/lib/useHydrated";
 import { useAiStore } from "@/stores/aiStore";
 
@@ -24,7 +25,7 @@ export default function TutorPage() {
   const hasKey = apiKey.trim().length > 0;
 
   return (
-    <div className="mx-auto max-w-3xl p-6">
+    <PageContainer size="focused">
       <h1 className="text-3xl font-bold tracking-tight">AI tutor</h1>
       <p className="mt-1 text-dim">
         Zeptej se na hraní, nebo si nech sestavit cvičební plán.
@@ -82,6 +83,6 @@ export default function TutorPage() {
           </div>
         </>
       )}
-    </div>
+    </PageContainer>
   );
 }

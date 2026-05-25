@@ -6,6 +6,8 @@ import { metronome } from "@/audio/metronome";
 import { BeatIndicator } from "@/components/metronome/BeatIndicator";
 import { PresetPanel } from "@/components/metronome/PresetPanel";
 import { TrainerPanel } from "@/components/metronome/TrainerPanel";
+import { PageContainer } from "@/components/PageContainer";
+import { SplitColumns } from "@/components/SplitColumns";
 import { useWakeLock } from "@/components/useWakeLock";
 import type {
   GapConfig,
@@ -197,11 +199,9 @@ export default function MetronomePage() {
     deletePreset(id);
   }
 
-  return (
-    <div className="mx-auto max-w-xl p-6">
-      <h1 className="text-3xl font-bold tracking-tight">Metronom</h1>
-      <p className="mt-1 text-dim">Tempo, takt a doby.</p>
-
+  // Left column — the "playing" surface watched while practising.
+  const playingColumn = (
+    <>
       <div className="mt-8 text-center">
         <div className="text-6xl font-bold tabular-nums">{bpm}</div>
         <div className="text-sm text-muted">BPM</div>
@@ -245,6 +245,36 @@ export default function MetronomePage() {
         </button>
       </div>
 
+      <div className="mt-8">
+        <div className="text-sm font-medium text-text">Přízvuky</div>
+        <div className="mt-3">
+          <BeatIndicator
+            accentPattern={accentPattern}
+            currentBeat={currentBeat}
+            onCycle={cycleAccent}
+          />
+        </div>
+      </div>
+
+      <div className="mt-8 flex justify-center">
+        <button
+          type="button"
+          onClick={togglePlay}
+          className={
+            isPlaying
+              ? "rounded-lg border border-line bg-surface px-10 py-3 text-base font-semibold transition-colors hover:border-line-strong"
+              : "rounded-lg bg-accent px-10 py-3 text-base font-semibold text-accent-fg transition-colors hover:bg-accent/90"
+          }
+        >
+          {isPlaying ? "Zastavit" : "Spustit"}
+        </button>
+      </div>
+    </>
+  );
+
+  // Right column — settings.
+  const settingsColumn = (
+    <>
       <div className="mt-8">
         <div className="text-sm font-medium text-text">Takt</div>
         <div className="mt-2 inline-flex flex-wrap rounded-lg border border-line p-1">
@@ -344,17 +374,6 @@ export default function MetronomePage() {
       </div>
 
       <div className="mt-8">
-        <div className="text-sm font-medium text-text">Přízvuky</div>
-        <div className="mt-3">
-          <BeatIndicator
-            accentPattern={accentPattern}
-            currentBeat={currentBeat}
-            onCycle={cycleAccent}
-          />
-        </div>
-      </div>
-
-      <div className="mt-8">
         <div className="text-sm font-medium text-text">Trenažér tempa</div>
         <div className="mt-3">
           <TrainerPanel
@@ -387,20 +406,14 @@ export default function MetronomePage() {
           Vibrace na dobu (mobil)
         </label>
       </div>
+    </>
+  );
 
-      <div className="mt-8 flex justify-center">
-        <button
-          type="button"
-          onClick={togglePlay}
-          className={
-            isPlaying
-              ? "rounded-lg border border-line bg-surface px-10 py-3 text-base font-semibold transition-colors hover:border-line-strong"
-              : "rounded-lg bg-accent px-10 py-3 text-base font-semibold text-accent-fg transition-colors hover:bg-accent/90"
-          }
-        >
-          {isPlaying ? "Zastavit" : "Spustit"}
-        </button>
-      </div>
-    </div>
+  return (
+    <PageContainer>
+      <h1 className="text-3xl font-bold tracking-tight">Metronom</h1>
+      <p className="mt-1 text-dim">Tempo, takt a doby.</p>
+      <SplitColumns left={playingColumn} right={settingsColumn} />
+    </PageContainer>
   );
 }

@@ -4,8 +4,10 @@ import { useState } from "react";
 import { ChordCard } from "@/components/library/ChordCard";
 import { RiffLibrary } from "@/components/library/RiffLibrary";
 import { ScaleExplorer } from "@/components/library/ScaleExplorer";
+import { PageContainer } from "@/components/PageContainer";
 import { CHORD_CATEGORY_LABELS, CHORDS } from "@/lib/chords";
 import type { ChordCategory } from "@/lib/chords";
+import { useResolvedLayoutMode } from "@/lib/layout";
 import { useHydrated } from "@/lib/useHydrated";
 import { useSettingsStore } from "@/stores/settingsStore";
 
@@ -18,6 +20,14 @@ const SEGMENT_ACTIVE =
 const SEGMENT_IDLE =
   "rounded-md px-3 py-1.5 text-sm text-dim transition-colors hover:text-text";
 
+// Chord grid columns, following the Auto / Desktop / Mobile switch so the
+// column count stays consistent with the rest of the layout.
+const CHORD_GRID = {
+  desktop: "mt-5 grid grid-cols-5 gap-3",
+  mobile: "mt-5 grid grid-cols-2 gap-3",
+  auto: "mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5",
+};
+
 export default function LibraryPage() {
   const [tab, setTab] = useState<Tab>("chords");
   const [category, setCategory] = useState<ChordCategory>("open");
@@ -26,13 +36,14 @@ export default function LibraryPage() {
   const setHandedness = useSettingsStore((state) => state.setHandedness);
   const notation = useSettingsStore((state) => state.notation);
   const hydrated = useHydrated();
+  const layoutMode = useResolvedLayoutMode();
   const mirror = hydrated && handedness === "left";
   const activeNotation = hydrated ? notation : "english";
 
   const visibleChords = CHORDS.filter((chord) => chord.category === category);
 
   return (
-    <div className="mx-auto max-w-4xl p-6">
+    <PageContainer>
       <h1 className="text-3xl font-bold tracking-tight">Knihovna</h1>
       <p className="mt-1 text-dim">Akordy, stupnice a riffy.</p>
 
@@ -98,7 +109,7 @@ export default function LibraryPage() {
             </div>
           </div>
 
-          <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+          <div className={CHORD_GRID[layoutMode]}>
             {visibleChords.map((chord) => (
               <ChordCard
                 key={chord.id}
@@ -122,6 +133,6 @@ export default function LibraryPage() {
           <RiffLibrary />
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 }

@@ -1,10 +1,11 @@
 "use client";
 
 import { LoopPedal } from "@/components/looper/LoopPedal";
+import { PageContainer } from "@/components/PageContainer";
 
 export default function LooperPage() {
   return (
-    <div className="mx-auto max-w-3xl p-6">
+    <PageContainer size="focused">
       <h1 className="text-3xl font-bold tracking-tight">Looper</h1>
       <p className="mt-1 text-dim">
         Loop pedál — nahraj smyčku, ta se opakuje, a vrstvi přes ni další
@@ -13,6 +14,6 @@ export default function LooperPage() {
       <div className="mt-6">
         <LoopPedal />
       </div>
-    </div>
+    </PageContainer>
   );
 }

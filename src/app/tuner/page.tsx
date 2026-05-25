@@ -6,6 +6,7 @@ import { DEFAULT_TUNING_ID, getTuning, TUNINGS } from "@/audio/tunings";
 import { GuidedTuner } from "@/components/tuner/GuidedTuner";
 import { TunerDisplay } from "@/components/tuner/TunerDisplay";
 import { useTuner } from "@/components/tuner/useTuner";
+import { PageContainer } from "@/components/PageContainer";
 import { useWakeLock } from "@/components/useWakeLock";
 import { useHydrated } from "@/lib/useHydrated";
 import { useAudioStore } from "@/stores/audioStore";
@@ -48,7 +49,7 @@ export default function TunerPage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl p-6">
+    <PageContainer size="focused">
       <h1 className="text-3xl font-bold tracking-tight">Ladička</h1>
       <p className="mt-1 text-dim">
         Zahraj strunu a slaď značku na střed.
@@ -142,6 +143,6 @@ export default function TunerPage() {
         )}
         {error && <p className="mt-3 text-sm text-danger">{error}</p>}
       </div>
-    </div>
+    </PageContainer>
   );
 }

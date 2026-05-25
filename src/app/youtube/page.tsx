@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useYouTubePlayer } from "@/components/youtube/useYouTubePlayer";
+import { PageContainer } from "@/components/PageContainer";
 import { useWakeLock } from "@/components/useWakeLock";
+import { useResolvedLayoutMode } from "@/lib/layout";
 import { useHydrated } from "@/lib/useHydrated";
 import { extractVideoId } from "@/lib/youtube";
 import { useYtLoopStore } from "@/stores/ytLoopStore";
@@ -10,6 +12,14 @@ import { useYtLoopStore } from "@/stores/ytLoopStore";
 const PLAYER_ID = "rocker-yt-player";
 const RATES = [0.25, 0.5, 0.75, 1, 1.25, 1.5];
 const POLL_MS = 120;
+
+// Video next to its controls on desktop, stacked on mobile. The player div
+// keeps a fixed position in the DOM so the YouTube iframe is never remounted.
+const VIDEO_GRID = {
+  desktop: "mt-4 grid grid-cols-2 items-start gap-x-8",
+  mobile: "mt-4",
+  auto: "mt-4 lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8",
+};
 
 function formatTime(seconds: number): string {
   if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
@@ -28,6 +38,7 @@ export default function YoutubePage() {
   const addLoop = useYtLoopStore((state) => state.addLoop);
   const removeLoop = useYtLoopStore((state) => state.removeLoop);
   const hydrated = useHydrated();
+  const layoutMode = useResolvedLayoutMode();
 
   const [urlInput, setUrlInput] = useState("");
   const [videoId, setVideoId] = useState<string | null>(null);
@@ -89,7 +100,12 @@ export default function YoutubePage() {
     loopStart !== null && loopEnd !== null && loopEnd > loopStart;
 
   function saveLoop() {
-    if (!loopReady || videoId === null || loopStart === null || loopEnd === null) {
+    if (
+      !loopReady ||
+      videoId === null ||
+      loopStart === null ||
+      loopEnd === null
+    ) {
       return;
     }
     addLoop({
@@ -115,7 +131,7 @@ export default function YoutubePage() {
       : [];
 
   return (
-    <div className="mx-auto max-w-3xl p-6">
+    <PageContainer>
       <h1 className="text-3xl font-bold tracking-tight">
         YouTube Practice Player
       </h1>
@@ -146,152 +162,162 @@ export default function YoutubePage() {
         <p className="mt-2 text-sm text-muted">Načítám přehrávač…</p>
       )}
 
-      <div className="mt-4 aspect-video w-full overflow-hidden rounded-lg border border-line bg-black">
-        <div id={PLAYER_ID} className="h-full w-full" />
-      </div>
+      <div className={VIDEO_GRID[layoutMode]}>
+        <div>
+          <div className="aspect-video w-full overflow-hidden rounded-lg border border-line bg-black">
+            <div id={PLAYER_ID} className="h-full w-full" />
+          </div>
 
-      {videoId !== null && (
-        <>
-          <div
-            onClick={handleBarClick}
-            className="relative mt-4 h-3 cursor-pointer overflow-hidden rounded-full bg-surface-2"
-          >
-            {loopReady && (
+          {videoId !== null && (
+            <>
               <div
-                className="pointer-events-none absolute inset-y-0 border-x border-accent bg-accent/20"
-                style={{
-                  left: `${toPercent(loopStart)}%`,
-                  width: `${toPercent(loopEnd) - toPercent(loopStart)}%`,
-                }}
-              />
-            )}
-            <div
-              className="pointer-events-none absolute inset-y-0 w-0.5 bg-accent"
-              style={{ left: `${toPercent(currentTime)}%` }}
-            />
-          </div>
-          <div className="mt-1 text-sm tabular-nums text-muted">
-            {formatTime(currentTime)} / {formatTime(duration)}
-          </div>
-
-          <div className="mt-4">
-            <div className="text-sm font-medium text-text">
-              Rychlost
-            </div>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {RATES.map((value) => (
-                <button
-                  key={value}
-                  type="button"
-                  onClick={() => changeRate(value)}
-                  className={
-                    rate === value
-                      ? "rounded-md bg-accent px-3 py-1.5 text-sm font-semibold text-accent-fg"
-                      : "rounded-md border border-line bg-surface px-3 py-1.5 text-sm text-dim transition-colors hover:text-text"
-                  }
-                >
-                  {Math.round(value * 100)} %
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-5 border-t border-line pt-4">
-            <div className="text-sm font-medium text-text">
-              Smyčka A–B
-            </div>
-            <div className="mt-2 flex flex-wrap items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setLoopStart(currentTime)}
-                className="rounded-lg border border-line bg-surface px-3 py-1.5 text-sm transition-colors hover:border-line-strong"
+                onClick={handleBarClick}
+                className="relative mt-4 h-3 cursor-pointer overflow-hidden rounded-full bg-surface-2"
               >
-                Bod A {loopStart !== null && `(${formatTime(loopStart)})`}
-              </button>
-              <button
-                type="button"
-                onClick={() => setLoopEnd(currentTime)}
-                className="rounded-lg border border-line bg-surface px-3 py-1.5 text-sm transition-colors hover:border-line-strong"
-              >
-                Bod B {loopEnd !== null && `(${formatTime(loopEnd)})`}
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setLoopStart(null);
-                  setLoopEnd(null);
-                }}
-                className="rounded-lg border border-line bg-surface px-3 py-1.5 text-sm text-dim transition-colors hover:border-line-strong"
-              >
-                Zrušit smyčku
-              </button>
-            </div>
-
-            {loopReady && (
-              <div className="mt-3 flex flex-wrap gap-2">
-                <input
-                  type="text"
-                  value={labelInput}
-                  onChange={(event) => setLabelInput(event.target.value)}
-                  placeholder="Název úseku (např. sólo 1)"
-                  className="min-w-0 flex-1 rounded-lg border border-line bg-bg px-3 py-1.5 text-sm text-text"
-                />
-                <button
-                  type="button"
-                  onClick={saveLoop}
-                  className="rounded-lg bg-accent px-3 py-1.5 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90"
-                >
-                  Uložit úsek
-                </button>
-              </div>
-            )}
-          </div>
-
-          {savedLoops.length > 0 && (
-            <div className="mt-5 border-t border-line pt-4">
-              <div className="text-sm font-medium text-text">
-                Uložené úseky
-              </div>
-              <div className="mt-2 space-y-2">
-                {savedLoops.map((loop) => (
+                {loopReady && (
                   <div
-                    key={loop.id}
-                    className="flex items-center justify-between rounded-lg border border-line bg-surface px-3 py-2"
-                  >
-                    <div className="min-w-0">
-                      <div className="truncate text-sm font-medium">
-                        {loop.label}
-                      </div>
-                      <div className="text-xs text-muted">
-                        {formatTime(loop.start)}–{formatTime(loop.end)} ·{" "}
-                        {Math.round(loop.rate * 100)} %
-                      </div>
-                    </div>
-                    <div className="ml-3 flex shrink-0 gap-2">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          applyLoop(loop.start, loop.end, loop.rate)
-                        }
-                        className="rounded-md border border-line bg-bg px-2.5 py-1 text-xs transition-colors hover:border-accent"
-                      >
-                        Načíst
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => removeLoop(loop.id)}
-                        className="rounded-md border border-line bg-bg px-2.5 py-1 text-xs text-dim transition-colors hover:border-line-strong"
-                      >
-                        Smazat
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                    className="pointer-events-none absolute inset-y-0 border-x border-accent bg-accent/20"
+                    style={{
+                      left: `${toPercent(loopStart)}%`,
+                      width: `${toPercent(loopEnd) - toPercent(loopStart)}%`,
+                    }}
+                  />
+                )}
+                <div
+                  className="pointer-events-none absolute inset-y-0 w-0.5 bg-accent"
+                  style={{ left: `${toPercent(currentTime)}%` }}
+                />
               </div>
-            </div>
+              <div className="mt-1 text-sm tabular-nums text-muted">
+                {formatTime(currentTime)} / {formatTime(duration)}
+              </div>
+            </>
           )}
-        </>
-      )}
-    </div>
+        </div>
+
+        <div>
+          {videoId === null ? (
+            <p className="mt-4 text-sm text-muted">
+              Načti video a objeví se ovládání rychlosti a smyček A–B.
+            </p>
+          ) : (
+            <>
+              <div className="mt-4">
+                <div className="text-sm font-medium text-text">Rychlost</div>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {RATES.map((value) => (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() => changeRate(value)}
+                      className={
+                        rate === value
+                          ? "rounded-md bg-accent px-3 py-1.5 text-sm font-semibold text-accent-fg"
+                          : "rounded-md border border-line bg-surface px-3 py-1.5 text-sm text-dim transition-colors hover:text-text"
+                      }
+                    >
+                      {Math.round(value * 100)} %
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-5 border-t border-line pt-4">
+                <div className="text-sm font-medium text-text">Smyčka A–B</div>
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setLoopStart(currentTime)}
+                    className="rounded-lg border border-line bg-surface px-3 py-1.5 text-sm transition-colors hover:border-line-strong"
+                  >
+                    Bod A {loopStart !== null && `(${formatTime(loopStart)})`}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setLoopEnd(currentTime)}
+                    className="rounded-lg border border-line bg-surface px-3 py-1.5 text-sm transition-colors hover:border-line-strong"
+                  >
+                    Bod B {loopEnd !== null && `(${formatTime(loopEnd)})`}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setLoopStart(null);
+                      setLoopEnd(null);
+                    }}
+                    className="rounded-lg border border-line bg-surface px-3 py-1.5 text-sm text-dim transition-colors hover:border-line-strong"
+                  >
+                    Zrušit smyčku
+                  </button>
+                </div>
+
+                {loopReady && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <input
+                      type="text"
+                      value={labelInput}
+                      onChange={(event) => setLabelInput(event.target.value)}
+                      placeholder="Název úseku (např. sólo 1)"
+                      className="min-w-0 flex-1 rounded-lg border border-line bg-bg px-3 py-1.5 text-sm text-text"
+                    />
+                    <button
+                      type="button"
+                      onClick={saveLoop}
+                      className="rounded-lg bg-accent px-3 py-1.5 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90"
+                    >
+                      Uložit úsek
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {savedLoops.length > 0 && (
+                <div className="mt-5 border-t border-line pt-4">
+                  <div className="text-sm font-medium text-text">
+                    Uložené úseky
+                  </div>
+                  <div className="mt-2 space-y-2">
+                    {savedLoops.map((loop) => (
+                      <div
+                        key={loop.id}
+                        className="flex items-center justify-between rounded-lg border border-line bg-surface px-3 py-2"
+                      >
+                        <div className="min-w-0">
+                          <div className="truncate text-sm font-medium">
+                            {loop.label}
+                          </div>
+                          <div className="text-xs text-muted">
+                            {formatTime(loop.start)}–{formatTime(loop.end)} ·{" "}
+                            {Math.round(loop.rate * 100)} %
+                          </div>
+                        </div>
+                        <div className="ml-3 flex shrink-0 gap-2">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              applyLoop(loop.start, loop.end, loop.rate)
+                            }
+                            className="rounded-md border border-line bg-bg px-2.5 py-1 text-xs transition-colors hover:border-accent"
+                          >
+                            Načíst
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => removeLoop(loop.id)}
+                            className="rounded-md border border-line bg-bg px-2.5 py-1 text-xs text-dim transition-colors hover:border-line-strong"
+                          >
+                            Smazat
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    </PageContainer>
   );
 }

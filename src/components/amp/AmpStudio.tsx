@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AmpChain } from "@/audio/ampChain";
 import { audioEngine } from "@/audio/AudioEngine";
+import { useResolvedLayoutMode } from "@/lib/layout";
 import {
   AMP_PRESETS,
   DEFAULT_AMP_PRESET,
@@ -10,6 +11,13 @@ import {
   type AmpSettings,
 } from "@/lib/ampPresets";
 import { useAudioStore } from "@/stores/audioStore";
+
+// Parameter sliders: two columns on desktop, stacked on mobile.
+const SLIDER_GRID = {
+  desktop: "grid grid-cols-2 gap-x-8 gap-y-4",
+  mobile: "space-y-4",
+  auto: "space-y-4 lg:grid lg:grid-cols-2 lg:gap-x-8 lg:gap-y-4 lg:space-y-0",
+};
 
 const PRIMARY_BUTTON =
   "rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-50";
@@ -48,6 +56,7 @@ export function AmpStudio() {
   );
 
   const latencyMs = useAudioStore((state) => state.latencyMs);
+  const layoutMode = useResolvedLayoutMode();
 
   // Tear down the audio graph when leaving the screen.
   useEffect(() => {
@@ -200,7 +209,7 @@ export function AmpStudio() {
             </div>
           </div>
 
-          <div className="space-y-4">
+          <div className={SLIDER_GRID[layoutMode]}>
             {slider("Zkreslení", "drive", false)}
             {slider("Basy", "bass", true)}
             {slider("Středy", "mid", true)}

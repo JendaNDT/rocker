@@ -4,7 +4,9 @@ import { useState } from "react";
 import { LessonPlayer } from "@/components/practice/LessonPlayer";
 import { RiffTrainer } from "@/components/practice/RiffTrainer";
 import { SurgicalTrainer } from "@/components/practice/SurgicalTrainer";
+import { PageContainer } from "@/components/PageContainer";
 import { useWakeLock } from "@/components/useWakeLock";
+import { useResolvedLayoutMode } from "@/lib/layout";
 import { stageCompletion } from "@/lib/lessonEngine";
 import { getLesson, STAGES } from "@/lib/lessons";
 import { useHydrated } from "@/lib/useHydrated";
@@ -23,6 +25,13 @@ const SEGMENT_ACTIVE =
 const SEGMENT_IDLE =
   "rounded-md px-3 py-1.5 text-sm text-dim transition-colors hover:text-text";
 
+// Lesson buttons within a stage: two columns on desktop, stacked on mobile.
+const LESSON_GRID = {
+  desktop: "mt-3 grid grid-cols-2 gap-2",
+  mobile: "mt-3 space-y-2",
+  auto: "mt-3 space-y-2 sm:grid sm:grid-cols-2 sm:gap-2 sm:space-y-0",
+};
+
 export default function PracticePage() {
   useWakeLock();
 
@@ -36,6 +45,7 @@ export default function PracticePage() {
     (state) => state.markLessonComplete,
   );
   const hydrated = useHydrated();
+  const layoutMode = useResolvedLayoutMode();
   const completed = hydrated ? completedLessonIds : [];
 
   const activeLesson = activeLessonId ? getLesson(activeLessonId) : undefined;
@@ -54,7 +64,7 @@ export default function PracticePage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl p-6">
+    <PageContainer size="focused">
       <h1 className="text-3xl font-bold tracking-tight">Cvičení</h1>
       <p className="mt-1 text-dim">Výuková cesta a trénink.</p>
 
@@ -87,7 +97,7 @@ export default function PracticePage() {
                   {stage.description}
                 </p>
 
-                <div className="mt-3 space-y-2">
+                <div className={LESSON_GRID[layoutMode]}>
                   {stage.lessons.map((lesson) => {
                     const done = completed.includes(lesson.id);
                     return (
@@ -126,6 +136,6 @@ export default function PracticePage() {
           <SurgicalTrainer />
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 }

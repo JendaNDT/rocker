@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import { AbCompare } from "@/components/recorder/AbCompare";
 import { RecorderControls } from "@/components/recorder/RecorderControls";
 import { RecordingList } from "@/components/recorder/RecordingList";
+import { PageContainer } from "@/components/PageContainer";
+import { SplitColumns } from "@/components/SplitColumns";
 import { useRecordingsStore } from "@/stores/recordingsStore";
 
 export default function RecorderPage() {
@@ -16,7 +18,7 @@ export default function RecorderPage() {
   }, [loaded, load]);
 
   return (
-    <div className="mx-auto max-w-2xl p-6">
+    <PageContainer>
       <h1 className="text-3xl font-bold tracking-tight">Nahrávání</h1>
       <p className="mt-1 text-dim">
         Nahraj svoji hru a porovnej jednotlivé pokusy.
@@ -26,11 +28,20 @@ export default function RecorderPage() {
         <RecorderControls />
       </div>
 
-      <h2 className="mt-8 text-lg font-semibold">Tvoje nahrávky</h2>
-      <RecordingList />
-
-      <h2 className="mt-8 text-lg font-semibold">Porovnání A/B</h2>
-      <AbCompare />
-    </div>
+      <SplitColumns
+        left={
+          <>
+            <h2 className="mt-8 text-lg font-semibold">Tvoje nahrávky</h2>
+            <RecordingList />
+          </>
+        }
+        right={
+          <>
+            <h2 className="mt-8 text-lg font-semibold">Porovnání A/B</h2>
+            <AbCompare />
+          </>
+        }
+      />
+    </PageContainer>
   );
 }

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { GallopTrainer } from "@/components/metal/GallopTrainer";
 import { PalmMuteStudio } from "@/components/metal/PalmMuteStudio";
 import { PowerChordTrainer } from "@/components/metal/PowerChordTrainer";
+import { PageContainer } from "@/components/PageContainer";
 import { useWakeLock } from "@/components/useWakeLock";
 
 type Tab = "power" | "gallop" | "palm";
@@ -29,7 +30,7 @@ export default function MetalPage() {
   const [tab, setTab] = useState<Tab>("power");
 
   return (
-    <div className="mx-auto max-w-3xl p-6">
+    <PageContainer size="focused">
       <h1 className="text-3xl font-bold tracking-tight">Metal</h1>
       <p className="mt-1 text-dim">
         Trenažéry pro rockovou a metalovou hru.
@@ -53,6 +54,6 @@ export default function MetalPage() {
         {tab === "gallop" && <GallopTrainer />}
         {tab === "palm" && <PalmMuteStudio />}
       </div>
-    </div>
+    </PageContainer>
   );
 }

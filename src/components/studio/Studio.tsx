@@ -13,7 +13,15 @@ import {
   setTrackGain,
   setTrackMuted,
 } from "@/lib/multitrack";
+import { useResolvedLayoutMode } from "@/lib/layout";
 import { formatDuration } from "@/lib/recordings";
+
+// Track list: two columns on desktop, stacked on mobile.
+const TRACK_GRID = {
+  desktop: "mt-5 grid grid-cols-2 gap-2",
+  mobile: "mt-5 space-y-2",
+  auto: "mt-5 space-y-2 lg:grid lg:grid-cols-2 lg:gap-2 lg:space-y-0",
+};
 
 const PRIMARY_BUTTON =
   "rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-50";
@@ -34,6 +42,7 @@ export function Studio() {
   const [starting, setStarting] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const layoutMode = useResolvedLayoutMode();
 
   // Stop any audio when leaving the screen.
   useEffect(() => {
@@ -166,7 +175,7 @@ export function Studio() {
           třeba akordový podklad.
         </p>
       ) : (
-        <div className="mt-5 space-y-2">
+        <div className={TRACK_GRID[layoutMode]}>
           {project.tracks.map((track, index) => (
             <div
               key={track.id}
