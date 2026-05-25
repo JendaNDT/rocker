@@ -36,18 +36,18 @@ export function GuidedTuner({
   const activeInTune =
     nearest !== null && Math.abs(activeCents) <= IN_TUNE_CENTS;
 
-  // Mark a string tuned once it reaches the in-tune zone.
+  // Mark a string tuned once it reaches the in-tune zone. Depends only on the
+  // primitive index/cents so it runs when those change, not every render.
   useEffect(() => {
-    if (nearest && Math.abs(nearest.cents) <= IN_TUNE_CENTS) {
-      const index = nearest.index;
+    if (activeIndex !== null && Math.abs(activeCents) <= IN_TUNE_CENTS) {
       setTuned((prev) => {
-        if (prev.has(index)) return prev;
+        if (prev.has(activeIndex)) return prev;
         const next = new Set(prev);
-        next.add(index);
+        next.add(activeIndex);
         return next;
       });
     }
-  }, [nearest?.index, nearest?.cents, nearest]);
+  }, [activeIndex, activeCents]);
 
   return (
     <div className="rounded-lg border border-line bg-surface p-6">

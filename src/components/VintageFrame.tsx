@@ -1,6 +1,7 @@
 "use client";
 
 import type { CSSProperties } from "react";
+import { useHydrated } from "@/lib/useHydrated";
 import { useSettingsStore } from "@/stores/settingsStore";
 
 /**
@@ -8,8 +9,11 @@ import { useSettingsStore } from "@/stores/settingsStore";
  * jen ve Vintage tématu. Fixed overlay, nezasahuje do kliků.
  */
 export function VintageFrame() {
+  // Gate on hydration: the persisted theme is only known on the client, so
+  // rendering the studs before hydration would mismatch the prerendered HTML.
+  const hydrated = useHydrated();
   const theme = useSettingsStore((s) => s.theme);
-  if (theme !== "vintage") return null;
+  if (!hydrated || theme !== "vintage") return null;
 
   const stud: CSSProperties = {
     position: "fixed",

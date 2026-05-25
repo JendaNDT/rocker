@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { DEFAULT_TUNING_ID } from "@/audio/tunings";
+import { DEFAULT_TUNING_ID, TUNINGS } from "@/audio/tunings";
 import type { Notation } from "@/lib/pitch";
 
 /**
@@ -78,6 +78,57 @@ export const useSettingsStore = create<SettingsState>()(
       onboarded: false,
       setOnboarded: (onboarded) => set({ onboarded }),
     }),
-    { name: "rocker-settings" },
+    {
+      name: "rocker-settings",
+      // Stored data can be corrupt or written by an older app version. Each
+      // field is validated here; anything invalid falls back to a safe
+      // default so the app never starts in a broken state (see AGENTS.md).
+      merge: (persisted, current) => {
+        const safe = { ...current };
+        if (typeof persisted === "object" && persisted !== null) {
+          const stored = persisted as Record<string, unknown>;
+          if (
+            stored.layoutMode === "auto" ||
+            stored.layoutMode === "desktop" ||
+            stored.layoutMode === "mobile"
+          ) {
+            safe.layoutMode = stored.layoutMode;
+          }
+          if (
+            stored.theme === "studio" ||
+            stored.theme === "vintage" ||
+            stored.theme === "glassy"
+          ) {
+            safe.theme = stored.theme;
+          }
+          if (
+            stored.colorMode === "light" ||
+            stored.colorMode === "dark" ||
+            stored.colorMode === "auto"
+          ) {
+            safe.colorMode = stored.colorMode;
+          }
+          if (
+            typeof stored.tuningId === "string" &&
+            TUNINGS.some((tuning) => tuning.id === stored.tuningId)
+          ) {
+            safe.tuningId = stored.tuningId;
+          }
+          if (stored.handedness === "right" || stored.handedness === "left") {
+            safe.handedness = stored.handedness;
+          }
+          if (stored.notation === "english" || stored.notation === "german") {
+            safe.notation = stored.notation;
+          }
+          if (typeof stored.zenMode === "boolean") {
+            safe.zenMode = stored.zenMode;
+          }
+          if (typeof stored.onboarded === "boolean") {
+            safe.onboarded = stored.onboarded;
+          }
+        }
+        return safe;
+      },
+    },
   ),
 );
