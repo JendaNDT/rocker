@@ -11,9 +11,9 @@ import { useProgressStore } from "@/stores/progressStore";
 
 function Figure({ value, label }: { value: string; label: string }) {
   return (
-    <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-4">
-      <div className="text-xl font-bold text-amber-500">{value}</div>
-      <div className="mt-1 text-xs text-neutral-400">{label}</div>
+    <div className="rounded-lg border border-line bg-surface p-4">
+      <div className="text-xl font-bold text-accent">{value}</div>
+      <div className="mt-1 text-xs text-dim">{label}</div>
     </div>
   );
 }
@@ -57,7 +57,7 @@ export function ProgressDetail() {
       <button
         type="button"
         onClick={handleReset}
-        className="mt-4 rounded-lg border border-neutral-800 bg-neutral-950 px-4 py-2 text-sm text-neutral-400 transition-colors hover:border-red-800 hover:text-red-400"
+        className="mt-4 rounded-lg border border-line bg-bg px-4 py-2 text-sm text-dim transition-colors hover:border-danger hover:text-danger"
       >
         Vynulovat pokrok
       </button>

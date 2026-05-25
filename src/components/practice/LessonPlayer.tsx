@@ -35,20 +35,20 @@ export function LessonPlayer({
         <button
           type="button"
           onClick={onExit}
-          className="text-sm text-neutral-400 transition-colors hover:text-neutral-100"
+          className="text-sm text-dim transition-colors hover:text-text"
         >
           Zpět na lekce
         </button>
-        <span className="text-sm text-neutral-500">
+        <span className="text-sm text-muted">
           Krok {stepIndex + 1} / {lesson.steps.length}
         </span>
       </div>
 
       <h1 className="mt-3 text-2xl font-bold tracking-tight">{lesson.title}</h1>
 
-      <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-neutral-800">
+      <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-surface-2">
         <div
-          className="h-full rounded-full bg-amber-500 transition-all"
+          className="h-full rounded-full bg-accent transition-all"
           style={{ width: `${progress}%` }}
         />
       </div>
@@ -64,8 +64,8 @@ export function LessonPlayer({
           onClick={() => setStepIndex((index) => index - 1)}
           className={
             isFirst
-              ? "rounded-lg border border-neutral-900 px-4 py-2 text-sm text-neutral-700"
-              : "rounded-lg border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm transition-colors hover:border-neutral-700"
+              ? "rounded-lg border border-line px-4 py-2 text-sm text-muted"
+              : "rounded-lg border border-line bg-surface px-4 py-2 text-sm transition-colors hover:border-line-strong"
           }
         >
           Zpět
@@ -74,7 +74,7 @@ export function LessonPlayer({
           <button
             type="button"
             onClick={onComplete}
-            className="rounded-lg bg-amber-500 px-5 py-2 text-sm font-semibold text-neutral-950 transition-colors hover:bg-amber-400"
+            className="rounded-lg bg-accent px-5 py-2 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90"
           >
             Dokončit lekci
           </button>
@@ -82,7 +82,7 @@ export function LessonPlayer({
           <button
             type="button"
             onClick={() => setStepIndex((index) => index + 1)}
-            className="rounded-lg bg-amber-500 px-5 py-2 text-sm font-semibold text-neutral-950 transition-colors hover:bg-amber-400"
+            className="rounded-lg bg-accent px-5 py-2 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90"
           >
             Další
           </button>

@@ -78,15 +78,15 @@ export function FretboardGame() {
 
   if (!started) {
     return (
-      <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-4">
-        <p className="text-sm text-neutral-300">
+      <div className="rounded-lg border border-line bg-surface p-4">
+        <p className="text-sm text-text">
           Appka pojmenuje tón a ty klikni, kde je na hmatníku. Hraje se ve
           standardním ladění. Cvičí to orientaci po krku.
         </p>
         <button
           type="button"
           onClick={start}
-          className="mt-4 rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-neutral-950 transition-colors hover:bg-amber-400"
+          className="mt-4 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90"
         >
           Začít hru
         </button>
@@ -95,15 +95,15 @@ export function FretboardGame() {
   }
 
   return (
-    <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-4">
+    <div className="rounded-lg border border-line bg-surface p-4">
       <div className="flex items-baseline justify-between gap-4">
         <div className="text-lg">
           Najdi tón:{" "}
-          <span className="text-2xl font-bold text-amber-500">
+          <span className="text-2xl font-bold text-accent">
             {pitchClassName(target, display)}
           </span>
         </div>
-        <div className="text-sm text-neutral-400">
+        <div className="text-sm text-dim">
           Skóre {score} · série {streak}
         </div>
       </div>
@@ -112,8 +112,8 @@ export function FretboardGame() {
         <p
           className={
             feedback.correct
-              ? "mt-2 text-sm text-emerald-400"
-              : "mt-2 text-sm text-red-400"
+              ? "mt-2 text-sm text-success"
+              : "mt-2 text-sm text-danger"
           }
         >
           {feedback.correct
@@ -255,7 +255,7 @@ export function FretboardGame() {
       <button
         type="button"
         onClick={start}
-        className="mt-3 rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-1.5 text-sm text-neutral-400 transition-colors hover:border-neutral-700"
+        className="mt-3 rounded-lg border border-line bg-bg px-3 py-1.5 text-sm text-dim transition-colors hover:border-line-strong"
       >
         Nová hra
       </button>

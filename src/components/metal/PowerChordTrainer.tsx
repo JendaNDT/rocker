@@ -37,9 +37,9 @@ const NECK_H = MARGIN_TOP + STRING_GAP * 5 + MARGIN_BOTTOM;
 const INLAY_FRETS = [3, 5, 7, 9, 12];
 
 const SEGMENT_ACTIVE =
-  "rounded-md bg-neutral-800 px-3 py-1.5 text-sm text-amber-500";
+  "rounded-md bg-surface-2 px-3 py-1.5 text-sm text-accent";
 const SEGMENT_IDLE =
-  "rounded-md px-3 py-1.5 text-sm text-neutral-400 transition-colors hover:text-neutral-100";
+  "rounded-md px-3 py-1.5 text-sm text-dim transition-colors hover:text-text";
 
 function stringY(stringIndex: number): number {
   return MARGIN_TOP + stringIndex * STRING_GAP;
@@ -250,7 +250,7 @@ export function PowerChordTrainer() {
   return (
     <div>
       {/* Exercise picker */}
-      <div className="inline-flex flex-wrap rounded-lg border border-neutral-800 p-1">
+      <div className="inline-flex flex-wrap rounded-lg border border-line p-1">
         {POWER_CHORD_EXERCISES.map((exercise) => (
           <button
             key={exercise.id}
@@ -266,20 +266,20 @@ export function PowerChordTrainer() {
           </button>
         ))}
       </div>
-      <p className="mt-2 text-sm text-neutral-400">
+      <p className="mt-2 text-sm text-dim">
         {state.exercise.description}
       </p>
 
       {/* Current chord */}
-      <div className="mt-6 rounded-xl border border-neutral-800 bg-neutral-900 p-5">
+      <div className="mt-6 rounded-xl border border-line bg-surface p-5">
         <div className="flex items-baseline justify-between">
           <div>
-            <div className="text-xs text-neutral-500">Hraj teď</div>
-            <div className="text-4xl font-bold tracking-tight text-amber-500">
+            <div className="text-xs text-muted">Hraj teď</div>
+            <div className="text-4xl font-bold tracking-tight text-accent">
               {activeName}
             </div>
             {activeChord && (
-              <div className="mt-1 text-sm text-neutral-400">
+              <div className="mt-1 text-sm text-dim">
                 {6 - activeChord.rootStringIndex}. struna,{" "}
                 {activeChord.rootFret === 0
                   ? "naprázdno"
@@ -288,8 +288,8 @@ export function PowerChordTrainer() {
             )}
           </div>
           <div className="text-right">
-            <div className="text-xs text-neutral-500">Příští</div>
-            <div className="text-xl font-semibold text-neutral-300">
+            <div className="text-xs text-muted">Příští</div>
+            <div className="text-xl font-semibold text-text">
               {nextName}
             </div>
           </div>
@@ -303,13 +303,13 @@ export function PowerChordTrainer() {
 
         {/* Round progress */}
         <div className="mt-4">
-          <div className="h-2 overflow-hidden rounded-full bg-neutral-800">
+          <div className="h-2 overflow-hidden rounded-full bg-surface-2">
             <div
-              className="h-full bg-amber-500 transition-all duration-100"
+              className="h-full bg-accent transition-all duration-100"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
-          <div className="mt-1 text-xs text-neutral-500">
+          <div className="mt-1 text-xs text-muted">
             Odehraná kola: {state.roundsCompleted}
           </div>
         </div>
@@ -321,36 +321,36 @@ export function PowerChordTrainer() {
           type="button"
           aria-label="Snížit tempo"
           onClick={() => adjustBpm(-5)}
-          className="h-10 w-10 rounded-lg border border-neutral-800 bg-neutral-900 text-lg transition-colors hover:border-neutral-700"
+          className="h-10 w-10 rounded-lg border border-line bg-surface text-lg transition-colors hover:border-line-strong"
         >
           −
         </button>
         <div className="text-center">
           <div className="text-3xl font-bold tabular-nums">{state.bpm}</div>
-          <div className="text-xs text-neutral-500">BPM</div>
+          <div className="text-xs text-muted">BPM</div>
         </div>
         <button
           type="button"
           aria-label="Zvýšit tempo"
           onClick={() => adjustBpm(5)}
-          className="h-10 w-10 rounded-lg border border-neutral-800 bg-neutral-900 text-lg transition-colors hover:border-neutral-700"
+          className="h-10 w-10 rounded-lg border border-line bg-surface text-lg transition-colors hover:border-line-strong"
         >
           +
         </button>
       </div>
 
       {record !== undefined && (
-        <p className="mt-2 text-center text-sm text-neutral-400">
+        <p className="mt-2 text-center text-sm text-dim">
           Tvůj rekord v tomto cvičení: {record} BPM
         </p>
       )}
 
-      <label className="mt-4 flex items-center justify-center gap-2 text-sm text-neutral-300">
+      <label className="mt-4 flex items-center justify-center gap-2 text-sm text-text">
         <input
           type="checkbox"
           checked={state.speedUpEnabled}
           onChange={(event) => setSpeedUp(event.target.checked)}
-          className="h-4 w-4 accent-amber-500"
+          className="h-4 w-4 accent-accent"
         />
         Postupně zrychlovat (+5 % po každém kole)
       </label>
@@ -362,8 +362,8 @@ export function PowerChordTrainer() {
           onClick={togglePlay}
           className={
             isPlaying
-              ? "rounded-lg border border-neutral-800 bg-neutral-900 px-10 py-3 text-base font-semibold transition-colors hover:border-neutral-700"
-              : "rounded-lg bg-amber-500 px-10 py-3 text-base font-semibold text-neutral-950 transition-colors hover:bg-amber-400"
+              ? "rounded-lg border border-line bg-surface px-10 py-3 text-base font-semibold transition-colors hover:border-line-strong"
+              : "rounded-lg bg-accent px-10 py-3 text-base font-semibold text-accent-fg transition-colors hover:bg-accent/90"
           }
         >
           {isPlaying ? "Zastavit" : "Spustit"}

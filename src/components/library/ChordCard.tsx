@@ -22,7 +22,7 @@ export function ChordCard({
     <button
       type="button"
       onClick={() => void playChord(chordMidiNotes(chord))}
-      className="rounded-lg border border-neutral-800 bg-neutral-900 p-3 transition-colors hover:border-amber-600"
+      className="rounded-lg border border-line bg-surface p-3 transition-colors hover:border-accent"
     >
       <div className="mx-auto max-w-[128px]">
         <ChordDiagram chord={chord} mirror={mirror} />
@@ -30,7 +30,7 @@ export function ChordCard({
       <div className="mt-2 text-center text-sm font-semibold">
         {localizeChordName(chord.name, notation)}
       </div>
-      <div className="text-center text-xs text-neutral-500">
+      <div className="text-center text-xs text-muted">
         Klepni a poslechni
       </div>
     </button>

@@ -16,11 +16,11 @@ import {
 import { formatDuration } from "@/lib/recordings";
 
 const PRIMARY_BUTTON =
-  "rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-neutral-950 transition-colors hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-50";
+  "rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-50";
 const SECONDARY_BUTTON =
-  "rounded-lg border border-neutral-800 bg-neutral-950 px-4 py-2 text-sm transition-colors hover:border-neutral-700 disabled:cursor-not-allowed disabled:opacity-50";
+  "rounded-lg border border-line bg-bg px-4 py-2 text-sm transition-colors hover:border-line-strong disabled:cursor-not-allowed disabled:opacity-50";
 const SMALL_BUTTON =
-  "rounded-md border border-neutral-800 bg-neutral-950 px-2.5 py-1 text-xs transition-colors hover:border-neutral-700 disabled:cursor-not-allowed disabled:opacity-50";
+  "rounded-md border border-line bg-bg px-2.5 py-1 text-xs transition-colors hover:border-line-strong disabled:cursor-not-allowed disabled:opacity-50";
 
 /**
  * Multi-track studio for Bod 17. Records tracks over each other (overdub),
@@ -116,8 +116,8 @@ export function Studio() {
   }
 
   return (
-    <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-4">
-      <div className="rounded-lg border border-amber-600/40 bg-amber-500/10 p-3 text-sm text-amber-200">
+    <div className="rounded-lg border border-line bg-surface p-4">
+      <div className="rounded-lg border border-accent/40 bg-accent/10 p-3 text-sm text-accent">
         Nahrávej do sluchátek. Při hraní přes reproduktory se předchozí stopy
         nahrají znovu do té nové.
       </div>
@@ -154,14 +154,14 @@ export function Studio() {
       </div>
 
       {recording && (
-        <p className="mt-3 text-sm text-amber-500">
+        <p className="mt-3 text-sm text-accent">
           Nahrávám… předchozí stopy ti hrají do sluchátek.
         </p>
       )}
-      {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
+      {error && <p className="mt-3 text-sm text-danger">{error}</p>}
 
       {project.tracks.length === 0 ? (
-        <p className="mt-5 text-sm text-neutral-500">
+        <p className="mt-5 text-sm text-muted">
           Zatím žádné stopy. Klikni na „Nahrát stopu" a nahraj první vrstvu —
           třeba akordový podklad.
         </p>
@@ -170,14 +170,14 @@ export function Studio() {
           {project.tracks.map((track, index) => (
             <div
               key={track.id}
-              className="rounded-lg border border-neutral-800 bg-neutral-950 p-3"
+              className="rounded-lg border border-line bg-bg p-3"
             >
               <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0">
                   <div className="truncate text-sm font-medium">
                     {index + 1}. {track.name}
                   </div>
-                  <div className="text-xs text-neutral-500">
+                  <div className="text-xs text-muted">
                     {formatDuration(track.durationSec)}
                   </div>
                 </div>
@@ -207,7 +207,7 @@ export function Studio() {
                 </div>
               </div>
               <div className="mt-2 flex items-center gap-2">
-                <span className="text-xs text-neutral-500">Hlasitost</span>
+                <span className="text-xs text-muted">Hlasitost</span>
                 <input
                   type="range"
                   min={0}
@@ -223,7 +223,7 @@ export function Studio() {
                       ),
                     )
                   }
-                  className="w-full accent-amber-500"
+                  className="w-full accent-accent"
                 />
               </div>
             </div>

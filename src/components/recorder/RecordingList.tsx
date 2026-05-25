@@ -10,13 +10,13 @@ export function RecordingList() {
 
   if (!loaded) {
     return (
-      <p className="mt-4 text-sm text-neutral-500">Načítám nahrávky…</p>
+      <p className="mt-4 text-sm text-muted">Načítám nahrávky…</p>
     );
   }
 
   if (recordings.length === 0) {
     return (
-      <p className="mt-4 text-sm text-neutral-500">
+      <p className="mt-4 text-sm text-muted">
         Zatím nemáš žádné nahrávky. Zapni vstup a něco si nahraj.
       </p>
     );

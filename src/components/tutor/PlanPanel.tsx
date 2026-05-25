@@ -13,9 +13,9 @@ const TIME_OPTIONS = [10, 15, 20, 30];
 const TOTAL_LESSONS = STAGES.flatMap((stage) => stage.lessons).length;
 
 const SEGMENT_ACTIVE =
-  "rounded-md bg-amber-500 px-3 py-1.5 text-sm font-semibold text-neutral-950";
+  "rounded-md bg-accent px-3 py-1.5 text-sm font-semibold text-accent-fg";
 const SEGMENT_IDLE =
-  "rounded-md px-3 py-1.5 text-sm text-neutral-400 transition-colors hover:text-neutral-100";
+  "rounded-md px-3 py-1.5 text-sm text-dim transition-colors hover:text-text";
 
 /**
  * The "Plán cvičení" panel of the AI tutor screen: collects today's available
@@ -60,11 +60,11 @@ export function PlanPanel() {
 
   return (
     <div>
-      <div className="rounded-lg border border-neutral-800 bg-neutral-950 p-4">
-        <div className="text-sm font-medium text-neutral-300">
+      <div className="rounded-lg border border-line bg-bg p-4">
+        <div className="text-sm font-medium text-text">
           Kolik máš dnes času?
         </div>
-        <div className="mt-2 inline-flex rounded-lg border border-neutral-800 p-1">
+        <div className="mt-2 inline-flex rounded-lg border border-line p-1">
           {TIME_OPTIONS.map((option) => (
             <button
               key={option}
@@ -79,7 +79,7 @@ export function PlanPanel() {
 
         <label
           htmlFor="plan-focus"
-          className="mt-4 block text-sm font-medium text-neutral-300"
+          className="mt-4 block text-sm font-medium text-text"
         >
           Na co se chceš zaměřit? (nepovinné)
         </label>
@@ -89,14 +89,14 @@ export function PlanPanel() {
           value={focus}
           onChange={(event) => setFocus(event.target.value)}
           placeholder="např. přechody mezi akordy, palm mute, rychlost"
-          className="mt-2 w-full rounded-lg border border-neutral-800 bg-neutral-900 px-3 py-2 text-sm text-neutral-100"
+          className="mt-2 w-full rounded-lg border border-line bg-surface px-3 py-2 text-sm text-text"
         />
 
         <button
           type="button"
           onClick={() => void generate()}
           disabled={busy}
-          className="mt-4 rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-neutral-950 transition-colors hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-50"
+          className="mt-4 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {busy
             ? "Sestavuji plán…"
@@ -106,13 +106,13 @@ export function PlanPanel() {
         </button>
       </div>
 
-      {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
+      {error && <p className="mt-3 text-sm text-danger">{error}</p>}
 
       {plan && (
         <div className="mt-5">
           <div className="flex items-baseline justify-between">
             <h2 className="font-semibold">Tvůj plán na dnešek</h2>
-            <span className="text-xs text-neutral-400">
+            <span className="text-xs text-dim">
               {plan.totalMinutes} min
             </span>
           </div>
@@ -120,17 +120,17 @@ export function PlanPanel() {
             {plan.items.map((item, index) => {
               const row = (
                 <div className="flex items-center gap-3">
-                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-neutral-800 text-sm font-semibold text-amber-500">
+                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-surface-2 text-sm font-semibold text-accent">
                     {index + 1}
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-baseline justify-between gap-2">
                       <div className="font-medium">{item.title}</div>
-                      <div className="shrink-0 text-xs text-neutral-400">
+                      <div className="shrink-0 text-xs text-dim">
                         {item.minutes} min
                       </div>
                     </div>
-                    <div className="mt-0.5 text-sm text-neutral-400">
+                    <div className="mt-0.5 text-sm text-dim">
                       {item.detail}
                     </div>
                   </div>
@@ -141,12 +141,12 @@ export function PlanPanel() {
                   {item.href ? (
                     <Link
                       href={item.href}
-                      className="block rounded-md border border-neutral-800 bg-neutral-950 p-3 transition-colors hover:border-amber-600"
+                      className="block rounded-md border border-line bg-bg p-3 transition-colors hover:border-accent"
                     >
                       {row}
                     </Link>
                   ) : (
-                    <div className="rounded-md border border-neutral-800 bg-neutral-950 p-3">
+                    <div className="rounded-md border border-line bg-bg p-3">
                       {row}
                     </div>
                   )}

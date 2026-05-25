@@ -114,6 +114,19 @@ rozpracovaná (Body 19 a 21 hotové, Bod 20 vynechán). Aktuálně
   rozpoznávání intervalů a kvality akordů sluchem (přes syntézu z Bodu 5).
   Logika v `fretboardGame.ts` a `earTraining.ts` (s testy). 3D Three.js
   vizualizér vědomě vynechán
+- **3 přepínatelné vzhledy** (mimo roadmapu — vizuální nadstavba,
+  větev `feature/vzhledy`, neslitá do `main`). Témata **Studio**
+  (tube amp, serif, mosaz), **Vintage** (staré studio, papír, mosazné
+  cvočky) a **Glassy** (frosted gradient), každé v režimu Světlý /
+  Tmavý / Auto-OS. Volba v `/profile → Vzhled`, persistuje se přes
+  Zustand v `rocker-settings`. CSS proměnné v `theme-tokens.css`,
+  Tailwind v4 `@theme` proxy v `globals.css`, `ThemeProvider`
+  synchronizuje `data-theme`/`data-mode` na `<html>`. Všech 58 souborů
+  obrazovek přemigrováno z `bg-neutral-*` na theme-aware třídy
+  (`bg-surface`, `text-accent`…). Vintage cvočky přes `VintageFrame`,
+  Glassy frosted blur plošně přes CSS. Postaveno z design handoff
+  balíčku; `tsc` čistý, 306 testů prochází. **Neověřeno vizuálně** —
+  čeká Jendův proklik v `npm run dev`
 - **Bod 21** — profil nástroje: obrazovka `/instrument` („Kytara").
   **Karta profilu** — editovatelná (název, tělo, snímače krk/střed/kobylka
   × humbucker/single/P90, menzura, ladění, struny, poznámky), uložená
@@ -145,6 +158,9 @@ rozpracovaná (Body 19 a 21 hotové, Bod 20 vynechán). Aktuálně
 
 ### Backlog (později)
 - Drobnost: tvary akordů v drop ladění (odloženo z Bodu 5)
+- Témově specifické widgety vzhledů — VU metr, knoby, papírový displej
+  not, beat-mince (viz Klíčová rozhodnutí)
+- Slít větev `feature/vzhledy` do `main` po Jendově vizuálním ověření
 
 ## 🏗️ Klíčová rozhodnutí
 *(Aby ses k tomu zase zbytečně nevracel.)*
@@ -196,6 +212,20 @@ rozpracovaná (Body 19 a 21 hotové, Bod 20 vynechán). Aktuálně
   který s Turbopackem nesedí. Hlavní vlákno je pro jednu skladbu
   dostačující a obchází celé bundlování workerů. Font (Bravura) a soundfont
   (SONiVOX) jsou ručně zkopírované do `public/alphatab/`.
+- **3 vzhledy — theme přes CSS proměnné, ne per-komponentu:** žádná
+  komponenta neví, jaké téma je aktivní — čte jen CSS proměnné
+  z `[data-theme]`/`[data-mode]`. Výjimky čtoucí `theme` přímo:
+  `VintageFrame` (mosazné cvočky jen ve Vintage). Glassy frosted efekt
+  řešen plošně CSS pravidlem na `.bg-surface*` v `globals.css` —
+  vědomá odchylka od patche, který navrhoval `<Card>` komponentu
+  a refactor všech karet; plošné CSS dává stejný výsledek bez
+  52-souborového refactoru a bez mrtvého kódu. `text-neutral-500`
+  mapováno na `text-muted` (handoff mapování ho explicitně neuvádělo).
+- **3 vzhledy — co NENÍ hotové:** témově specifické widgety z mockupu
+  (analogový VU metr na ladičce, otočné knoby na metronomu, papírový
+  vs. LCD displej not, mosazné beat-mince) — handoff patch je
+  nepokrýval, je to samostatná větší práce. Po migraci se mění barvy,
+  fonty a akcenty všude; widgety zůstávají ve standardní podobě.
 - **Co neděláme:** vlastní DB tabů, stem separation v prohlížeči, online
   multiplayer jam, iOS-specifické funkce.
 
@@ -203,7 +233,9 @@ rozpracovaná (Body 19 a 21 hotové, Bod 20 vynechán). Aktuálně
 - `src/app/` — stránky (17 obrazovek, App Router)
 - `src/components/` — React komponenty (po doménách: tuner, metronome,
   library, practice, youtube, dashboard, profile, recorder, metal, tutor,
-  notation, amp, studio, looper, games, instrument)
+  notation, amp, studio, looper, games, instrument). Vzhledy:
+  `ThemeProvider`, `VintageFrame`, `ThemePicker`
+- `src/app/theme-tokens.css` — CSS proměnné 3 vzhledů × 2 režimy
 - `public/alphatab/` — font Bravura a SONiVOX soundfont pro AlphaTab (Bod 15)
 - `src/audio/` — audio vrstva (AudioEngine, metronome, gallopPlayer,
   riffPlayer, pitchDetector, muteAnalyzer, chordPlayer, countIn, tunings,

@@ -29,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="cs">
+    <html lang="cs" data-theme="studio" data-mode="dark">
       <body>
         <ServiceWorkerRegister />
         <AppShell>{children}</AppShell>

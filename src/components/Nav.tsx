@@ -7,11 +7,11 @@ import type { LayoutMode } from "@/stores/settingsStore";
 
 // Nav container — "auto" uses CSS breakpoints, the others are fixed.
 const CONTAINER: Record<LayoutMode, string> = {
-  auto: "fixed inset-x-0 bottom-0 z-10 flex overflow-x-auto border-t border-neutral-800 bg-neutral-950 md:inset-y-0 md:right-auto md:left-0 md:w-56 md:flex-col md:overflow-x-visible md:overflow-y-auto md:border-t-0 md:border-r",
+  auto: "fixed inset-x-0 bottom-0 z-10 flex overflow-x-auto border-t border-line bg-bg md:inset-y-0 md:right-auto md:left-0 md:w-56 md:flex-col md:overflow-x-visible md:overflow-y-auto md:border-t-0 md:border-r",
   desktop:
-    "fixed inset-y-0 left-0 z-10 flex w-56 flex-col overflow-y-auto border-r border-neutral-800 bg-neutral-950",
+    "fixed inset-y-0 left-0 z-10 flex w-56 flex-col overflow-y-auto border-r border-line bg-bg",
   mobile:
-    "fixed inset-x-0 bottom-0 z-10 flex overflow-x-auto border-t border-neutral-800 bg-neutral-950",
+    "fixed inset-x-0 bottom-0 z-10 flex overflow-x-auto border-t border-line bg-bg",
 };
 
 // "Rocker" wordmark — shown only when the side rail is visible.
@@ -49,8 +49,8 @@ export function Nav({ layout }: { layout: LayoutMode }) {
             className={[
               ITEM[layout],
               active
-                ? "text-amber-500"
-                : "text-neutral-400 hover:text-neutral-100",
+                ? "text-accent"
+                : "text-dim hover:text-text",
             ].join(" ")}
           >
             {screen.label}

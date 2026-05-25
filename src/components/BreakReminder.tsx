@@ -56,15 +56,15 @@ export function BreakReminder() {
   if (!show) return null;
 
   return (
-    <div className="fixed inset-x-3 bottom-24 z-20 mx-auto max-w-md rounded-xl border border-amber-700 bg-neutral-900 p-4 shadow-lg md:bottom-4">
-      <p className="text-sm text-neutral-200">
+    <div className="fixed inset-x-3 bottom-24 z-20 mx-auto max-w-md rounded-xl border border-accent bg-surface p-4 shadow-lg md:bottom-4">
+      <p className="text-sm text-text">
         Cvičíš už 45 minut. Dej si pauzu — protáhni prsty a nech uši
         odpočinout.
       </p>
       <button
         type="button"
         onClick={dismiss}
-        className="mt-3 rounded-lg bg-amber-500 px-4 py-1.5 text-sm font-semibold text-neutral-950 transition-colors hover:bg-amber-400"
+        className="mt-3 rounded-lg bg-accent px-4 py-1.5 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90"
       >
         Dobře
       </button>

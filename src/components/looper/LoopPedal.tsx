@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { type LoopState, loopPedal } from "@/audio/loopPedal";
 
 const PRIMARY_BUTTON =
-  "rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-neutral-950 transition-colors hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-50";
+  "rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-50";
 const SECONDARY_BUTTON =
-  "rounded-lg border border-neutral-800 bg-neutral-950 px-4 py-2 text-sm transition-colors hover:border-neutral-700 disabled:cursor-not-allowed disabled:opacity-50";
+  "rounded-lg border border-line bg-bg px-4 py-2 text-sm transition-colors hover:border-line-strong disabled:cursor-not-allowed disabled:opacity-50";
 
 /**
  * Loop pedal for Bod 17. Records a base loop, plays it back on repeat, and
@@ -78,8 +78,8 @@ export function LoopPedal() {
   }
 
   return (
-    <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-4">
-      <div className="rounded-lg border border-amber-600/40 bg-amber-500/10 p-3 text-sm text-amber-200">
+    <div className="rounded-lg border border-line bg-surface p-4">
+      <div className="rounded-lg border border-accent/40 bg-accent/10 p-3 text-sm text-accent">
         Nahrávej do sluchátek. Při hraní přes reproduktory se hrající smyčka
         nahraje znovu do nové vrstvy.
       </div>
@@ -136,7 +136,7 @@ export function LoopPedal() {
         )}
       </div>
 
-      <p className="mt-3 text-sm text-neutral-400">
+      <p className="mt-3 text-sm text-dim">
         {state === "idle" &&
           "Nahraj krátkou smyčku — po zastavení se hned začne opakovat."}
         {state === "recordingBase" &&
@@ -146,7 +146,7 @@ export function LoopPedal() {
           "Nahrávám vrstvu přes hrající smyčku… zastav na konci cyklu."}
       </p>
 
-      {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
+      {error && <p className="mt-3 text-sm text-danger">{error}</p>}
     </div>
   );
 }

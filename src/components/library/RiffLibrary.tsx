@@ -28,9 +28,9 @@ const SLOWDOWNS = [
 ];
 
 const SEGMENT_ACTIVE =
-  "rounded-md bg-neutral-800 px-3 py-1.5 text-sm text-amber-500";
+  "rounded-md bg-surface-2 px-3 py-1.5 text-sm text-accent";
 const SEGMENT_IDLE =
-  "rounded-md px-3 py-1.5 text-sm text-neutral-400 transition-colors hover:text-neutral-100";
+  "rounded-md px-3 py-1.5 text-sm text-dim transition-colors hover:text-text";
 
 // Tab geometry (SVG user units).
 const STRING_GAP = 16;
@@ -215,14 +215,14 @@ function RiffStandView({
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-neutral-950 p-4">
+    <div className="fixed inset-0 z-50 flex flex-col bg-bg p-4">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold tracking-tight">{riff.title}</h2>
         <button
           type="button"
           onClick={onClose}
           aria-label="Zavřít stojan"
-          className="rounded-lg border border-neutral-800 bg-neutral-900 px-3 py-1.5 text-sm transition-colors hover:border-neutral-700"
+          className="rounded-lg border border-line bg-surface px-3 py-1.5 text-sm transition-colors hover:border-line-strong"
         >
           Zavřít
         </button>
@@ -238,7 +238,7 @@ function RiffStandView({
       </div>
 
       <div className="flex flex-wrap items-center justify-center gap-3">
-        <div className="inline-flex rounded-lg border border-neutral-800 p-1">
+        <div className="inline-flex rounded-lg border border-line p-1">
           {SLOWDOWNS.map((option) => (
             <button
               key={option.value}
@@ -257,8 +257,8 @@ function RiffStandView({
           onClick={onTogglePlay}
           className={
             isPlaying
-              ? "rounded-lg border border-neutral-800 bg-neutral-900 px-10 py-3 text-base font-semibold transition-colors hover:border-neutral-700"
-              : "rounded-lg bg-amber-500 px-10 py-3 text-base font-semibold text-neutral-950 transition-colors hover:bg-amber-400"
+              ? "rounded-lg border border-line bg-surface px-10 py-3 text-base font-semibold transition-colors hover:border-line-strong"
+              : "rounded-lg bg-accent px-10 py-3 text-base font-semibold text-accent-fg transition-colors hover:bg-accent/90"
           }
         >
           {isPlaying ? "Zastavit" : "Přehrát"}
@@ -344,7 +344,7 @@ export function RiffLibrary() {
         <button
           type="button"
           onClick={backToList}
-          className="text-sm text-neutral-400 transition-colors hover:text-neutral-100"
+          className="text-sm text-dim transition-colors hover:text-text"
         >
           ← Zpět na výpis
         </button>
@@ -352,28 +352,28 @@ export function RiffLibrary() {
         <h2 className="mt-3 text-2xl font-bold tracking-tight">
           {selectedRiff.title}
         </h2>
-        <p className="mt-1 text-sm text-neutral-400">
+        <p className="mt-1 text-sm text-dim">
           {selectedRiff.artist ? `${selectedRiff.artist} · ` : ""}
           {selectedRiff.style} · {selectedRiff.focus} ·{" "}
           {RIFF_DIFFICULTY_LABELS[selectedRiff.difficulty]}
         </p>
 
-        <div className="mt-5 rounded-xl border border-neutral-800 bg-neutral-900 p-4">
+        <div className="mt-5 rounded-xl border border-line bg-surface p-4">
           <RiffTab
             riff={selectedRiff}
             positionBeats={positionBeats}
             isPlaying={isPlaying}
           />
-          <p className="mt-2 text-xs text-neutral-500">
+          <p className="mt-2 text-xs text-muted">
             Oranžové noty se hrají s palm mute. Čísla jsou pražce.
           </p>
         </div>
 
         {/* Slow-down */}
         <div className="mt-5">
-          <div className="text-sm font-medium text-neutral-300">Tempo</div>
+          <div className="text-sm font-medium text-text">Tempo</div>
           <div className="mt-2 flex items-center gap-3">
-            <div className="inline-flex rounded-lg border border-neutral-800 p-1">
+            <div className="inline-flex rounded-lg border border-line p-1">
               {SLOWDOWNS.map((option) => (
                 <button
                   key={option.value}
@@ -387,7 +387,7 @@ export function RiffLibrary() {
                 </button>
               ))}
             </div>
-            <span className="text-sm text-neutral-500">
+            <span className="text-sm text-muted">
               {Math.round(selectedRiff.bpm * slowdown)} BPM
             </span>
           </div>
@@ -399,8 +399,8 @@ export function RiffLibrary() {
             onClick={() => togglePlay(selectedRiff)}
             className={
               isPlaying
-                ? "rounded-lg border border-neutral-800 bg-neutral-900 px-10 py-3 text-base font-semibold transition-colors hover:border-neutral-700"
-                : "rounded-lg bg-amber-500 px-10 py-3 text-base font-semibold text-neutral-950 transition-colors hover:bg-amber-400"
+                ? "rounded-lg border border-line bg-surface px-10 py-3 text-base font-semibold transition-colors hover:border-line-strong"
+                : "rounded-lg bg-accent px-10 py-3 text-base font-semibold text-accent-fg transition-colors hover:bg-accent/90"
             }
           >
             {isPlaying ? "Zastavit" : "Přehrát"}
@@ -408,7 +408,7 @@ export function RiffLibrary() {
           <button
             type="button"
             onClick={() => setStandMode(true)}
-            className="rounded-lg border border-neutral-800 bg-neutral-900 px-6 py-3 text-base font-semibold transition-colors hover:border-neutral-700"
+            className="rounded-lg border border-line bg-surface px-6 py-3 text-base font-semibold transition-colors hover:border-line-strong"
           >
             Stojan
           </button>
@@ -425,7 +425,7 @@ export function RiffLibrary() {
 
   return (
     <div>
-      <div className="inline-flex flex-wrap rounded-lg border border-neutral-800 p-1">
+      <div className="inline-flex flex-wrap rounded-lg border border-line p-1">
         {DIFFICULTY_FILTERS.map((filter) => (
           <button
             key={filter.id}
@@ -446,15 +446,15 @@ export function RiffLibrary() {
             key={riff.id}
             type="button"
             onClick={() => selectRiff(riff.id)}
-            className="block w-full rounded-lg border border-neutral-800 bg-neutral-900 px-4 py-3 text-left transition-colors hover:border-amber-600"
+            className="block w-full rounded-lg border border-line bg-surface px-4 py-3 text-left transition-colors hover:border-accent"
           >
             <div className="flex items-baseline justify-between gap-3">
               <span className="font-medium">{riff.title}</span>
-              <span className="shrink-0 text-xs text-neutral-500">
+              <span className="shrink-0 text-xs text-muted">
                 {RIFF_DIFFICULTY_LABELS[riff.difficulty]}
               </span>
             </div>
-            <div className="mt-0.5 text-sm text-neutral-400">
+            <div className="mt-0.5 text-sm text-dim">
               {riff.artist ? `${riff.artist} · ` : ""}
               {riff.style} · {riff.focus}
             </div>

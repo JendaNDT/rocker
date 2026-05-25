@@ -50,16 +50,16 @@ export function GuidedTuner({
   }, [nearest?.index, nearest?.cents, nearest]);
 
   return (
-    <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-6">
+    <div className="rounded-lg border border-line bg-surface p-6">
       <div className="flex gap-1.5">
         {tuning.strings.map((string, index) => {
           const isActive = index === activeIndex;
           const isTuned = tuned.has(index);
           const variant = isActive
-            ? "border-amber-500 text-amber-500"
+            ? "border-accent text-accent"
             : isTuned
-              ? "border-emerald-500/60 text-emerald-400"
-              : "border-neutral-800 text-neutral-400";
+              ? "border-success/60 text-success"
+              : "border-line text-dim";
           return (
             <div
               key={string.note}
@@ -77,9 +77,9 @@ export function GuidedTuner({
       <div className="mt-6">
         {nearest ? (
           <>
-            <p className="text-center text-sm text-neutral-400">
+            <p className="text-center text-sm text-dim">
               Struna{" "}
-              <span className="font-semibold text-neutral-100">
+              <span className="font-semibold text-text">
                 {midiToLabelIn(nearest.string.midi, notation)}
               </span>
             </p>
@@ -89,8 +89,8 @@ export function GuidedTuner({
             <p
               className={
                 activeInTune
-                  ? "mt-4 text-center font-semibold text-emerald-400"
-                  : "mt-4 text-center font-semibold text-amber-500"
+                  ? "mt-4 text-center font-semibold text-success"
+                  : "mt-4 text-center font-semibold text-accent"
               }
             >
               {activeInTune
@@ -99,7 +99,7 @@ export function GuidedTuner({
             </p>
           </>
         ) : (
-          <p className="py-6 text-center text-neutral-500">
+          <p className="py-6 text-center text-muted">
             Zahraj jednu strunu…
           </p>
         )}

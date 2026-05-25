@@ -12,9 +12,9 @@ import { useAiStore } from "@/stores/aiStore";
 type Mode = "chat" | "plan" | "feedback";
 
 const TAB_ACTIVE =
-  "rounded-md bg-neutral-800 px-3 py-1.5 text-sm text-amber-500";
+  "rounded-md bg-surface-2 px-3 py-1.5 text-sm text-accent";
 const TAB_IDLE =
-  "rounded-md px-3 py-1.5 text-sm text-neutral-400 transition-colors hover:text-neutral-100";
+  "rounded-md px-3 py-1.5 text-sm text-dim transition-colors hover:text-text";
 
 export default function TutorPage() {
   const hydrated = useHydrated();
@@ -26,28 +26,28 @@ export default function TutorPage() {
   return (
     <div className="mx-auto max-w-3xl p-6">
       <h1 className="text-3xl font-bold tracking-tight">AI tutor</h1>
-      <p className="mt-1 text-neutral-400">
+      <p className="mt-1 text-dim">
         Zeptej se na hraní, nebo si nech sestavit cvičební plán.
       </p>
 
       {!hydrated ? (
-        <p className="mt-6 text-sm text-neutral-500">Načítám…</p>
+        <p className="mt-6 text-sm text-muted">Načítám…</p>
       ) : !hasKey ? (
-        <div className="mt-6 rounded-lg border border-neutral-800 bg-neutral-900 p-4">
-          <p className="text-sm text-neutral-300">
+        <div className="mt-6 rounded-lg border border-line bg-surface p-4">
+          <p className="text-sm text-text">
             AI tutor potřebuje vlastní klíč Google Gemini — vyzvedneš si ho
             zdarma. Nastav ho v Profilu v sekci „AI tutor", pak se sem vrať.
           </p>
           <Link
             href="/profile"
-            className="mt-4 inline-block rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-neutral-950 transition-colors hover:bg-amber-400"
+            className="mt-4 inline-block rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90"
           >
             Otevřít nastavení
           </Link>
         </div>
       ) : (
         <>
-          <div className="mt-6 inline-flex rounded-lg border border-neutral-800 p-1">
+          <div className="mt-6 inline-flex rounded-lg border border-line p-1">
             <button
               type="button"
               onClick={() => setMode("chat")}

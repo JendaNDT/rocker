@@ -129,7 +129,7 @@ export function RecordingItem({ recording }: { recording: RecordingMeta }) {
   }
 
   return (
-    <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-4">
+    <div className="rounded-lg border border-line bg-surface p-4">
       <audio
         ref={audioRef}
         hidden
@@ -149,12 +149,12 @@ export function RecordingItem({ recording }: { recording: RecordingMeta }) {
               value={draftName}
               onChange={(event) => setDraftName(event.target.value)}
               aria-label="Název nahrávky"
-              className="min-w-0 flex-1 rounded-md border border-neutral-700 bg-neutral-950 px-2 py-1 text-sm"
+              className="min-w-0 flex-1 rounded-md border border-line-strong bg-bg px-2 py-1 text-sm"
             />
             <button
               type="button"
               onClick={saveName}
-              className="rounded-md bg-amber-500 px-3 py-1 text-sm font-semibold text-neutral-950 transition-colors hover:bg-amber-400"
+              className="rounded-md bg-accent px-3 py-1 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90"
             >
               Uložit
             </button>
@@ -164,7 +164,7 @@ export function RecordingItem({ recording }: { recording: RecordingMeta }) {
                 setDraftName(recording.name);
                 setEditing(false);
               }}
-              className="rounded-md border border-neutral-700 px-3 py-1 text-sm text-neutral-400 transition-colors hover:border-neutral-600"
+              className="rounded-md border border-line-strong px-3 py-1 text-sm text-dim transition-colors hover:border-line-strong"
             >
               Zrušit
             </button>
@@ -172,7 +172,7 @@ export function RecordingItem({ recording }: { recording: RecordingMeta }) {
         ) : (
           <div className="min-w-0">
             <div className="truncate font-medium">{recording.name}</div>
-            <div className="mt-0.5 text-xs text-neutral-400">
+            <div className="mt-0.5 text-xs text-dim">
               {formatDate(recording.createdAt)} ·{" "}
               {formatDuration(recording.durationSec)}
             </div>
@@ -184,21 +184,21 @@ export function RecordingItem({ recording }: { recording: RecordingMeta }) {
             <button
               type="button"
               onClick={() => setEditing(true)}
-              className="rounded-md border border-neutral-800 bg-neutral-950 px-2.5 py-1 text-xs text-neutral-400 transition-colors hover:border-neutral-700"
+              className="rounded-md border border-line bg-bg px-2.5 py-1 text-xs text-dim transition-colors hover:border-line-strong"
             >
               Přejmenovat
             </button>
             <button
               type="button"
               onClick={() => void handleExport()}
-              className="rounded-md border border-neutral-800 bg-neutral-950 px-2.5 py-1 text-xs text-neutral-400 transition-colors hover:border-amber-600"
+              className="rounded-md border border-line bg-bg px-2.5 py-1 text-xs text-dim transition-colors hover:border-accent"
             >
               Exportovat
             </button>
             <button
               type="button"
               onClick={handleDelete}
-              className="rounded-md border border-neutral-800 bg-neutral-950 px-2.5 py-1 text-xs text-neutral-400 transition-colors hover:border-red-800 hover:text-red-400"
+              className="rounded-md border border-line bg-bg px-2.5 py-1 text-xs text-dim transition-colors hover:border-danger hover:text-danger"
             >
               Smazat
             </button>
@@ -210,11 +210,11 @@ export function RecordingItem({ recording }: { recording: RecordingMeta }) {
         <button
           type="button"
           onClick={() => void togglePlay()}
-          className="rounded-lg bg-amber-500 px-4 py-1.5 text-sm font-semibold text-neutral-950 transition-colors hover:bg-amber-400"
+          className="rounded-lg bg-accent px-4 py-1.5 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90"
         >
           {isPlaying ? "Pauza" : "Přehrát"}
         </button>
-        <span className="text-xs tabular-nums text-neutral-400">
+        <span className="text-xs tabular-nums text-dim">
           {formatDuration(currentTime)} /{" "}
           {formatDuration(recording.durationSec)}
         </span>
@@ -228,16 +228,16 @@ export function RecordingItem({ recording }: { recording: RecordingMeta }) {
         value={currentTime}
         onChange={(event) => seek(Number(event.target.value))}
         aria-label="Pozice v nahrávce"
-        className="mt-2 w-full accent-amber-500"
+        className="mt-2 w-full accent-accent"
       />
 
       <div className="mt-3">
         <div className="flex items-center justify-between gap-2">
-          <span className="text-xs text-neutral-400">Markery</span>
+          <span className="text-xs text-dim">Markery</span>
           <button
             type="button"
             onClick={addMarker}
-            className="rounded-md border border-neutral-800 bg-neutral-950 px-2.5 py-1 text-xs text-neutral-300 transition-colors hover:border-amber-600"
+            className="rounded-md border border-line bg-bg px-2.5 py-1 text-xs text-text transition-colors hover:border-accent"
           >
             Přidat marker
           </button>
@@ -248,12 +248,12 @@ export function RecordingItem({ recording }: { recording: RecordingMeta }) {
             {recording.markers.map((marker) => (
               <span
                 key={marker.id}
-                className="flex items-center gap-1 rounded-md border border-neutral-800 bg-neutral-950 py-1 pr-1 pl-2 text-xs"
+                className="flex items-center gap-1 rounded-md border border-line bg-bg py-1 pr-1 pl-2 text-xs"
               >
                 <button
                   type="button"
                   onClick={() => void jumpToMarker(marker.timeSec)}
-                  className="text-neutral-200 transition-colors hover:text-amber-500"
+                  className="text-text transition-colors hover:text-accent"
                 >
                   {marker.label} · {formatDuration(marker.timeSec)}
                 </button>
@@ -261,7 +261,7 @@ export function RecordingItem({ recording }: { recording: RecordingMeta }) {
                   type="button"
                   onClick={() => removeMarker(marker.id)}
                   aria-label={`Smazat marker ${marker.label}`}
-                  className="rounded px-1 text-neutral-500 transition-colors hover:text-red-400"
+                  className="rounded px-1 text-muted transition-colors hover:text-danger"
                 >
                   ×
                 </button>
@@ -269,7 +269,7 @@ export function RecordingItem({ recording }: { recording: RecordingMeta }) {
             ))}
           </div>
         ) : (
-          <p className="mt-1 text-xs text-neutral-600">
+          <p className="mt-1 text-xs text-muted">
             Zatím žádné markery. Přehrávej a označ si těžká místa.
           </p>
         )}

@@ -171,7 +171,7 @@ export function RiffTrainer() {
         onEnded={() => setIsPlaying(false)}
       />
 
-      <label className="inline-block cursor-pointer rounded-lg border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm transition-colors hover:border-amber-600">
+      <label className="inline-block cursor-pointer rounded-lg border border-line bg-surface px-4 py-2 text-sm transition-colors hover:border-accent">
         Vybrat skladbu (MP3 / WAV)
         <input
           type="file"
@@ -182,15 +182,15 @@ export function RiffTrainer() {
       </label>
 
       {!fileName && (
-        <p className="mt-3 text-sm text-neutral-500">
+        <p className="mt-3 text-sm text-muted">
           Zatím není vybraná žádná skladba. Nahraj si vlastní soubor a procvičuj
           si těžké pasáže pomalu.
         </p>
       )}
 
       {fileName && (
-        <div className="mt-4 rounded-lg border border-neutral-800 bg-neutral-900 p-5">
-          <p className="truncate text-sm text-neutral-400">{fileName}</p>
+        <div className="mt-4 rounded-lg border border-line bg-surface p-5">
+          <p className="truncate text-sm text-dim">{fileName}</p>
 
           <div className="mt-4">
             <Waveform
@@ -208,11 +208,11 @@ export function RiffTrainer() {
               type="button"
               onClick={togglePlay}
               disabled={countingIn}
-              className="rounded-lg bg-amber-500 px-6 py-2 text-sm font-semibold text-neutral-950 transition-colors hover:bg-amber-400 disabled:opacity-60"
+              className="rounded-lg bg-accent px-6 py-2 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90 disabled:opacity-60"
             >
               {playLabel}
             </button>
-            <span className="text-sm tabular-nums text-neutral-400">
+            <span className="text-sm tabular-nums text-dim">
               {formatTime(currentTime)} / {formatTime(duration)}
             </span>
           </div>
@@ -225,11 +225,11 @@ export function RiffTrainer() {
             value={currentTime}
             onChange={(event) => seek(Number(event.target.value))}
             aria-label="Pozice ve skladbě"
-            className="mt-4 w-full accent-amber-500"
+            className="mt-4 w-full accent-accent"
           />
 
           <div className="mt-5 flex items-center gap-3">
-            <span className="w-24 text-sm text-neutral-300">
+            <span className="w-24 text-sm text-text">
               Rychlost {Math.round(speed * 100)} %
             </span>
             <input
@@ -240,26 +240,26 @@ export function RiffTrainer() {
               value={speed}
               onChange={(event) => changeSpeed(Number(event.target.value))}
               aria-label="Rychlost přehrávání"
-              className="flex-1 accent-amber-500"
+              className="flex-1 accent-accent"
             />
           </div>
 
-          <div className="mt-5 border-t border-neutral-800 pt-4">
-            <div className="text-sm font-medium text-neutral-300">
+          <div className="mt-5 border-t border-line pt-4">
+            <div className="text-sm font-medium text-text">
               Smyčka A–B
             </div>
             <div className="mt-2 flex flex-wrap items-center gap-2">
               <button
                 type="button"
                 onClick={() => setLoopStart(currentTime)}
-                className="rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-1.5 text-sm transition-colors hover:border-neutral-700"
+                className="rounded-lg border border-line bg-bg px-3 py-1.5 text-sm transition-colors hover:border-line-strong"
               >
                 Bod A {loopStart !== null && `(${formatTime(loopStart)})`}
               </button>
               <button
                 type="button"
                 onClick={() => setLoopEnd(currentTime)}
-                className="rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-1.5 text-sm transition-colors hover:border-neutral-700"
+                className="rounded-lg border border-line bg-bg px-3 py-1.5 text-sm transition-colors hover:border-line-strong"
               >
                 Bod B {loopEnd !== null && `(${formatTime(loopEnd)})`}
               </button>
@@ -269,36 +269,36 @@ export function RiffTrainer() {
                   setLoopStart(null);
                   setLoopEnd(null);
                 }}
-                className="rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-1.5 text-sm text-neutral-400 transition-colors hover:border-neutral-700"
+                className="rounded-lg border border-line bg-bg px-3 py-1.5 text-sm text-dim transition-colors hover:border-line-strong"
               >
                 Zrušit smyčku
               </button>
             </div>
-            <p className="mt-2 text-xs text-neutral-500">
+            <p className="mt-2 text-xs text-muted">
               {loopReady
                 ? "Smyčka je aktivní — přehrávač se vrací z bodu B do bodu A."
                 : "Nastav bod A a bod B (B musí být za A) a přehrávač bude pasáž opakovat."}
             </p>
           </div>
 
-          <div className="mt-5 space-y-3 border-t border-neutral-800 pt-4">
-            <div className="text-sm font-medium text-neutral-300">
+          <div className="mt-5 space-y-3 border-t border-line pt-4">
+            <div className="text-sm font-medium text-text">
               Odpočet a zrychlování
             </div>
 
-            <label className="flex items-center gap-2 text-sm text-neutral-300">
+            <label className="flex items-center gap-2 text-sm text-text">
               <input
                 type="checkbox"
                 checked={countInEnabled}
                 onChange={(event) => setCountInEnabled(event.target.checked)}
-                className="h-4 w-4 accent-amber-500"
+                className="h-4 w-4 accent-accent"
               />
               Odpočet před spuštěním (4 doby)
             </label>
 
             {countInEnabled && (
               <div className="flex items-center gap-3 pl-6">
-                <span className="w-28 text-sm text-neutral-400">
+                <span className="w-28 text-sm text-dim">
                   Tempo odpočtu {countInBpm}
                 </span>
                 <input
@@ -311,17 +311,17 @@ export function RiffTrainer() {
                     setCountInBpm(Number(event.target.value))
                   }
                   aria-label="Tempo odpočtu"
-                  className="flex-1 accent-amber-500"
+                  className="flex-1 accent-accent"
                 />
               </div>
             )}
 
-            <label className="flex items-center gap-2 text-sm text-neutral-300">
+            <label className="flex items-center gap-2 text-sm text-text">
               <input
                 type="checkbox"
                 checked={rampEnabled}
                 onChange={(event) => setRampEnabled(event.target.checked)}
-                className="h-4 w-4 accent-amber-500"
+                className="h-4 w-4 accent-accent"
               />
               Postupně zrychlovat (+5 % každé 2 opakování smyčky)
             </label>

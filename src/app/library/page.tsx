@@ -14,9 +14,9 @@ type Tab = "chords" | "scales" | "riffs";
 const CATEGORIES: ChordCategory[] = ["open", "barre", "power"];
 
 const SEGMENT_ACTIVE =
-  "rounded-md bg-neutral-800 px-3 py-1.5 text-sm text-amber-500";
+  "rounded-md bg-surface-2 px-3 py-1.5 text-sm text-accent";
 const SEGMENT_IDLE =
-  "rounded-md px-3 py-1.5 text-sm text-neutral-400 transition-colors hover:text-neutral-100";
+  "rounded-md px-3 py-1.5 text-sm text-dim transition-colors hover:text-text";
 
 export default function LibraryPage() {
   const [tab, setTab] = useState<Tab>("chords");
@@ -34,9 +34,9 @@ export default function LibraryPage() {
   return (
     <div className="mx-auto max-w-4xl p-6">
       <h1 className="text-3xl font-bold tracking-tight">Knihovna</h1>
-      <p className="mt-1 text-neutral-400">Akordy, stupnice a riffy.</p>
+      <p className="mt-1 text-dim">Akordy, stupnice a riffy.</p>
 
-      <div className="mt-6 inline-flex rounded-lg border border-neutral-800 p-1">
+      <div className="mt-6 inline-flex rounded-lg border border-line p-1">
         <button
           type="button"
           onClick={() => setTab("chords")}
@@ -63,7 +63,7 @@ export default function LibraryPage() {
       {tab === "chords" && (
         <>
           <div className="mt-6 flex flex-wrap items-center gap-3">
-            <div className="inline-flex rounded-lg border border-neutral-800 p-1">
+            <div className="inline-flex rounded-lg border border-line p-1">
               {CATEGORIES.map((value) => (
                 <button
                   key={value}
@@ -76,7 +76,7 @@ export default function LibraryPage() {
               ))}
             </div>
 
-            <div className="inline-flex rounded-lg border border-neutral-800 p-1">
+            <div className="inline-flex rounded-lg border border-line p-1">
               <button
                 type="button"
                 onClick={() => setHandedness("right")}

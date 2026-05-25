@@ -17,10 +17,10 @@ export function AchievementsCard() {
   const earned = new Set(hydrated ? unlockedAchievements : []);
 
   return (
-    <section className="rounded-lg border border-neutral-800 bg-neutral-900 p-4">
+    <section className="rounded-lg border border-line bg-surface p-4">
       <div className="flex items-baseline justify-between">
         <h2 className="font-semibold">Achievementy</h2>
-        <span className="text-xs text-neutral-400">
+        <span className="text-xs text-dim">
           {earned.size} z {ACHIEVEMENTS.length}
         </span>
       </div>
@@ -34,19 +34,19 @@ export function AchievementsCard() {
               className={
                 "rounded-md border p-3 " +
                 (isEarned
-                  ? "border-amber-700/60 bg-amber-950/30"
-                  : "border-neutral-800 bg-neutral-950")
+                  ? "border-accent/60 bg-accent-soft"
+                  : "border-line bg-bg")
               }
             >
               <div
                 className={
                   "font-medium " +
-                  (isEarned ? "text-amber-400" : "text-neutral-500")
+                  (isEarned ? "text-accent" : "text-muted")
                 }
               >
                 {achievement.title}
               </div>
-              <div className="mt-0.5 text-sm text-neutral-400">
+              <div className="mt-0.5 text-sm text-dim">
                 {achievement.description}
               </div>
             </li>

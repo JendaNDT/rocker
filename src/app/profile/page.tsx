@@ -4,14 +4,15 @@ import { useEffect, useState } from "react";
 import { AiSettings } from "@/components/AiSettings";
 import { AudioInputSettings } from "@/components/AudioInputSettings";
 import { LayoutModeSwitcher } from "@/components/LayoutModeSwitcher";
+import { ThemePicker } from "@/components/ThemePicker";
 import { ProgressDetail } from "@/components/profile/ProgressDetail";
 import type { Notation } from "@/lib/pitch";
 import { useSettingsStore } from "@/stores/settingsStore";
 
 const SEGMENT_ACTIVE =
-  "rounded-md bg-neutral-800 px-3 py-1.5 text-sm text-amber-500";
+  "rounded-md bg-accent-soft px-3 py-1.5 text-sm text-accent";
 const SEGMENT_IDLE =
-  "rounded-md px-3 py-1.5 text-sm text-neutral-400 transition-colors hover:text-neutral-100";
+  "rounded-md px-3 py-1.5 text-sm text-dim transition-colors hover:text-text";
 
 const NOTATION_OPTIONS: { value: Notation; label: string }[] = [
   { value: "english", label: "Mezinárodní (B)" },
@@ -36,12 +37,23 @@ export default function ProfilePage() {
 
   return (
     <div className="mx-auto max-w-3xl p-6">
-      <h1 className="text-3xl font-bold tracking-tight">Profil</h1>
-      <p className="mt-1 text-neutral-400">Nastavení aplikace.</p>
+      <h1 className="font-display text-3xl font-bold tracking-tight">Profil</h1>
+      <p className="mt-1 text-dim">Nastavení aplikace.</p>
+
+      <section className="mt-8">
+        <h2 className="text-lg font-semibold">Vzhled</h2>
+        <p className="mt-1 text-sm text-dim">
+          Vyber si styl, který ti sedí. Můžeš ho měnit kdykoliv — nastavení se
+          uloží.
+        </p>
+        <div className="mt-3">
+          <ThemePicker />
+        </div>
+      </section>
 
       <section className="mt-8">
         <h2 className="text-lg font-semibold">Zobrazení</h2>
-        <p className="mt-1 text-sm text-neutral-400">
+        <p className="mt-1 text-sm text-dim">
           Jak se má aplikace zobrazovat. „Automaticky" se přizpůsobí velikosti
           okna.
         </p>
@@ -52,7 +64,7 @@ export default function ProfilePage() {
 
       <section className="mt-8">
         <h2 className="text-lg font-semibold">Zvuk a vstup</h2>
-        <p className="mt-1 text-sm text-neutral-400">
+        <p className="mt-1 text-sm text-dim">
           Odkud aplikace poslouchá kytaru.
         </p>
         <div className="mt-3">
@@ -62,7 +74,7 @@ export default function ProfilePage() {
 
       <section className="mt-8">
         <h2 className="text-lg font-semibold">AI tutor</h2>
-        <p className="mt-1 text-sm text-neutral-400">
+        <p className="mt-1 text-sm text-dim">
           Chat „zeptej se" na techniku, cvičení nebo zvuk. Volitelné — funguje
           na vlastní bezplatný klíč Google Gemini.
         </p>
@@ -73,11 +85,11 @@ export default function ProfilePage() {
 
       <section className="mt-8">
         <h2 className="text-lg font-semibold">Notace</h2>
-        <p className="mt-1 text-sm text-neutral-400">
+        <p className="mt-1 text-sm text-dim">
           Jak aplikace pojmenovává tóny. Německá notace používá „H" pro tón
           mezinárodně značený „B".
         </p>
-        <div className="mt-3 inline-flex rounded-lg border border-neutral-800 p-1">
+        <div className="mt-3 inline-flex rounded-lg border border-line p-1">
           {NOTATION_OPTIONS.map((option) => (
             <button
               key={option.value}
@@ -97,16 +109,16 @@ export default function ProfilePage() {
 
       <section className="mt-8">
         <h2 className="text-lg font-semibold">Zen režim</h2>
-        <p className="mt-1 text-sm text-neutral-400">
+        <p className="mt-1 text-sm text-dim">
           Skryje gamifikaci — statistiky, streaky, denní plán i achievementy.
           Pokrok se měří dál, appka ho jen nezobrazuje.
         </p>
-        <label className="mt-3 flex items-center gap-2 text-sm text-neutral-300">
+        <label className="mt-3 flex items-center gap-2 text-sm text-text">
           <input
             type="checkbox"
             checked={zen}
             onChange={(event) => setZenMode(event.target.checked)}
-            className="h-4 w-4 accent-amber-500"
+            className="h-4 w-4 accent-accent"
           />
           Zapnout Zen režim
         </label>
@@ -115,7 +127,7 @@ export default function ProfilePage() {
       {!zen && (
         <section className="mt-8">
           <h2 className="text-lg font-semibold">Pokrok</h2>
-          <p className="mt-1 text-sm text-neutral-400">
+          <p className="mt-1 text-sm text-dim">
             Tvoje cvičební statistiky. Achievementy najdeš na úvodní obrazovce.
           </p>
           <div className="mt-3">
@@ -126,13 +138,13 @@ export default function ProfilePage() {
 
       <section className="mt-8">
         <h2 className="text-lg font-semibold">Úvod</h2>
-        <p className="mt-1 text-sm text-neutral-400">
+        <p className="mt-1 text-sm text-dim">
           Úvodní průvodce nastavením aplikace. Můžeš ho projít znovu.
         </p>
         <button
           type="button"
           onClick={() => setOnboarded(false)}
-          className="mt-3 rounded-lg border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm transition-colors hover:border-neutral-700"
+          className="mt-3 rounded-lg border border-line bg-surface px-4 py-2 text-sm transition-colors hover:border-line-strong"
         >
           Projít úvod znovu
         </button>

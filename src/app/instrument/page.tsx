@@ -10,7 +10,7 @@ export default function InstrumentPage() {
   return (
     <div className="mx-auto max-w-3xl p-6">
       <h1 className="text-3xl font-bold tracking-tight">Kytara</h1>
-      <p className="mt-1 text-neutral-400">
+      <p className="mt-1 text-dim">
         Digitální pas tvého nástroje a tónový poradce.
       </p>
 
@@ -20,7 +20,7 @@ export default function InstrumentPage() {
           <ToneAdvisor />
         </div>
       ) : (
-        <p className="mt-6 text-sm text-neutral-500">Načítám profil…</p>
+        <p className="mt-6 text-sm text-muted">Načítám profil…</p>
       )}
     </div>
   );

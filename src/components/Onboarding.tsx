@@ -30,15 +30,15 @@ export function Onboarding() {
   }
 
   return (
-    <div className="fixed inset-0 z-40 flex flex-col bg-neutral-950">
-      <div className="flex items-center justify-between border-b border-neutral-800 p-4">
-        <span className="text-sm text-neutral-500">
+    <div className="fixed inset-0 z-40 flex flex-col bg-bg">
+      <div className="flex items-center justify-between border-b border-line p-4">
+        <span className="text-sm text-muted">
           Krok {step + 1} / {STEP_COUNT}
         </span>
         <button
           type="button"
           onClick={finish}
-          className="text-sm text-neutral-400 transition-colors hover:text-neutral-100"
+          className="text-sm text-dim transition-colors hover:text-text"
         >
           Přeskočit
         </button>
@@ -51,12 +51,12 @@ export function Onboarding() {
               <h2 className="text-2xl font-bold tracking-tight">
                 Vítej v Rockeru
               </h2>
-              <p className="mt-3 text-neutral-300">
+              <p className="mt-3 text-text">
                 Rocker je tvůj parťák pro učení a hraní na elektrickou kytaru.
                 Naladíš se, cvičíš s metronomem, projdeš lekce a riffy, sleduješ
                 pokrok a procvičíš rockové i metalové techniky.
               </p>
-              <p className="mt-3 text-neutral-400">
+              <p className="mt-3 text-dim">
                 Pojď si appku ve dvou krocích nastavit — ať za chvíli hraješ
                 první riff.
               </p>
@@ -68,7 +68,7 @@ export function Onboarding() {
               <h2 className="text-2xl font-bold tracking-tight">
                 Připoj kytaru
               </h2>
-              <p className="mt-3 text-neutral-300">
+              <p className="mt-3 text-text">
                 Na počítači připoj kytaru přes zvukovku, na mobilu stačí
                 mikrofon. Povol přístup a vyber vstup — appka tak uslyší, co
                 hraješ.
@@ -76,7 +76,7 @@ export function Onboarding() {
               <div className="mt-4">
                 <AudioInputSettings />
               </div>
-              <p className="mt-3 text-sm text-neutral-500">
+              <p className="mt-3 text-sm text-muted">
                 Tohle můžeš kdykoliv změnit v Profilu. Když chceš, klidně
                 přeskoč a nastav to později.
               </p>
@@ -88,13 +88,13 @@ export function Onboarding() {
               <h2 className="text-2xl font-bold tracking-tight">
                 Tvůj první riff
               </h2>
-              <p className="mt-3 text-neutral-300">
+              <p className="mt-3 text-text">
                 Jsi připravený. Začni v Ladičce — nalaď kytaru — a pak v
                 Knihovně otevři záložku Riffy. Zkus jednoduchý riff jako Smoke
                 on the Water: zpomal si tempo, sleduj ukazatel a hraj podle
                 tabu.
               </p>
-              <p className="mt-3 text-neutral-400">
+              <p className="mt-3 text-dim">
                 Až ti to půjde, mrkni na obrazovku Metal — power chordy, gallop
                 a palm mute.
               </p>
@@ -103,12 +103,12 @@ export function Onboarding() {
         </div>
       </div>
 
-      <div className="flex items-center justify-between gap-3 border-t border-neutral-800 p-4">
+      <div className="flex items-center justify-between gap-3 border-t border-line p-4">
         <button
           type="button"
           disabled={step === 0}
           onClick={() => setStep((current) => current - 1)}
-          className="rounded-lg border border-neutral-800 bg-neutral-900 px-5 py-2.5 text-sm transition-colors hover:border-neutral-700 disabled:opacity-40"
+          className="rounded-lg border border-line bg-surface px-5 py-2.5 text-sm transition-colors hover:border-line-strong disabled:opacity-40"
         >
           Zpět
         </button>
@@ -116,7 +116,7 @@ export function Onboarding() {
           <button
             type="button"
             onClick={() => setStep((current) => current + 1)}
-            className="rounded-lg bg-amber-500 px-6 py-2.5 text-sm font-semibold text-neutral-950 transition-colors hover:bg-amber-400"
+            className="rounded-lg bg-accent px-6 py-2.5 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90"
           >
             Dál
           </button>
@@ -124,7 +124,7 @@ export function Onboarding() {
           <button
             type="button"
             onClick={finish}
-            className="rounded-lg bg-amber-500 px-6 py-2.5 text-sm font-semibold text-neutral-950 transition-colors hover:bg-amber-400"
+            className="rounded-lg bg-accent px-6 py-2.5 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90"
           >
             Jdeme na to
           </button>

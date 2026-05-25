@@ -17,11 +17,11 @@ const ERR_READ = "Soubor se nepodařilo přečíst z disku.";
 const SPEEDS = [0.5, 0.75, 1];
 
 const CONTROL_BUTTON =
-  "rounded-lg border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm transition-colors hover:border-neutral-700 disabled:cursor-not-allowed disabled:opacity-50";
+  "rounded-lg border border-line bg-surface px-4 py-2 text-sm transition-colors hover:border-line-strong disabled:cursor-not-allowed disabled:opacity-50";
 const SEGMENT_ACTIVE =
-  "rounded-md bg-amber-500 px-3 py-1.5 text-sm font-semibold text-neutral-950";
+  "rounded-md bg-accent px-3 py-1.5 text-sm font-semibold text-accent-fg";
 const SEGMENT_IDLE =
-  "rounded-md px-3 py-1.5 text-sm text-neutral-400 transition-colors hover:text-neutral-100";
+  "rounded-md px-3 py-1.5 text-sm text-dim transition-colors hover:text-text";
 
 /**
  * Notation viewer for Bod 15: the user picks a Guitar Pro or MusicXML file
@@ -121,7 +121,7 @@ export function NotationViewer() {
 
   return (
     <div>
-      <label className="inline-block cursor-pointer rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-neutral-950 transition-colors hover:bg-amber-400">
+      <label className="inline-block cursor-pointer rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90">
         {status === "loaded" ? "Nahrát jiný soubor" : "Nahrát soubor"}
         <input
           type="file"
@@ -132,16 +132,16 @@ export function NotationViewer() {
       </label>
 
       {status === "empty" && (
-        <p className="mt-3 text-sm text-neutral-500">
+        <p className="mt-3 text-sm text-muted">
           Nahraj soubor Guitar Pro (.gp, .gpx) nebo MusicXML (.xml,
           .musicxml) — tabulatura i notový zápis se zobrazí níže.
         </p>
       )}
       {status === "loading" && (
-        <p className="mt-3 text-sm text-neutral-500">Načítám soubor…</p>
+        <p className="mt-3 text-sm text-muted">Načítám soubor…</p>
       )}
       {status === "error" && (
-        <p className="mt-3 text-sm text-red-400">{errorMessage}</p>
+        <p className="mt-3 text-sm text-danger">{errorMessage}</p>
       )}
 
       {status === "loaded" && (
@@ -170,8 +170,8 @@ export function NotationViewer() {
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-sm text-neutral-400">Tempo:</span>
-            <div className="inline-flex rounded-lg border border-neutral-800 p-1">
+            <span className="text-sm text-dim">Tempo:</span>
+            <div className="inline-flex rounded-lg border border-line p-1">
               {SPEEDS.map((value) => (
                 <button
                   key={value}
@@ -191,7 +191,7 @@ export function NotationViewer() {
               onClick={toggleLoop}
               className={
                 looping
-                  ? "rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-neutral-950 transition-colors hover:bg-amber-400"
+                  ? "rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90"
                   : CONTROL_BUTTON
               }
             >
@@ -208,7 +208,7 @@ export function NotationViewer() {
             )}
           </div>
           {looping && (
-            <p className="text-xs text-neutral-500">
+            <p className="text-xs text-muted">
               Tip: tažením po notách vyber úsek k opakování. Bez výběru se
               opakuje celá skladba.
             </p>
@@ -219,7 +219,7 @@ export function NotationViewer() {
       <div
         className={
           showSheet
-            ? "mt-4 overflow-x-auto rounded-lg border border-neutral-800 bg-white p-2"
+            ? "mt-4 overflow-x-auto rounded-lg border border-line bg-white p-2"
             : ""
         }
       >

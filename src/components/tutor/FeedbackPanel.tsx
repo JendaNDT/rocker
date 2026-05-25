@@ -69,8 +69,8 @@ export function FeedbackPanel() {
 
   return (
     <div>
-      <div className="rounded-lg border border-neutral-800 bg-neutral-950 p-4">
-        <p className="text-sm text-neutral-300">
+      <div className="rounded-lg border border-line bg-bg p-4">
+        <p className="text-sm text-text">
           Projdu tvoje cvičební statistiky — lekce, série, odcvičený čas — a dám
           ti osobní zpětnou vazbu. Můžeš přidat pár slov o tom, jak se cítíš
           nebo s čím bojuješ.
@@ -78,7 +78,7 @@ export function FeedbackPanel() {
 
         <label
           htmlFor="feedback-note"
-          className="mt-4 block text-sm font-medium text-neutral-300"
+          className="mt-4 block text-sm font-medium text-text"
         >
           Jak se cítíš? S čím bojuješ? (nepovinné)
         </label>
@@ -88,14 +88,14 @@ export function FeedbackPanel() {
           onChange={(event) => setNote(event.target.value)}
           rows={2}
           placeholder="např. nejde mi rytmus, nebo cvičím nepravidelně"
-          className="mt-2 w-full resize-none rounded-lg border border-neutral-800 bg-neutral-900 px-3 py-2 text-sm text-neutral-100"
+          className="mt-2 w-full resize-none rounded-lg border border-line bg-surface px-3 py-2 text-sm text-text"
         />
 
         <button
           type="button"
           onClick={() => void generate()}
           disabled={busy}
-          className="mt-4 rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-neutral-950 transition-colors hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-50"
+          className="mt-4 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {busy
             ? "Připravuji…"
@@ -105,16 +105,16 @@ export function FeedbackPanel() {
         </button>
       </div>
 
-      {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
+      {error && <p className="mt-3 text-sm text-danger">{error}</p>}
 
       {busy && feedback.length === 0 && (
-        <p className="mt-4 text-sm text-neutral-500">
+        <p className="mt-4 text-sm text-muted">
           Procházím tvoje statistiky…
         </p>
       )}
 
       {feedback.length > 0 && (
-        <div className="mt-4 rounded-lg border border-neutral-800 bg-neutral-900 px-4 py-3 text-sm whitespace-pre-wrap">
+        <div className="mt-4 rounded-lg border border-line bg-surface px-4 py-3 text-sm whitespace-pre-wrap">
           {feedback}
         </div>
       )}

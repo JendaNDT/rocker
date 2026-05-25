@@ -12,13 +12,13 @@ import {
 import { useAudioStore } from "@/stores/audioStore";
 
 const PRIMARY_BUTTON =
-  "rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-neutral-950 transition-colors hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-50";
+  "rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-50";
 const SECONDARY_BUTTON =
-  "rounded-lg border border-neutral-800 bg-neutral-950 px-4 py-2 text-sm transition-colors hover:border-neutral-700 disabled:cursor-not-allowed disabled:opacity-50";
+  "rounded-lg border border-line bg-bg px-4 py-2 text-sm transition-colors hover:border-line-strong disabled:cursor-not-allowed disabled:opacity-50";
 const SEGMENT_ACTIVE =
-  "rounded-md bg-amber-500 px-3 py-1.5 text-sm font-semibold text-neutral-950";
+  "rounded-md bg-accent px-3 py-1.5 text-sm font-semibold text-accent-fg";
 const SEGMENT_IDLE =
-  "rounded-md px-3 py-1.5 text-sm text-neutral-400 transition-colors hover:text-neutral-100";
+  "rounded-md px-3 py-1.5 text-sm text-dim transition-colors hover:text-text";
 
 /** Pushes every parameter of a settings object onto the chain. */
 function applyToChain(chain: AmpChain, settings: AmpSettings): void {
@@ -116,7 +116,7 @@ export function AmpStudio() {
       <div key={key}>
         <label
           htmlFor={`amp-${key}`}
-          className="block text-sm font-medium text-neutral-300"
+          className="block text-sm font-medium text-text"
         >
           {label}:{" "}
           {bipolar
@@ -134,7 +134,7 @@ export function AmpStudio() {
           onChange={(event) =>
             setParam(key, Number(event.target.value) / 100)
           }
-          className="mt-2 w-full accent-amber-500"
+          className="mt-2 w-full accent-accent"
         />
       </div>
     );
@@ -145,8 +145,8 @@ export function AmpStudio() {
     "vlastní nastavení";
 
   return (
-    <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-4">
-      <div className="rounded-lg border border-amber-600/40 bg-amber-500/10 p-3 text-sm text-amber-200">
+    <div className="rounded-lg border border-line bg-surface p-4">
+      <div className="rounded-lg border border-accent/40 bg-accent/10 p-3 text-sm text-accent">
         Použij sluchátka nebo zvukovku (M-Track Solo). Při hraní přes
         reproduktory a mikrofon může vzniknout zpětná vazba — nepříjemné
         houkání.
@@ -166,25 +166,25 @@ export function AmpStudio() {
               : "Zapnout efekt"}
         </button>
         {active && latencyMs !== null && (
-          <span className="text-sm text-neutral-400">
+          <span className="text-sm text-dim">
             Latence:{" "}
-            <span className="font-medium text-neutral-200">
+            <span className="font-medium text-text">
               {latencyMs} ms
             </span>
           </span>
         )}
       </div>
 
-      {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
+      {error && <p className="mt-3 text-sm text-danger">{error}</p>}
 
       {active && (
         <div className="mt-5 space-y-5">
           <div>
-            <div className="text-sm font-medium text-neutral-300">
+            <div className="text-sm font-medium text-text">
               Preset:{" "}
-              <span className="text-neutral-400">{activePresetName}</span>
+              <span className="text-dim">{activePresetName}</span>
             </div>
-            <div className="mt-2 inline-flex flex-wrap rounded-lg border border-neutral-800 p-1">
+            <div className="mt-2 inline-flex flex-wrap rounded-lg border border-line p-1">
               {AMP_PRESETS.map((preset) => (
                 <button
                   key={preset.id}

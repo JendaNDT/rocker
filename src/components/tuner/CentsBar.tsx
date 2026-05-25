@@ -10,12 +10,12 @@ export function CentsBar({
   inTune: boolean;
 }) {
   const markerPct = Math.max(0, Math.min(100, 50 + cents));
-  const markerColor = inTune ? "bg-emerald-400" : "bg-amber-500";
+  const markerColor = inTune ? "bg-success" : "bg-accent";
 
   return (
-    <div className="relative h-4 rounded-full bg-neutral-950">
+    <div className="relative h-4 rounded-full bg-bg">
       {/* Centre mark — perfectly in tune. */}
-      <div className="absolute top-0 left-1/2 h-full w-0.5 -translate-x-1/2 bg-neutral-600" />
+      <div className="absolute top-0 left-1/2 h-full w-0.5 -translate-x-1/2 bg-surface-3" />
       {/* Deviation marker. */}
       <div
         className={`absolute top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full ${markerColor}`}

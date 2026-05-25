@@ -7,9 +7,9 @@ import { useAudioStore } from "@/stores/audioStore";
 
 /** Word rating for a measured round-trip latency. */
 function latencyRating(ms: number): { text: string; className: string } {
-  if (ms <= 15) return { text: "dobrá", className: "text-emerald-400" };
-  if (ms <= 30) return { text: "vyšší", className: "text-amber-500" };
-  return { text: "vysoká", className: "text-red-400" };
+  if (ms <= 15) return { text: "dobrá", className: "text-success" };
+  if (ms <= 30) return { text: "vyšší", className: "text-accent" };
+  return { text: "vysoká", className: "text-danger" };
 }
 
 /**
@@ -49,14 +49,14 @@ export function AudioInputSettings() {
   // Permission not granted yet — explain why and offer to ask for it.
   if (permission !== "granted") {
     return (
-      <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-4">
-        <p className="text-sm text-neutral-300">
+      <div className="rounded-lg border border-line bg-surface p-4">
+        <p className="text-sm text-text">
           Aplikace potřebuje přístup k mikrofonu nebo zvukovce, aby slyšela
           kytaru — pro ladičku, metronom a cvičení. Nic se nenahrává nikam ven,
           vše zůstává v tomto prohlížeči.
         </p>
         {permission === "denied" && (
-          <p className="mt-3 text-sm text-red-400">
+          <p className="mt-3 text-sm text-danger">
             Přístup je zamítnutý. Povol ho v nastavení prohlížeče (ikona vlevo
             v adresním řádku) a zkus to znovu.
           </p>
@@ -64,7 +64,7 @@ export function AudioInputSettings() {
         <button
           type="button"
           onClick={requestPermission}
-          className="mt-4 rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-neutral-950 transition-colors hover:bg-amber-400"
+          className="mt-4 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90"
         >
           Povolit mikrofon
         </button>
@@ -75,10 +75,10 @@ export function AudioInputSettings() {
   const latency = latencyMs === null ? null : latencyRating(latencyMs);
 
   return (
-    <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-4">
+    <div className="rounded-lg border border-line bg-surface p-4">
       <label
         htmlFor="audio-input-device"
-        className="block text-sm font-medium text-neutral-300"
+        className="block text-sm font-medium text-text"
       >
         Vstupní zařízení
       </label>
@@ -86,7 +86,7 @@ export function AudioInputSettings() {
         id="audio-input-device"
         value={selectedId}
         onChange={(event) => changeDevice(event.target.value)}
-        className="mt-2 w-full rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm text-neutral-100"
+        className="mt-2 w-full rounded-lg border border-line bg-bg px-3 py-2 text-sm text-text"
       >
         <option value="">Výchozí zařízení</option>
         {devices.map((device) => (
@@ -95,7 +95,7 @@ export function AudioInputSettings() {
           </option>
         ))}
       </select>
-      <p className="mt-2 text-xs text-neutral-500">
+      <p className="mt-2 text-xs text-muted">
         Na PC vyber zvukovku M-Track Solo, na mobilu nech výchozí mikrofon.
       </p>
 
@@ -105,14 +105,14 @@ export function AudioInputSettings() {
           onClick={toggleInput}
           className={
             running
-              ? "rounded-lg border border-neutral-800 bg-neutral-950 px-4 py-2 text-sm transition-colors hover:border-neutral-700"
-              : "rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-neutral-950 transition-colors hover:bg-amber-400"
+              ? "rounded-lg border border-line bg-bg px-4 py-2 text-sm transition-colors hover:border-line-strong"
+              : "rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90"
           }
         >
           {running ? "Zastavit vstup" : "Spustit vstup"}
         </button>
         <span
-          className={running ? "text-sm text-amber-500" : "text-sm text-neutral-500"}
+          className={running ? "text-sm text-accent" : "text-sm text-muted"}
         >
           {status === "starting"
             ? "Spouštím…"
@@ -127,15 +127,15 @@ export function AudioInputSettings() {
       </div>
 
       {latency && (
-        <p className="mt-4 text-sm text-neutral-400">
+        <p className="mt-4 text-sm text-dim">
           Latence:{" "}
-          <span className="font-medium text-neutral-200">{latencyMs} ms</span>
+          <span className="font-medium text-text">{latencyMs} ms</span>
           {" — "}
           <span className={latency.className}>{latency.text}</span>
         </p>
       )}
 
-      {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
+      {error && <p className="mt-3 text-sm text-danger">{error}</p>}
     </div>
   );
 }

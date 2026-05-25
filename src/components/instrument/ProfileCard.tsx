@@ -10,10 +10,10 @@ import {
 import { useInstrumentStore } from "@/stores/instrumentStore";
 
 const INPUT =
-  "w-full rounded-md border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm text-neutral-100 transition-colors focus:border-amber-600 focus:outline-none";
+  "w-full rounded-md border border-line bg-bg px-3 py-2 text-sm text-text transition-colors focus:border-accent focus:outline-none";
 const SELECT =
-  "rounded-md border border-neutral-800 bg-neutral-950 px-2 py-1.5 text-sm text-neutral-100 focus:border-amber-600 focus:outline-none";
-const LABEL = "text-xs font-medium text-neutral-400";
+  "rounded-md border border-line bg-bg px-2 py-1.5 text-sm text-text focus:border-accent focus:outline-none";
+const LABEL = "text-xs font-medium text-dim";
 
 const POSITIONS: PickupPosition[] = ["neck", "middle", "bridge"];
 const TYPES: PickupType[] = ["humbucker", "single", "p90"];
@@ -77,18 +77,18 @@ export function ProfileCard() {
   }
 
   return (
-    <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-4">
+    <div className="rounded-lg border border-line bg-surface p-4">
       <div className="flex items-baseline justify-between gap-4">
         <h2 className="text-lg font-semibold">Profil nástroje</h2>
         <button
           type="button"
           onClick={reset}
-          className="rounded-md border border-neutral-800 bg-neutral-950 px-2.5 py-1 text-xs text-neutral-400 transition-colors hover:border-neutral-700"
+          className="rounded-md border border-line bg-bg px-2.5 py-1 text-xs text-dim transition-colors hover:border-line-strong"
         >
           Obnovit výchozí
         </button>
       </div>
-      <p className="mt-1 text-sm text-neutral-400">
+      <p className="mt-1 text-sm text-dim">
         Vyplň, co o své kytaře víš — co nevíš, nech prázdné. Ukládá se to
         v prohlížeči.
       </p>
@@ -131,14 +131,14 @@ export function ProfileCard() {
           <button
             type="button"
             onClick={addPickup}
-            className="rounded-md border border-neutral-800 bg-neutral-950 px-2.5 py-1 text-xs text-neutral-400 transition-colors hover:border-neutral-700"
+            className="rounded-md border border-line bg-bg px-2.5 py-1 text-xs text-dim transition-colors hover:border-line-strong"
           >
             Přidat snímač
           </button>
         </div>
 
         {profile.pickups.length === 0 ? (
-          <p className="mt-2 text-sm text-neutral-500">
+          <p className="mt-2 text-sm text-muted">
             Žádné snímače — bez nich tónový poradce neporadí přesně.
           </p>
         ) : (
@@ -146,7 +146,7 @@ export function ProfileCard() {
             {profile.pickups.map((pickup, index) => (
               <li
                 key={index}
-                className="flex flex-wrap items-center gap-2 rounded-md border border-neutral-800 bg-neutral-950 p-2"
+                className="flex flex-wrap items-center gap-2 rounded-md border border-line bg-bg p-2"
               >
                 <select
                   value={pickup.position}
@@ -183,7 +183,7 @@ export function ProfileCard() {
                 <button
                   type="button"
                   onClick={() => removePickup(index)}
-                  className="ml-auto rounded-md px-2 py-1 text-xs text-neutral-500 transition-colors hover:text-red-400"
+                  className="ml-auto rounded-md px-2 py-1 text-xs text-muted transition-colors hover:text-danger"
                 >
                   Odebrat
                 </button>

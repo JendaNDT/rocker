@@ -88,7 +88,7 @@ export function AbCompare() {
 
   if (recordings.length < 2) {
     return (
-      <p className="mt-4 text-sm text-neutral-500">
+      <p className="mt-4 text-sm text-muted">
         Na porovnání potřebuješ aspoň dvě nahrávky.
       </p>
     );
@@ -144,17 +144,17 @@ export function AbCompare() {
   }
 
   return (
-    <div className="mt-4 rounded-lg border border-neutral-800 bg-neutral-900 p-4">
+    <div className="mt-4 rounded-lg border border-line bg-surface p-4">
       <audio ref={audioA} hidden {...renderHandlers("A")} />
       <audio ref={audioB} hidden {...renderHandlers("B")} />
 
       <div className="grid gap-3 sm:grid-cols-2">
         <label className="text-sm">
-          <span className="text-neutral-400">Take A</span>
+          <span className="text-dim">Take A</span>
           <select
             value={aId ?? ""}
             onChange={(event) => setAId(event.target.value)}
-            className="mt-1 w-full rounded-md border border-neutral-800 bg-neutral-950 px-2 py-1.5 text-sm text-neutral-100"
+            className="mt-1 w-full rounded-md border border-line bg-bg px-2 py-1.5 text-sm text-text"
           >
             {recordings.map((item) => (
               <option key={item.id} value={item.id}>
@@ -164,11 +164,11 @@ export function AbCompare() {
           </select>
         </label>
         <label className="text-sm">
-          <span className="text-neutral-400">Take B</span>
+          <span className="text-dim">Take B</span>
           <select
             value={bId ?? ""}
             onChange={(event) => setBId(event.target.value)}
-            className="mt-1 w-full rounded-md border border-neutral-800 bg-neutral-950 px-2 py-1.5 text-sm text-neutral-100"
+            className="mt-1 w-full rounded-md border border-line bg-bg px-2 py-1.5 text-sm text-text"
           >
             {recordings.map((item) => (
               <option key={item.id} value={item.id}>
@@ -183,12 +183,12 @@ export function AbCompare() {
         <button
           type="button"
           onClick={togglePlay}
-          className="rounded-lg bg-amber-500 px-4 py-1.5 text-sm font-semibold text-neutral-950 transition-colors hover:bg-amber-400"
+          className="rounded-lg bg-accent px-4 py-1.5 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90"
         >
           {isPlaying ? "Pauza" : "Přehrát"}
         </button>
 
-        <div className="inline-flex rounded-lg border border-neutral-800 p-1">
+        <div className="inline-flex rounded-lg border border-line p-1">
           {(["A", "B"] as Side[]).map((side) => (
             <button
               key={side}
@@ -196,8 +196,8 @@ export function AbCompare() {
               onClick={() => switchTo(side)}
               className={
                 active === side
-                  ? "rounded-md bg-neutral-800 px-4 py-1 text-sm font-semibold text-amber-500"
-                  : "rounded-md px-4 py-1 text-sm text-neutral-400 transition-colors hover:text-neutral-100"
+                  ? "rounded-md bg-surface-2 px-4 py-1 text-sm font-semibold text-accent"
+                  : "rounded-md px-4 py-1 text-sm text-dim transition-colors hover:text-text"
               }
             >
               {side}
@@ -205,12 +205,12 @@ export function AbCompare() {
           ))}
         </div>
 
-        <span className="text-xs tabular-nums text-neutral-400">
+        <span className="text-xs tabular-nums text-dim">
           {formatDuration(currentTime)} / {formatDuration(activeDuration)}
         </span>
       </div>
 
-      <p className="mt-3 text-xs text-neutral-500">
+      <p className="mt-3 text-xs text-muted">
         Přepínač A/B drží pozici — slyšíš stejné místo v obou pokusech.
       </p>
     </div>

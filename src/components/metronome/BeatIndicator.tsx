@@ -14,8 +14,8 @@ export function BeatIndicator({
       {Array.from({ length: beatsPerBar }, (_, index) => {
         const active = index === currentBeat;
         const isAccent = index === 0;
-        const color = active ? "scale-125 bg-amber-400" : "bg-neutral-700";
-        const ring = isAccent ? " ring-2 ring-amber-500/50" : "";
+        const color = active ? "scale-125 bg-accent" : "bg-surface-3";
+        const ring = isAccent ? " ring-2 ring-accent/50" : "";
         return (
           <div
             key={index}

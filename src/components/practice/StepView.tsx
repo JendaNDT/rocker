@@ -19,9 +19,9 @@ export function StepView({ step }: { step: LessonStep }) {
   const mirror = hydrated && handedness === "left";
 
   return (
-    <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-5">
+    <div className="rounded-lg border border-line bg-surface p-5">
       <h2 className="text-lg font-semibold">{step.title}</h2>
-      <p className="mt-2 leading-relaxed text-neutral-300">{step.body}</p>
+      <p className="mt-2 leading-relaxed text-text">{step.body}</p>
 
       {step.kind === "chord" &&
         (() => {
@@ -36,7 +36,7 @@ export function StepView({ step }: { step: LessonStep }) {
                 <button
                   type="button"
                   onClick={() => void playChord(chordMidiNotes(chord))}
-                  className="rounded-lg border border-neutral-800 bg-neutral-950 px-4 py-2 text-sm transition-colors hover:border-neutral-700"
+                  className="rounded-lg border border-line bg-bg px-4 py-2 text-sm transition-colors hover:border-line-strong"
                 >
                   Přehrát akord
                 </button>
@@ -44,7 +44,7 @@ export function StepView({ step }: { step: LessonStep }) {
                   <button
                     type="button"
                     onClick={() => void audioEngine.ensureListening()}
-                    className="rounded-lg border border-neutral-800 bg-neutral-950 px-4 py-2 text-sm transition-colors hover:border-neutral-700"
+                    className="rounded-lg border border-line bg-bg px-4 py-2 text-sm transition-colors hover:border-line-strong"
                   >
                     Hrát se mnou
                   </button>

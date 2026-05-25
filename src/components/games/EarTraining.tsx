@@ -13,16 +13,16 @@ import {
 type Mode = "interval" | "chord";
 
 const SEGMENT_ACTIVE =
-  "rounded-md bg-amber-500 px-3 py-1.5 text-sm font-semibold text-neutral-950";
+  "rounded-md bg-accent px-3 py-1.5 text-sm font-semibold text-accent-fg";
 const SEGMENT_IDLE =
-  "rounded-md px-3 py-1.5 text-sm text-neutral-400 transition-colors hover:text-neutral-100";
+  "rounded-md px-3 py-1.5 text-sm text-dim transition-colors hover:text-text";
 
 const ANSWER_IDLE =
-  "rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm transition-colors hover:border-amber-600";
+  "rounded-lg border border-line bg-bg px-3 py-2 text-sm transition-colors hover:border-accent";
 const ANSWER_RIGHT =
-  "rounded-lg border border-emerald-600 bg-emerald-600/20 px-3 py-2 text-sm";
+  "rounded-lg border border-success bg-success/20 px-3 py-2 text-sm";
 const ANSWER_WRONG =
-  "rounded-lg border border-red-600 bg-red-600/20 px-3 py-2 text-sm";
+  "rounded-lg border border-danger bg-danger/20 px-3 py-2 text-sm";
 
 /**
  * Ear training game (Bod 19): plays an interval or a chord, the player picks
@@ -100,8 +100,8 @@ export function EarTraining() {
   }
 
   return (
-    <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-4">
-      <div className="inline-flex rounded-lg border border-neutral-800 p-1">
+    <div className="rounded-lg border border-line bg-surface p-4">
+      <div className="inline-flex rounded-lg border border-line p-1">
         <button
           type="button"
           onClick={() => chooseMode("interval")}
@@ -120,7 +120,7 @@ export function EarTraining() {
 
       {!started ? (
         <div className="mt-4">
-          <p className="text-sm text-neutral-300">
+          <p className="text-sm text-text">
             Appka přehraje{" "}
             {mode === "interval" ? "dva tóny" : "akord"} a ty poznáš sluchem,
             o co šlo. Tóny si můžeš přehrát kolikrát chceš.
@@ -128,7 +128,7 @@ export function EarTraining() {
           <button
             type="button"
             onClick={() => begin(mode)}
-            className="mt-4 rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-neutral-950 transition-colors hover:bg-amber-400"
+            className="mt-4 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90"
           >
             Začít hru
           </button>
@@ -139,11 +139,11 @@ export function EarTraining() {
             <button
               type="button"
               onClick={play}
-              className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-neutral-950 transition-colors hover:bg-amber-400"
+              className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90"
             >
               Přehrát
             </button>
-            <span className="text-sm text-neutral-400">
+            <span className="text-sm text-dim">
               Skóre {score} · série {streak}
             </span>
           </div>
@@ -165,8 +165,8 @@ export function EarTraining() {
             <p
               className={
                 feedback.correct
-                  ? "mt-3 text-sm text-emerald-400"
-                  : "mt-3 text-sm text-red-400"
+                  ? "mt-3 text-sm text-success"
+                  : "mt-3 text-sm text-danger"
               }
             >
               {feedback.correct
@@ -178,7 +178,7 @@ export function EarTraining() {
           <button
             type="button"
             onClick={() => begin(mode)}
-            className="mt-3 rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-1.5 text-sm text-neutral-400 transition-colors hover:border-neutral-700"
+            className="mt-3 rounded-lg border border-line bg-bg px-3 py-1.5 text-sm text-dim transition-colors hover:border-line-strong"
           >
             Nová hra
           </button>

@@ -11,8 +11,8 @@ export function ScreenPlaceholder({
   return (
     <div className="mx-auto max-w-3xl p-6">
       <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
-      <p className="mt-1 text-neutral-400">{description}</p>
-      <p className="mt-6 rounded-lg border border-dashed border-neutral-800 p-6 text-sm text-neutral-500">
+      <p className="mt-1 text-dim">{description}</p>
+      <p className="mt-6 rounded-lg border border-dashed border-line p-6 text-sm text-muted">
         Tato obrazovka zatím čeká na obsah — přidá ho další bod roadmapy.
       </p>
     </div>

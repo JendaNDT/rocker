@@ -26,9 +26,9 @@ const TAP_RESET_MS = 2000;
 const MAX_TAPS = 6;
 
 const SEGMENT_ACTIVE =
-  "rounded-md bg-neutral-800 px-3 py-1.5 text-sm text-amber-500";
+  "rounded-md bg-surface-2 px-3 py-1.5 text-sm text-accent";
 const SEGMENT_IDLE =
-  "rounded-md px-3 py-1.5 text-sm text-neutral-400 transition-colors hover:text-neutral-100";
+  "rounded-md px-3 py-1.5 text-sm text-dim transition-colors hover:text-text";
 
 export default function MetronomePage() {
   useWakeLock();
@@ -77,11 +77,11 @@ export default function MetronomePage() {
   return (
     <div className="mx-auto max-w-xl p-6">
       <h1 className="text-3xl font-bold tracking-tight">Metronom</h1>
-      <p className="mt-1 text-neutral-400">Tempo, takt a doby.</p>
+      <p className="mt-1 text-dim">Tempo, takt a doby.</p>
 
       <div className="mt-8 text-center">
         <div className="text-6xl font-bold tabular-nums">{bpm}</div>
-        <div className="text-sm text-neutral-500">BPM</div>
+        <div className="text-sm text-muted">BPM</div>
       </div>
 
       <div className="mt-5 flex items-center gap-3">
@@ -89,7 +89,7 @@ export default function MetronomePage() {
           type="button"
           aria-label="Snížit tempo"
           onClick={() => metronome.setBpm(bpm - 1)}
-          className="h-10 w-10 rounded-lg border border-neutral-800 bg-neutral-900 text-lg transition-colors hover:border-neutral-700"
+          className="h-10 w-10 rounded-lg border border-line bg-surface text-lg transition-colors hover:border-line-strong"
         >
           −
         </button>
@@ -100,13 +100,13 @@ export default function MetronomePage() {
           value={bpm}
           onChange={(event) => metronome.setBpm(Number(event.target.value))}
           aria-label="Tempo"
-          className="flex-1 accent-amber-500"
+          className="flex-1 accent-accent"
         />
         <button
           type="button"
           aria-label="Zvýšit tempo"
           onClick={() => metronome.setBpm(bpm + 1)}
-          className="h-10 w-10 rounded-lg border border-neutral-800 bg-neutral-900 text-lg transition-colors hover:border-neutral-700"
+          className="h-10 w-10 rounded-lg border border-line bg-surface text-lg transition-colors hover:border-line-strong"
         >
           +
         </button>
@@ -116,15 +116,15 @@ export default function MetronomePage() {
         <button
           type="button"
           onClick={handleTap}
-          className="rounded-lg border border-neutral-800 bg-neutral-900 px-6 py-2 text-sm transition-colors hover:border-neutral-700"
+          className="rounded-lg border border-line bg-surface px-6 py-2 text-sm transition-colors hover:border-line-strong"
         >
           Naťukat tempo
         </button>
       </div>
 
       <div className="mt-8">
-        <div className="text-sm font-medium text-neutral-300">Takt</div>
-        <div className="mt-2 inline-flex rounded-lg border border-neutral-800 p-1">
+        <div className="text-sm font-medium text-text">Takt</div>
+        <div className="mt-2 inline-flex rounded-lg border border-line p-1">
           {BAR_OPTIONS.map((option) => (
             <button
               key={option.label}
@@ -141,8 +141,8 @@ export default function MetronomePage() {
       </div>
 
       <div className="mt-6">
-        <div className="text-sm font-medium text-neutral-300">Doby</div>
-        <div className="mt-2 inline-flex flex-wrap rounded-lg border border-neutral-800 p-1">
+        <div className="text-sm font-medium text-text">Doby</div>
+        <div className="mt-2 inline-flex flex-wrap rounded-lg border border-line p-1">
           {SUBDIVISION_OPTIONS.map((option) => (
             <button
               key={option.value}
@@ -159,21 +159,21 @@ export default function MetronomePage() {
       </div>
 
       <div className="mt-6 space-y-2">
-        <label className="flex items-center gap-2 text-sm text-neutral-300">
+        <label className="flex items-center gap-2 text-sm text-text">
           <input
             type="checkbox"
             checked={accentFirst}
             onChange={(event) => metronome.setAccentFirst(event.target.checked)}
-            className="h-4 w-4 accent-amber-500"
+            className="h-4 w-4 accent-accent"
           />
           Akcent na první dobu
         </label>
-        <label className="flex items-center gap-2 text-sm text-neutral-300">
+        <label className="flex items-center gap-2 text-sm text-text">
           <input
             type="checkbox"
             checked={haptics}
             onChange={(event) => setHaptics(event.target.checked)}
-            className="h-4 w-4 accent-amber-500"
+            className="h-4 w-4 accent-accent"
           />
           Vibrace na dobu (mobil)
         </label>
@@ -189,8 +189,8 @@ export default function MetronomePage() {
           onClick={togglePlay}
           className={
             isPlaying
-              ? "rounded-lg border border-neutral-800 bg-neutral-900 px-10 py-3 text-base font-semibold transition-colors hover:border-neutral-700"
-              : "rounded-lg bg-amber-500 px-10 py-3 text-base font-semibold text-neutral-950 transition-colors hover:bg-amber-400"
+              ? "rounded-lg border border-line bg-surface px-10 py-3 text-base font-semibold transition-colors hover:border-line-strong"
+              : "rounded-lg bg-accent px-10 py-3 text-base font-semibold text-accent-fg transition-colors hover:bg-accent/90"
           }
         >
           {isPlaying ? "Zastavit" : "Spustit"}

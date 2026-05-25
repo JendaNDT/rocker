@@ -26,9 +26,9 @@ export function NoteCheck({ step }: { step: NoteStep }) {
   }, [matched]);
 
   return (
-    <div className="mt-4 rounded-lg border border-neutral-800 bg-neutral-950 p-4 text-center">
-      <div className="text-sm text-neutral-500">Cílový tón</div>
-      <div className="mt-1 text-2xl font-bold text-amber-500">
+    <div className="mt-4 rounded-lg border border-line bg-bg p-4 text-center">
+      <div className="text-sm text-muted">Cílový tón</div>
+      <div className="mt-1 text-2xl font-bold text-accent">
         {step.targetLabel}
       </div>
 
@@ -36,23 +36,23 @@ export function NoteCheck({ step }: { step: NoteStep }) {
         <button
           type="button"
           onClick={() => void audioEngine.ensureListening()}
-          className="mt-3 rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-neutral-950 transition-colors hover:bg-amber-400"
+          className="mt-3 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90"
         >
           Poslouchat
         </button>
       )}
 
       {running && !passed && (
-        <p className="mt-3 text-sm text-neutral-400">
+        <p className="mt-3 text-sm text-dim">
           {reading ? `Slyším ${reading.note.label}…` : "Hraj cílový tón…"}
         </p>
       )}
 
       {passed && (
-        <p className="mt-3 font-semibold text-emerald-400">Správně zahráno ✓</p>
+        <p className="mt-3 font-semibold text-success">Správně zahráno ✓</p>
       )}
 
-      {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
+      {error && <p className="mt-3 text-sm text-danger">{error}</p>}
     </div>
   );
 }

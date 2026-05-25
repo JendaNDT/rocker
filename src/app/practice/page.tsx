@@ -19,9 +19,9 @@ const TABS: { id: Tab; label: string }[] = [
 ];
 
 const SEGMENT_ACTIVE =
-  "rounded-md bg-neutral-800 px-3 py-1.5 text-sm text-amber-500";
+  "rounded-md bg-surface-2 px-3 py-1.5 text-sm text-accent";
 const SEGMENT_IDLE =
-  "rounded-md px-3 py-1.5 text-sm text-neutral-400 transition-colors hover:text-neutral-100";
+  "rounded-md px-3 py-1.5 text-sm text-dim transition-colors hover:text-text";
 
 export default function PracticePage() {
   useWakeLock();
@@ -56,9 +56,9 @@ export default function PracticePage() {
   return (
     <div className="mx-auto max-w-3xl p-6">
       <h1 className="text-3xl font-bold tracking-tight">Cvičení</h1>
-      <p className="mt-1 text-neutral-400">Výuková cesta a trénink.</p>
+      <p className="mt-1 text-dim">Výuková cesta a trénink.</p>
 
-      <div className="mt-6 inline-flex flex-wrap rounded-lg border border-neutral-800 p-1">
+      <div className="mt-6 inline-flex flex-wrap rounded-lg border border-line p-1">
         {TABS.map((item) => (
           <button
             key={item.id}
@@ -79,11 +79,11 @@ export default function PracticePage() {
               <section key={stage.id} className="mt-8">
                 <div className="flex items-baseline justify-between">
                   <h2 className="text-lg font-semibold">{stage.title}</h2>
-                  <span className="text-sm text-neutral-500">
+                  <span className="text-sm text-muted">
                     {completion.done}/{completion.total} lekcí
                   </span>
                 </div>
-                <p className="mt-1 text-sm text-neutral-400">
+                <p className="mt-1 text-sm text-dim">
                   {stage.description}
                 </p>
 
@@ -95,12 +95,12 @@ export default function PracticePage() {
                         key={lesson.id}
                         type="button"
                         onClick={() => setActiveLessonId(lesson.id)}
-                        className="flex w-full items-center justify-between rounded-lg border border-neutral-800 bg-neutral-900 px-4 py-3 text-left transition-colors hover:border-amber-600"
+                        className="flex w-full items-center justify-between rounded-lg border border-line bg-surface px-4 py-3 text-left transition-colors hover:border-accent"
                       >
                         <span className="font-medium">{lesson.title}</span>
-                        <span className="ml-3 shrink-0 text-sm text-neutral-500">
+                        <span className="ml-3 shrink-0 text-sm text-muted">
                           {done ? (
-                            <span className="text-emerald-400">hotovo ✓</span>
+                            <span className="text-success">hotovo ✓</span>
                           ) : (
                             `${lesson.estimatedMinutes} min`
                           )}

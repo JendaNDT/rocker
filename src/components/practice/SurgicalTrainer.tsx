@@ -61,7 +61,7 @@ export function SurgicalTrainer() {
   if (!state) {
     return (
       <div>
-        <p className="text-sm text-neutral-400">
+        <p className="text-sm text-dim">
           Vyber cvičení. Hraješ tón po tónu, aplikace tě posouvá po správně
           zahraných tónech. Když uděláš chybu, na konci ji společně vypilujeme.
         </p>
@@ -71,10 +71,10 @@ export function SurgicalTrainer() {
               key={exercise.id}
               type="button"
               onClick={() => chooseExercise(exercise)}
-              className="block w-full rounded-lg border border-neutral-800 bg-neutral-900 px-4 py-3 text-left transition-colors hover:border-amber-600"
+              className="block w-full rounded-lg border border-line bg-surface px-4 py-3 text-left transition-colors hover:border-accent"
             >
               <div className="font-medium">{exercise.name}</div>
-              <div className="mt-0.5 text-sm text-neutral-400">
+              <div className="mt-0.5 text-sm text-dim">
                 {exercise.description}
               </div>
             </button>
@@ -86,23 +86,23 @@ export function SurgicalTrainer() {
 
   if (state.phase === "complete") {
     return (
-      <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-6 text-center">
-        <div className="text-lg font-semibold text-emerald-400">
+      <div className="rounded-lg border border-line bg-surface p-6 text-center">
+        <div className="text-lg font-semibold text-success">
           Cvičení zvládnuto ✓
         </div>
-        <p className="mt-1 text-sm text-neutral-400">{state.exercise.name}</p>
+        <p className="mt-1 text-sm text-dim">{state.exercise.name}</p>
         <div className="mt-4 flex justify-center gap-2">
           <button
             type="button"
             onClick={() => chooseExercise(state.exercise)}
-            className="rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-neutral-950 transition-colors hover:bg-amber-400"
+            className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90"
           >
             Znovu
           </button>
           <button
             type="button"
             onClick={backToPicker}
-            className="rounded-lg border border-neutral-800 bg-neutral-950 px-4 py-2 text-sm transition-colors hover:border-neutral-700"
+            className="rounded-lg border border-line bg-bg px-4 py-2 text-sm transition-colors hover:border-line-strong"
           >
             Zpět na výběr
           </button>
@@ -121,35 +121,35 @@ export function SurgicalTrainer() {
           <button
             type="button"
             onClick={backToPicker}
-            className="text-sm text-neutral-400 transition-colors hover:text-neutral-100"
+            className="text-sm text-dim transition-colors hover:text-text"
           >
             Zpět na výběr
           </button>
-          <span className="text-sm text-neutral-500">
+          <span className="text-sm text-muted">
             {state.exercise.name}
           </span>
         </div>
 
-        <div className="mt-4 rounded-lg border border-amber-900/60 bg-neutral-900 p-4">
-          <div className="font-semibold text-amber-500">
+        <div className="mt-4 rounded-lg border border-accent/60 bg-surface p-4">
+          <div className="font-semibold text-accent">
             Drill — problémové místo
           </div>
-          <p className="mt-1 text-sm text-neutral-400">
+          <p className="mt-1 text-sm text-dim">
             Izolovali jsme úsek, kde se chybovalo. Zahraj ho{" "}
             {REQUIRED_CLEAN_REPS}× po sobě čistě — když mineš, série se počítá
             od začátku.
           </p>
         </div>
 
-        <div className="mt-4 flex justify-center gap-2 rounded-lg border border-neutral-800 bg-neutral-900 p-4">
+        <div className="mt-4 flex justify-center gap-2 rounded-lg border border-line bg-surface p-4">
           {drillWindow.map((midi, index) => {
             const done = index < state.drillPosition;
             const current = index === state.drillPosition;
             const variant = current
-              ? "border-amber-500 text-amber-500"
+              ? "border-accent text-accent"
               : done
-                ? "border-emerald-500/60 text-emerald-400"
-                : "border-neutral-800 text-neutral-500";
+                ? "border-success/60 text-success"
+                : "border-line text-muted";
             return (
               <div
                 key={index}
@@ -166,29 +166,29 @@ export function SurgicalTrainer() {
             <div
               key={index}
               className={`h-3 w-3 rounded-full ${
-                index < state.cleanReps ? "bg-emerald-400" : "bg-neutral-700"
+                index < state.cleanReps ? "bg-success" : "bg-surface-3"
               }`}
             />
           ))}
-          <span className="ml-2 text-sm text-neutral-400">
+          <span className="ml-2 text-sm text-dim">
             Čisté repetice: {state.cleanReps} / {REQUIRED_CLEAN_REPS}
           </span>
         </div>
 
-        <div className="mt-4 rounded-lg border border-neutral-800 bg-neutral-900 p-5 text-center">
-          <div className="text-sm text-neutral-500">Zahraj tón</div>
-          <div className="mt-1 text-3xl font-bold text-amber-500">
+        <div className="mt-4 rounded-lg border border-line bg-surface p-5 text-center">
+          <div className="text-sm text-muted">Zahraj tón</div>
+          <div className="mt-1 text-3xl font-bold text-accent">
             {midiToLabel(drillTarget)}
           </div>
           {running ? (
-            <p className="mt-3 text-sm text-neutral-400">
+            <p className="mt-3 text-sm text-dim">
               {reading ? `Slyším ${reading.note.label}` : "Poslouchám…"}
             </p>
           ) : (
             <button
               type="button"
               onClick={() => void audioEngine.ensureListening()}
-              className="mt-4 rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-neutral-950 transition-colors hover:bg-amber-400"
+              className="mt-4 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90"
             >
               Spustit poslech
             </button>
@@ -206,22 +206,22 @@ export function SurgicalTrainer() {
         <button
           type="button"
           onClick={backToPicker}
-          className="text-sm text-neutral-400 transition-colors hover:text-neutral-100"
+          className="text-sm text-dim transition-colors hover:text-text"
         >
           Zpět na výběr
         </button>
-        <span className="text-sm text-neutral-500">{state.exercise.name}</span>
+        <span className="text-sm text-muted">{state.exercise.name}</span>
       </div>
 
-      <div className="mt-4 flex gap-2 overflow-x-auto rounded-lg border border-neutral-800 bg-neutral-900 p-4">
+      <div className="mt-4 flex gap-2 overflow-x-auto rounded-lg border border-line bg-surface p-4">
         {state.exercise.notes.map((midi, index) => {
           const done = index < state.position;
           const current = index === state.position;
           const variant = current
-            ? "border-amber-500 text-amber-500"
+            ? "border-accent text-accent"
             : done
-              ? "border-emerald-500/60 text-emerald-400"
-              : "border-neutral-800 text-neutral-500";
+              ? "border-success/60 text-success"
+              : "border-line text-muted";
           return (
             <div
               key={index}
@@ -233,26 +233,26 @@ export function SurgicalTrainer() {
         })}
       </div>
 
-      <div className="mt-4 rounded-lg border border-neutral-800 bg-neutral-900 p-5 text-center">
-        <div className="text-sm text-neutral-500">Zahraj tón</div>
-        <div className="mt-1 text-3xl font-bold text-amber-500">
+      <div className="mt-4 rounded-lg border border-line bg-surface p-5 text-center">
+        <div className="text-sm text-muted">Zahraj tón</div>
+        <div className="mt-1 text-3xl font-bold text-accent">
           {midiToLabel(targetMidi)}
         </div>
         {running ? (
-          <p className="mt-3 text-sm text-neutral-400">
+          <p className="mt-3 text-sm text-dim">
             {reading ? `Slyším ${reading.note.label}` : "Poslouchám…"}
           </p>
         ) : (
           <button
             type="button"
             onClick={() => void audioEngine.ensureListening()}
-            className="mt-4 rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-neutral-950 transition-colors hover:bg-amber-400"
+            className="mt-4 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90"
           >
             Spustit poslech
           </button>
         )}
         {running && state.errorCounts[state.position] > 0 && (
-          <p className="mt-2 text-sm text-amber-500">
+          <p className="mt-2 text-sm text-accent">
             Minul jsi — zkus ten tón znovu.
           </p>
         )}

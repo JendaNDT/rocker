@@ -6,9 +6,9 @@ import { useProgressStore } from "@/stores/progressStore";
 
 function Stat({ value, label }: { value: string; label: string }) {
   return (
-    <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-4 text-center">
-      <div className="text-2xl font-bold text-amber-500">{value}</div>
-      <div className="mt-1 text-xs text-neutral-400">{label}</div>
+    <div className="rounded-lg border border-line bg-surface p-4 text-center">
+      <div className="text-2xl font-bold text-accent">{value}</div>
+      <div className="mt-1 text-xs text-dim">{label}</div>
     </div>
   );
 }

@@ -6,7 +6,7 @@ export default function AmpPage() {
   return (
     <div className="mx-auto max-w-3xl p-6">
       <h1 className="text-3xl font-bold tracking-tight">Aparát</h1>
-      <p className="mt-1 text-neutral-400">
+      <p className="mt-1 text-dim">
         Efekty a simulace aparátu — zatím první ověřovací verze se zkreslením.
       </p>
       <div className="mt-6">

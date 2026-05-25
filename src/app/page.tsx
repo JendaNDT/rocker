@@ -8,7 +8,7 @@ export default function HomePage() {
   return (
     <div className="mx-auto max-w-3xl p-6">
       <h1 className="text-3xl font-bold tracking-tight">Rocker</h1>
-      <p className="mt-1 text-neutral-400">
+      <p className="mt-1 text-dim">
         Kytarový asistent — tvůj denní přehled.
       </p>
 
@@ -22,10 +22,10 @@ export default function HomePage() {
           <Link
             key={screen.href}
             href={screen.href}
-            className="rounded-lg border border-neutral-800 bg-neutral-900 p-4 transition-colors hover:border-amber-600"
+            className="rounded-lg border border-line bg-surface p-4 transition-colors hover:border-accent"
           >
             <div className="font-semibold">{screen.label}</div>
-            <div className="mt-1 text-sm text-neutral-400">
+            <div className="mt-1 text-sm text-dim">
               {screen.description}
             </div>
           </Link>

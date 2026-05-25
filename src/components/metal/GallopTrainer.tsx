@@ -20,9 +20,9 @@ import { useProgressStore } from "@/stores/progressStore";
 import { useSettingsStore } from "@/stores/settingsStore";
 
 const SEGMENT_ACTIVE =
-  "rounded-md bg-neutral-800 px-3 py-1.5 text-sm text-amber-500";
+  "rounded-md bg-surface-2 px-3 py-1.5 text-sm text-accent";
 const SEGMENT_IDLE =
-  "rounded-md px-3 py-1.5 text-sm text-neutral-400 transition-colors hover:text-neutral-100";
+  "rounded-md px-3 py-1.5 text-sm text-dim transition-colors hover:text-text";
 
 /** Human-readable note value for a length in beats. */
 function noteLabel(beats: number): string {
@@ -132,7 +132,7 @@ export function GallopTrainer() {
   return (
     <div>
       {/* Exercise picker */}
-      <div className="inline-flex flex-wrap rounded-lg border border-neutral-800 p-1">
+      <div className="inline-flex flex-wrap rounded-lg border border-line p-1">
         {GALLOP_EXERCISES.map((exercise) => (
           <button
             key={exercise.id}
@@ -146,13 +146,13 @@ export function GallopTrainer() {
           </button>
         ))}
       </div>
-      <p className="mt-2 text-sm text-neutral-400">
+      <p className="mt-2 text-sm text-dim">
         {state.exercise.description}
       </p>
 
       {/* Rhythm visualisation */}
-      <div className="mt-6 rounded-xl border border-neutral-800 bg-neutral-900 p-5">
-        <div className="text-xs text-neutral-500">Rytmus gallopu</div>
+      <div className="mt-6 rounded-xl border border-line bg-surface p-5">
+        <div className="text-xs text-muted">Rytmus gallopu</div>
         <div className="mt-2 flex gap-1.5">
           {state.exercise.cell.map((length, index) => (
             <div
@@ -160,29 +160,29 @@ export function GallopTrainer() {
               style={{ flexGrow: length }}
               className={`flex h-16 items-center justify-center rounded-lg border text-sm font-medium transition-colors ${
                 index === currentOnset
-                  ? "border-amber-500 bg-amber-500/20 text-amber-400"
-                  : "border-neutral-800 bg-neutral-950 text-neutral-500"
+                  ? "border-accent bg-accent/20 text-accent"
+                  : "border-line bg-bg text-muted"
               }`}
             >
               {noteLabel(length)}
             </div>
           ))}
         </div>
-        <p className="mt-3 text-sm text-neutral-400">
+        <p className="mt-3 text-sm text-dim">
           Hraj na{" "}
-          <span className="font-semibold text-neutral-200">{chordName}</span>{" "}
+          <span className="font-semibold text-text">{chordName}</span>{" "}
           s palm mute.
         </p>
 
         {/* Round progress */}
         <div className="mt-4">
-          <div className="h-2 overflow-hidden rounded-full bg-neutral-800">
+          <div className="h-2 overflow-hidden rounded-full bg-surface-2">
             <div
-              className="h-full bg-amber-500 transition-all duration-100"
+              className="h-full bg-accent transition-all duration-100"
               style={{ width: `${progressPercent}%` }}
             />
           </div>
-          <div className="mt-1 text-xs text-neutral-500">
+          <div className="mt-1 text-xs text-muted">
             Odehraná kola: {state.roundsCompleted}
           </div>
         </div>
@@ -194,36 +194,36 @@ export function GallopTrainer() {
           type="button"
           aria-label="Snížit tempo"
           onClick={() => adjustBpm(-5)}
-          className="h-10 w-10 rounded-lg border border-neutral-800 bg-neutral-900 text-lg transition-colors hover:border-neutral-700"
+          className="h-10 w-10 rounded-lg border border-line bg-surface text-lg transition-colors hover:border-line-strong"
         >
           −
         </button>
         <div className="text-center">
           <div className="text-3xl font-bold tabular-nums">{state.bpm}</div>
-          <div className="text-xs text-neutral-500">BPM</div>
+          <div className="text-xs text-muted">BPM</div>
         </div>
         <button
           type="button"
           aria-label="Zvýšit tempo"
           onClick={() => adjustBpm(5)}
-          className="h-10 w-10 rounded-lg border border-neutral-800 bg-neutral-900 text-lg transition-colors hover:border-neutral-700"
+          className="h-10 w-10 rounded-lg border border-line bg-surface text-lg transition-colors hover:border-line-strong"
         >
           +
         </button>
       </div>
 
       {record !== undefined && (
-        <p className="mt-2 text-center text-sm text-neutral-400">
+        <p className="mt-2 text-center text-sm text-dim">
           Tvůj rekord v tomto cvičení: {record} BPM
         </p>
       )}
 
-      <label className="mt-4 flex items-center justify-center gap-2 text-sm text-neutral-300">
+      <label className="mt-4 flex items-center justify-center gap-2 text-sm text-text">
         <input
           type="checkbox"
           checked={state.speedUpEnabled}
           onChange={(event) => setSpeedUp(event.target.checked)}
-          className="h-4 w-4 accent-amber-500"
+          className="h-4 w-4 accent-accent"
         />
         Postupně zrychlovat (+5 % po každém kole)
       </label>
@@ -235,8 +235,8 @@ export function GallopTrainer() {
           onClick={togglePlay}
           className={
             isPlaying
-              ? "rounded-lg border border-neutral-800 bg-neutral-900 px-10 py-3 text-base font-semibold transition-colors hover:border-neutral-700"
-              : "rounded-lg bg-amber-500 px-10 py-3 text-base font-semibold text-neutral-950 transition-colors hover:bg-amber-400"
+              ? "rounded-lg border border-line bg-surface px-10 py-3 text-base font-semibold transition-colors hover:border-line-strong"
+              : "rounded-lg bg-accent px-10 py-3 text-base font-semibold text-accent-fg transition-colors hover:bg-accent/90"
           }
         >
           {isPlaying ? "Zastavit" : "Spustit"}

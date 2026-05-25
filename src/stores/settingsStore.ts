@@ -13,9 +13,31 @@ export type LayoutMode = "auto" | "desktop" | "mobile";
 
 export type Handedness = "right" | "left";
 
+/**
+ * Visual theme — affects palette, typography and decorations.
+ * - "studio"  — dark studio look, brass accents, serif headlines
+ * - "vintage" — pedal-like, brushed metal, screws, knobs
+ * - "glassy"  — frosted glass over gradients, vibrant accent
+ */
+export type Theme = "studio" | "vintage" | "glassy";
+
+/**
+ * Light / dark colour mode.
+ * - "light" — světlý
+ * - "dark"  — tmavý
+ * - "auto"  — řídí se systémovým nastavením OS (prefers-color-scheme)
+ */
+export type ColorMode = "light" | "dark" | "auto";
+
 interface SettingsState {
   layoutMode: LayoutMode;
   setLayoutMode: (mode: LayoutMode) => void;
+  /** Visual theme. */
+  theme: Theme;
+  setTheme: (theme: Theme) => void;
+  /** Light/dark mode (auto = OS). */
+  colorMode: ColorMode;
+  setColorMode: (mode: ColorMode) => void;
   /** Selected guitar tuning id (see src/audio/tunings.ts). */
   tuningId: string;
   setTuningId: (id: string) => void;
@@ -41,6 +63,10 @@ export const useSettingsStore = create<SettingsState>()(
     (set) => ({
       layoutMode: "auto",
       setLayoutMode: (mode) => set({ layoutMode: mode }),
+      theme: "studio",
+      setTheme: (theme) => set({ theme }),
+      colorMode: "dark", // historická default — appka byla dosud jen dark
+      setColorMode: (colorMode) => set({ colorMode }),
       tuningId: DEFAULT_TUNING_ID,
       setTuningId: (id) => set({ tuningId: id }),
       handedness: "right",

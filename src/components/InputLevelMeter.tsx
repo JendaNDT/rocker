@@ -51,22 +51,22 @@ export function InputLevelMeter() {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <span className="text-sm font-medium text-neutral-300">
+        <span className="text-sm font-medium text-text">
           Úroveň vstupu
         </span>
         {clipping && (
-          <span className="text-xs font-semibold text-red-400">
+          <span className="text-xs font-semibold text-danger">
             Příliš silný signál — uber gain
           </span>
         )}
       </div>
-      <div className="mt-2 h-3 w-full overflow-hidden rounded-full bg-neutral-950">
+      <div className="mt-2 h-3 w-full overflow-hidden rounded-full bg-bg">
         <div
-          className={clipping ? "h-full bg-red-500" : "h-full bg-amber-500"}
+          className={clipping ? "h-full bg-danger" : "h-full bg-accent"}
           style={{ width: `${widthPct}%` }}
         />
       </div>
-      <p className="mt-2 text-xs text-neutral-500">
+      <p className="mt-2 text-xs text-muted">
         {running
           ? "Zahraj na kytaru — výchylka ukazuje, že tě aplikace slyší."
           : "Spusť vstup a zahraj, ukáže se úroveň signálu."}

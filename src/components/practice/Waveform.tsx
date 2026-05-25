@@ -63,7 +63,7 @@ export function Waveform({
   return (
     <div
       onClick={handleClick}
-      className="relative h-24 w-full cursor-pointer overflow-hidden rounded-lg border border-neutral-800 bg-neutral-950"
+      className="relative h-24 w-full cursor-pointer overflow-hidden rounded-lg border border-line bg-bg"
     >
       <canvas
         ref={canvasRef}
@@ -74,7 +74,7 @@ export function Waveform({
 
       {hasLoop && (
         <div
-          className="pointer-events-none absolute inset-y-0 border-x border-amber-500 bg-amber-500/15"
+          className="pointer-events-none absolute inset-y-0 border-x border-accent bg-accent/15"
           style={{
             left: `${toPercent(loopStart)}%`,
             width: `${toPercent(loopEnd) - toPercent(loopStart)}%`,
@@ -83,7 +83,7 @@ export function Waveform({
       )}
 
       <div
-        className="pointer-events-none absolute inset-y-0 w-0.5 bg-amber-400"
+        className="pointer-events-none absolute inset-y-0 w-0.5 bg-accent"
         style={{ left: `${toPercent(currentTime)}%` }}
       />
     </div>

@@ -98,17 +98,17 @@ export function ChatPanel() {
           <button
             type="button"
             onClick={reset}
-            className="rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-1.5 text-sm text-neutral-400 transition-colors hover:border-neutral-700"
+            className="rounded-lg border border-line bg-bg px-3 py-1.5 text-sm text-dim transition-colors hover:border-line-strong"
           >
             Nová konverzace
           </button>
         </div>
       )}
 
-      <div className="max-h-[60vh] space-y-3 overflow-y-auto rounded-lg border border-neutral-800 bg-neutral-950 p-4">
+      <div className="max-h-[60vh] space-y-3 overflow-y-auto rounded-lg border border-line bg-bg p-4">
         {messages.length === 0 && !busy && (
           <div className="py-6">
-            <p className="text-center text-sm text-neutral-500">
+            <p className="text-center text-sm text-muted">
               Napiš svou první otázku, nebo zkus některou z těchto:
             </p>
             <div className="mt-3 flex flex-col gap-2">
@@ -117,7 +117,7 @@ export function ChatPanel() {
                   key={question}
                   type="button"
                   onClick={() => submit(question)}
-                  className="rounded-lg border border-neutral-800 bg-neutral-900 px-3 py-2 text-left text-sm text-neutral-300 transition-colors hover:border-amber-600 hover:text-neutral-100"
+                  className="rounded-lg border border-line bg-surface px-3 py-2 text-left text-sm text-text transition-colors hover:border-accent hover:text-text"
                 >
                   {question}
                 </button>
@@ -131,8 +131,8 @@ export function ChatPanel() {
             key={index}
             className={
               message.role === "user"
-                ? "ml-auto max-w-[85%] rounded-lg border border-amber-600/40 bg-amber-500/10 px-3 py-2 text-sm whitespace-pre-wrap"
-                : "mr-auto max-w-[85%] rounded-lg border border-neutral-800 bg-neutral-900 px-3 py-2 text-sm whitespace-pre-wrap"
+                ? "ml-auto max-w-[85%] rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-sm whitespace-pre-wrap"
+                : "mr-auto max-w-[85%] rounded-lg border border-line bg-surface px-3 py-2 text-sm whitespace-pre-wrap"
             }
           >
             {message.text}
@@ -140,24 +140,24 @@ export function ChatPanel() {
         ))}
 
         {busy && streaming.length > 0 && (
-          <div className="mr-auto max-w-[85%] rounded-lg border border-neutral-800 bg-neutral-900 px-3 py-2 text-sm whitespace-pre-wrap">
+          <div className="mr-auto max-w-[85%] rounded-lg border border-line bg-surface px-3 py-2 text-sm whitespace-pre-wrap">
             {streaming}
           </div>
         )}
 
         {busy && streaming.length === 0 && (
-          <div className="mr-auto max-w-[85%] rounded-lg border border-neutral-800 bg-neutral-900 px-3 py-2 text-sm text-neutral-500">
+          <div className="mr-auto max-w-[85%] rounded-lg border border-line bg-surface px-3 py-2 text-sm text-muted">
             Přemýšlí…
           </div>
         )}
 
         {error && (
           <div className="mr-auto max-w-[85%]">
-            <p className="text-sm text-red-400">{error}</p>
+            <p className="text-sm text-danger">{error}</p>
             <button
               type="button"
               onClick={retry}
-              className="mt-2 rounded-md border border-neutral-800 bg-neutral-900 px-3 py-1 text-xs transition-colors hover:border-neutral-700"
+              className="mt-2 rounded-md border border-line bg-surface px-3 py-1 text-xs transition-colors hover:border-line-strong"
             >
               Zkusit znovu
             </button>
@@ -174,13 +174,13 @@ export function ChatPanel() {
           onKeyDown={handleKeyDown}
           rows={2}
           placeholder="Napiš otázku… (Enter odešle, Shift+Enter nový řádek)"
-          className="min-w-0 flex-1 resize-none rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm text-neutral-100"
+          className="min-w-0 flex-1 resize-none rounded-lg border border-line bg-bg px-3 py-2 text-sm text-text"
         />
         <button
           type="button"
           onClick={send}
           disabled={busy || input.trim().length === 0}
-          className="shrink-0 self-end rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-neutral-950 transition-colors hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-50"
+          className="shrink-0 self-end rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-50"
         >
           Odeslat
         </button>

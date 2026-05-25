@@ -86,8 +86,8 @@ export function RecorderControls() {
 
   if (!supported) {
     return (
-      <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-6">
-        <p className="text-sm text-red-400">
+      <div className="rounded-lg border border-line bg-surface p-6">
+        <p className="text-sm text-danger">
           Tento prohlížeč neumí nahrávat zvuk (chybí MediaRecorder).
         </p>
       </div>
@@ -95,9 +95,9 @@ export function RecorderControls() {
   }
 
   return (
-    <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-6">
+    <div className="rounded-lg border border-line bg-surface p-6">
       {!storageAvailable && (
-        <p className="mb-4 rounded-lg border border-amber-700 bg-amber-950/40 p-3 text-sm text-amber-300">
+        <p className="mb-4 rounded-lg border border-accent bg-accent-soft p-3 text-sm text-accent">
           Úložiště prohlížeče není dostupné — nahrávky se na tomto zařízení
           neuloží a po zavření zmizí.
         </p>
@@ -105,12 +105,12 @@ export function RecorderControls() {
 
       {!running && (
         <>
-          <p className="text-sm text-neutral-300">
+          <p className="text-sm text-text">
             Pro nahrávání zapni zvukový vstup. Zařízení (M-Track Solo nebo
             mikrofon) vybereš v nastavení.
           </p>
           {permission === "denied" && (
-            <p className="mt-2 text-sm text-red-400">
+            <p className="mt-2 text-sm text-danger">
               Přístup k mikrofonu je zamítnutý — povol ho v prohlížeči a zkus
               to znovu.
             </p>
@@ -118,7 +118,7 @@ export function RecorderControls() {
           <button
             type="button"
             onClick={() => void enableInput()}
-            className="mt-4 rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-neutral-950 transition-colors hover:bg-amber-400"
+            className="mt-4 rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90"
           >
             {status === "starting" ? "Spouštím…" : "Zapnout zvukový vstup"}
           </button>
@@ -131,12 +131,12 @@ export function RecorderControls() {
             type="button"
             onClick={startRecording}
             disabled={busy}
-            className="flex items-center gap-2 rounded-lg bg-red-600 px-6 py-2.5 text-sm font-semibold text-neutral-50 transition-colors hover:bg-red-500 disabled:opacity-60"
+            className="flex items-center gap-2 rounded-lg bg-danger px-6 py-2.5 text-sm font-semibold text-text transition-colors hover:bg-danger disabled:opacity-60"
           >
-            <span className="h-3 w-3 rounded-full bg-neutral-50" />
+            <span className="h-3 w-3 rounded-full bg-surface" />
             {busy ? "Ukládám…" : "Nahrávat"}
           </button>
-          <span className="text-sm text-neutral-400">Vstup běží</span>
+          <span className="text-sm text-dim">Vstup běží</span>
         </div>
       )}
 
@@ -146,20 +146,20 @@ export function RecorderControls() {
             type="button"
             onClick={() => void stopRecording()}
             disabled={busy}
-            className="flex items-center gap-2 rounded-lg border border-neutral-700 bg-neutral-950 px-6 py-2.5 text-sm font-semibold transition-colors hover:border-neutral-600 disabled:opacity-60"
+            className="flex items-center gap-2 rounded-lg border border-line-strong bg-bg px-6 py-2.5 text-sm font-semibold transition-colors hover:border-line-strong disabled:opacity-60"
           >
-            <span className="h-3 w-3 bg-red-500" />
+            <span className="h-3 w-3 bg-danger" />
             Zastavit
           </button>
-          <span className="flex items-center gap-2 text-sm tabular-nums text-red-400">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-red-500" />
+          <span className="flex items-center gap-2 text-sm tabular-nums text-danger">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-danger" />
             Nahrávám {formatDuration(elapsed)}
           </span>
         </div>
       )}
 
       {(localError || engineError) && (
-        <p className="mt-3 text-sm text-red-400">
+        <p className="mt-3 text-sm text-danger">
           {localError ?? engineError}
         </p>
       )}

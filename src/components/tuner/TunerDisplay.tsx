@@ -17,8 +17,8 @@ export function TunerDisplay({
 }) {
   if (!reading) {
     return (
-      <div className="flex h-64 items-center justify-center rounded-lg border border-neutral-800 bg-neutral-900">
-        <p className="text-neutral-500">Zahraj tón…</p>
+      <div className="flex h-64 items-center justify-center rounded-lg border border-line bg-surface">
+        <p className="text-muted">Zahraj tón…</p>
       </div>
     );
   }
@@ -26,15 +26,15 @@ export function TunerDisplay({
   const { note, frequency } = reading;
   const cents = note.cents;
   const inTune = Math.abs(cents) <= IN_TUNE_CENTS;
-  const accent = inTune ? "text-emerald-400" : "text-amber-500";
+  const accent = inTune ? "text-success" : "text-accent";
 
   return (
-    <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-6">
+    <div className="rounded-lg border border-line bg-surface p-6">
       <div className="flex items-end justify-center gap-1">
         <span className={`text-7xl font-bold ${accent}`}>
           {pitchClassName(note.midi, notation)}
         </span>
-        <span className="mb-2 text-2xl text-neutral-500">{note.octave}</span>
+        <span className="mb-2 text-2xl text-muted">{note.octave}</span>
       </div>
 
       <div className="mt-6">
@@ -42,14 +42,14 @@ export function TunerDisplay({
       </div>
 
       <div className="mt-5 flex items-center justify-between text-sm">
-        <span className="text-neutral-500">♭ níž</span>
+        <span className="text-muted">♭ níž</span>
         <span className={`font-semibold ${accent}`}>
           {inTune ? "Naladěno" : `${cents > 0 ? "+" : ""}${cents} centů`}
         </span>
-        <span className="text-neutral-500">výš ♯</span>
+        <span className="text-muted">výš ♯</span>
       </div>
 
-      <p className="mt-3 text-center text-xs text-neutral-600">
+      <p className="mt-3 text-center text-xs text-muted">
         {frequency.toFixed(1)} Hz
       </p>
     </div>

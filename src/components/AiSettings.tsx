@@ -14,9 +14,9 @@ type TestState =
   | { state: "error"; message: string };
 
 const PRIMARY_BUTTON =
-  "rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-neutral-950 transition-colors hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-50";
+  "rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-50";
 const SECONDARY_BUTTON =
-  "rounded-lg border border-neutral-800 bg-neutral-950 px-4 py-2 text-sm transition-colors hover:border-neutral-700";
+  "rounded-lg border border-line bg-bg px-4 py-2 text-sm transition-colors hover:border-line-strong";
 
 /**
  * AI tutor settings: the user's own Gemini API key (BYOK), model picker and
@@ -64,15 +64,15 @@ export function AiSettings() {
   }
 
   return (
-    <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-4">
-      <p className="text-sm text-neutral-300">
+    <div className="rounded-lg border border-line bg-surface p-4">
+      <p className="text-sm text-text">
         AI tutor odpovídá na otázky o hraní pomocí Google Gemini. Funguje na
         vlastní API klíč — vyzvedneš si ho zdarma, bez platební karty, v{" "}
         <a
           href="https://aistudio.google.com/apikey"
           target="_blank"
           rel="noreferrer"
-          className="text-amber-500 underline hover:text-amber-400"
+          className="text-accent underline hover:text-accent"
         >
           Google AI Studiu
         </a>
@@ -81,7 +81,7 @@ export function AiSettings() {
 
       <label
         htmlFor="ai-api-key"
-        className="mt-4 block text-sm font-medium text-neutral-300"
+        className="mt-4 block text-sm font-medium text-text"
       >
         Gemini API klíč
       </label>
@@ -95,7 +95,7 @@ export function AiSettings() {
           placeholder="Vlož sem svůj klíč"
           autoComplete="off"
           spellCheck={false}
-          className="w-full rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm text-neutral-100"
+          className="w-full rounded-lg border border-line bg-bg px-3 py-2 text-sm text-text"
         />
         <button
           type="button"
@@ -108,7 +108,7 @@ export function AiSettings() {
 
       <label
         htmlFor="ai-model"
-        className="mt-4 block text-sm font-medium text-neutral-300"
+        className="mt-4 block text-sm font-medium text-text"
       >
         Model
       </label>
@@ -117,7 +117,7 @@ export function AiSettings() {
         value={modelValue}
         disabled={!hydrated}
         onChange={(event) => setModel(event.target.value)}
-        className="mt-2 w-full rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm text-neutral-100"
+        className="mt-2 w-full rounded-lg border border-line bg-bg px-3 py-2 text-sm text-text"
       >
         {AI_MODELS.map((aiModel) => (
           <option key={aiModel.id} value={aiModel.id}>
@@ -126,7 +126,7 @@ export function AiSettings() {
         ))}
       </select>
       {modelNote && (
-        <p className="mt-2 text-xs text-neutral-500">{modelNote}</p>
+        <p className="mt-2 text-xs text-muted">{modelNote}</p>
       )}
 
       <div className="mt-4 flex flex-wrap items-center gap-3">
@@ -146,15 +146,15 @@ export function AiSettings() {
       </div>
 
       {test.state === "ok" && (
-        <p className="mt-3 text-sm text-emerald-400">
+        <p className="mt-3 text-sm text-success">
           Spojení funguje — AI tutor je připravený.
         </p>
       )}
       {test.state === "error" && (
-        <p className="mt-3 text-sm text-red-400">{test.message}</p>
+        <p className="mt-3 text-sm text-danger">{test.message}</p>
       )}
 
-      <p className="mt-4 text-xs text-neutral-500">
+      <p className="mt-4 text-xs text-muted">
         Tvoje dotazy a odpovědi se posílají na servery Google. U bezplatného
         tarifu je Google může použít ke zlepšování svých modelů. Zbytek
         aplikace funguje i bez AI a nic neodesílá.

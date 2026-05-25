@@ -15,9 +15,9 @@ const TABS: { id: Tab; label: string }[] = [
 ];
 
 const SEGMENT_ACTIVE =
-  "rounded-md bg-neutral-800 px-3 py-1.5 text-sm text-amber-500";
+  "rounded-md bg-surface-2 px-3 py-1.5 text-sm text-accent";
 const SEGMENT_IDLE =
-  "rounded-md px-3 py-1.5 text-sm text-neutral-400 transition-colors hover:text-neutral-100";
+  "rounded-md px-3 py-1.5 text-sm text-dim transition-colors hover:text-text";
 
 /**
  * Metal screen — home for the Bod 12 rock/metal trainers: the Power Chord
@@ -31,11 +31,11 @@ export default function MetalPage() {
   return (
     <div className="mx-auto max-w-3xl p-6">
       <h1 className="text-3xl font-bold tracking-tight">Metal</h1>
-      <p className="mt-1 text-neutral-400">
+      <p className="mt-1 text-dim">
         Trenažéry pro rockovou a metalovou hru.
       </p>
 
-      <div className="mt-6 inline-flex flex-wrap rounded-lg border border-neutral-800 p-1">
+      <div className="mt-6 inline-flex flex-wrap rounded-lg border border-line p-1">
         {TABS.map((item) => (
           <button
             key={item.id}

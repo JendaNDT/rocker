@@ -6,6 +6,8 @@ import { Nav } from "@/components/Nav";
 import { Onboarding } from "@/components/Onboarding";
 import { PracticeTimeTracker } from "@/components/PracticeTimeTracker";
 import { SettingsButton } from "@/components/SettingsButton";
+import { ThemeProvider } from "@/components/ThemeProvider";
+import { VintageFrame } from "@/components/VintageFrame";
 import { useResolvedLayoutMode } from "@/lib/layout";
 import type { LayoutMode } from "@/stores/settingsStore";
 
@@ -26,6 +28,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <>
+      <ThemeProvider />
+      <VintageFrame />
       <Nav layout={layout} />
       <SettingsButton />
       <PracticeTimeTracker />

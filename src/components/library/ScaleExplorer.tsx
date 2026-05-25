@@ -15,7 +15,7 @@ export function ScaleExplorer({ notation }: { notation: Notation }) {
   return (
     <div>
       <div>
-        <div className="text-sm font-medium text-neutral-300">
+        <div className="text-sm font-medium text-text">
           Kořenový tón
         </div>
         <div className="mt-2 flex flex-wrap gap-1">
@@ -26,8 +26,8 @@ export function ScaleExplorer({ notation }: { notation: Notation }) {
               onClick={() => setRootPitchClass(pitchClass)}
               className={
                 pitchClass === rootPitchClass
-                  ? "rounded-md bg-amber-500 px-2.5 py-1 text-sm font-semibold text-neutral-950"
-                  : "rounded-md border border-neutral-800 bg-neutral-900 px-2.5 py-1 text-sm text-neutral-400 transition-colors hover:text-neutral-100"
+                  ? "rounded-md bg-accent px-2.5 py-1 text-sm font-semibold text-accent-fg"
+                  : "rounded-md border border-line bg-surface px-2.5 py-1 text-sm text-dim transition-colors hover:text-text"
               }
             >
               {pitchClassName(pitchClass, notation)}
@@ -39,7 +39,7 @@ export function ScaleExplorer({ notation }: { notation: Notation }) {
       <div className="mt-4">
         <label
           htmlFor="scale-select"
-          className="text-sm font-medium text-neutral-300"
+          className="text-sm font-medium text-text"
         >
           Stupnice
         </label>
@@ -47,7 +47,7 @@ export function ScaleExplorer({ notation }: { notation: Notation }) {
           id="scale-select"
           value={scaleId}
           onChange={(event) => setScaleId(event.target.value)}
-          className="mt-2 block w-full rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm text-neutral-100 sm:w-72"
+          className="mt-2 block w-full rounded-lg border border-line bg-bg px-3 py-2 text-sm text-text sm:w-72"
         >
           {SCALES.map((option) => (
             <option key={option.id} value={option.id}>
@@ -57,7 +57,7 @@ export function ScaleExplorer({ notation }: { notation: Notation }) {
         </select>
       </div>
 
-      <div className="mt-5 overflow-x-auto rounded-lg border border-neutral-800 bg-neutral-900 p-3">
+      <div className="mt-5 overflow-x-auto rounded-lg border border-line bg-surface p-3">
         <Fretboard
           scale={scale}
           rootPitchClass={rootPitchClass}

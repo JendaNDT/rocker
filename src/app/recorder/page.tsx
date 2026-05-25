@@ -18,7 +18,7 @@ export default function RecorderPage() {
   return (
     <div className="mx-auto max-w-2xl p-6">
       <h1 className="text-3xl font-bold tracking-tight">Nahrávání</h1>
-      <p className="mt-1 text-neutral-400">
+      <p className="mt-1 text-dim">
         Nahraj svoji hru a porovnej jednotlivé pokusy.
       </p>
 

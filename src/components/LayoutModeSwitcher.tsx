@@ -39,18 +39,18 @@ export function LayoutModeSwitcher() {
             className={[
               "rounded-lg border p-3 text-left transition-colors",
               active
-                ? "border-amber-600 bg-neutral-900"
-                : "border-neutral-800 bg-neutral-900 hover:border-neutral-700",
+                ? "border-accent bg-surface"
+                : "border-line bg-surface hover:border-line-strong",
             ].join(" ")}
           >
             <div
               className={
-                active ? "font-semibold text-amber-500" : "font-semibold"
+                active ? "font-semibold text-accent" : "font-semibold"
               }
             >
               {option.label}
             </div>
-            <div className="mt-1 text-sm text-neutral-400">{option.hint}</div>
+            <div className="mt-1 text-sm text-dim">{option.hint}</div>
           </button>
         );
       })}
