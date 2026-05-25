@@ -17,11 +17,11 @@ pořadí) je v `ROADMAP.md`.
 | Framework | Next.js (App Router) | Zadání uživatele; zralý ekosystém, dobrá podpora ve vibecoding nástrojích |
 | Build režim | Statický export (`output: 'export'`) | "Lokální start" — žádný backend, hostovatelné jako statické soubory |
 | Jazyk | TypeScript | Typová kontrola = záchytná síť pro vibecoding |
-| Styly | Tailwind CSS | Rychlé, AI nástroje to dobře generují |
+| Styly | Tailwind CSS v4 + CSS proměnné | 3 přepínatelné vzhledy řízené přes `[data-theme]`/`[data-mode]` na `<html>` |
 | Stav aplikace | Zustand | Lehké, jednoduché, bez boilerplate |
 | Úložiště | IndexedDB (přes `idb`) + localStorage | Vše lokálně v prohlížeči, žádné účty |
 | Audio | Web Audio API + getUserMedia | Detekce tónů běží na hlavním vlákně (AnalyserNode + Pitchy) — pro nástroje dostačující a spolehlivé |
-| Hosting | Vercel nebo Cloudflare Pages | HTTPS zdarma (nutné pro mikrofon), automatický deploy |
+| Hosting | Vercel | Živě na `rocker-rust.vercel.app`; HTTPS zdarma (nutné pro mikrofon), auto-deploy z `main` |
 
 > **Poznámka k Next.js:** Třetí rešeršní dokument doporučoval Vite. Next.js je
 > plně použitelný a je to tvoje volba — jen pojede v režimu statického exportu,
@@ -67,7 +67,10 @@ funguje offline.
   aby šlo cvičit i bez internetu. Původně byla v plánu knihovna Serwist, ale
   `@serwist/next` nepodporuje Turbopack (výchozí builder Next.js 16) — viz
   rozhodnutí níže. Vlastní SW je navíc průhlednější a odolný vůči změnám
-  builderu.
+  builderu. Nová verze SW se po nasazení tiše nepřebírá — počká, dokud
+  uživatel nepotvrdí lištu „nová verze" (`ServiceWorkerRegister`). Aby
+  prohlížeč novou verzi vůbec poznal, build razítkuje `sw.js` unikátní
+  verzí (`scripts/stamp-sw.mjs`).
 - **Wake Lock API** — drží obrazovku rozsvícenou během cvičení.
 
 ### 2.2 UI vrstva
@@ -76,12 +79,23 @@ React komponenty a stránky (routes). Žádná byznys logika v komponentách —
 ty jen vykreslují stav a volají akce z doménové vrstvy. Všechny texty UI
 v češtině (viz sekce 9).
 
+**Vzhledy.** Aplikace má 3 přepínatelné vzhledy (Studio, Vintage, Glassy),
+každý ve světlém / tmavém / auto režimu. Barvy, typografie a geometrie jsou
+CSS proměnné v `src/app/theme-tokens.css` pro 6 kombinací; Tailwind v4
+`@theme` proxy je vystavuje jako utility třídy (`bg-surface`, `text-accent`,
+`border-line`…). Komponenty čtou jen tyto proměnné — nevědí, jaké téma je
+aktivní. `ThemeProvider` (mountovaný v `AppShell`) synchronizuje volbu ze
+`settingsStore` na atributy `data-theme`/`data-mode` na `<html>` a v auto
+režimu sleduje `prefers-color-scheme`. Výjimka čtoucí téma přímo:
+`VintageFrame` (mosazné cvočky jen ve Vintage).
+
 ### 2.3 Stav (Zustand stores)
 
 Oddělené malé stores podle domény (aktuální stav):
 
-- `settingsStore` — režim zobrazení, ladění, handedness, Zen režim, notace
-  H/B, stav onboardingu (persist do localStorage).
+- `settingsStore` — režim zobrazení, vzhled + barevný režim, ladění,
+  handedness, Zen režim, notace H/B, šumová brána, stav onboardingu
+  (persist do localStorage). Načtená data prochází validací (`merge`).
 - `audioStore` — zrcadlo stavu audio enginu (běží/neběží, latence, zařízení).
 - `metronomeStore` — zrcadlo stavu metronomu.
 - `gallopPlayerStore` — zrcadlo stavu gallop přehrávače (Bod 12).
@@ -133,6 +147,8 @@ s `persist` přežijí restart.
 - **Pomocná logika pokročilého zvuku** — `ampPresets` (presety aparátu,
   Bod 16), `multitrack` (immutabilní model multi-track projektu) a `loopMix`
   (skládání smyček) z Bodu 17, `wav` (kódování WAV).
+- **Záloha dat** — `backup`: sestavení a validace přenosné zálohy
+  localStorage dat (export/import nastavení a pokroku do JSON souboru).
 
 ### 2.5 Audio engine
 
@@ -209,7 +225,7 @@ Každý nástroj je samostatný procesor zapojený do enginu:
 
 | Procesor | Knihovna / technika | Poznámka |
 |---|---|---|
-| Ladička | **Pitchy** (McLeod Pitch Method, čisté JS) | monofonní, vrací `[pitch, clarity]`; `clarity < 0.9` zahodit |
+| Ladička | **Pitchy** (McLeod Pitch Method, čisté JS) | monofonní, vrací `[pitch, clarity]`; `clarity < 0.9` zahodit; navíc amplitudová šumová brána proti okolnímu ruchu |
 | Metronom | Web Audio scheduler s lookahead | **NE `setTimeout`** — sample-accurate plánování přes `AudioContext.currentTime` |
 | Detekce noty/riffu | Pitchy nebo Pitchfinder (YIN) | monofonní, pro single-note riffy spolehlivé |
 | Detekce akordů | **Essentia.js** | polyfonní, oficiálně "experimental" — zatím nepoužito, případně až po MVP jako **nápověda** |
@@ -275,7 +291,7 @@ Obecné, na konkrétní kytaře nezávislé zásady pro engine:
 
 ## 4. Datový model
 
-Skutečný stav úložiště (k Bodu 21). Záměr je: malá strukturovaná data
+Skutečný stav úložiště. Záměr je: malá strukturovaná data
 v localStorage, velké bloby v IndexedDB.
 
 ### IndexedDB (přes `idb`) — velké bloby
@@ -291,7 +307,7 @@ zatím v DB nejsou — riff trainer čte soubor přímo z disku při každém ot
 
 | Klíč | Obsah |
 |---|---|
-| `rocker-settings` | režim zobrazení, ladění, handedness, Zen režim, notace H/B, stav onboardingu |
+| `rocker-settings` | režim zobrazení, vzhled + barevný režim, ladění, handedness, Zen režim, notace H/B, šumová brána, stav onboardingu |
 | `rocker-lesson-progress` | dokončené lekce |
 | `rocker-progress` | odcvičené minuty po dnech, streaky, achievementy, BPM rekordy |
 | `rocker-yt-loops` | uložené YouTube loopy: videoId, start/end, rychlost, štítek |
@@ -349,7 +365,7 @@ ladička + metronom (floating action button).
 
 ## 6. Struktura složek
 
-Skutečná struktura projektu (k Bodu 21). Sedm vrstev ze sekce 2 je
+Skutečná struktura projektu. Sedm vrstev ze sekce 2 je
 **koncepční** — nemá vlastní složku každá. Doménová logika, statický obsah,
 IndexedDB vrstva i čisté utility se sloučily do `src/lib/`; bylo to
 jednodušší a pro vibecoding přehlednější než řada malých složek.
@@ -361,8 +377,11 @@ rocker/
 │   ├── sw.js                # ručně psaný service worker
 │   ├── alphatab/            # font Bravura + SONiVOX soundfont (Bod 15)
 │   └── icons/
+├── scripts/
+│   └── stamp-sw.mjs         # razítkuje sw.js verzí při buildu
 ├── src/
-│   ├── app/                 # Next.js App Router — stránky (17 obrazovek)
+│   ├── app/                 # Next.js App Router — stránky (17 obrazovek),
+│   │                        #   globals.css, theme-tokens.css (3 vzhledy)
 │   ├── components/          # React komponenty (UI vrstva), po doménách
 │   ├── audio/               # audio vrstva (5): AudioEngine, metronome,
 │   │                        #   gallopPlayer, riffPlayer, pitchDetector,

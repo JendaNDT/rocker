@@ -21,14 +21,18 @@ v `SKILL.md`. Stručně:
 
 - Next.js (App Router), statický export (`output: 'export'`)
 - TypeScript
-- Tailwind CSS
+- Tailwind CSS v4 — 3 přepínatelné vzhledy přes CSS proměnné
+  a `[data-theme]`/`[data-mode]` na `<html>`
 - Zustand (stav)
 - Perzistence: Zustand persist → localStorage (malá data); IndexedDB
   (přes `idb`) pro velké bloby — nahrávky, v provozu od Bodu 11
   (`src/lib/recordingsDb.ts`)
 - Web Audio API + getUserMedia (audio jádro; detekce tónů na hlavním vlákně)
 - Vitest (testy čisté logiky)
-- Vlastní service worker (`public/sw.js`, ručně psaný, bez build kroku) — PWA
+- Vlastní service worker (`public/sw.js`, ručně psaný) — PWA; verzuje se
+  při buildu skriptem `scripts/stamp-sw.mjs`
+- Nasazení: Vercel, automatický deploy z větve `main`
+  (živě na `rocker-rust.vercel.app`)
 
 ## Konvence
 
@@ -40,6 +44,9 @@ v `SKILL.md`. Stručně:
   aby šla testovat. Testy `*.test.ts` leží vedle ní.
 - Data z úložiště vždy projdou type guardem; poškozený záznam se zahodí, appka
   nespadne.
+- UI používá theme-aware Tailwind třídy (`bg-surface`, `text-accent`,
+  `border-line`, `text-dim`…), **ne** `bg-neutral-*` ani pevné barvy —
+  appka má 3 vzhledy a komponenta nesmí vědět, který je aktivní.
 - Žádné emoji v kódu ani v UI textech.
 
 ## Testovací disciplína
@@ -103,6 +110,13 @@ quirky sandboxu, záludnosti knihoven, proč bylo něco rozhodnuto takhle.)*
 - **Detekce tónů běží na hlavním vlákně** (`AnalyserNode` + Pitchy v rAF
   smyčce), ne v AudioWorkletu — architektura původně počítala s workletem,
   ale main-thread je pro nástroje spolehlivý a obchází balení s Turbopackem.
+- **Service worker se musí při každém nasazení lišit.** Když je `sw.js`
+  bajt po bajtu stejný, prohlížeč novou verzi nepozná a upozornění
+  „nová verze" se nikdy neukáže. Proto `scripts/stamp-sw.mjs` po buildu
+  vepíše do `out/sw.js` unikátní verzi — volá se z `npm run build`.
+- **Testy IndexedDB potřebují `fake-indexeddb`.** Vitest běží v Node bez
+  `indexedDB`; testy `recordingsDb` importují `fake-indexeddb/auto`, který
+  ten globál doplní. Je to vývojová závislost (`devDependencies`).
 - **Gemini API jde volat přímo z prohlížeče.** Nativní endpoint
   `generativelanguage.googleapis.com/.../generateContent` posílá CORS
   hlavičky (ověřeno OPTIONS preflightem), takže AI tutor (Bod 14) volá

@@ -274,6 +274,45 @@ základ k přepsání.
 
 ### ⬜ Bod 22 — Sdílení a organizace
 Share-a-riff (export riffu jako odkaz), songbook organizér se složkami a štítky.
+*Pozn.:* záloha dat (viz „Mimo roadmapu" níže) část „organizace" už pokrývá —
+zbývá hlavně share-a-riff a songbook.
+
+---
+
+## Mimo roadmapu — vylepšení po Bodu 21
+
+Práce, která vznikla nad rámec původní číslované roadmapy. Detaily
+a rozhodnutí jsou v `PROJECT_STATUS.md`.
+
+### ✅ 3 přepínatelné vzhledy
+Témata Studio, Vintage a Glassy, každé ve světlém / tmavém / auto režimu.
+Volba v `/profile → Vzhled`. CSS proměnné v `src/app/theme-tokens.css`,
+`ThemeProvider` synchronizuje `[data-theme]`/`[data-mode]` na `<html>`.
+Všech 58 obrazovek migrováno z `bg-neutral-*` na theme-aware Tailwind třídy.
+
+### ✅ Audit vnitřní logiky + opravy
+Kompletní audit audio vrstvy, čisté logiky, AI vrstvy, stores a komponent.
+Žádný kritický bug; nalezené drobnosti opraveny ve 4 dávkách.
+
+### ✅ Šumová brána + autokalibrace
+Detekce tónů ignoruje vstup tišší než nastavený práh (filtruje okolní ruch).
+Citlivost posuvníkem nebo tlačítkem „Změřit pozadí" v Profilu → Zvuk a vstup.
+
+### ✅ Upozornění na novou verzi
+Po nasazení appka nabídne lištou načtení nové verze. `sw.js` se při buildu
+razítkuje unikátní verzí (`scripts/stamp-sw.mjs`), jinak by prohlížeč změnu
+nepoznal.
+
+### ✅ Krok výběru vzhledu v úvodu
+Úvodní průvodce má 4 kroky — po uvítání přibyl výběr tématu.
+
+### ✅ Záloha dat
+Export/import nastavení a pokroku do JSON souboru (`/profile → Záloha dat`).
+Nahrávky (IndexedDB) nejsou součástí — soubor zůstává malý.
+
+### ✅ Nasazení na Vercel
+Aplikace je živě na `rocker-rust.vercel.app`, s automatickým deployem
+z větve `main`.
 
 ---
 
