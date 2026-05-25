@@ -1,19 +1,21 @@
 "use client";
 
-import { LoopPedal } from "@/components/looper/LoopPedal";
-import { PageContainer } from "@/components/PageContainer";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
+/**
+ * The looper merged into the unified "Nahrávání" screen (screen-consolidation
+ * plan, fáze D). This route is kept only so cached or bookmarked links to
+ * /looper do not dead-end — it redirects to /recorder.
+ */
 export default function LooperPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace("/recorder");
+  }, [router]);
+
   return (
-    <PageContainer size="focused">
-      <h1 className="text-3xl font-bold tracking-tight">Looper</h1>
-      <p className="mt-1 text-dim">
-        Loop pedál — nahraj smyčku, ta se opakuje, a vrstvi přes ni další
-        nápady.
-      </p>
-      <div className="mt-6">
-        <LoopPedal />
-      </div>
-    </PageContainer>
+    <p className="p-6 text-sm text-muted">Přesměrovávám na Nahrávání…</p>
   );
 }

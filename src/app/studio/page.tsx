@@ -1,18 +1,21 @@
 "use client";
 
-import { PageContainer } from "@/components/PageContainer";
-import { Studio } from "@/components/studio/Studio";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
+/**
+ * The multi-track studio merged into the unified "Nahrávání" screen
+ * (screen-consolidation plan, fáze D). This route is kept only so cached or
+ * bookmarked links to /studio do not dead-end — it redirects to /recorder.
+ */
 export default function StudioPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace("/recorder");
+  }, [router]);
+
   return (
-    <PageContainer>
-      <h1 className="text-3xl font-bold tracking-tight">Studio</h1>
-      <p className="mt-1 text-dim">
-        Nahrávej stopy přes sebe — vrstvi podklad, sólo a další nápady.
-      </p>
-      <div className="mt-6">
-        <Studio />
-      </div>
-    </PageContainer>
+    <p className="p-6 text-sm text-muted">Přesměrovávám na Nahrávání…</p>
   );
 }

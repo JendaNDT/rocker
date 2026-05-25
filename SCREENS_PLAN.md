@@ -73,7 +73,7 @@ ze `screens.ts`, route přesměrovává na `/practice`. Enginy zůstaly oddělen
 (souborový vs. YouTube) — sloučeno na úrovni jednoho místa a přepínače,
 ne hluboká fúze. Trade-off: přepnutí zdroje resetuje druhý přehrávač.
 
-## Fáze D — Nahrávací nástroje do jedné sekce
+## Fáze D — Nahrávací nástroje do jedné sekce ✅ HOTOVO (2026-05-25)
 
 Nahrávky (`/recorder`), Studio (multi-track) a Looper jsou tři samostatné
 obrazovky, které všechny „zachytávají a vrství zvuk". Sloučí se do jedné
@@ -81,6 +81,11 @@ sekce „Nahrávání" se záložkami. Tři položky v navigaci → jedna; tři 
 komponenty zůstanou, jen je zastřeší jedna obrazovka s přepínačem.
 
 **Riziko:** střední — routing a navigace; samotné funkce zůstávají.
+
+**Hotovo (2026-05-25):** `/recorder` je sjednocená obrazovka „Nahrávání" se
+záložkami Nahrávky / Studio / Looper. `/studio` a `/looper` odebrány ze
+`screens.ts`, route přesměrovávají na `/recorder`. Funkční komponenty
+(`Studio`, `LoopPedal`, recorder) beze změny.
 
 ## Fáze E — Nahrávání v Aparátu
 
@@ -102,7 +107,7 @@ infrastruktuře.
 | A | Kytara → Profil | S | ✅ hotovo |
 | B | Metronom kontextově | M | ✅ hotovo |
 | C | Riff trainer + YouTube | L | ✅ hotovo |
-| D | Nahrávací nástroje do jedné sekce | M–L | střední |
+| D | Nahrávací nástroje do jedné sekce | M–L | ✅ hotovo |
 | E | Nahrávání v Aparátu | M | střední |
 
 Návrh: stavět A → E (od nejmenšího/nejméně rizikového). A je rozehřátí,

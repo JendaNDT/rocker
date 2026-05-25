@@ -19,8 +19,6 @@ export const SCREENS: Screen[] = [
   { href: "/amp", label: "Aparát", description: "Efekty a simulace aparátu." },
   { href: "/library", label: "Knihovna", description: "Akordy, stupnice, riffy." },
   { href: "/notation", label: "Noty", description: "Prohlížeč tabulatur a not." },
-  { href: "/recorder", label: "Nahrávání", description: "Nahraj a porovnej si hru." },
-  { href: "/studio", label: "Studio", description: "Multi-track nahrávání přes sebe." },
-  { href: "/looper", label: "Looper", description: "Loop pedál se smyčkováním." },
+  { href: "/recorder", label: "Nahrávání", description: "Nahrávky, Studio a Looper na jednom místě." },
   { href: "/profile", label: "Profil", description: "Nastavení a tvoje data." },
 ];
