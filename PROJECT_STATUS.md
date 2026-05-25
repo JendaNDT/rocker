@@ -148,6 +148,11 @@ hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
   vstupní/výstupní úrovně, osciloskop, A/B porovnání presetů — bez nového
   DSP. Zbývá jen fáze D (přeskládatelný pedalboard) — vědomě otevřená,
   doporučení spíš vynechat.
+- **Sloučení obrazovek** — plán v `SCREENS_PLAN.md` (5 fází, konsolidace
+  informační architektury z přání uživatele). **Fáze A hotová
+  (2026-05-25):** profil nástroje (Kytara) přesunut do Profilu jako sekce,
+  `/instrument` přesměrovává. Zbývá B (metronom kontextově), C (riff trainer
+  + YouTube), D (nahrávací nástroje do jedné sekce), E (nahrávání v Aparátu).
 - **Bod 22 — sdílení a organizace** (poslední bod roadmapy) — share-a-riff,
   songbook organizér
 - Beta test s 5–10 lidmi — vědomě odložený

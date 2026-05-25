@@ -7,6 +7,8 @@ import { DataBackup } from "@/components/DataBackup";
 import { LayoutModeSwitcher } from "@/components/LayoutModeSwitcher";
 import { PageContainer } from "@/components/PageContainer";
 import { ThemePicker } from "@/components/ThemePicker";
+import { ProfileCard } from "@/components/instrument/ProfileCard";
+import { ToneAdvisor } from "@/components/instrument/ToneAdvisor";
 import { ProgressDetail } from "@/components/profile/ProgressDetail";
 import { useResolvedLayoutMode } from "@/lib/layout";
 import type { Notation } from "@/lib/pitch";
@@ -31,6 +33,13 @@ const SETTINGS_COLUMNS = {
   auto: "columns-1 lg:columns-2 lg:gap-x-10",
 };
 
+// Instrument card next to the tone advisor on desktop, stacked on mobile.
+const INSTRUMENT_GRID = {
+  desktop: "mt-3 grid grid-cols-2 items-start gap-6",
+  mobile: "mt-3 space-y-4",
+  auto: "mt-3 space-y-4 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 lg:space-y-0",
+};
+
 export default function ProfilePage() {
   const zenMode = useSettingsStore((state) => state.zenMode);
   const setZenMode = useSettingsStore((state) => state.setZenMode);
@@ -52,6 +61,21 @@ export default function ProfilePage() {
     <PageContainer>
       <h1 className="font-display text-3xl font-bold tracking-tight">Profil</h1>
       <p className="mt-1 text-dim">Nastavení aplikace.</p>
+
+      <section className="mt-8">
+        <h2 className="text-lg font-semibold">Kytara</h2>
+        <p className="mt-1 text-sm text-dim">
+          Digitální pas tvého nástroje a tónový poradce.
+        </p>
+        {hydrated ? (
+          <div className={INSTRUMENT_GRID[layoutMode]}>
+            <ProfileCard />
+            <ToneAdvisor />
+          </div>
+        ) : (
+          <p className="mt-3 text-sm text-muted">Načítám profil…</p>
+        )}
+      </section>
 
       <div className={SETTINGS_COLUMNS[layoutMode]}>
         <section className="mt-8 break-inside-avoid">
