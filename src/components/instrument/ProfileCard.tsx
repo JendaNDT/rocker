@@ -1,5 +1,6 @@
 "use client";
 
+import { TUNINGS } from "@/audio/tunings";
 import {
   PICKUP_TYPE_LABELS,
   POSITION_LABELS,
@@ -8,6 +9,7 @@ import {
   type PickupType,
 } from "@/lib/instrument";
 import { useInstrumentStore } from "@/stores/instrumentStore";
+import { useSettingsStore } from "@/stores/settingsStore";
 
 const INPUT =
   "w-full rounded-md border border-line bg-bg px-3 py-2 text-sm text-text transition-colors focus:border-accent focus:outline-none";
@@ -45,13 +47,16 @@ function TextField({
 }
 
 /**
- * Editable "digital passport" of the instrument (Bod 21). All fields are
- * free-form — the user fills in whatever they know, leaves the rest blank.
+ * Editable "digital passport" of the instrument (Bod 21). Most fields are
+ * free-form; tuning is a dropdown bound to settingsStore.tuningId, the value
+ * shared with the tuner, so it is set in one place across the app.
  */
 export function ProfileCard() {
   const profile = useInstrumentStore((state) => state.profile);
   const updateProfile = useInstrumentStore((state) => state.updateProfile);
   const reset = useInstrumentStore((state) => state.reset);
+  const tuningId = useSettingsStore((state) => state.tuningId);
+  const setTuningId = useSettingsStore((state) => state.setTuningId);
 
   function setPickup(index: number, patch: Partial<Pickup>) {
     updateProfile({
@@ -111,12 +116,21 @@ export function ProfileCard() {
           placeholder='Např. 25,5"'
           onChange={(scaleLength) => updateProfile({ scaleLength })}
         />
-        <TextField
-          label="Ladění"
-          value={profile.tuning}
-          placeholder="Např. Standardní E"
-          onChange={(tuning) => updateProfile({ tuning })}
-        />
+        <label className="block">
+          <span className={LABEL}>Ladění</span>
+          <select
+            value={tuningId}
+            onChange={(event) => setTuningId(event.target.value)}
+            aria-label="Ladění"
+            className={`mt-1 ${INPUT}`}
+          >
+            {TUNINGS.map((tuning) => (
+              <option key={tuning.id} value={tuning.id}>
+                {tuning.label}
+              </option>
+            ))}
+          </select>
+        </label>
         <TextField
           label="Síla strun"
           value={profile.stringGauge}

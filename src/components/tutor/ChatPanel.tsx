@@ -1,29 +1,33 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { buildPracticeContext } from "@/lib/ai/context";
+import { getTuning } from "@/audio/tunings";
+import { buildInstrumentContext, buildPracticeContext } from "@/lib/ai/context";
 import { streamChat } from "@/lib/ai/geminiClient";
 import { SUGGESTED_QUESTIONS, TUTOR_SYSTEM_PROMPT } from "@/lib/ai/prompts";
 import type { ChatMessage } from "@/lib/ai/types";
 import { STAGES } from "@/lib/lessons";
 import { useAiStore } from "@/stores/aiStore";
 import { useChatStore } from "@/stores/chatStore";
+import { useInstrumentStore } from "@/stores/instrumentStore";
 import { useLessonProgressStore } from "@/stores/lessonProgressStore";
 import { useProgressStore } from "@/stores/progressStore";
+import { useSettingsStore } from "@/stores/settingsStore";
 
 const TOTAL_LESSONS = STAGES.flatMap((stage) => stage.lessons).length;
 
 /**
  * The "Zeptat se" chat panel of the AI tutor screen. Assumes an API key is
  * set — the parent screen gates on that. Part of Bod 14. The chat's system
- * prompt carries a short practice-context block so answers fit where the
- * learner actually is (feature-interconnection plan, A2).
+ * prompt carries short practice- and instrument-context blocks so answers fit
+ * the learner and their guitar (feature-interconnection plan, A2/B2).
  */
 export function ChatPanel() {
   const apiKey = useAiStore((state) => state.apiKey);
   const model = useAiStore((state) => state.model);
 
-  // Practice data — feeds the context block appended to the system prompt.
+  // Practice and instrument data — feed the context blocks appended to the
+  // system prompt.
   const completedLessonIds = useLessonProgressStore(
     (state) => state.completedLessonIds,
   );
@@ -31,6 +35,8 @@ export function ChatPanel() {
   const unlockedAchievements = useProgressStore(
     (state) => state.unlockedAchievements,
   );
+  const profile = useInstrumentStore((state) => state.profile);
+  const tuningId = useSettingsStore((state) => state.tuningId);
 
   const messages = useChatStore((state) => state.messages);
   const setMessages = useChatStore((state) => state.setMessages);
@@ -63,18 +69,22 @@ export function ChatPanel() {
     setBusy(true);
     setError(null);
     setStreaming("");
-    // Rebuilt per request so it reflects the learner's current progress.
-    const context = buildPracticeContext({
+    // Rebuilt per request so they reflect the learner's current state.
+    const practiceContext = buildPracticeContext({
       completedLessons: completedLessonIds.length,
       totalLessons: TOTAL_LESSONS,
       dailyMinutes,
       achievementCount: unlockedAchievements.length,
     });
+    const instrumentContext = buildInstrumentContext(
+      profile,
+      getTuning(tuningId).label,
+    );
     const result = await streamChat({
       apiKey,
       model,
       history,
-      systemPrompt: `${TUTOR_SYSTEM_PROMPT}\n\n${context}`,
+      systemPrompt: `${TUTOR_SYSTEM_PROMPT}\n\n${practiceContext}\n\n${instrumentContext}`,
       onChunk: (text) => {
         if (mountedRef.current) setStreaming(text);
       },

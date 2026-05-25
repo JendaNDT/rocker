@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildPracticeContext } from "./context";
+import { buildInstrumentContext, buildPracticeContext } from "./context";
 
 describe("buildPracticeContext", () => {
   it("reports an empty practice history", () => {
@@ -62,6 +62,66 @@ describe("buildPracticeContext", () => {
         achievementCount: 0,
       },
       "2026-05-25",
+    );
+    expect(text).toContain("uživatel ho nevidí");
+  });
+});
+
+describe("buildInstrumentContext", () => {
+  it("describes a fully filled instrument profile", () => {
+    const text = buildInstrumentContext(
+      {
+        name: "Solton Double Cut",
+        bodyType: "Double cut, masivní tělo",
+        pickups: [
+          { position: "neck", type: "humbucker" },
+          { position: "bridge", type: "humbucker" },
+        ],
+        scaleLength: '25,5"',
+        stringGauge: ".010-.046",
+        notes: "Nové struny.",
+      },
+      "Standardní (E A D G B E)",
+    );
+    expect(text).toContain("Nástroj: Solton Double Cut.");
+    expect(text).toContain("Tělo: Double cut, masivní tělo.");
+    expect(text).toContain("Ladění: Standardní (E A D G B E).");
+    expect(text).toContain("Snímače: krk humbucker, kobylka humbucker.");
+    expect(text).toContain('menzura 25,5", struny .010-.046.');
+    expect(text).toContain("Poznámky uživatele: Nové struny.");
+  });
+
+  it("skips empty optional fields and reports no pickups", () => {
+    const text = buildInstrumentContext(
+      {
+        name: "",
+        bodyType: "",
+        pickups: [],
+        scaleLength: "",
+        stringGauge: "",
+        notes: "",
+      },
+      "Drop D (D A D G B E)",
+    );
+    expect(text).toContain("Nástroj: neuvedeno.");
+    expect(text).toContain("Ladění: Drop D (D A D G B E).");
+    expect(text).toContain("Snímače: neuvedené.");
+    expect(text).not.toContain("Tělo:");
+    expect(text).not.toContain("menzura");
+    expect(text).not.toContain("Poznámky");
+  });
+
+  it("marks the block as hidden from the user", () => {
+    const text = buildInstrumentContext(
+      {
+        name: "X",
+        bodyType: "",
+        pickups: [],
+        scaleLength: "",
+        stringGauge: "",
+        notes: "",
+      },
+      "Standardní (E A D G B E)",
     );
     expect(text).toContain("uživatel ho nevidí");
   });

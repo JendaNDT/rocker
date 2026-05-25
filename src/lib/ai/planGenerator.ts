@@ -47,6 +47,8 @@ export interface GeneratePlanOptions {
   totalLessons: number;
   /** Current practice streak in days. */
   streakDays: number;
+  /** Optional ready-built context block describing the user's guitar. */
+  instrumentSummary?: string;
   /** Optional cancellation signal. */
   signal?: AbortSignal;
   /** API base URL override — defaults to GEMINI_API_BASE; set in tests. */
@@ -121,6 +123,8 @@ function buildUserPrompt(options: GeneratePlanOptions): string {
   if (options.streakDays > 0) {
     lines.push(`Cvičím v řadě ${options.streakDays} dní.`);
   }
+  const instrumentSummary = options.instrumentSummary?.trim();
+  if (instrumentSummary) lines.push(`\n${instrumentSummary}`);
   return lines.join("\n");
 }
 

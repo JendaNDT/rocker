@@ -67,7 +67,7 @@ k systémovému promptu chatu (`TUTOR_SYSTEM_PROMPT` + kontext).
 
 ---
 
-## Fáze B — Propojení profilu Kytary
+## Fáze B — Propojení profilu Kytary ✅ HOTOVO (2026-05-25)
 
 ### B1 — Ladění v profilu Kytary strukturovaně + napojení na Ladičku
 
@@ -99,6 +99,12 @@ Doporučení: varianta (a) — ladění logicky patří k nástroji. Ale rozhodn
 **Riziko:** střední — datový model + migrace localStorage. Citlivé na to,
 aby se uživatelům neztratilo nastavení.
 
+**✅ Hotovo (2026-05-25):** Jenda zvolil variantu (b) — zdrojem pravdy
+zůstává `settingsStore.tuningId`. Z `InstrumentProfile` odebráno volně-textové
+pole `tuning` (typ, `DEFAULT_PROFILE`, `sanitizeProfile`); starý klíč se tiše
+ignoruje, žádná migrace. `ProfileCard` edituje ladění výběrem ze seznamu
+`TUNINGS` napojeným na `settingsStore`.
+
 ### B2 — AI tutor čte profil nástroje
 
 **Co:** Tutor radí ohledně zvuku a cvičení, ale profil Kytary (snímače,
@@ -117,6 +123,10 @@ feedback.ts`, `planGenerator.ts`, `prompts.ts`, panely
 (strukturované ladění se předává čistěji). Není striktně blokované.
 
 **Riziko:** nízké až střední.
+
+**✅ Hotovo (2026-05-25):** `context.ts` rozšířen o `buildInstrumentContext()`
++ testy; kontext kytary připojen k systémovému promptu chatu i zpětné vazby
+a (přes nepovinné `instrumentSummary`) k dotazu generátoru plánu.
 
 ---
 
@@ -187,18 +197,19 @@ duplicita začne reálně překážet při údržbě. Klidně odložit nebo vyne
 |---|---|---|---|---|
 | A | A1 — practice time | XS | triviální | ✅ hotovo |
 | A | A2 — chat kontext | S | nízké | ✅ hotovo |
-| B | B1 — ladění profilu | M | střední | nejdřív domluvit model |
-| B | B2 — AI čte profil | S–M | nízké–stř. | po A2 a B1 |
+| B | B1 — ladění profilu | M | střední | ✅ hotovo (varianta b) |
+| B | B2 — AI čte profil | S–M | nízké–stř. | ✅ hotovo |
 | C | C1 — knihovna a ladění | M | střední | po B1 |
 | C | C2 — trenažéry a ladění | M | střední | nízká priorita |
 | D | D1 — sdílený scheduler | L | vysoké | zvážit, zda vůbec |
 
-Fáze A hotová (2026-05-25). Na řadě je fáze B, pak C, fázi D nechat jako
+Fáze A i B hotové (2026-05-25). Na řadě je fáze C, fázi D nechat jako
 otevřenou otázku.
 
 ## Otevřené otázky k probrání s Jendou
 
-1. **B1 — kde žije „ladění"** jako jediný zdroj pravdy (varianta a/b výše).
+1. ~~**B1 — kde žije „ladění"** jako jediný zdroj pravdy (varianta a/b).~~
+   Vyřešeno (2026-05-25): varianta (b) — `settingsStore.tuningId`.
 2. ~~**A1 —** počítat `/notation` a `/recorder` do odcvičených minut?~~
    Vyřešeno (2026-05-25): ne, zůstávají mimo.
 3. **Fáze D —** dělat ji vůbec? Vysoké riziko, žádný přínos pro uživatele.

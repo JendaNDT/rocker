@@ -1,7 +1,13 @@
-// Builds a compact context block about the learner's practice for the AI
-// tutor's chat. Pure logic, no DOM or network. Unit-tested in context.test.ts.
-// Part of the feature-interconnection plan, phase A (A2).
+// Builds compact context blocks about the learner — their practice and their
+// instrument — for the AI tutor. Pure logic, no DOM or network. Unit-tested
+// in context.test.ts. Part of the feature-interconnection plan (A2, B2).
 
+import {
+  PICKUP_TYPE_LABELS,
+  POSITION_LABELS,
+  type InstrumentProfile,
+  type Pickup,
+} from "@/lib/instrument";
 import {
   type DayKey,
   currentStreak,
@@ -64,6 +70,53 @@ export function buildPracticeContext(
       : "- Zatím nemá žádné odcvičené minuty.",
     `- Odemčené achievementy: ${input.achievementCount}.`,
   ];
+
+  return lines.join("\n");
+}
+
+/** Describes the installed pickups, neck to bridge, in plain Czech. */
+function describePickups(pickups: Pickup[]): string {
+  if (pickups.length === 0) return "neuvedené";
+  return pickups
+    .map(
+      (pickup) =>
+        `${POSITION_LABELS[pickup.position].toLowerCase()} ${PICKUP_TYPE_LABELS[pickup.type].toLowerCase()}`,
+    )
+    .join(", ");
+}
+
+/**
+ * Builds a short Czech context block describing the learner's guitar, to be
+ * appended to an AI system prompt. Empty profile fields are skipped so the
+ * block stays compact. The tuning is passed in as a ready label (resolved
+ * from settingsStore.tuningId) to keep this module free of the audio layer.
+ */
+export function buildInstrumentContext(
+  profile: InstrumentProfile,
+  tuningLabel: string,
+): string {
+  const lines = [
+    "Kontext o uživatelově kytaře (uživatel ho nevidí; zohledni ho v radách o zvuku, technice a nastavení, ale nečti ho nahlas):",
+  ];
+
+  const name = profile.name.trim();
+  lines.push(`- Nástroj: ${name || "neuvedeno"}.`);
+
+  const body = profile.bodyType.trim();
+  if (body) lines.push(`- Tělo: ${body}.`);
+
+  lines.push(`- Ladění: ${tuningLabel}.`);
+  lines.push(`- Snímače: ${describePickups(profile.pickups)}.`);
+
+  const scale = profile.scaleLength.trim();
+  const gauge = profile.stringGauge.trim();
+  const specs: string[] = [];
+  if (scale) specs.push(`menzura ${scale}`);
+  if (gauge) specs.push(`struny ${gauge}`);
+  if (specs.length > 0) lines.push(`- ${specs.join(", ")}.`);
+
+  const notes = profile.notes.trim();
+  if (notes) lines.push(`- Poznámky uživatele: ${notes}`);
 
   return lines.join("\n");
 }

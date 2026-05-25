@@ -1,13 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { getTuning } from "@/audio/tunings";
+import { buildInstrumentContext } from "@/lib/ai/context";
 import { summarizePractice } from "@/lib/ai/feedback";
 import { streamChat } from "@/lib/ai/geminiClient";
 import { FEEDBACK_SYSTEM_PROMPT } from "@/lib/ai/prompts";
 import { STAGES } from "@/lib/lessons";
 import { useAiStore } from "@/stores/aiStore";
+import { useInstrumentStore } from "@/stores/instrumentStore";
 import { useLessonProgressStore } from "@/stores/lessonProgressStore";
 import { useProgressStore } from "@/stores/progressStore";
+import { useSettingsStore } from "@/stores/settingsStore";
 
 const TOTAL_LESSONS = STAGES.flatMap((stage) => stage.lessons).length;
 
@@ -27,6 +31,8 @@ export function FeedbackPanel() {
   const unlockedAchievements = useProgressStore(
     (state) => state.unlockedAchievements,
   );
+  const profile = useInstrumentStore((state) => state.profile);
+  const tuningId = useSettingsStore((state) => state.tuningId);
 
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
@@ -51,11 +57,15 @@ export function FeedbackPanel() {
       ? `${summary}\n\nJak se cítím a s čím bojuju: ${trimmedNote}`
       : summary;
 
+    const instrumentContext = buildInstrumentContext(
+      profile,
+      getTuning(tuningId).label,
+    );
     const result = await streamChat({
       apiKey,
       model,
       history: [{ role: "user", text: message }],
-      systemPrompt: FEEDBACK_SYSTEM_PROMPT,
+      systemPrompt: `${FEEDBACK_SYSTEM_PROMPT}\n\n${instrumentContext}`,
       onChunk: (text) => setFeedback(text),
     });
     setBusy(false);

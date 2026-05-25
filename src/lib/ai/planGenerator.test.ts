@@ -124,6 +124,29 @@ describe("generatePlan", () => {
     expect(body.contents[0].parts[0].text).toContain("palm mute");
   });
 
+  it("includes the instrument summary in the request when given", async () => {
+    const fetchMock = vi.fn(async () =>
+      fakeResponse(
+        geminiJson({
+          items: [{ title: "A", detail: "B", minutes: 15, screen: "practice" }],
+        }),
+      ),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    await generatePlan({
+      ...BASE_OPTIONS,
+      instrumentSummary: "Kontext o kytaře: humbucker u kobylky.",
+    });
+
+    const [, init] = fetchMock.mock.calls[0] as unknown as [
+      string,
+      RequestInit,
+    ];
+    const body = JSON.parse(init.body as string);
+    expect(body.contents[0].parts[0].text).toContain("humbucker u kobylky");
+  });
+
   it("reports a malformed JSON reply", async () => {
     vi.stubGlobal(
       "fetch",

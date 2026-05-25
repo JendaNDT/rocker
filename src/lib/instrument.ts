@@ -13,7 +13,11 @@ export interface Pickup {
   type: PickupType;
 }
 
-/** The editable "digital passport" of an instrument. */
+/**
+ * The editable "digital passport" of an instrument. Tuning is intentionally
+ * not stored here — it lives in settingsStore.tuningId as the single source
+ * of truth shared with the tuner; the profile card edits that value directly.
+ */
 export interface InstrumentProfile {
   /** Display name of the instrument. */
   name: string;
@@ -23,8 +27,6 @@ export interface InstrumentProfile {
   pickups: Pickup[];
   /** Scale length, free text (e.g. `25,5"`). */
   scaleLength: string;
-  /** Current tuning, free text (e.g. "Standardní E"). */
-  tuning: string;
   /** String gauge, free text (e.g. ".010-.046"). */
   stringGauge: string;
   /** Free-form notes. */
@@ -104,7 +106,6 @@ export const DEFAULT_PROFILE: InstrumentProfile = {
     { position: "bridge", type: "humbucker" },
   ],
   scaleLength: '25,5"',
-  tuning: "Standardní E",
   stringGauge: ".010-.046",
   notes: "",
 };
@@ -293,7 +294,6 @@ export function sanitizeProfile(value: unknown): InstrumentProfile {
       value.scaleLength,
       DEFAULT_PROFILE.scaleLength,
     ),
-    tuning: sanitizeString(value.tuning, DEFAULT_PROFILE.tuning),
     stringGauge: sanitizeString(
       value.stringGauge,
       DEFAULT_PROFILE.stringGauge,

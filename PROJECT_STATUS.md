@@ -36,7 +36,7 @@ Než příští session začne: přečíst `AGENTS.md` a `SKILL.md` (pravidla
 spolupráce), pak tento soubor.
 
 ## ✅ Hotovo
-**379 automatických testů**, vše prochází; `tsc` čistý. Roadmapa: Fáze 0–4
+**383 automatických testů**, vše prochází; `tsc` čistý. Roadmapa: Fáze 0–4
 hotové, Fáze 5 hotová (body 15–17; 18 vynechán), Fáze 6 z velké části
 hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
 
@@ -130,7 +130,11 @@ hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
   od snadných výher po sjednocení audio enginů). Vznikl z auditu
   provázanosti; nic v něm nejsou opravy bugů, jen chytřejší propojení.
   **Fáze A hotová (2026-05-25):** Hry a Aparát se počítají do odcvičených
-  minut; AI chat „zeptej se" dostává kontext o cvičení. Na řadě fáze B.
+  minut; AI chat „zeptej se" dostává kontext o cvičení.
+  **Fáze B hotová (2026-05-25):** ladění se nastavuje na jednom místě
+  (zdroj `settingsStore.tuningId`, karta Kytary ho jen edituje); všechny
+  tři AI režimy (chat, plán, zpětná vazba) znají profil nástroje. Na řadě
+  fáze C (knihovna a metalové trenažéry respektují ladění).
 - **Bod 22 — sdílení a organizace** (poslední bod roadmapy) — share-a-riff,
   songbook organizér
 - Beta test s 5–10 lidmi — vědomě odložený

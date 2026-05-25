@@ -89,7 +89,7 @@ describe("sanitizeProfile", () => {
   it("fills missing fields from the default profile", () => {
     const result = sanitizeProfile({ name: "Moje kytara" });
     expect(result.name).toBe("Moje kytara");
-    expect(result.tuning).toBe(DEFAULT_PROFILE.tuning);
+    expect(result.scaleLength).toBe(DEFAULT_PROFILE.scaleLength);
   });
 
   it("drops malformed pickups but keeps valid ones", () => {
