@@ -138,6 +138,12 @@ hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
   stupnic v Knihovně (C1) i metalové trenažéry — názvy tónů a popisky
   strun (C2). Zbývá jen fáze D (sjednocení časovacích enginů) — vědomě
   otevřená jako sporná návratnost.
+- **Rozšíření Aparátu** — plán v `AMP_PLAN.md` (4 fáze: vlastní presety,
+  nové efekty, UX a vizualizace, pedalboard). Vznikl z přání reálného
+  uživatele. **Fáze A hotová (2026-05-25):** Aparát má uložitelné vlastní
+  presety (`ampPresetsStore`). Na řadě fáze B — nové efekty (kompresor,
+  zkreslení/reproboxy, reverb, modulace), přidávané po jednom s testem
+  sluchem.
 - **Bod 22 — sdílení a organizace** (poslední bod roadmapy) — share-a-riff,
   songbook organizér
 - Beta test s 5–10 lidmi — vědomě odložený

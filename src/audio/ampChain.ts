@@ -1,9 +1,11 @@
 // Guitar amp / effects chain — architecture layer 5 (audio). Part of Bod 16.
 //
 // Signal path:
-//   input -> preGain -> distortion -> 3-band EQ -> cabinet sim -> output
-// The cabinet output also feeds a feedback delay that is mixed back into the
-// output. The output is wired straight to the speakers.
+//   input -> compressor -> preGain -> distortion -> 3-band EQ -> cabinet sim
+//   -> output
+// The compressor sits at the front (compressor-pedal position) and is
+// transparent at amount 0. The cabinet output also feeds a feedback delay
+// mixed back into the output. The output is wired straight to the speakers.
 //
 // The cabinet is modelled with fixed filters (high/low-pass + a presence
 // peak) rather than an impulse response — no external IR file, no licensing,
@@ -35,6 +37,7 @@ export class AmpChain {
   /** Entry node — connect the guitar source here. */
   readonly input: GainNode;
 
+  private readonly compressor: DynamicsCompressorNode;
   private readonly preGain: GainNode;
   private readonly shaper: WaveShaperNode;
   private readonly bass: BiquadFilterNode;
@@ -50,6 +53,15 @@ export class AmpChain {
 
   constructor(context: BaseAudioContext) {
     this.input = context.createGain();
+
+    // Compressor at the front (compressor-pedal position). Defaults are
+    // transparent — setCompression(0) leaves the ratio at 1:1.
+    this.compressor = context.createDynamicsCompressor();
+    this.compressor.ratio.value = 1;
+    this.compressor.threshold.value = 0;
+    this.compressor.knee.value = 0;
+    this.compressor.attack.value = 0.003;
+    this.compressor.release.value = 0.25;
 
     this.preGain = context.createGain();
     this.preGain.gain.value = 6;
@@ -100,7 +112,8 @@ export class AmpChain {
     this.output.gain.value = 0.5;
 
     // Main chain.
-    this.input.connect(this.preGain);
+    this.input.connect(this.compressor);
+    this.compressor.connect(this.preGain);
     this.preGain.connect(this.shaper);
     this.shaper.connect(this.bass);
     this.bass.connect(this.mid);
@@ -120,6 +133,15 @@ export class AmpChain {
     this.delayWet.connect(this.output);
 
     this.output.connect(context.destination);
+  }
+
+  /** Compression amount — `amount` runs 0 (transparent) to 1 (heavy). */
+  setCompression(amount: number): void {
+    const a = clamp(amount, 0, 1);
+    // At 0 the ratio is 1:1 (no compression); higher values squash harder.
+    this.compressor.ratio.value = 1 + a * 11;
+    this.compressor.threshold.value = a * -36;
+    this.compressor.knee.value = a * 24;
   }
 
   /** Distortion amount — `amount` runs 0 (mild) to 1 (heavy). */
@@ -156,6 +178,7 @@ export class AmpChain {
   dispose(): void {
     const nodes = [
       this.input,
+      this.compressor,
       this.preGain,
       this.shaper,
       this.bass,

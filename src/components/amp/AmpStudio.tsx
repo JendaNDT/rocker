@@ -10,6 +10,7 @@ import {
   type AmpPreset,
   type AmpSettings,
 } from "@/lib/ampPresets";
+import { useAmpPresetsStore } from "@/stores/ampPresetsStore";
 import { useAudioStore } from "@/stores/audioStore";
 
 // Parameter sliders: two columns on desktop, stacked on mobile.
@@ -30,6 +31,7 @@ const SEGMENT_IDLE =
 
 /** Pushes every parameter of a settings object onto the chain. */
 function applyToChain(chain: AmpChain, settings: AmpSettings): void {
+  chain.setCompression(settings.compression);
   chain.setDrive(settings.drive);
   chain.setBass(settings.bass);
   chain.setMid(settings.mid);
@@ -54,9 +56,13 @@ export function AmpStudio() {
   const [presetId, setPresetId] = useState<string | null>(
     DEFAULT_AMP_PRESET.id,
   );
+  const [presetName, setPresetName] = useState("");
 
   const latencyMs = useAudioStore((state) => state.latencyMs);
   const layoutMode = useResolvedLayoutMode();
+  const userPresets = useAmpPresetsStore((state) => state.presets);
+  const savePreset = useAmpPresetsStore((state) => state.savePreset);
+  const deletePreset = useAmpPresetsStore((state) => state.deletePreset);
 
   // Tear down the audio graph when leaving the screen.
   useEffect(() => {
@@ -110,6 +116,20 @@ export function AmpStudio() {
     if (chainRef.current) applyToChain(chainRef.current, preset.settings);
   }
 
+  /** Saves the current slider settings as a new named user preset. */
+  function saveCurrentPreset() {
+    const name = presetName.trim();
+    if (!name) return;
+    setPresetId(savePreset(name, settings));
+    setPresetName("");
+  }
+
+  function removePreset(id: string) {
+    deletePreset(id);
+    // Deleting the active preset takes the tone onto "vlastní nastavení".
+    if (presetId === id) setPresetId(null);
+  }
+
   function setParam(key: keyof AmpSettings, value: number) {
     const next = { ...settings, [key]: value };
     setSettings(next);
@@ -151,6 +171,7 @@ export function AmpStudio() {
 
   const activePresetName =
     AMP_PRESETS.find((preset) => preset.id === presetId)?.name ??
+    userPresets.find((preset) => preset.id === presetId)?.name ??
     "vlastní nastavení";
 
   return (
@@ -207,9 +228,60 @@ export function AmpStudio() {
                 </button>
               ))}
             </div>
+
+            {userPresets.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-2">
+                {userPresets.map((preset) => (
+                  <div
+                    key={preset.id}
+                    className={
+                      presetId === preset.id
+                        ? "flex items-center gap-1 rounded-md border border-accent bg-accent/10 py-1 pr-1 pl-3 text-sm text-accent"
+                        : "flex items-center gap-1 rounded-md border border-line bg-bg py-1 pr-1 pl-3 text-sm text-dim"
+                    }
+                  >
+                    <button
+                      type="button"
+                      onClick={() => applyPreset(preset)}
+                      className="transition-colors hover:text-text"
+                    >
+                      {preset.name}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => removePreset(preset.id)}
+                      aria-label={`Smazat preset ${preset.name}`}
+                      className="rounded px-1 text-muted transition-colors hover:text-danger"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <input
+                type="text"
+                value={presetName}
+                onChange={(event) => setPresetName(event.target.value)}
+                placeholder="Název vlastního presetu"
+                aria-label="Název vlastního presetu"
+                className="min-w-0 flex-1 rounded-lg border border-line bg-bg px-3 py-1.5 text-sm text-text sm:w-56 sm:flex-none"
+              />
+              <button
+                type="button"
+                onClick={saveCurrentPreset}
+                disabled={presetName.trim().length === 0}
+                className={SECONDARY_BUTTON}
+              >
+                Uložit jako preset
+              </button>
+            </div>
           </div>
 
           <div className={SLIDER_GRID[layoutMode]}>
+            {slider("Komprese", "compression", false)}
             {slider("Zkreslení", "drive", false)}
             {slider("Basy", "bass", true)}
             {slider("Středy", "mid", true)}
