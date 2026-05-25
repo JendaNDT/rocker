@@ -3,6 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { AmpChain } from "@/audio/ampChain";
 import { audioEngine } from "@/audio/AudioEngine";
+import { SignalLevelMeter } from "@/components/amp/SignalLevelMeter";
+import { SignalScope } from "@/components/amp/SignalScope";
+import { InputLevelMeter } from "@/components/InputLevelMeter";
 import { useResolvedLayoutMode } from "@/lib/layout";
 import {
   AMP_PRESETS,
@@ -82,6 +85,12 @@ export function AmpStudio() {
     DEFAULT_AMP_PRESET.id,
   );
   const [presetName, setPresetName] = useState("");
+  const [outputAnalyser, setOutputAnalyser] = useState<AnalyserNode | null>(
+    null,
+  );
+  // A/B compare — two stored tone snapshots the user can flip between.
+  const [slotA, setSlotA] = useState<AmpSettings | null>(null);
+  const [slotB, setSlotB] = useState<AmpSettings | null>(null);
 
   const latencyMs = useAudioStore((state) => state.latencyMs);
   const layoutMode = useResolvedLayoutMode();
@@ -122,6 +131,7 @@ export function AmpStudio() {
     applyToChain(chain, settings);
     source.connect(chain.input);
     chainRef.current = chain;
+    setOutputAnalyser(chain.outputAnalyser);
     setActive(true);
   }
 
@@ -132,6 +142,7 @@ export function AmpStudio() {
       chain.dispose();
       chainRef.current = null;
     }
+    setOutputAnalyser(null);
     setActive(false);
   }
 
@@ -153,6 +164,19 @@ export function AmpStudio() {
     deletePreset(id);
     // Deleting the active preset takes the tone onto "vlastní nastavení".
     if (presetId === id) setPresetId(null);
+  }
+
+  /** Stores the current settings into A/B slot for later comparison. */
+  function storeSlot(target: "A" | "B") {
+    if (target === "A") setSlotA(settings);
+    else setSlotB(settings);
+  }
+
+  /** Recalls a stored A/B snapshot and applies it to the chain. */
+  function recallSlot(stored: AmpSettings) {
+    setSettings(stored);
+    setPresetId(null);
+    if (chainRef.current) applyToChain(chainRef.current, stored);
   }
 
   function setParam(key: NumericAmpKey, value: number) {
@@ -248,6 +272,16 @@ export function AmpStudio() {
 
       {active && (
         <div className="mt-5 space-y-5">
+          <div className="space-y-3">
+            <InputLevelMeter />
+            <SignalLevelMeter
+              analyser={outputAnalyser}
+              active={active}
+              label="Úroveň výstupu"
+            />
+            <SignalScope analyser={outputAnalyser} active={active} />
+          </div>
+
           <div>
             <div className="text-sm font-medium text-text">
               Preset:{" "}
@@ -315,6 +349,47 @@ export function AmpStudio() {
                 className={SECONDARY_BUTTON}
               >
                 Uložit jako preset
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <div className="text-sm font-medium text-text">
+              Porovnání A/B
+            </div>
+            <p className="mt-1 text-xs text-muted">
+              Ulož si dvě varianty zvuku a přepínej mezi nimi.
+            </p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => storeSlot("A")}
+                className={SECONDARY_BUTTON}
+              >
+                Uložit do A
+              </button>
+              <button
+                type="button"
+                onClick={() => slotA && recallSlot(slotA)}
+                disabled={slotA === null}
+                className={SECONDARY_BUTTON}
+              >
+                Načíst A
+              </button>
+              <button
+                type="button"
+                onClick={() => storeSlot("B")}
+                className={SECONDARY_BUTTON}
+              >
+                Uložit do B
+              </button>
+              <button
+                type="button"
+                onClick={() => slotB && recallSlot(slotB)}
+                disabled={slotB === null}
+                className={SECONDARY_BUTTON}
+              >
+                Načíst B
               </button>
             </div>
           </div>

@@ -144,7 +144,10 @@ hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
   (`ampPresetsStore`). **Fáze B hotová (2026-05-25):** B1 kompresor,
   B2 typy zkreslení (overdrive/distortion/fuzz) a reproboxů (modern/vintage/
   open), B3 reverb, B4 chorus — vše v kódu, sluchem NEOVĚŘENO, doladí se
-  podle odezvy uživatele. Na řadě fáze C (UX a vizualizace).
+  podle odezvy uživatele. **Fáze C hotová (2026-05-25):** indikátory
+  vstupní/výstupní úrovně, osciloskop, A/B porovnání presetů — bez nového
+  DSP. Zbývá jen fáze D (přeskládatelný pedalboard) — vědomě otevřená,
+  doporučení spíš vynechat.
 - **Bod 22 — sdílení a organizace** (poslední bod roadmapy) — share-a-riff,
   songbook organizér
 - Beta test s 5–10 lidmi — vědomě odložený

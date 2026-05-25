@@ -107,19 +107,29 @@ vynechány — chorus jako univerzální modulace stačí, lze doplnit později.
 
 ---
 
-## Fáze C — UX a vizualizace
+## Fáze C — UX a vizualizace ✅ HOTOVO (2026-05-25)
 
 Vylepšení ovládání, žádné nové DSP — vizualizace jen čte signál.
 
-### C1 — Indikátory úrovně
+### C1 — Indikátory úrovně ✅
 Ukazatel vstupní a výstupní úrovně signálu — uživatel vidí, že kytara
 „jde dovnitř" a že výstup nepřebuzuje.
 
-### C2 — Vizualizér zvuku
+**Hotovo (2026-05-25):** `AmpChain.outputAnalyser` (čtecí odbočka výstupu);
+obecná komponenta `SignalLevelMeter`; v Aparátu vstupní (`InputLevelMeter`)
+i výstupní ukazatel, oba červenají při přebuzení.
+
+### C2 — Vizualizér zvuku ✅
 Osciloskop nebo spektrum z `AnalyserNode`. Čistě zobrazení, read-only.
 
-### C3 — A/B porovnání presetů
+**Hotovo (2026-05-25):** komponenta `SignalScope` — osciloskop na `<canvas>`
+čtoucí výstupní analyzér, barvy z theme proměnných.
+
+### C3 — A/B porovnání presetů ✅
 Rychlé přepnutí mezi dvěma nastaveními, ať uživatel slyší rozdíl.
+
+**Hotovo (2026-05-25):** sekce „Porovnání A/B" — dvě paměti nastavení,
+uložit/načíst. Čistě stav a UI v `AmpStudio`.
 
 ---
 
@@ -146,9 +156,9 @@ toho, jestli reálně chybí. Klidně vynechat.
 | B | B2 — typy zkreslení a reproboxů | M | ✅ hotovo (test sluchem čeká) |
 | B | B3 — reverb | M | ✅ hotovo (test sluchem čeká) |
 | B | B4 — modulace (chorus) | M | ✅ hotovo (test sluchem čeká) |
-| C | C1 — indikátory úrovně | S | nízké |
-| C | C2 — vizualizér | S–M | nízké |
-| C | C3 — A/B porovnání | S | nízké |
+| C | C1 — indikátory úrovně | S | ✅ hotovo |
+| C | C2 — vizualizér | S–M | ✅ hotovo |
+| C | C3 — A/B porovnání | S | ✅ hotovo |
 | D | pedalboard | L | vysoké — zvážit, zda vůbec |
 
 Návrh: začít fází A (rychlé rozehřátí, nízké riziko), pak fáze B (jádro,

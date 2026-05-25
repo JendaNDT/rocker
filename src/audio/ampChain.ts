@@ -116,6 +116,9 @@ export class AmpChain {
   /** Entry node — connect the guitar source here. */
   readonly input: GainNode;
 
+  /** Post-effects analyser — a read-only tap for meters and visualisers. */
+  readonly outputAnalyser: AnalyserNode;
+
   private readonly compressor: DynamicsCompressorNode;
   private readonly preGain: GainNode;
   private readonly shaper: WaveShaperNode;
@@ -210,6 +213,11 @@ export class AmpChain {
     this.output = context.createGain();
     this.output.gain.value = 0.5;
 
+    // Read-only analyser tapped off the output — feeds meters and the
+    // visualiser without altering the signal path.
+    this.outputAnalyser = context.createAnalyser();
+    this.outputAnalyser.fftSize = 2048;
+
     // Main chain.
     this.input.connect(this.compressor);
     this.compressor.connect(this.preGain);
@@ -246,6 +254,7 @@ export class AmpChain {
     this.chorusLfo.start();
 
     this.output.connect(context.destination);
+    this.output.connect(this.outputAnalyser);
   }
 
   /** Compression amount — `amount` runs 0 (transparent) to 1 (heavy). */
@@ -335,6 +344,7 @@ export class AmpChain {
       this.chorusDepth,
       this.chorusWet,
       this.output,
+      this.outputAnalyser,
     ];
     this.chorusLfo.stop();
     for (const node of nodes) {
