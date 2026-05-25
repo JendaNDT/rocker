@@ -31,6 +31,25 @@ export function computeRms(buffer: Float32Array): number {
   return Math.sqrt(sum / buffer.length);
 }
 
+/** Upper bound for the noise gate (matches the settings slider maximum). */
+export const NOISE_GATE_MAX = 0.5;
+
+/** Headroom added above the measured room noise when auto-calibrating. */
+const NOISE_GATE_MARGIN = 0.03;
+
+/**
+ * Recommends a noise-gate level from a measured background-noise peak (raw
+ * RMS). Places the gate a small margin above the loudest moment of the quiet
+ * room, on the 0..1 meter scale, clamped to the gate range and rounded to the
+ * slider step. Non-positive or invalid input is treated as silence.
+ */
+export function recommendedNoiseGate(peakRms: number): number {
+  const safePeak = Number.isFinite(peakRms) && peakRms > 0 ? peakRms : 0;
+  const withMargin = safePeak * INPUT_LEVEL_SCALE + NOISE_GATE_MARGIN;
+  const clamped = Math.min(NOISE_GATE_MAX, Math.max(0, withMargin));
+  return Math.round(clamped * 100) / 100;
+}
+
 export class PitchAnalyzer {
   private readonly detector: PitchDetector<Float32Array<ArrayBuffer>>;
   private readonly buffer: Float32Array<ArrayBuffer>;

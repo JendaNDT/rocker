@@ -44,7 +44,7 @@ spolupráce), pak tento soubor.
 Hotovo **13 z 13 bodů MVP** (+ rozšíření 1b) — **Široké MVP je kompletní**.
 Fáze 1–4 dokončené, Fáze 5 rozpracovaná (Body 15–17 hotové), Fáze 6
 rozpracovaná (Body 19 a 21 hotové, Bod 20 vynechán). Aktuálně
-**320 automatických testů**, vše prochází; `tsc` čistý.
+**325 automatických testů**, vše prochází; `tsc` čistý.
 
 - Příprava — prostudované 3 rešeršní dokumenty, `ARCHITECTURE.md`, `ROADMAP.md`
 - **Bod 1** — PWA skořápka: Next.js projekt, manifest, service worker,
@@ -125,7 +125,7 @@ rozpracovaná (Body 19 a 21 hotové, Bod 20 vynechán). Aktuálně
   obrazovek přemigrováno z `bg-neutral-*` na theme-aware třídy
   (`bg-surface`, `text-accent`…). Vintage cvočky přes `VintageFrame`,
   Glassy frosted blur plošně přes CSS. Postaveno z design handoff
-  balíčku; `tsc` čistý, 320 testů prochází, vizuálně ověřeno
+  balíčku; `tsc` čistý, 325 testů prochází, vizuálně ověřeno
 - **Audit vnitřní logiky + opravy** (větev `fix/audit-opravy`, čeká na
   slití do `main`). Proběhl kompletní audit logiky (audio, lib, AI,
   stores, komponenty) — **žádný kritický bug**. Opraveno ve 4 dávkách:
@@ -144,8 +144,13 @@ rozpracovaná (Body 19 a 21 hotové, Bod 20 vynechán). Aktuálně
   je nastavitelná posuvníkem v Profilu → Zvuk a vstup (`noiseGate`
   v `settingsStore`, default 0.06, perzistuje se); práh se kreslí jako
   čárka na ukazateli hlasitosti pro vizuální kalibraci. `tsc` čistý,
-  320 testů. Pozn.: bere jen tichý okolní zvuk, hlasitý ruch přímo
+  325 testů. Pozn.: bere jen tichý okolní zvuk, hlasitý ruch přímo
   u mikrofonu software neodfiltruje
+- **Autokalibrace šumové brány** (větev `feature/autokalibrace`, čeká
+  na slití). Tlačítko „Změřit pozadí" v Profilu → Zvuk a vstup —
+  appka 2 s poslouchá vstup, najde špičku hluku místnosti a nastaví
+  bránu kousek nad ni (`recommendedNoiseGate` v `pitchDetector`,
+  s testy). Ruční posuvník zůstává pro doladění
 - **Upozornění na novou verzi** (větev `feature/update-prompt`, čeká na
   slití). Ručně psaný `sw.js` novou verzi tiše nepřebírá — počká; po
   nasazení appka ukáže lištu „Je k dispozici nová verze / Načíst",
