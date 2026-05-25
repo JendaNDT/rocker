@@ -4,6 +4,7 @@ import { useState } from "react";
 import { audioEngine } from "@/audio/AudioEngine";
 import { InputLevelMeter } from "@/components/InputLevelMeter";
 import { useAudioStore } from "@/stores/audioStore";
+import { useSettingsStore } from "@/stores/settingsStore";
 
 /** Word rating for a measured round-trip latency. */
 function latencyRating(ms: number): { text: string; className: string } {
@@ -22,6 +23,8 @@ export function AudioInputSettings() {
   const devices = useAudioStore((state) => state.devices);
   const latencyMs = useAudioStore((state) => state.latencyMs);
   const error = useAudioStore((state) => state.error);
+  const noiseGate = useSettingsStore((state) => state.noiseGate);
+  const setNoiseGate = useSettingsStore((state) => state.setNoiseGate);
 
   const [selectedId, setSelectedId] = useState<string>("");
 
@@ -123,7 +126,35 @@ export function AudioInputSettings() {
       </div>
 
       <div className="mt-5">
-        <InputLevelMeter />
+        <InputLevelMeter threshold={noiseGate} />
+      </div>
+
+      <div className="mt-4">
+        <label
+          htmlFor="noise-gate"
+          className="flex items-center justify-between text-sm font-medium text-text"
+        >
+          <span>Šumová brána</span>
+          <span className="text-xs text-dim">
+            {noiseGate === 0 ? "vypnutá" : `${Math.round(noiseGate * 100)} %`}
+          </span>
+        </label>
+        <input
+          id="noise-gate"
+          type="range"
+          min={0}
+          max={0.5}
+          step={0.01}
+          value={noiseGate}
+          onChange={(event) => setNoiseGate(Number(event.target.value))}
+          aria-label="Šumová brána"
+          className="mt-2 w-full accent-accent"
+        />
+        <p className="mt-1 text-xs text-muted">
+          Aplikace ignoruje zvuk tišší než tahle hranice — to tlumí okolní
+          ruch. Nech dohrát, podívej se, kam vyskočí měřič bez hraní, a
+          posuvník dej kousek nad to. Úplně vlevo je brána vypnutá.
+        </p>
       </div>
 
       {latency && (

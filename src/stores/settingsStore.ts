@@ -50,6 +50,12 @@ interface SettingsState {
   /** Note naming: international ("english", B) or German/Czech ("german", H). */
   notation: Notation;
   setNotation: (notation: Notation) => void;
+  /**
+   * Noise gate (0..1, same scale as the input level meter). Pitch detection
+   * ignores input quieter than this, filtering ambient room noise. 0 = off.
+   */
+  noiseGate: number;
+  setNoiseGate: (noiseGate: number) => void;
   /** Whether the first-run onboarding has been completed or skipped. */
   onboarded: boolean;
   setOnboarded: (onboarded: boolean) => void;
@@ -75,6 +81,8 @@ export const useSettingsStore = create<SettingsState>()(
       setZenMode: (zenMode) => set({ zenMode }),
       notation: "english",
       setNotation: (notation) => set({ notation }),
+      noiseGate: 0.06,
+      setNoiseGate: (noiseGate) => set({ noiseGate }),
       onboarded: false,
       setOnboarded: (onboarded) => set({ onboarded }),
     }),
@@ -119,6 +127,14 @@ export const useSettingsStore = create<SettingsState>()(
           }
           if (stored.notation === "english" || stored.notation === "german") {
             safe.notation = stored.notation;
+          }
+          if (
+            typeof stored.noiseGate === "number" &&
+            Number.isFinite(stored.noiseGate) &&
+            stored.noiseGate >= 0 &&
+            stored.noiseGate <= 1
+          ) {
+            safe.noiseGate = stored.noiseGate;
           }
           if (typeof stored.zenMode === "boolean") {
             safe.zenMode = stored.zenMode;

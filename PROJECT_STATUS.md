@@ -44,7 +44,7 @@ spolupráce), pak tento soubor.
 Hotovo **13 z 13 bodů MVP** (+ rozšíření 1b) — **Široké MVP je kompletní**.
 Fáze 1–4 dokončené, Fáze 5 rozpracovaná (Body 15–17 hotové), Fáze 6
 rozpracovaná (Body 19 a 21 hotové, Bod 20 vynechán). Aktuálně
-**315 automatických testů**, vše prochází; `tsc` čistý.
+**320 automatických testů**, vše prochází; `tsc` čistý.
 
 - Příprava — prostudované 3 rešeršní dokumenty, `ARCHITECTURE.md`, `ROADMAP.md`
 - **Bod 1** — PWA skořápka: Next.js projekt, manifest, service worker,
@@ -125,7 +125,7 @@ rozpracovaná (Body 19 a 21 hotové, Bod 20 vynechán). Aktuálně
   obrazovek přemigrováno z `bg-neutral-*` na theme-aware třídy
   (`bg-surface`, `text-accent`…). Vintage cvočky přes `VintageFrame`,
   Glassy frosted blur plošně přes CSS. Postaveno z design handoff
-  balíčku; `tsc` čistý, 315 testů prochází, vizuálně ověřeno
+  balíčku; `tsc` čistý, 320 testů prochází, vizuálně ověřeno
 - **Audit vnitřní logiky + opravy** (větev `fix/audit-opravy`, čeká na
   slití do `main`). Proběhl kompletní audit logiky (audio, lib, AI,
   stores, komponenty) — **žádný kritický bug**. Opraveno ve 4 dávkách:
@@ -138,6 +138,14 @@ rozpracovaná (Body 19 a 21 hotové, Bod 20 vynechán). Aktuálně
   prázdného cellu v `gallopPlayer`; Looper a Studio se počítají do
   odcvičených minut. +9 testů pro `recordingsDb` (nová vývojová
   závislost `fake-indexeddb`, jen pro testy)
+- **Šumová brána** (větev `feature/sumova-brana`, čeká na slití). Detekce
+  tónů (`pitchDetector`) má amplitudovou bránu — vstup tišší než nastavená
+  hranice se zahodí, aby okolní ruch nezaregistroval jako tón. Citlivost
+  je nastavitelná posuvníkem v Profilu → Zvuk a vstup (`noiseGate`
+  v `settingsStore`, default 0.06, perzistuje se); práh se kreslí jako
+  čárka na ukazateli hlasitosti pro vizuální kalibraci. `tsc` čistý,
+  320 testů. Pozn.: bere jen tichý okolní zvuk, hlasitý ruch přímo
+  u mikrofonu software neodfiltruje
 - **Bod 21** — profil nástroje: obrazovka `/instrument` („Kytara").
   **Karta profilu** — editovatelná (název, tělo, snímače krk/střed/kobylka
   × humbucker/single/P90, menzura, ladění, struny, poznámky), uložená

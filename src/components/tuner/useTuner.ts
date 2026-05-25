@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { audioEngine } from "@/audio/AudioEngine";
 import { PitchAnalyzer } from "@/audio/pitchDetector";
 import { frequencyToNote } from "@/lib/pitch";
 import type { NoteInfo } from "@/lib/pitch";
 import { useAudioStore } from "@/stores/audioStore";
+import { useSettingsStore } from "@/stores/settingsStore";
 
 // Below this Pitchy confidence the signal is treated as noise.
 const CLARITY_THRESHOLD = 0.9;
@@ -28,6 +29,12 @@ export function useTuner(): { reading: TunerReading | null } {
   const running = useAudioStore((state) => state.status === "running");
   const [reading, setReading] = useState<TunerReading | null>(null);
 
+  // Read the noise gate through a ref so changing it from the settings slider
+  // takes effect live without tearing down and rebuilding the detection loop.
+  const noiseGate = useSettingsStore((state) => state.noiseGate);
+  const noiseGateRef = useRef(noiseGate);
+  noiseGateRef.current = noiseGate;
+
   useEffect(() => {
     if (!running) {
       setReading(null);
@@ -46,7 +53,11 @@ export function useTuner(): { reading: TunerReading | null } {
     let lastGoodAt = performance.now();
 
     const tick = () => {
-      const { frequency, clarity } = analyzer.read(analyser, sampleRate);
+      const { frequency, clarity } = analyzer.read(
+        analyser,
+        sampleRate,
+        noiseGateRef.current,
+      );
       const now = performance.now();
 
       if (clarity >= CLARITY_THRESHOLD && frequency > 0) {
