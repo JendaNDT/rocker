@@ -15,10 +15,11 @@ IndexedDB (přes `idb`) pro velké bloby — nahrávky.
 ## ⏭️ Příští krok
 Roadmapa je prakticky hotová — body 1–21 dokončené (18 a 20 vědomě
 vynechané), zbývá poslední **Bod 22 (sdílení a organizace)**. Nad rámec
-roadmapy přibylo 8 vylepšení (vzhledy, šumová brána + autokalibrace,
+roadmapy přibylo 9 vylepšení (vzhledy, šumová brána + autokalibrace,
 upozornění na verzi, krok vzhledu v úvodu, záloha dat, rozšířený
 metronom, responzivní PC rozvržení, polymorfní widgety vzhledů
-inspirované Soltonem) — vše nasazené.
+inspirované Soltonem, AmpWidget na obrazovkách Cvičení a Metal) — vše
+nasazené.
 
 Otevřené úkoly:
 - **Bod 22 (sdílení a organizace)** — poslední bod roadmapy. Záloha dat
@@ -169,8 +170,29 @@ hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
   `--wood-grain`, `--gloss-reflex`. Pravidlo v `globals.css` aplikuje
   reflex + wood grain na `.bg-surface*` ve Vintage dark; Vintage light
   zachovává papírový pocit.
+- **AmpWidget na obrazovkách Cvičení a Metal (2026-05-26)** — kompaktní
+  aparát karta vedle MetronomeWidget na Cvičení a nad záložkami
+  trenažérů na Metalu. Header s ON/OFF tlačítkem a stavem („Hraje —
+  latence X ms" / „Vypnutý"), 4 vestavěné presety (Čistý / Crunch /
+  Lead / Metal), `InputLevelMeter` (Vintage VU dial / Studio LED ladder
+  / Glassy halo dle vzhledu) jen když aktivní, link „Otevřít plný
+  Aparát →" na `/amp`. Vlastní presety a jednotlivé knoby zůstávají
+  v plném Aparátu, kde je na to místo.
 
-## 📝 TODO
+  **Architektura — `useLocalAmpChain` hook
+  (`src/components/amp/useLocalAmpChain.ts`):** každá obrazovka, která
+  hostuje aparát (plný `AmpStudio` na `/amp`, nebo `AmpWidget` na
+  `/practice` a `/metal`), drží **vlastní krátkodobou instanci
+  `AmpChain`**. Hook vrací `{active, starting, error, outputAnalyser,
+  recordingStream, start, stop}` a při unmount komponentu volá
+  `chain.dispose()` + odpojí source. Lokální chain je vědomé
+  rozhodnutí — viz následující bod o omezení `output: 'export'`.
+
+  **Sdílené přes `useAmpStore` (Zustand persist):** `settings`
+  a `presetId`. Když si na `/amp` nastavíš tone, na Cvičení widget
+  startuje s ním. `active` flag tam vědomě NENÍ — každá obrazovka má
+  svůj lokální. Persist whitelist v `partialize` drží jen settings
+  a presetId; rehydrate je sanituje přes `sanitizeAmpSettings`.
 - **Provázání funkcí** — komplexní plán v `INTERCONNECT_PLAN.md` (4 fáze,
   od snadných výher po sjednocení audio enginů). Vznikl z auditu
   provázanosti; nic v něm nejsou opravy bugů, jen chytřejší propojení.
@@ -323,6 +345,18 @@ streamu — má teoreticky stejnou jednostrannou vadu, samostatná oprava.
   `PageContainer` má dvě velikosti: `wide` (xl→5xl, pro dvousloupcové
   obrazovky) a `focused` (3xl, pro soustředěné nástroje, kde by plná šířka
   obsah jen roztáhla).
+- **Aparát — lokální chain per obrazovka, ne sdílený singleton
+  (2026-05-26):** Snaha udržet AmpChain naživu napříč obrazovkami
+  selhala kvůli **fyzické bariéře Next.js `output: 'export'`**: každá
+  navigace přes `<Link>` je `performance.getEntriesByType("navigation")
+  [0].type === "navigate"`, tj. plný document reload. Window se
+  resetuje, AudioContext zhasne, žádný JS singleton (globalThis,
+  module-level cache, persist trik) tuto bariéru neobejde — ověřeno.
+  Místo toho každá obrazovka, která hostuje aparát, vytváří vlastní
+  krátkodobou instanci přes `useLocalAmpChain`, která se dispose při
+  unmount. `useAmpStore` sdílí jen settings a presetId. Přechod na
+  server-rendered Next.js by problém vyřešil, ale rozbil PWA / Vercel
+  free tier setup — vědomě vynecháno.
 - **Co neděláme:** vlastní DB tabů, stem separation v prohlížeči, online
   multiplayer jam, iOS-specifické funkce.
 
@@ -331,12 +365,12 @@ streamu — má teoreticky stejnou jednostrannou vadu, samostatná oprava.
   `theme-tokens.css` (CSS proměnné 3 vzhledů × 2 režimy)
 - `src/components/` — React komponenty (po doménách: tuner, metronome,
   library, practice, youtube, dashboard, profile, recorder, metal, tutor,
-  notation, amp, studio, looper, games, instrument, **widgets** —
-  sdílené polymorfní widgety, dnes `KnobControl`). Napříč appkou:
-  `ThemeProvider`, `ThemePicker`, `VintageFrame` (vzhledy),
-  `ServiceWorkerRegister` (registrace SW + lišta nové verze),
-  `DataBackup`, `AudioInputSettings`, `InputLevelMeter`, `Onboarding`,
-  `PageContainer` + `SplitColumns` (responzivní PC rozvržení)
+  notation, amp — včetně `AmpWidget` a hooku `useLocalAmpChain`, studio,
+  looper, games, instrument, **widgets** — sdílené polymorfní widgety,
+  dnes `KnobControl`). Napříč appkou: `ThemeProvider`, `ThemePicker`,
+  `VintageFrame` (vzhledy), `ServiceWorkerRegister` (registrace SW + lišta
+  nové verze), `DataBackup`, `AudioInputSettings`, `InputLevelMeter`,
+  `Onboarding`, `PageContainer` + `SplitColumns` (responzivní PC rozvržení)
 - `src/audio/` — audio vrstva (AudioEngine, metronome, gallopPlayer,
   riffPlayer, pitchDetector — detekce tónů + šumová brána, muteAnalyzer,
   chordPlayer, countIn, tunings, recorder, ampChain, multitrackEngine,
@@ -352,7 +386,8 @@ streamu — má teoreticky stejnou jednostrannou vadu, samostatná oprava.
   plánu, kontext o cvičení, typy) — vedle leží testy `*.test.ts`
 - `src/stores/` — Zustand stores (settings, audio, metronome,
   metronomeSettings, lessonProgress, ytLoop, progress, recordings,
-  gallopPlayer, riffPlayer, ai, chat, instrument)
+  gallopPlayer, riffPlayer, ai, chat, instrument, ampPresets, **amp** —
+  sdílené aparát settings a presetId)
 - `scripts/stamp-sw.mjs` — razítkuje `sw.js` verzí při buildu
 - `public/sw.js` — ručně psaný service worker; `public/alphatab/` — font
   Bravura a SONiVOX soundfont (Bod 15)

@@ -356,6 +356,22 @@ Double Cut** (mahogany surfacy, brass akcent místo oranžové, cream
 text jako pickup bobbins, dark velvet pozadí). Detaily a hex hodnoty
 v `PROJECT_STATUS.md`.
 
+### ✅ AmpWidget na obrazovkách Cvičení a Metal
+Kompaktní aparát karta vedle MetronomeWidget na Cvičení a nad záložkami
+trenažérů na Metalu. ON/OFF tlačítko, 4 vestavěné presety (Čistý /
+Crunch / Lead / Metal), live `InputLevelMeter` jen když aktivní, link
+„Otevřít plný Aparát →" na `/amp`. Sdílí settings + presetId s plným
+Aparátem přes `useAmpStore` — tone tweak na jedné obrazovce se projeví
+všude.
+
+Architekturně: každá obrazovka, která hostuje aparát, drží **vlastní
+krátkodobou instanci `AmpChain`** přes hook `useLocalAmpChain`
+(`src/components/amp/useLocalAmpChain.ts`). Chain se dispose při
+unmount. Sdílený singleton AmpEngine se ukázal jako fyzicky nemožný
+kvůli `output: 'export'` (každá `<Link>` navigace je plný document
+reload, AudioContext zhasne). Sdílený je tedy jen state (settings,
+presetId), ne audio engine. Detaily v `PROJECT_STATUS.md`.
+
 ---
 
 ## Shrnutí fází
