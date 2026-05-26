@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { AmpChain } from "@/audio/ampChain";
-import { audioEngine } from "@/audio/AudioEngine";
+import { useEffect, useState } from "react";
+import { ampEngine } from "@/audio/ampEngine";
 import { recorder } from "@/audio/recorder";
 import { SignalLevelMeter } from "@/components/amp/SignalLevelMeter";
 import { SignalScope } from "@/components/amp/SignalScope";
@@ -11,7 +10,6 @@ import { KnobControl } from "@/components/widgets/KnobControl";
 import { useResolvedLayoutMode } from "@/lib/layout";
 import {
   AMP_PRESETS,
-  DEFAULT_AMP_PRESET,
   type AmpPreset,
   type AmpSettings,
   type CabinetType,
@@ -19,6 +17,7 @@ import {
 } from "@/lib/ampPresets";
 import { type Recording, formatDuration } from "@/lib/recordings";
 import { useAmpPresetsStore } from "@/stores/ampPresetsStore";
+import { useAmpStore } from "@/stores/ampStore";
 import { useAudioStore } from "@/stores/audioStore";
 import { useRecordingsStore } from "@/stores/recordingsStore";
 
@@ -58,40 +57,32 @@ const CABINET_OPTIONS: { type: CabinetType; label: string }[] = [
   { type: "open", label: "Otevřený" },
 ];
 
-/** Pushes every parameter of a settings object onto the chain. */
-function applyToChain(chain: AmpChain, settings: AmpSettings): void {
-  chain.setCompression(settings.compression);
-  chain.setDrive(settings.drive);
-  chain.setDistortionType(settings.distortion);
-  chain.setBass(settings.bass);
-  chain.setMid(settings.mid);
-  chain.setTreble(settings.treble);
-  chain.setCabinet(settings.cabinet);
-  chain.setDelayMix(settings.delay);
-  chain.setReverbMix(settings.reverb);
-  chain.setChorusMix(settings.chorus);
-  chain.setLevel(settings.level);
-}
-
 /**
  * Amp / effects studio for Bod 16. Routes the live guitar input through the
  * effects chain (drive, EQ, cabinet sim, delay) straight to the speakers,
  * with brand-free tone presets and per-parameter sliders.
+ *
+ * The audio graph lives in src/audio/ampEngine.ts as a singleton, so the
+ * aparát stays running across navigation. This component only renders UI
+ * and forwards changes through useAmpStore.
  */
 export function AmpStudio() {
-  const chainRef = useRef<AmpChain | null>(null);
-  const [active, setActive] = useState(false);
-  const [starting, setStarting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [settings, setSettings] = useState<AmpSettings>(
-    DEFAULT_AMP_PRESET.settings,
-  );
-  const [presetId, setPresetId] = useState<string | null>(
-    DEFAULT_AMP_PRESET.id,
-  );
+  const active = useAmpStore((s) => s.active);
+  const starting = useAmpStore((s) => s.starting);
+  const error = useAmpStore((s) => s.error);
+  const settings = useAmpStore((s) => s.settings);
+  const presetId = useAmpStore((s) => s.presetId);
+  const storeStart = useAmpStore((s) => s.start);
+  const storeStop = useAmpStore((s) => s.stop);
+  const storeSetSettings = useAmpStore((s) => s.setSettings);
+  const storeSetDistortion = useAmpStore((s) => s.setDistortion);
+  const storeSetCabinet = useAmpStore((s) => s.setCabinet);
+  const storeSetPresetId = useAmpStore((s) => s.setPresetId);
+
   const [presetName, setPresetName] = useState("");
+  // Output analyser mirrors the engine — null when the chain isn't wired up.
   const [outputAnalyser, setOutputAnalyser] = useState<AnalyserNode | null>(
-    null,
+    () => ampEngine.getOutputAnalyser(),
   );
   // A/B compare — two stored tone snapshots the user can flip between.
   const [slotA, setSlotA] = useState<AmpSettings | null>(null);
@@ -113,18 +104,12 @@ export function AmpStudio() {
   const recordingsLoaded = useRecordingsStore((state) => state.loaded);
   const loadRecordings = useRecordingsStore((state) => state.load);
 
-  // Tear down the audio graph (and any running recording) when leaving.
+  // Keep the local analyser handle in sync with the engine. The chain is
+  // created / disposed inside the engine, so the AudioNode reference
+  // changes whenever `active` flips.
   useEffect(() => {
-    return () => {
-      if (recorder.isRecording()) void recorder.stop();
-      const chain = chainRef.current;
-      if (chain) {
-        audioEngine.getInputSource()?.disconnect(chain.input);
-        chain.dispose();
-        chainRef.current = null;
-      }
-    };
-  }, []);
+    setOutputAnalyser(active ? ampEngine.getOutputAnalyser() : null);
+  }, [active]);
 
   // Load the recordings list so a new amp take gets a correct number and
   // shows up alongside the others in the Nahrávání screen.
@@ -144,49 +129,20 @@ export function AmpStudio() {
   }, [recording]);
 
   async function start() {
-    if (starting || active) return;
-    setStarting(true);
-    setError(null);
-    const running = await audioEngine.ensureListening();
-    setStarting(false);
-    if (!running) {
-      setError(
-        "Nepodařilo se spustit zvukový vstup. Povol mikrofon v Profilu.",
-      );
-      return;
-    }
-    const source = audioEngine.getInputSource();
-    if (!source) {
-      setError("Zvukový vstup není dostupný.");
-      return;
-    }
-    const context = await audioEngine.getOutputContext();
-    const chain = new AmpChain(context);
-    applyToChain(chain, settings);
-    source.connect(chain.input);
-    chainRef.current = chain;
-    setOutputAnalyser(chain.outputAnalyser);
-    setActive(true);
+    await storeStart();
   }
 
   async function stop() {
     // Finish and save a take in progress before tearing the chain down.
     if (recorder.isRecording()) await stopTake();
-    const chain = chainRef.current;
-    if (chain) {
-      audioEngine.getInputSource()?.disconnect(chain.input);
-      chain.dispose();
-      chainRef.current = null;
-    }
-    setOutputAnalyser(null);
-    setActive(false);
+    await storeStop();
   }
 
   /** Starts capturing the amped (post-effects) output. */
   function startTake() {
-    const chain = chainRef.current;
-    if (!chain || recorder.isRecording()) return;
-    if (recorder.start(chain.recordingStream)) {
+    const stream = ampEngine.getRecordingStream();
+    if (!stream || recorder.isRecording()) return;
+    if (recorder.start(stream)) {
       setRecording(true);
     }
   }
@@ -212,23 +168,21 @@ export function AmpStudio() {
   }
 
   function applyPreset(preset: AmpPreset) {
-    setSettings(preset.settings);
-    setPresetId(preset.id);
-    if (chainRef.current) applyToChain(chainRef.current, preset.settings);
+    storeSetSettings(preset.settings, preset.id);
   }
 
   /** Saves the current slider settings as a new named user preset. */
   function saveCurrentPreset() {
     const name = presetName.trim();
     if (!name) return;
-    setPresetId(savePreset(name, settings));
+    storeSetPresetId(savePreset(name, settings));
     setPresetName("");
   }
 
   function removePreset(id: string) {
     deletePreset(id);
     // Deleting the active preset takes the tone onto "vlastní nastavení".
-    if (presetId === id) setPresetId(null);
+    if (presetId === id) storeSetPresetId(null);
   }
 
   /** Stores the current settings into A/B slot for later comparison. */
@@ -239,31 +193,20 @@ export function AmpStudio() {
 
   /** Recalls a stored A/B snapshot and applies it to the chain. */
   function recallSlot(stored: AmpSettings) {
-    setSettings(stored);
-    setPresetId(null);
-    if (chainRef.current) applyToChain(chainRef.current, stored);
+    storeSetSettings(stored, null);
   }
 
   function setParam(key: NumericAmpKey, value: number) {
-    const next = { ...settings, [key]: value };
-    setSettings(next);
     // Moving a slider takes the tone off any named preset.
-    setPresetId(null);
-    if (chainRef.current) applyToChain(chainRef.current, next);
+    storeSetSettings({ ...settings, [key]: value }, null);
   }
 
   function setDistortion(type: DistortionType) {
-    const next = { ...settings, distortion: type };
-    setSettings(next);
-    setPresetId(null);
-    if (chainRef.current) applyToChain(chainRef.current, next);
+    storeSetDistortion(type);
   }
 
   function setCabinet(type: CabinetType) {
-    const next = { ...settings, cabinet: type };
-    setSettings(next);
-    setPresetId(null);
-    if (chainRef.current) applyToChain(chainRef.current, next);
+    storeSetCabinet(type);
   }
 
   /**
