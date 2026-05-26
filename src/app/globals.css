@@ -106,6 +106,14 @@ body {
   }
 }
 
+/* ---------- Animace ----------
+   Sdílená pulzační animace pro varovné indikátory (clip LED apod.).
+*/
+@keyframes rocker-pulse {
+  from { opacity: 1; }
+  to { opacity: 0.55; }
+}
+
 /* ---------- Vintage dark: lesklý mahagonový lak ----------
    Inspirováno tělem kytary Solton Double Cut — sytě hnědý mahagon
    s vlnitou maple texturou pod vysokým lakem. Surface třídy dostávají
