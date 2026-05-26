@@ -40,10 +40,15 @@ interface AmpStoreState {
  * before the user opts back in.
  */
 // TEMP debug — remove once the navigation reset bug is found.
+const moduleEvalId = Math.random().toString(36).slice(2, 8);
+if (typeof window !== "undefined") {
+  // eslint-disable-next-line no-console
+  console.log(`[ampStore] module eval id=${moduleEvalId}`);
+}
 function dbg(tag: string): void {
   if (typeof window === "undefined") return;
   // eslint-disable-next-line no-console
-  console.log(`[ampStore] ${tag} @ ${location.pathname}`, new Error().stack);
+  console.log(`[ampStore][${moduleEvalId}] ${tag} @ ${location.pathname}`);
 }
 
 export const useAmpStore = create<AmpStoreState>()(
