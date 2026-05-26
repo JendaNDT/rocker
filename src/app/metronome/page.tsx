@@ -9,6 +9,7 @@ import { TrainerPanel } from "@/components/metronome/TrainerPanel";
 import { PageContainer } from "@/components/PageContainer";
 import { SplitColumns } from "@/components/SplitColumns";
 import { useWakeLock } from "@/components/useWakeLock";
+import { KnobControl } from "@/components/widgets/KnobControl";
 import type {
   GapConfig,
   MetronomePreset,
@@ -334,43 +335,29 @@ export default function MetronomePage() {
         </div>
       </div>
 
-      <div className="mt-6 space-y-4">
-        <div>
-          <div className="flex justify-between text-sm font-medium text-text">
-            <span>Hlasitost metronomu</span>
-            <span className="text-dim tabular-nums">
-              {Math.round(volume * 100)} %
-            </span>
-          </div>
-          <input
-            type="range"
-            min={0}
-            max={1}
-            step={0.01}
-            value={volume}
-            onChange={(event) => changeVolume(Number(event.target.value))}
-            aria-label="Hlasitost metronomu"
-            className="mt-1 w-full accent-accent"
-          />
-        </div>
-        <div>
-          <div className="flex justify-between text-sm font-medium text-text">
-            <span>Hlasitost přízvuku</span>
-            <span className="text-dim tabular-nums">
-              {Math.round(accentVolume * 100)} %
-            </span>
-          </div>
-          <input
-            type="range"
-            min={0}
-            max={1}
-            step={0.01}
-            value={accentVolume}
-            onChange={(event) => changeAccentVolume(Number(event.target.value))}
-            aria-label="Hlasitost přízvuku"
-            className="mt-1 w-full accent-accent"
-          />
-        </div>
+      <div className="mt-6 flex flex-wrap items-end gap-6">
+        <KnobControl
+          label="Hlasitost metronomu"
+          value={Math.round(volume * 100)}
+          min={0}
+          max={100}
+          step={1}
+          fineStep={0.5}
+          formatValue={(v) => `${Math.round(v)} %`}
+          ariaLabel="Hlasitost metronomu, rozsah 0 až 100"
+          onChange={(next) => changeVolume(next / 100)}
+        />
+        <KnobControl
+          label="Hlasitost přízvuku"
+          value={Math.round(accentVolume * 100)}
+          min={0}
+          max={100}
+          step={1}
+          fineStep={0.5}
+          formatValue={(v) => `${Math.round(v)} %`}
+          ariaLabel="Hlasitost přízvuku, rozsah 0 až 100"
+          onChange={(next) => changeAccentVolume(next / 100)}
+        />
       </div>
 
       <div className="mt-8">

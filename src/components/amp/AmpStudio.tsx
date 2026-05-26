@@ -7,6 +7,7 @@ import { recorder } from "@/audio/recorder";
 import { SignalLevelMeter } from "@/components/amp/SignalLevelMeter";
 import { SignalScope } from "@/components/amp/SignalScope";
 import { InputLevelMeter } from "@/components/InputLevelMeter";
+import { KnobControl } from "@/components/widgets/KnobControl";
 import { useResolvedLayoutMode } from "@/lib/layout";
 import {
   AMP_PRESETS,
@@ -21,11 +22,12 @@ import { useAmpPresetsStore } from "@/stores/ampPresetsStore";
 import { useAudioStore } from "@/stores/audioStore";
 import { useRecordingsStore } from "@/stores/recordingsStore";
 
-// Parameter sliders: two columns on desktop, stacked on mobile.
-const SLIDER_GRID = {
-  desktop: "grid grid-cols-2 gap-x-8 gap-y-4",
-  mobile: "space-y-4",
-  auto: "space-y-4 lg:grid lg:grid-cols-2 lg:gap-x-8 lg:gap-y-4 lg:space-y-0",
+// Parameter knobs: flex-wrap so they stack neatly on narrow screens and
+// fan out across the row on desktop. Each knob is fixed-width (w-20).
+const KNOB_GRID = {
+  desktop: "flex flex-wrap items-end gap-x-5 gap-y-4 justify-start",
+  mobile: "flex flex-wrap items-end gap-x-3 gap-y-3 justify-center",
+  auto: "flex flex-wrap items-end gap-x-3 gap-y-3 justify-center lg:gap-x-5 lg:justify-start",
 };
 
 const PRIMARY_BUTTON =
@@ -264,34 +266,37 @@ export function AmpStudio() {
     if (chainRef.current) applyToChain(chainRef.current, next);
   }
 
-  /** Renders one parameter slider. Bipolar params (EQ) run -100..100. */
-  function slider(label: string, key: NumericAmpKey, bipolar: boolean) {
+  /**
+   * Renders one parameter knob. Internally each parameter is stored as
+   * 0..1 (or -1..1 for bipolar EQ); the knob shows the value as 0..100 or
+   * -100..+100 so the user reads it as a percentage / signed dB-ish nudge.
+   */
+  function knob(label: string, key: NumericAmpKey, bipolar: boolean) {
     const display = Math.round(settings[key] * 100);
     return (
-      <div key={key}>
-        <label
-          htmlFor={`amp-${key}`}
-          className="block text-sm font-medium text-text"
-        >
-          {label}:{" "}
-          {bipolar
-            ? display > 0
-              ? `+${display}`
-              : display
-            : `${display} %`}
-        </label>
-        <input
-          id={`amp-${key}`}
-          type="range"
-          min={bipolar ? -100 : 0}
-          max={100}
-          value={display}
-          onChange={(event) =>
-            setParam(key, Number(event.target.value) / 100)
-          }
-          className="mt-2 w-full accent-accent"
-        />
-      </div>
+      <KnobControl
+        key={key}
+        label={label}
+        value={display}
+        min={bipolar ? -100 : 0}
+        max={100}
+        step={1}
+        fineStep={0.5}
+        bipolar={bipolar}
+        formatValue={(v) =>
+          bipolar
+            ? v > 0
+              ? `+${Math.round(v)}`
+              : `${Math.round(v)}`
+            : `${Math.round(v)} %`
+        }
+        ariaLabel={
+          bipolar
+            ? `${label}, rozsah −100 až +100`
+            : `${label}, rozsah 0 až 100`
+        }
+        onChange={(next) => setParam(key, next / 100)}
+      />
     );
   }
 
@@ -531,16 +536,16 @@ export function AmpStudio() {
             </div>
           </div>
 
-          <div className={SLIDER_GRID[layoutMode]}>
-            {slider("Komprese", "compression", false)}
-            {slider("Zkreslení", "drive", false)}
-            {slider("Basy", "bass", true)}
-            {slider("Středy", "mid", true)}
-            {slider("Výšky", "treble", true)}
-            {slider("Delay", "delay", false)}
-            {slider("Dozvuk", "reverb", false)}
-            {slider("Chorus", "chorus", false)}
-            {slider("Hlasitost", "level", false)}
+          <div className={KNOB_GRID[layoutMode]}>
+            {knob("Komprese", "compression", false)}
+            {knob("Zkreslení", "drive", false)}
+            {knob("Basy", "bass", true)}
+            {knob("Středy", "mid", true)}
+            {knob("Výšky", "treble", true)}
+            {knob("Delay", "delay", false)}
+            {knob("Dozvuk", "reverb", false)}
+            {knob("Chorus", "chorus", false)}
+            {knob("Hlasitost", "level", false)}
           </div>
         </div>
       )}
