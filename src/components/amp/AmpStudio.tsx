@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ampEngine } from "@/audio/ampEngine";
 import { recorder } from "@/audio/recorder";
 import { SignalLevelMeter } from "@/components/amp/SignalLevelMeter";
 import { SignalScope } from "@/components/amp/SignalScope";
+import { useLocalAmpChain } from "@/components/amp/useLocalAmpChain";
 import { InputLevelMeter } from "@/components/InputLevelMeter";
 import { KnobControl } from "@/components/widgets/KnobControl";
 import { useResolvedLayoutMode } from "@/lib/layout";
@@ -62,28 +62,27 @@ const CABINET_OPTIONS: { type: CabinetType; label: string }[] = [
  * effects chain (drive, EQ, cabinet sim, delay) straight to the speakers,
  * with brand-free tone presets and per-parameter sliders.
  *
- * The audio graph lives in src/audio/ampEngine.ts as a singleton, so the
- * aparát stays running across navigation. This component only renders UI
- * and forwards changes through useAmpStore.
+ * The chain is local to this component: it spins up on Zapnout, lives
+ * until either Vypnout or unmount. Settings and presetId are shared
+ * across screens through useAmpStore.
  */
 export function AmpStudio() {
-  const active = useAmpStore((s) => s.active);
-  const starting = useAmpStore((s) => s.starting);
-  const error = useAmpStore((s) => s.error);
   const settings = useAmpStore((s) => s.settings);
   const presetId = useAmpStore((s) => s.presetId);
-  const storeStart = useAmpStore((s) => s.start);
-  const storeStop = useAmpStore((s) => s.stop);
   const storeSetSettings = useAmpStore((s) => s.setSettings);
-  const storeSetDistortion = useAmpStore((s) => s.setDistortion);
-  const storeSetCabinet = useAmpStore((s) => s.setCabinet);
   const storeSetPresetId = useAmpStore((s) => s.setPresetId);
 
+  const {
+    active,
+    starting,
+    error,
+    outputAnalyser,
+    recordingStream,
+    start: startChain,
+    stop: stopChain,
+  } = useLocalAmpChain(settings);
+
   const [presetName, setPresetName] = useState("");
-  // Output analyser mirrors the engine — null when the chain isn't wired up.
-  const [outputAnalyser, setOutputAnalyser] = useState<AnalyserNode | null>(
-    () => ampEngine.getOutputAnalyser(),
-  );
   // A/B compare — two stored tone snapshots the user can flip between.
   const [slotA, setSlotA] = useState<AmpSettings | null>(null);
   const [slotB, setSlotB] = useState<AmpSettings | null>(null);
@@ -104,13 +103,6 @@ export function AmpStudio() {
   const recordingsLoaded = useRecordingsStore((state) => state.loaded);
   const loadRecordings = useRecordingsStore((state) => state.load);
 
-  // Keep the local analyser handle in sync with the engine. The chain is
-  // created / disposed inside the engine, so the AudioNode reference
-  // changes whenever `active` flips.
-  useEffect(() => {
-    setOutputAnalyser(active ? ampEngine.getOutputAnalyser() : null);
-  }, [active]);
-
   // Load the recordings list so a new amp take gets a correct number and
   // shows up alongside the others in the Nahrávání screen.
   useEffect(() => {
@@ -129,20 +121,19 @@ export function AmpStudio() {
   }, [recording]);
 
   async function start() {
-    await storeStart();
+    await startChain();
   }
 
   async function stop() {
     // Finish and save a take in progress before tearing the chain down.
     if (recorder.isRecording()) await stopTake();
-    await storeStop();
+    await stopChain();
   }
 
   /** Starts capturing the amped (post-effects) output. */
   function startTake() {
-    const stream = ampEngine.getRecordingStream();
-    if (!stream || recorder.isRecording()) return;
-    if (recorder.start(stream)) {
+    if (!recordingStream || recorder.isRecording()) return;
+    if (recorder.start(recordingStream)) {
       setRecording(true);
     }
   }
@@ -202,11 +193,11 @@ export function AmpStudio() {
   }
 
   function setDistortion(type: DistortionType) {
-    storeSetDistortion(type);
+    storeSetSettings({ ...settings, distortion: type }, null);
   }
 
   function setCabinet(type: CabinetType) {
-    storeSetCabinet(type);
+    storeSetSettings({ ...settings, cabinet: type }, null);
   }
 
   /**

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useLocalAmpChain } from "@/components/amp/useLocalAmpChain";
 import { InputLevelMeter } from "@/components/InputLevelMeter";
 import { AMP_PRESETS } from "@/lib/ampPresets";
 import { useAmpStore } from "@/stores/ampStore";
@@ -16,10 +17,12 @@ const PRESET_IDLE =
   "rounded-md border border-line bg-bg px-3 py-1.5 text-xs text-dim transition-colors hover:border-line-strong hover:text-text";
 
 /**
- * Compact aparát card meant to live on other practice-adjacent screens
- * (Cvičení, Metal). Shares state with the full AmpStudio through the
- * useAmpStore singleton, so toggling here is the same instance: open
- * /amp later and the chain is still running, the slider values intact.
+ * Compact aparát card meant to live on practice-adjacent screens
+ * (Cvičení, Metal). Owns its own local AmpChain instance — the chain
+ * disposes when the widget unmounts (e.g. the user navigates to another
+ * screen). Settings and presetId are shared with the full AmpStudio
+ * through useAmpStore, so a tone tweaked here shows up in /amp and
+ * vice versa.
  *
  * The widget keeps controls deliberately small: ON/OFF, the four built-in
  * presets, latency, an input level meter and a link to the full screen.
@@ -27,13 +30,10 @@ const PRESET_IDLE =
  * stays on /amp where there's space for it.
  */
 export function AmpWidget() {
-  const active = useAmpStore((s) => s.active);
-  const starting = useAmpStore((s) => s.starting);
-  const error = useAmpStore((s) => s.error);
+  const settings = useAmpStore((s) => s.settings);
   const presetId = useAmpStore((s) => s.presetId);
-  const start = useAmpStore((s) => s.start);
-  const stop = useAmpStore((s) => s.stop);
   const setSettings = useAmpStore((s) => s.setSettings);
+  const { active, starting, error, start, stop } = useLocalAmpChain(settings);
   const latencyMs = useAudioStore((s) => s.latencyMs);
 
   return (

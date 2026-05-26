@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SCREENS } from "@/lib/screens";
-import { useAmpStore } from "@/stores/ampStore";
 import type { LayoutMode } from "@/stores/settingsStore";
 
 // Nav container — "auto" uses CSS breakpoints, the others are fixed.
@@ -42,16 +41,12 @@ const ITEM: Record<LayoutMode, string> = {
  */
 export function Nav({ layout }: { layout: LayoutMode }) {
   const pathname = usePathname();
-  // Subtle indicator next to "Aparát" when the chain is running on another
-  // screen — reminds the user that audio is still being processed.
-  const ampActive = useAmpStore((state) => state.active);
 
   return (
     <nav className={CONTAINER[layout]}>
       <div className={TITLE[layout]}>Rocker</div>
       {NAV_SCREENS.map((screen) => {
         const active = pathname === screen.href;
-        const showAmpDot = screen.href === "/amp" && ampActive;
         return (
           <Link
             key={screen.href}
@@ -61,16 +56,7 @@ export function Nav({ layout }: { layout: LayoutMode }) {
               active ? "text-accent" : "text-dim hover:text-text",
             ].join(" ")}
           >
-            <span className="inline-flex items-center gap-2">
-              {screen.label}
-              {showAmpDot && (
-                <span
-                  aria-label="Aparát hraje"
-                  title="Aparát hraje"
-                  className="inline-block h-1.5 w-1.5 rounded-full bg-accent"
-                />
-              )}
-            </span>
+            {screen.label}
           </Link>
         );
       })}

@@ -2,102 +2,42 @@
 
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import { ampEngine } from "@/audio/ampEngine";
 import {
   DEFAULT_AMP_PRESET,
   type AmpSettings,
-  type CabinetType,
-  type DistortionType,
   sanitizeAmpSettings,
 } from "@/lib/ampPresets";
 
 interface AmpStoreState {
-  /** Whether the chain is wired up and processing audio. */
-  active: boolean;
-  /** True between requesting input permission and the chain coming up. */
-  starting: boolean;
-  /** Current parameter values applied to the chain. */
+  /** Current parameter values, shared across every screen that hosts an aparát. */
   settings: AmpSettings;
   /** Id of the preset that produced `settings`, or null for "vlastní". */
   presetId: string | null;
-  /** User-facing error from the last failed start, or null. */
-  error: string | null;
-
-  start: () => Promise<void>;
-  stop: () => Promise<void>;
   setSettings: (settings: AmpSettings, presetId?: string | null) => void;
-  setDistortion: (type: DistortionType) => void;
-  setCabinet: (type: CabinetType) => void;
   setPresetId: (id: string | null) => void;
-  clearError: () => void;
 }
 
 /**
- * Mirror of the AmpEngine state for React. The engine owns the audio graph
- * and survives navigation; this store is the React-side handle on it. Only
- * `settings` and `presetId` are persisted — `active` always starts false on
- * a fresh load so a previous-session aparát doesn't suddenly start hissing
- * before the user opts back in.
+ * Shared aparát settings. Active state is intentionally NOT here — every
+ * screen (full /amp, AmpWidget on /practice and /metal) owns its own
+ * AmpChain instance because Next.js `output: 'export'` reloads the whole
+ * document on every Link navigation, killing the AudioContext anyway.
+ *
+ * What this store DOES persist (and shares across screens):
+ *  - settings (sliders, distortion type, cabinet)
+ *  - presetId (so the active built-in / user preset stays selected)
+ *
+ * Sanitize the rehydrated payload so a corrupt or partial blob cannot
+ * crash AmpChain.
  */
-// Same pattern as ampEngine: Next.js re-evaluates this module on each page
-// navigation, so the store object would otherwise be re-created with the
-// default `active: false`. Pin a single store instance to globalThis so the
-// same handle survives every re-eval inside one tab.
-declare global {
-  // eslint-disable-next-line no-var
-  var __rockerAmpStore: ReturnType<typeof createAmpStore> | undefined;
-}
-
-function createAmpStore() {
-  return create<AmpStoreState>()(
+export const useAmpStore = create<AmpStoreState>()(
   persist(
-    (set, get) => ({
-      active: false,
-      starting: false,
+    (set) => ({
       settings: DEFAULT_AMP_PRESET.settings,
       presetId: DEFAULT_AMP_PRESET.id,
-      error: null,
 
-      start: async () => {
-        if (get().active || get().starting) return;
-        set({ starting: true, error: null });
-        const result = await ampEngine.start();
-        if (result.ok) {
-          set({ active: true, starting: false });
-        } else {
-          set({ active: false, starting: false, error: result.error });
-        }
-      },
-
-      stop: async () => {
-        ampEngine.stop();
-        set({ active: false });
-      },
-
-      setSettings: (settings, presetId = null) => {
-        ampEngine.setSettings(settings);
-        set({ settings, presetId });
-      },
-
-      setDistortion: (type) => {
-        ampEngine.setDistortion(type);
-        set((state) => ({
-          settings: { ...state.settings, distortion: type },
-          presetId: null,
-        }));
-      },
-
-      setCabinet: (type) => {
-        ampEngine.setCabinet(type);
-        set((state) => ({
-          settings: { ...state.settings, cabinet: type },
-          presetId: null,
-        }));
-      },
-
+      setSettings: (settings, presetId = null) => set({ settings, presetId }),
       setPresetId: (id) => set({ presetId: id }),
-
-      clearError: () => set({ error: null }),
     }),
     {
       name: "rocker-amp",
@@ -106,9 +46,6 @@ function createAmpStore() {
         settings: state.settings,
         presetId: state.presetId,
       }),
-      // Sanitize the rehydrated payload — a corrupt or partial settings blob
-      // would otherwise crash AmpChain. On a clean restore, push the values
-      // into the engine so the next start() picks them up.
       merge: (persistedState, currentState) => {
         const persisted =
           persistedState && typeof persistedState === "object"
@@ -117,28 +54,13 @@ function createAmpStore() {
                 presetId: unknown;
               }>)
             : {};
-        const safeSettings = sanitizeAmpSettings(persisted.settings);
-        const safePresetId =
-          typeof persisted.presetId === "string" ? persisted.presetId : null;
-        ampEngine.setSettings(safeSettings);
         return {
           ...currentState,
-          settings: safeSettings,
-          presetId: safePresetId,
+          settings: sanitizeAmpSettings(persisted.settings),
+          presetId:
+            typeof persisted.presetId === "string" ? persisted.presetId : null,
         };
       },
     },
   ),
-  );
-}
-
-export const useAmpStore: ReturnType<typeof createAmpStore> =
-  typeof globalThis !== "undefined" && globalThis.__rockerAmpStore
-    ? globalThis.__rockerAmpStore
-    : (() => {
-        const store = createAmpStore();
-        if (typeof globalThis !== "undefined") {
-          globalThis.__rockerAmpStore = store;
-        }
-        return store;
-      })();
+);
