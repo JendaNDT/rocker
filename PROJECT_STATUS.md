@@ -51,7 +51,7 @@ hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
 - **Bod 4** — metronom: sample-accurate scheduler, 40–240 BPM, takty,
   subdivize, akcent, tap tempo, haptika
 - **Bod 5** — knihovna: 26 akordů, 6 stupnic, přepínač leváci/praváci
-- **Bod 6** — lekční engine + 12 lekcí (Stage 1–2), „try it" detekce tónu
+- **Bod 6** — lekční engine + 18 lekcí (Stage 1–3), „try it" detekce tónu
 - **Bod 7** — riff trainer: přehrávač MP3/WAV, zpomalení bez změny výšky,
   A/B smyčka, count-in, postupné zrychlování
 - **Bod 8** — Přesný trénink (Surgical Mode): drill izolující problémové
@@ -124,6 +124,11 @@ hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
   youtube, nahrávky, cvičení), fokusované (metal, looper, hry, ladička,
   tutor) a široké (knihovna, noty). Mobil zůstává jednosloupcový.
   Čekají na ruční vizuální ověření Jendou.
+- **Stage 3 — Rytmika a metalové riffy (2026-05-25)** — 6 nových lekcí
+  v `src/lib/lessons.ts`: downstroke, střídavý úhoz, chugging, šestnáctky
+  a gallop, hammer-on a pull-off, mini-riff. Lekce odkazují na Metal
+  trenažéry (Power Chord Trainer, Gallop Trainer) — propojení výuky
+  s drillem. Stage 4 (první sóla / pentatonika) jako přirozený další krok.
 
 ## 📝 TODO
 - **Provázání funkcí** — komplexní plán v `INTERCONNECT_PLAN.md` (4 fáze,

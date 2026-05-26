@@ -318,6 +318,167 @@ export const STAGES: Stage[] = [
       },
     ],
   },
+  {
+    id: "stage-3",
+    title: "Stage 3 — Rytmika a metalové riffy",
+    description: "Stavební techniky pro hratelné rockové a metalové riffy.",
+    lessons: [
+      {
+        id: "downstroke",
+        title: "Pravidelný downstroke",
+        estimatedMinutes: 5,
+        steps: [
+          {
+            kind: "text",
+            title: "Jen dolů",
+            body: "Downstroke je úhoz pouze směrem dolů. Zní rovně a pevně — proto ho rockové a metalové kapely používají na chugging riffy. Cena za tu sílu je vyšší únava ruky, takže drž zápěstí uvolněné.",
+          },
+          {
+            kind: "text",
+            title: "Drž tempo",
+            body: "Zapni metronom na 90 BPM a hraj na prázdné spodní E struně jeden tón na každou dobu, vždy směrem dolů. Důležitější než rychlost je rovnoměrnost — každý úhoz stejně silný, stejně přesný v čase.",
+          },
+          {
+            kind: "chord",
+            title: "Downstroke na E5",
+            body: "Teď zkus to samé na E5. Hraj rovnoměrné čtvrťové úhozy dolů. Když ti začne tuhnout zápěstí, zpomal — síla je ve výdrži, ne v rychlosti.",
+            chordId: "E5",
+          },
+        ],
+      },
+      {
+        id: "alternate-picking",
+        title: "Střídavý úhoz",
+        estimatedMinutes: 6,
+        steps: [
+          {
+            kind: "text",
+            title: "Dolů, nahoru, dolů, nahoru",
+            body: "Střídavý úhoz znamená pravidelné střídání úhozů dolů a nahoru. Dovolí ti hrát dvakrát rychleji než downstroke, aniž bys ruku přetížil. Je to základ rychlejších rytmů i sól.",
+          },
+          {
+            kind: "text",
+            title: "Zápěstí, ne loket",
+            body: "Pohyb musí jít ze zápěstí, ne z lokte. Předloktí drž v klidu, trsátko houpej krátkými kmity zápěstí. Když zatočíš celou paží, ztratíš přesnost i rychlost.",
+          },
+          {
+            kind: "text",
+            title: "Cvič naprázdno",
+            body: "Polož ruku přes struny, ať nic nezní, a jen na zatlumených strunách cvič rytmus dolů-nahoru-dolů-nahoru. Metronom na 80 BPM, dva úhozy na dobu (osminky). Soustřeď se na to, aby šly nahoru i dolů stejně hlasitě.",
+          },
+        ],
+      },
+      {
+        id: "chugging",
+        title: "Chugging — palm mute v rytmu",
+        estimatedMinutes: 7,
+        steps: [
+          {
+            kind: "text",
+            title: "Spojení dvou věcí, co už znáš",
+            body: "Chugging je palm mute hraný rovnoměrnými downstroky na power chordu. Tlumený, úderný zvuk — slyšíš ho v každé druhé metalové skladbě. Spojí ti dohromady palm mute ze Stage 2 a downstroke z první lekce této stage.",
+          },
+          {
+            kind: "text",
+            title: "Jak na to",
+            body: "Polož hranu pravé dlaně lehce na struny u kobylky (palm mute). Levou ruku drž na E5. Hraj rovnoměrné osminkové úhozy dolů — dva na každou dobu metronomu. Tempo začni na 80 BPM.",
+          },
+          {
+            kind: "chord",
+            title: "Chug na E5",
+            body: "Zkus to. Drž palm mute pevně, ať zvuk drnčí krátkými údery, ne dlouhými tóny. Až ti to půjde, otevři Metal → Power Chord Trainer a vydrilluj to v tempu.",
+            chordId: "E5",
+          },
+        ],
+      },
+      {
+        id: "gallop",
+        title: "Šestnáctky a gallop",
+        estimatedMinutes: 7,
+        steps: [
+          {
+            kind: "text",
+            title: "Galopový rytmus",
+            body: "Gallop je rytmický vzor osminka + dvě šestnáctky (zní jako daa-da-da, daa-da-da). Iron Maiden ho zvedli na ikonu — slyšíš ho v The Trooper i v desítkách dalších riffů. Funguje skvěle s palm mutem a power chordem.",
+          },
+          {
+            kind: "text",
+            title: "Vzorec úhozu",
+            body: "Hraj střídavě dolů-dolů-nahoru: první úhoz je delší (osminka), druhý a třetí jsou kratší (dvě šestnáctky). Začni opravdu pomalu — 60 BPM — a soustřeď se na to, aby každá nota zazněla stejně.",
+          },
+          {
+            kind: "chord",
+            title: "Gallop na E5",
+            body: "Hraj gallop na E5 s palm mutem. Až ti to půjde čistě, otevři Metal → Gallop Trainer — vizualizace rytmu ti pomůže udržet vzorec a postupně si přidávat tempo.",
+            chordId: "E5",
+          },
+        ],
+      },
+      {
+        id: "hammer-pull",
+        title: "Hammer-on a pull-off",
+        estimatedMinutes: 7,
+        steps: [
+          {
+            kind: "text",
+            title: "Tón bez trsátka",
+            body: "Hammer-on (příklep) znamená, že druhý tón zahraješ čistě prstem levé ruky — bez úhozu pravou. Pull-off (strhnutí) je obrácený proces: zahraješ úhozem vyšší tón a stáhnutím prstu necháš znít nižší. Otevírají dveře k plynulým sólům a riffům.",
+          },
+          {
+            kind: "text",
+            title: "Hammer-on krok za krokem",
+            body: "Zahraj prázdnou spodní E strunu úhozem. Pak rychle a pevně dopadni ukazováčkem na druhý pražec téže struny — bez dalšího úhozu pravou. Druhý tón musí zaznít jen díky dopadu prstu. Síla je v rychlém, jistém dopadu, ne v tlaku.",
+          },
+          {
+            kind: "text",
+            title: "Pull-off krok za krokem",
+            body: "Stiskni druhý pražec E struny ukazováčkem a zahraj úhozem. Pak prst rychle strhni stranou (mírně do strany, ne přímo nahoru) — prázdná struna doznění převezme. Pull-off je o stržení, ne o pouhém zvednutí.",
+          },
+          {
+            kind: "text",
+            title: "Cvič střídavě",
+            body: "Spoj obojí: úhoz na prázdnou strunu → hammer na 2. pražec → pull-off zpět. Cvič pomalu a jen na jedné struně. Až to půjde plynule, máš první stavební kámen sól, na který se podíváme v další stage.",
+          },
+        ],
+      },
+      {
+        id: "mini-riff",
+        title: "Mini-riff: dej to dohromady",
+        estimatedMinutes: 8,
+        steps: [
+          {
+            kind: "text",
+            title: "Krátký riff ze všeho",
+            body: "Postavíme krátký riff, který spojí chugging, gallop i power chordy. Vzorec: čtyři chugnutí na E5 → gallop na E5 → krátké přesuny na A5 a D5 → zpět na E5. Není to konkrétní skladba, je to cvičení, které dá dohromady všechny techniky této stage.",
+          },
+          {
+            kind: "chord",
+            title: "Část 1 — chugging na E5",
+            body: "Začni metronom na 90 BPM. Hraj osm osminek na E5 s palm mutem, samé downstroky. Dva takty.",
+            chordId: "E5",
+          },
+          {
+            kind: "chord",
+            title: "Část 2 — gallop na E5",
+            body: "Bez přestávky pokračuj galopem na E5 (osminka + dvě šestnáctky), pořád s palm mutem. Dva takty.",
+            chordId: "E5",
+          },
+          {
+            kind: "chord",
+            title: "Část 3 — přesun na A5",
+            body: "Přesuň ruku na A5 a zahraj čtyři chugnutí (osminky, palm mute, downstroke). Jeden takt.",
+            chordId: "A5",
+          },
+          {
+            kind: "chord",
+            title: "Část 4 — přesun na D5 a zpět",
+            body: "Stejné jako předtím, ale na D5 (jeden takt), pak se vrať na E5 a zakonči jedním delším chugnutím. Až ti to půjde, zrychli tempo. Toto je tvůj první kompletní metalový riff.",
+            chordId: "D5",
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 export function getStage(id: string): Stage | undefined {

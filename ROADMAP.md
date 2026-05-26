@@ -76,7 +76,7 @@ Tvary v drop ladění zatím vynechány (pozdější doplněk) — viz Backlog.
 
 ## Fáze 2 — Učení a cvičení (MVP, část B)
 
-### ✅ Bod 6 — Lekční engine a Stage 1–2
+### ✅ Bod 6 — Lekční engine a Stage 1–2 (rozšířeno o Stage 3)
 Datově řízený engine lekcí. Obsah Stage 1 (open akordy + strumming) a Stage 2
 (power chordy + palm mute), 12 krátkých lekcí. "Try it" režim s detekcí přes
 Pitchy (kontrola tónu); u akordů režim „hraj se mnou".
