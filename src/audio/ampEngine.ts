@@ -36,6 +36,15 @@ function applyToChain(chain: AmpChain, settings: AmpSettings): void {
 
 export type StartResult = { ok: true } | { ok: false; error: string };
 
+// Next.js (Turbopack, static export) re-evaluates this module on cross-page
+// navigations, which would otherwise hand each screen its own AmpEngine
+// instance and reset the audio chain. Pin a single instance to `globalThis`
+// so the same engine survives every re-eval inside one tab.
+declare global {
+  // eslint-disable-next-line no-var
+  var __rockerAmpEngine: AmpEngine | undefined;
+}
+
 class AmpEngine {
   private chain: AmpChain | null = null;
   private settings: AmpSettings = DEFAULT_AMP_PRESET.settings;
@@ -115,4 +124,13 @@ class AmpEngine {
   }
 }
 
-export const ampEngine = new AmpEngine();
+export const ampEngine: AmpEngine =
+  typeof globalThis !== "undefined" && globalThis.__rockerAmpEngine
+    ? globalThis.__rockerAmpEngine
+    : (() => {
+        const instance = new AmpEngine();
+        if (typeof globalThis !== "undefined") {
+          globalThis.__rockerAmpEngine = instance;
+        }
+        return instance;
+      })();

@@ -39,19 +39,17 @@ interface AmpStoreState {
  * a fresh load so a previous-session aparát doesn't suddenly start hissing
  * before the user opts back in.
  */
-// TEMP debug — remove once the navigation reset bug is found.
-const moduleEvalId = Math.random().toString(36).slice(2, 8);
-if (typeof window !== "undefined") {
-  // eslint-disable-next-line no-console
-  console.log(`[ampStore] module eval id=${moduleEvalId}`);
-}
-function dbg(tag: string): void {
-  if (typeof window === "undefined") return;
-  // eslint-disable-next-line no-console
-  console.log(`[ampStore][${moduleEvalId}] ${tag} @ ${location.pathname}`);
+// Same pattern as ampEngine: Next.js re-evaluates this module on each page
+// navigation, so the store object would otherwise be re-created with the
+// default `active: false`. Pin a single store instance to globalThis so the
+// same handle survives every re-eval inside one tab.
+declare global {
+  // eslint-disable-next-line no-var
+  var __rockerAmpStore: ReturnType<typeof createAmpStore> | undefined;
 }
 
-export const useAmpStore = create<AmpStoreState>()(
+function createAmpStore() {
+  return create<AmpStoreState>()(
   persist(
     (set, get) => ({
       active: false,
@@ -62,20 +60,16 @@ export const useAmpStore = create<AmpStoreState>()(
 
       start: async () => {
         if (get().active || get().starting) return;
-        dbg("start: enter");
         set({ starting: true, error: null });
         const result = await ampEngine.start();
         if (result.ok) {
-          dbg("start: ok -> active=true");
           set({ active: true, starting: false });
         } else {
-          dbg(`start: fail -> ${result.error}`);
           set({ active: false, starting: false, error: result.error });
         }
       },
 
       stop: async () => {
-        dbg("stop");
         ampEngine.stop();
         set({ active: false });
       },
@@ -116,7 +110,6 @@ export const useAmpStore = create<AmpStoreState>()(
       // would otherwise crash AmpChain. On a clean restore, push the values
       // into the engine so the next start() picks them up.
       merge: (persistedState, currentState) => {
-        dbg(`merge: currentState.active=${currentState.active}`);
         const persisted =
           persistedState && typeof persistedState === "object"
             ? (persistedState as Partial<{
@@ -136,4 +129,16 @@ export const useAmpStore = create<AmpStoreState>()(
       },
     },
   ),
-);
+  );
+}
+
+export const useAmpStore: ReturnType<typeof createAmpStore> =
+  typeof globalThis !== "undefined" && globalThis.__rockerAmpStore
+    ? globalThis.__rockerAmpStore
+    : (() => {
+        const store = createAmpStore();
+        if (typeof globalThis !== "undefined") {
+          globalThis.__rockerAmpStore = store;
+        }
+        return store;
+      })();
