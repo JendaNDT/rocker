@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { AmpWidget } from "@/components/amp/AmpWidget";
 import { MetronomeWidget } from "@/components/metronome/MetronomeWidget";
 import { LessonPlayer } from "@/components/practice/LessonPlayer";
 import { RiffTrainer } from "@/components/practice/RiffTrainer";
@@ -85,8 +86,9 @@ export default function PracticePage() {
         ))}
       </div>
 
-      <div className="mt-6">
+      <div className="mt-6 space-y-3">
         <MetronomeWidget />
+        <AmpWidget />
       </div>
 
       {tab === "lessons" && (

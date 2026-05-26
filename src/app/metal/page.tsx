@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { AmpWidget } from "@/components/amp/AmpWidget";
 import { GallopTrainer } from "@/components/metal/GallopTrainer";
 import { PalmMuteStudio } from "@/components/metal/PalmMuteStudio";
 import { PowerChordTrainer } from "@/components/metal/PowerChordTrainer";
@@ -35,6 +36,10 @@ export default function MetalPage() {
       <p className="mt-1 text-dim">
         Trenažéry pro rockovou a metalovou hru.
       </p>
+
+      <div className="mt-6">
+        <AmpWidget />
+      </div>
 
       <div className="mt-6 inline-flex flex-wrap rounded-lg border border-line p-1">
         {TABS.map((item) => (
