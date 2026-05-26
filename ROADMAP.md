@@ -332,6 +332,30 @@ na PC dvousloupcové, fokusované nástroje mají umírněnou šířku, knihovna
 a noty využijí plnou šířku. Mobil zůstává jednosloupcový. Detaily
 v `PROJECT_STATUS.md`.
 
+### ✅ Polymorfní widgety vzhledů (inspirované Soltonem)
+Pět widgetů, které dosud vypadaly stejně ve všech vzhledech, dostalo
+formu odpovídající aktivnímu tématu. Sdílený hook `useActiveTheme()`
+(`src/lib/useActiveTheme.ts`) vrátí téma až po hydrataci, jinak `null` —
+widgety mají SSR-safe default fallback.
+
+Fáze 1: **CentsBar** (ladička) — Studio chromová ručka v brass rámu,
+Vintage papírová stupnice s inkoustovou tečkou, Glassy frosted track
+s neon orb halo. Fáze 2: **InputLevelMeter** — Studio LED ladder
+s pulsujícími top reds při clippingu, Vintage analogový VU dial
+s ručkou, Glassy gradient s halo. Fáze 3: **BeatIndicator** (metronom)
+— Studio LED v mosazném prstenci, Vintage mosazné speed-knob mince
+s vyrytým číslem doby, Glassy neon orb. Fáze 4: nový widget
+**KnobControl** (`src/components/widgets/`) — vertikální pointer drag,
+plná klávesnice, ARIA `role="slider"`, 270° sweep; nasazený do Aparátu
+(9 parametrů) a metronomu (2 hlasitosti). Fáze 5: **NotationViewer**
+rám okolo bílého listu — Studio brass bezel s warm gold glow, Vintage
+brass-edged papír s vinětou, Glassy frosted neon conic ring.
+
+Souběžně: **Vintage dark paleta překopaná podle reálné kytary Solton
+Double Cut** (mahogany surfacy, brass akcent místo oranžové, cream
+text jako pickup bobbins, dark velvet pozadí). Detaily a hex hodnoty
+v `PROJECT_STATUS.md`.
+
 ---
 
 ## Shrnutí fází

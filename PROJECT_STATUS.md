@@ -1,5 +1,5 @@
 # Rocker – Project Status
-*Naposled aktualizováno: 25. 05. 2026*
+*Naposled aktualizováno: 26. 05. 2026*
 
 ## 🎯 Co to je
 PWA kytarový asistent pro učení a hraní na elektrickou kytaru. Funguje na PC
@@ -15,9 +15,10 @@ IndexedDB (přes `idb`) pro velké bloby — nahrávky.
 ## ⏭️ Příští krok
 Roadmapa je prakticky hotová — body 1–21 dokončené (18 a 20 vědomě
 vynechané), zbývá poslední **Bod 22 (sdílení a organizace)**. Nad rámec
-roadmapy přibylo 7 vylepšení (vzhledy, šumová brána + autokalibrace,
+roadmapy přibylo 8 vylepšení (vzhledy, šumová brána + autokalibrace,
 upozornění na verzi, krok vzhledu v úvodu, záloha dat, rozšířený
-metronom, responzivní PC rozvržení) — vše nasazené.
+metronom, responzivní PC rozvržení, polymorfní widgety vzhledů
+inspirované Soltonem) — vše nasazené.
 
 Otevřené úkoly:
 - **Bod 22 (sdílení a organizace)** — poslední bod roadmapy. Záloha dat
@@ -36,7 +37,7 @@ Než příští session začne: přečíst `AGENTS.md` a `SKILL.md` (pravidla
 spolupráce), pak tento soubor.
 
 ## ✅ Hotovo
-**385 automatických testů**, vše prochází; `tsc` čistý. Roadmapa: Fáze 0–4
+**395 automatických testů**, vše prochází; `tsc` čistý. Roadmapa: Fáze 0–4
 hotové, Fáze 5 hotová (body 15–17; 18 vynechán), Fáze 6 z velké části
 hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
 
@@ -129,6 +130,45 @@ hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
   a gallop, hammer-on a pull-off, mini-riff. Lekce odkazují na Metal
   trenažéry (Power Chord Trainer, Gallop Trainer) — propojení výuky
   s drillem. Stage 4 (první sóla / pentatonika) jako přirozený další krok.
+- **Polymorfní widgety vzhledů + Vintage = Solton (2026-05-26)** — pět
+  fází, které posunuly 3 vzhledy z „barvy a fonty se mění" na „celá
+  estetika se mění". Nový sdílený hook `useActiveTheme()`
+  (`src/lib/useActiveTheme.ts`) zobecňuje pattern z `VintageFrame` — vrátí
+  aktivní téma až po hydrataci, jinak `null`, aby widgety zvládly SSR bez
+  mismatchu. Každý widget má **4 rendery**: studio, vintage, glassy
+  a neutrální default (= pre-hydration fallback shodný s SSR výstupem).
+  **Fáze 1 — CentsBar** (ladička): Studio chromová ručka v brass rámu,
+  Vintage papírová stupnice s inkoustovou tečkou a popisky -50/0/+50,
+  Glassy frosted track s neon orb halo. **Fáze 2 — InputLevelMeter:**
+  Studio 18-segment LED ladder (zelená → amber → červená; top reds
+  pulzují na clip), Vintage analogový VU dial s ručkou a clip LED,
+  Glassy frosted track s pink→cyan gradient halo. **Fáze 3 —
+  BeatIndicator** (metronom): Studio LED v mosazném prstenci, Vintage
+  mosazné speed-knob mince s vyrytým číslem doby, Glassy neon orb
+  s halo. **Fáze 4 — KnobControl** (nový widget v
+  `src/components/widgets/`): vertikální pointer drag (200 px = celý
+  rozsah), klávesnice (šipky / Shift / Home / End / PgUp / PgDn),
+  zaměřený scroll wheel, ARIA `role="slider"`. Mapuje hodnotu na 270°
+  sweep, bipolar mode centruje na 0°. Studio chromový válec s brass
+  bezelem, Vintage mosazný Solton speed knob s vyrytým notch, Glassy
+  frosted body s neon conic-gradient ringem. Nasazeno do Aparátu
+  (9 parametrů: Komprese, Zkreslení, Basy/Středy/Výšky, Delay, Dozvuk,
+  Chorus, Hlasitost) a do metronomu (2 hlasitosti; BPM zůstává na
+  slideru — 200 hodnot by bylo na knobu příliš jemných). **Fáze 5 —
+  NotationViewer rám:** vnitřní plocha vždy bílá (AlphaTab kreslí černé
+  linky, na tmavém panelu by nebyly čitelné), rám se mění — Studio
+  brass bezel s warm gold inset glow, Vintage brass-edged papír s grain
+  texturou a vinětou, Glassy frosted neon conic ring s pink/cyan halo.
+  **Vintage redesign = Solton Double Cut:** paleta tématu kompletně
+  překopaná podle reálné kytary z `https://best-vintage-guitars.de/`
+  — pozadí stmavlé na samet (`#0f0805` / `#050302`), surfacy přešly
+  na hluboký mahagon (`#3a1e10` / `#2a1408`), `--accent` z oranžové
+  (`#e8a04a`) na zlato/mosaz (`#d4a83e`), `--accent-2` přemapováno na
+  cream maple, brass gradient získal 4 stops (highlight → tělo → stín →
+  patina). Nové tokeny: `--maple-light`, `--mahogany-glow`,
+  `--wood-grain`, `--gloss-reflex`. Pravidlo v `globals.css` aplikuje
+  reflex + wood grain na `.bg-surface*` ve Vintage dark; Vintage light
+  zachovává papírový pocit.
 
 ## 📝 TODO
 - **Provázání funkcí** — komplexní plán v `INTERCONNECT_PLAN.md` (4 fáze,
@@ -170,9 +210,7 @@ hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
   songbook organizér
 - Beta test s 5–10 lidmi — vědomě odložený
 - Bod 18 (stem separation) a Bod 20 (Mirror-AR) — vědomě vynechané
-- Backlog: tvary akordů v drop ladění (odloženo z Bodu 5); témově
-  specifické widgety vzhledů (analogový VU metr, otočné knoby, papírový
-  displej not, mosazné beat-mince)
+- Backlog: tvary akordů v drop ladění (odloženo z Bodu 5)
 
 ## 🐛 Známé bugy
 Žádné otevřené. Audit vnitřní logiky neodhalil kritický bug; nalezené
@@ -235,15 +273,30 @@ streamu — má teoreticky stejnou jednostrannou vadu, samostatná oprava.
   v `public/alphatab/`.
 - **3 vzhledy — theme přes CSS proměnné, ne per-komponentu:** žádná
   komponenta neví, jaké téma je aktivní — čte jen CSS proměnné
-  z `[data-theme]`/`[data-mode]`. Výjimka čtoucí `theme` přímo:
-  `VintageFrame` (mosazné cvočky jen ve Vintage). Glassy frosted efekt
-  řešen plošně CSS pravidlem na `.bg-surface*` v `globals.css` — bez
-  refactoru všech karet na `<Card>` komponentu a bez mrtvého kódu.
-- **3 vzhledy — co NENÍ hotové:** témově specifické widgety z mockupu
-  (analogový VU metr na ladičce, otočné knoby na metronomu, papírový
-  vs. LCD displej not, mosazné beat-mince) — handoff patch je
-  nepokrýval, je to samostatná větší práce. Po migraci se mění barvy,
-  fonty a akcenty všude; widgety zůstávají ve standardní podobě.
+  z `[data-theme]`/`[data-mode]`. Výjimky čtoucí `theme` přímo:
+  `VintageFrame` (mosazné cvočky jen ve Vintage) a od 2026-05-26 i 5
+  polymorfních widgetů (CentsBar, InputLevelMeter, BeatIndicator,
+  KnobControl, NotationViewer) — viz následující bod. Glassy frosted
+  efekt řešen plošně CSS pravidlem na `.bg-surface*` v `globals.css` —
+  bez refactoru všech karet na `<Card>` komponentu a bez mrtvého kódu.
+- **Polymorfní widgety — sdílený hook `useActiveTheme()`
+  (2026-05-26):** zobecnění patternu z `VintageFrame`. Hook v
+  `src/lib/useActiveTheme.ts` vrátí aktivní téma až po hydrataci, jinak
+  `null`; každý polymorfní widget má 4 rendery (studio / vintage /
+  glassy / default fallback shodný s SSR výstupem). Tím je SSR-safe
+  bez hydratační chyby. Výjimky čtoucí téma přímo nejsou anti-pattern:
+  CSS-only přístup nestačí na widgety, kde se mění **forma** (LED
+  ladder vs. analogový dial vs. neon halo), ne jen barva.
+- **Vintage = Solton Double Cut (2026-05-26):** Vintage dark paleta
+  inspirovaná reálnou kytarou Solton Double Cut z přiloženého odkazu
+  (`best-vintage-guitars.de`) — mahogany surfacy s vysokým leskem,
+  brass akcent (`#d4a83e` místo původní oranžové `#e8a04a`), cream
+  text (jako pickup bobbins kytary), tmavé velvet pozadí (jako
+  podložka, na které je kytara fotografovaná). Vintage light zachován
+  papírový — kytara nemá „světlou verzi sebe samé", kontrast je
+  vědomý. Nové tokeny: `--maple-light`, `--mahogany-glow`,
+  `--wood-grain`, `--gloss-reflex`. Pravidlo v `globals.css`
+  aplikuje gloss + wood grain na `.bg-surface*` ve Vintage dark.
 - **Záloha dat — jen localStorage, bez nahrávek:** záloha zabalí klíče
   `rocker-*` z localStorage do JSON souboru. Nahrávky (IndexedDB bloby)
   vědomě mimo — soubor by byl velký; nahrávky jdou exportovat jednotlivě.
@@ -278,7 +331,8 @@ streamu — má teoreticky stejnou jednostrannou vadu, samostatná oprava.
   `theme-tokens.css` (CSS proměnné 3 vzhledů × 2 režimy)
 - `src/components/` — React komponenty (po doménách: tuner, metronome,
   library, practice, youtube, dashboard, profile, recorder, metal, tutor,
-  notation, amp, studio, looper, games, instrument). Napříč appkou:
+  notation, amp, studio, looper, games, instrument, **widgets** —
+  sdílené polymorfní widgety, dnes `KnobControl`). Napříč appkou:
   `ThemeProvider`, `ThemePicker`, `VintageFrame` (vzhledy),
   `ServiceWorkerRegister` (registrace SW + lišta nové verze),
   `DataBackup`, `AudioInputSettings`, `InputLevelMeter`, `Onboarding`,
@@ -293,7 +347,8 @@ streamu — má teoreticky stejnou jednostrannou vadu, samostatná oprava.
   practiceTime, recordings, recordingsDb, powerChords, metalExercises,
   metalRiffs, powerChordTrainer, gallopTrainer, palmMute, breakReminder,
   ampPresets, multitrack, wav, loopMix, fretboardGame, earTraining,
-  instrument, backup, useHydrated, ai/ — Gemini klient, prompty, generátor
+  instrument, backup, useHydrated, **useActiveTheme** — sdílený hook pro
+  polymorfní widgety, ai/ — Gemini klient, prompty, generátor
   plánu, kontext o cvičení, typy) — vedle leží testy `*.test.ts`
 - `src/stores/` — Zustand stores (settings, audio, metronome,
   metronomeSettings, lessonProgress, ytLoop, progress, recordings,
