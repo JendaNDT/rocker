@@ -74,27 +74,41 @@
   --brass-deep: #5a4220;
   --led-on: 0 0 8px var(--accent-2), 0 0 4px var(--accent-2);
 }
+/* Dark mode evokes a Solton Double Cut: mahogany-stained curly maple body
+   with rich gold/brass hardware, cream pickup bobbins (text), photographed
+   on a dark velvet backdrop. Light mode keeps the warm paper feel — the
+   guitar has no "light version" of itself, so the contrast is intentional. */
 [data-theme="vintage"][data-mode="dark"] {
-  --bg: #1c130a;        --bg-2: #110b05;
-  --surface: #2e2114;   --surface-2: #261a0e;   --surface-3: #0a0703;
-  --text: #f0e2c1;      --dim: #b89e6f;         --muted: #6e5b3d;
-  --accent: #e8a04a;    --accent-fg: #2c1f0e;
-  --accent-soft: rgba(232,160,74,0.18);  --accent-2: #7eb567;
-  --line: #4a3826;      --line-strong: #6e5b3d;
+  --bg: #0f0805;        --bg-2: #050302;
+  --surface: #3a1e10;   --surface-2: #2a1408;   --surface-3: #1a0c05;
+  --text: #f5e6b8;      --dim: #b89865;         --muted: #6e5028;
+  --accent: #d4a83e;    --accent-fg: #1a0e07;
+  --accent-soft: rgba(212,168,62,0.18);  --accent-2: #c9b27a;
+  --line: #4a3320;      --line-strong: #7a5a3a;
   --success: #7eb567;   --danger: #d65e3a;
-  --shadow-1: inset 0 1px 0 rgba(255,220,160,0.05), 0 2px 4px rgba(0,0,0,0.6);
-  --shadow-2: inset 0 1px 0 rgba(255,220,160,0.06), 0 6px 18px rgba(0,0,0,0.7);
+  --shadow-1: inset 0 1px 0 rgba(255,220,160,0.06), 0 2px 4px rgba(0,0,0,0.7);
+  --shadow-2: inset 0 1px 0 rgba(255,220,160,0.08), 0 6px 18px rgba(0,0,0,0.8);
   --bg-gradient:
-    radial-gradient(ellipse at top, rgba(232,160,74,0.10), transparent 60%),
-    linear-gradient(180deg, #2a1d10 0%, #110b05 100%);
+    radial-gradient(ellipse at top, rgba(212,168,62,0.10), transparent 60%),
+    radial-gradient(ellipse at 30% 80%, rgba(160,40,20,0.10), transparent 65%),
+    linear-gradient(180deg, #1a0e07 0%, #050302 100%);
   --paper-grain:
     radial-gradient(circle at 30% 40%, rgba(255,220,160,0.05) 0, transparent 8px),
     radial-gradient(circle at 80% 70%, rgba(255,220,160,0.04) 0, transparent 6px),
     repeating-linear-gradient(0deg, transparent 0, transparent 2px, rgba(255,220,160,0.022) 2px, rgba(255,220,160,0.022) 3px);
-  --vignette: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.35) 100%);
-  --brass: linear-gradient(180deg, #d4b070 0%, #6e5023 100%);
-  --brass-deep: #2a1d10;
-  --led-on: 0 0 10px var(--accent-2), 0 0 4px var(--accent-2);
+  --vignette: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.45) 100%);
+  --brass: linear-gradient(180deg, #f0d68e 0%, #d4a83e 35%, #b88a2a 70%, #6e5023 100%);
+  --brass-deep: #4a2818;
+  --led-on: 0 0 10px var(--success), 0 0 4px var(--success);
+  /* Solton-inspired tokens — used by surface gloss in globals.css and by
+     future polymorphic widgets (VU dial maple needle, etc.). */
+  --maple-light: #ebd9a9;
+  --mahogany-glow: radial-gradient(ellipse at 30% 30%, rgba(220,90,40,0.12), transparent 65%);
+  --wood-grain:
+    repeating-linear-gradient(90deg, transparent 0, transparent 18px, rgba(140,90,50,0.05) 18px, rgba(140,90,50,0.05) 19px),
+    repeating-linear-gradient(90deg, transparent 0, transparent 46px, rgba(220,160,80,0.03) 46px, rgba(220,160,80,0.03) 47px);
+  --gloss-reflex:
+    linear-gradient(135deg, rgba(255,240,180,0.16) 0%, rgba(255,240,180,0.04) 38%, transparent 70%);
 }
 
 /* ---------- GLASSY MODERN ---------- */

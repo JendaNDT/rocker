@@ -105,3 +105,16 @@ body {
     -webkit-backdrop-filter: none;
   }
 }
+
+/* ---------- Vintage dark: lesklý mahagonový lak ----------
+   Inspirováno tělem kytary Solton Double Cut — sytě hnědý mahagon
+   s vlnitou maple texturou pod vysokým lakem. Surface třídy dostávají
+   dvě nenápadné vrstvy: diagonální highlight (světlo dopadající na lak)
+   a velmi jemné vertikální letokruhy. Aplikuje se jen v dark režimu;
+   light zachovává papírový pocit.
+*/
+[data-theme="vintage"][data-mode="dark"] .bg-surface,
+[data-theme="vintage"][data-mode="dark"] .bg-surface-2,
+[data-theme="vintage"][data-mode="dark"] .bg-surface-3 {
+  background-image: var(--gloss-reflex), var(--wood-grain);
+}
