@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { audioEngine } from "@/audio/AudioEngine";
 import { metronome } from "@/audio/metronome";
-import { DEFAULT_TUNING_ID, getTuning } from "@/audio/tunings";
+import { DEFAULT_TUNING_ID } from "@/audio/tunings";
 import { POWER_CHORD_EXERCISES } from "@/lib/metalExercises";
 import type { PowerChordExercise } from "@/lib/metalExercises";
 import { getPowerChord } from "@/lib/powerChords";
@@ -17,8 +17,10 @@ import {
 } from "@/lib/powerChordTrainer";
 import type { PowerChordTrainerState } from "@/lib/powerChordTrainer";
 import { type Notation, pitchClassName } from "@/lib/pitch";
+import { resolveTuning } from "@/lib/resolveTuning";
 import { clampBpm } from "@/lib/tempo";
 import { useHydrated } from "@/lib/useHydrated";
+import { useCustomTuningsStore } from "@/stores/customTuningsStore";
 import { useMetronomeStore } from "@/stores/metronomeStore";
 import { useProgressStore } from "@/stores/progressStore";
 import { useSettingsStore } from "@/stores/settingsStore";
@@ -169,12 +171,16 @@ export function PowerChordTrainer() {
   const bpmRecords = useProgressStore((store) => store.bpmRecords);
   const storedNotation = useSettingsStore((store) => store.notation);
   const storedTuningId = useSettingsStore((store) => store.tuningId);
+  const customTunings = useCustomTuningsStore((store) => store.tunings);
   const hydrated = useHydrated();
   const record = hydrated ? bpmRecords[state.exercise.id] : undefined;
   const notation = hydrated ? storedNotation : "english";
   // Active tuning — power chord roots and the mini-neck string labels are
   // resolved against it. Before hydration use the default tuning.
-  const tuning = getTuning(hydrated ? storedTuningId : DEFAULT_TUNING_ID);
+  const tuning = resolveTuning(
+    hydrated ? storedTuningId : DEFAULT_TUNING_ID,
+    hydrated ? customTunings : [],
+  );
   const openMidi = tuning.strings.map((string) => string.midi);
   const stringNames = tuning.strings.map((string) =>
     pitchClassName(string.midi, notation),

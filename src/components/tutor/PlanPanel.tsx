@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { getTuning } from "@/audio/tunings";
 import { buildInstrumentContext } from "@/lib/ai/context";
 import { generatePlan, type GeneratedPlan } from "@/lib/ai/planGenerator";
 import { STAGES } from "@/lib/lessons";
 import { currentStreak } from "@/lib/progress";
+import { resolveTuning } from "@/lib/resolveTuning";
 import { useAiStore } from "@/stores/aiStore";
+import { useCustomTuningsStore } from "@/stores/customTuningsStore";
 import { useInstrumentStore } from "@/stores/instrumentStore";
 import { useLessonProgressStore } from "@/stores/lessonProgressStore";
 import { useProgressStore } from "@/stores/progressStore";
@@ -35,6 +36,7 @@ export function PlanPanel() {
   const dailyMinutes = useProgressStore((state) => state.dailyMinutes);
   const profile = useInstrumentStore((state) => state.profile);
   const tuningId = useSettingsStore((state) => state.tuningId);
+  const customTunings = useCustomTuningsStore((state) => state.tunings);
 
   const [minutes, setMinutes] = useState(15);
   const [focus, setFocus] = useState("");
@@ -56,7 +58,7 @@ export function PlanPanel() {
       streakDays: currentStreak(dailyMinutes),
       instrumentSummary: buildInstrumentContext(
         profile,
-        getTuning(tuningId).label,
+        resolveTuning(tuningId, customTunings).label,
       ),
     });
     setBusy(false);

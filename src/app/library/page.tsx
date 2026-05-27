@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { DEFAULT_TUNING_ID, getTuning } from "@/audio/tunings";
+import { DEFAULT_TUNING_ID } from "@/audio/tunings";
 import { ChordCard } from "@/components/library/ChordCard";
 import { RiffLibrary } from "@/components/library/RiffLibrary";
 import { ScaleExplorer } from "@/components/library/ScaleExplorer";
@@ -9,7 +9,9 @@ import { PageContainer } from "@/components/PageContainer";
 import { CHORD_CATEGORY_LABELS, CHORDS } from "@/lib/chords";
 import type { ChordCategory } from "@/lib/chords";
 import { useResolvedLayoutMode } from "@/lib/layout";
+import { resolveTuning } from "@/lib/resolveTuning";
 import { useHydrated } from "@/lib/useHydrated";
+import { useCustomTuningsStore } from "@/stores/customTuningsStore";
 import { useSettingsStore } from "@/stores/settingsStore";
 
 type Tab = "chords" | "scales" | "riffs";
@@ -37,12 +39,16 @@ export default function LibraryPage() {
   const setHandedness = useSettingsStore((state) => state.setHandedness);
   const notation = useSettingsStore((state) => state.notation);
   const tuningId = useSettingsStore((state) => state.tuningId);
+  const customTunings = useCustomTuningsStore((state) => state.tunings);
   const hydrated = useHydrated();
   const layoutMode = useResolvedLayoutMode();
   const mirror = hydrated && handedness === "left";
   const activeNotation = hydrated ? notation : "english";
   // Before hydration use the default tuning so prerendered HTML matches.
-  const activeTuning = getTuning(hydrated ? tuningId : DEFAULT_TUNING_ID);
+  const activeTuning = resolveTuning(
+    hydrated ? tuningId : DEFAULT_TUNING_ID,
+    hydrated ? customTunings : [],
+  );
 
   const visibleChords = CHORDS.filter((chord) => chord.category === category);
 

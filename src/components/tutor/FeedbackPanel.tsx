@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { getTuning } from "@/audio/tunings";
 import { buildInstrumentContext } from "@/lib/ai/context";
 import { summarizePractice } from "@/lib/ai/feedback";
 import { streamChat } from "@/lib/ai/geminiClient";
 import { FEEDBACK_SYSTEM_PROMPT } from "@/lib/ai/prompts";
 import { STAGES } from "@/lib/lessons";
+import { resolveTuning } from "@/lib/resolveTuning";
 import { useAiStore } from "@/stores/aiStore";
+import { useCustomTuningsStore } from "@/stores/customTuningsStore";
 import { useInstrumentStore } from "@/stores/instrumentStore";
 import { useLessonProgressStore } from "@/stores/lessonProgressStore";
 import { useProgressStore } from "@/stores/progressStore";
@@ -33,6 +34,7 @@ export function FeedbackPanel() {
   );
   const profile = useInstrumentStore((state) => state.profile);
   const tuningId = useSettingsStore((state) => state.tuningId);
+  const customTunings = useCustomTuningsStore((state) => state.tunings);
 
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
@@ -59,7 +61,7 @@ export function FeedbackPanel() {
 
     const instrumentContext = buildInstrumentContext(
       profile,
-      getTuning(tuningId).label,
+      resolveTuning(tuningId, customTunings).label,
     );
     const result = await streamChat({
       apiKey,

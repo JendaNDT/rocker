@@ -1,14 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { getTuning } from "@/audio/tunings";
 import { buildInstrumentContext, buildPracticeContext } from "@/lib/ai/context";
 import { streamChat } from "@/lib/ai/geminiClient";
 import { SUGGESTED_QUESTIONS, TUTOR_SYSTEM_PROMPT } from "@/lib/ai/prompts";
 import type { ChatMessage } from "@/lib/ai/types";
 import { STAGES } from "@/lib/lessons";
+import { resolveTuning } from "@/lib/resolveTuning";
 import { useAiStore } from "@/stores/aiStore";
 import { useChatStore } from "@/stores/chatStore";
+import { useCustomTuningsStore } from "@/stores/customTuningsStore";
 import { useInstrumentStore } from "@/stores/instrumentStore";
 import { useLessonProgressStore } from "@/stores/lessonProgressStore";
 import { useProgressStore } from "@/stores/progressStore";
@@ -37,6 +38,7 @@ export function ChatPanel() {
   );
   const profile = useInstrumentStore((state) => state.profile);
   const tuningId = useSettingsStore((state) => state.tuningId);
+  const customTunings = useCustomTuningsStore((state) => state.tunings);
 
   const messages = useChatStore((state) => state.messages);
   const setMessages = useChatStore((state) => state.setMessages);
@@ -78,7 +80,7 @@ export function ChatPanel() {
     });
     const instrumentContext = buildInstrumentContext(
       profile,
-      getTuning(tuningId).label,
+      resolveTuning(tuningId, customTunings).label,
     );
     const result = await streamChat({
       apiKey,

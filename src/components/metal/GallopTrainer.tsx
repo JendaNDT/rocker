@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { audioEngine } from "@/audio/AudioEngine";
 import { gallopPlayer } from "@/audio/gallopPlayer";
-import { DEFAULT_TUNING_ID, getTuning } from "@/audio/tunings";
+import { DEFAULT_TUNING_ID } from "@/audio/tunings";
 import { GALLOP_EXERCISES } from "@/lib/metalExercises";
 import type { GallopExercise } from "@/lib/metalExercises";
 import {
@@ -14,8 +14,10 @@ import {
 import type { GallopTrainerState } from "@/lib/gallopTrainer";
 import { type Notation, pitchClassName } from "@/lib/pitch";
 import { getPowerChord } from "@/lib/powerChords";
+import { resolveTuning } from "@/lib/resolveTuning";
 import { clampBpm } from "@/lib/tempo";
 import { useHydrated } from "@/lib/useHydrated";
+import { useCustomTuningsStore } from "@/stores/customTuningsStore";
 import { useGallopPlayerStore } from "@/stores/gallopPlayerStore";
 import { useProgressStore } from "@/stores/progressStore";
 import { useSettingsStore } from "@/stores/settingsStore";
@@ -57,13 +59,15 @@ export function GallopTrainer() {
   const bpmRecords = useProgressStore((store) => store.bpmRecords);
   const storedNotation = useSettingsStore((store) => store.notation);
   const storedTuningId = useSettingsStore((store) => store.tuningId);
+  const customTunings = useCustomTuningsStore((store) => store.tunings);
   const hydrated = useHydrated();
   const record = hydrated ? bpmRecords[state.exercise.id] : undefined;
   const notation = hydrated ? storedNotation : "english";
   // Power chord root is resolved against the active tuning. Before
   // hydration use the default tuning so prerendered HTML matches.
-  const openMidi = getTuning(
+  const openMidi = resolveTuning(
     hydrated ? storedTuningId : DEFAULT_TUNING_ID,
+    hydrated ? customTunings : [],
   ).strings.map((string) => string.midi);
 
   // Advance the engine once per played gallop cell.

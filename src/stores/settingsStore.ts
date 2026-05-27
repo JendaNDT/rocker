@@ -149,8 +149,12 @@ export const useSettingsStore = create<SettingsState>()(
           }
           if (
             typeof stored.tuningId === "string" &&
-            TUNINGS.some((tuning) => tuning.id === stored.tuningId)
+            (TUNINGS.some((tuning) => tuning.id === stored.tuningId) ||
+              stored.tuningId.startsWith("custom-"))
           ) {
+            // Custom ids ("custom-…") are tolerated here even though their
+            // payload lives in a separate store — resolveTuning falls back
+            // gracefully if the custom entry has since been deleted.
             safe.tuningId = stored.tuningId;
           }
           if (stored.handedness === "right" || stored.handedness === "left") {
