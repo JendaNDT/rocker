@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { ReferenceTone } from "@/audio/referenceTone";
 import { nearestString } from "@/audio/tunings";
 import type { Tuning } from "@/audio/tunings";
 import { CentsBar } from "@/components/tuner/CentsBar";
 import type { TunerReading } from "@/components/tuner/useTuner";
-import { type Notation, midiToLabelIn } from "@/lib/pitch";
+import { type Notation, midiToFrequency, midiToLabelIn } from "@/lib/pitch";
+import { useSettingsStore } from "@/stores/settingsStore";
 
 // Within this many cents a string counts as in tune.
 const IN_TUNE_CENTS = 5;
@@ -24,6 +26,38 @@ export function GuidedTuner({
   notation: Notation;
 }) {
   const [tuned, setTuned] = useState<Set<number>>(new Set());
+  const [playingIndex, setPlayingIndex] = useState<number | null>(null);
+  const referenceTone = useRef<ReferenceTone | null>(null);
+  // Read the volume through a ref so changing the slider mid-press doesn't
+  // require restarting the tone — the next play() call picks up the value.
+  const volumeRef = useRef(
+    useSettingsStore.getState().referenceToneVolume,
+  );
+  useEffect(() => {
+    return useSettingsStore.subscribe((state) => {
+      volumeRef.current = state.referenceToneVolume;
+    });
+  }, []);
+
+  // Build the reference-tone player once per mount; release it on unmount so
+  // the AudioContext doesn't leak when the user leaves the screen.
+  useEffect(() => {
+    referenceTone.current = new ReferenceTone();
+    return () => {
+      referenceTone.current?.dispose();
+      referenceTone.current = null;
+    };
+  }, []);
+
+  function startReference(index: number, midi: number): void {
+    referenceTone.current?.play(midiToFrequency(midi), volumeRef.current);
+    setPlayingIndex(index);
+  }
+
+  function stopReference(): void {
+    referenceTone.current?.stop();
+    setPlayingIndex(null);
+  }
 
   // Reset progress whenever the tuning changes.
   useEffect(() => {
@@ -55,20 +89,45 @@ export function GuidedTuner({
         {tuning.strings.map((string, index) => {
           const isActive = index === activeIndex;
           const isTuned = tuned.has(index);
+          const isPlaying = playingIndex === index;
           const variant = isActive
             ? "border-accent text-accent"
             : isTuned
               ? "border-success/60 text-success"
               : "border-line text-dim";
+          const noteLabel = midiToLabelIn(string.midi, notation);
           return (
             <div
               key={string.note}
               className={`flex-1 rounded-md border px-1 py-2 text-center ${variant}`}
             >
-              <div className="text-sm font-semibold">
-                {midiToLabelIn(string.midi, notation)}
-              </div>
+              <div className="text-sm font-semibold">{noteLabel}</div>
               <div className="mt-0.5 h-4 text-xs">{isTuned ? "✓" : ""}</div>
+              <button
+                type="button"
+                aria-label={`Přehrát ${noteLabel}`}
+                aria-pressed={isPlaying}
+                onPointerDown={(event) => {
+                  event.preventDefault();
+                  startReference(index, string.midi);
+                }}
+                onPointerUp={stopReference}
+                onPointerLeave={() => {
+                  if (isPlaying) stopReference();
+                }}
+                onPointerCancel={stopReference}
+                onBlur={() => {
+                  if (isPlaying) stopReference();
+                }}
+                className={
+                  isPlaying
+                    ? "mx-auto mt-2 flex h-7 w-7 items-center justify-center rounded-md border border-accent bg-accent-soft text-accent"
+                    : "mx-auto mt-2 flex h-7 w-7 items-center justify-center rounded-md border border-line text-dim transition-colors hover:border-line-strong hover:text-text"
+                }
+                title="Přidrž pro přehrání referenčního tónu"
+              >
+                <span aria-hidden="true">♪</span>
+              </button>
             </div>
           );
         })}

@@ -1,5 +1,9 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import {
+  DEFAULT_REFERENCE_TONE_VOLUME,
+  clampReferenceVolume,
+} from "@/audio/referenceTone";
 import { DEFAULT_TUNING_ID, TUNINGS } from "@/audio/tunings";
 import type { Notation } from "@/lib/pitch";
 
@@ -56,6 +60,12 @@ interface SettingsState {
    */
   noiseGate: number;
   setNoiseGate: (noiseGate: number) => void;
+  /**
+   * Master volume (0..1) for the in-tuner reference tone. The Guided tuner
+   * plays this when the user holds the "Přehrát" button next to a string.
+   */
+  referenceToneVolume: number;
+  setReferenceToneVolume: (volume: number) => void;
   /** Whether the first-run onboarding has been completed or skipped. */
   onboarded: boolean;
   setOnboarded: (onboarded: boolean) => void;
@@ -83,6 +93,9 @@ export const useSettingsStore = create<SettingsState>()(
       setNotation: (notation) => set({ notation }),
       noiseGate: 0.06,
       setNoiseGate: (noiseGate) => set({ noiseGate }),
+      referenceToneVolume: DEFAULT_REFERENCE_TONE_VOLUME,
+      setReferenceToneVolume: (volume) =>
+        set({ referenceToneVolume: clampReferenceVolume(volume) }),
       onboarded: false,
       setOnboarded: (onboarded) => set({ onboarded }),
     }),
@@ -135,6 +148,13 @@ export const useSettingsStore = create<SettingsState>()(
             stored.noiseGate <= 1
           ) {
             safe.noiseGate = stored.noiseGate;
+          }
+          if (stored.referenceToneVolume !== undefined) {
+            // clampReferenceVolume falls back to the default for garbage,
+            // so we can pass it through unconditionally.
+            safe.referenceToneVolume = clampReferenceVolume(
+              stored.referenceToneVolume,
+            );
           }
           if (typeof stored.zenMode === "boolean") {
             safe.zenMode = stored.zenMode;

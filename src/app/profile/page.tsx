@@ -10,6 +10,7 @@ import { ThemePicker } from "@/components/ThemePicker";
 import { ProfileCard } from "@/components/instrument/ProfileCard";
 import { ToneAdvisor } from "@/components/instrument/ToneAdvisor";
 import { ProgressDetail } from "@/components/profile/ProgressDetail";
+import { TunerSettings } from "@/components/tuner/TunerSettings";
 import { useResolvedLayoutMode } from "@/lib/layout";
 import type { Notation } from "@/lib/pitch";
 import { useSettingsStore } from "@/stores/settingsStore";
@@ -107,6 +108,16 @@ export default function ProfilePage() {
           </p>
           <div className="mt-3">
             <AudioInputSettings />
+          </div>
+        </section>
+
+        <section className="mt-8 break-inside-avoid">
+          <h2 className="text-lg font-semibold">Ladička</h2>
+          <p className="mt-1 text-sm text-dim">
+            Nastavení pro Ladičku — třeba hlasitost referenčního tónu.
+          </p>
+          <div className="mt-3">
+            <TunerSettings />
           </div>
         </section>
 
