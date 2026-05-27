@@ -34,7 +34,8 @@ metr, knoby, beat-mince, rám not.
 - **Hry** — hmatníková hra a ear training
 - **Metal** — Power Chord, Gallop a Palm Mute trenažéry
 - **Aparát** — efektový řetězec (komprese, zkreslení, EQ, delay,
-  dozvuk, chorus), presety + vlastní
+  dozvuk, chorus), presety + vlastní. Mini `AmpWidget` (ON/OFF
+  + 4 vestavěné presety) sedí i v Cvičení a Metalu, sdílí nastavení.
 - **Knihovna** — 26 akordů, 6 stupnic, 14 riffů (2 ikonické +
   12 originálních ve stylu rock/metal)
 - **Noty** — AlphaTab prohlížeč Guitar Pro / MusicXML s přehráváním

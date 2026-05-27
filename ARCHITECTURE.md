@@ -31,6 +31,19 @@ pořadí) je v `ROADMAP.md`.
 > BYOK přímo z prohlížeče (nativní endpoint posílá CORS hlavičky); aplikace
 > zůstala čistě statická PWA.
 
+> **Cena statického exportu:** `output: 'export'` znamená, že každá `<Link>`
+> navigace je **plný document reload** (ověřeno přes
+> `performance.getEntriesByType("navigation")[0].type === "navigate"`), ne
+> client-side route transition. Window se mezi obrazovkami resetuje, JS state
+> se zahazuje, AudioContext zhasne. Žádné singletons (modul-level cache,
+> `globalThis`, Zustand persist) tuto fyzickou bariéru neobejdou. Důsledek:
+> dlouhodobé audio (Aparát, metronom) nemůže žít napříč obrazovkami; když
+> chceš sdílet stav mezi obrazovkami, musí to jít přes localStorage/IndexedDB.
+> Aparát řeší `useLocalAmpChain` — každá obrazovka, která ho hostuje, má
+> vlastní krátkodobou instanci `AmpChain` (viz 2.5 a 2.3). Přechod na
+> server-rendered Next.js by problém vyřešil, ale rozbil PWA / Vercel free
+> tier setup — vědomě vynecháno.
+
 ---
 
 ## 2. Vrstvy aplikace
@@ -86,8 +99,21 @@ CSS proměnné v `src/app/theme-tokens.css` pro 6 kombinací; Tailwind v4
 `border-line`…). Komponenty čtou jen tyto proměnné — nevědí, jaké téma je
 aktivní. `ThemeProvider` (mountovaný v `AppShell`) synchronizuje volbu ze
 `settingsStore` na atributy `data-theme`/`data-mode` na `<html>` a v auto
-režimu sleduje `prefers-color-scheme`. Výjimka čtoucí téma přímo:
-`VintageFrame` (mosazné cvočky jen ve Vintage).
+režimu sleduje `prefers-color-scheme`. Výjimky čtoucí téma přímo:
+`VintageFrame` (mosazné cvočky jen ve Vintage) a od 2026-05-26 i pět
+polymorfních widgetů, kde se mění **forma** (ne jen barva): `CentsBar`
+(ladička), `InputLevelMeter` (VU), `BeatIndicator` (mince/LED/orb),
+`KnobControl` (otočné knoby v Aparátu a hlasitosti metronomu) a
+`NotationViewer` rám displeje not. Všechny čtou téma přes sdílený hook
+`useActiveTheme()` v `src/lib/`, který vrátí téma až po hydrataci (jinak
+`null`) — komponenta tak má SSR-safe default fallback.
+
+**Vintage = Solton Double Cut.** Vintage dark paleta je vědomě
+inspirovaná reálnou kytarou Solton Double Cut (mahogany surfacy, brass
+akcent, cream text). Nové CSS tokeny `--maple-light`, `--mahogany-glow`,
+`--wood-grain`, `--gloss-reflex` v `theme-tokens.css`; pravidlo
+v `globals.css` aplikuje gloss + wood grain plošně na `.bg-surface*`
+ve Vintage dark.
 
 ### 2.3 Stav (Zustand stores)
 
@@ -110,6 +136,13 @@ Oddělené malé stores podle domény (aktuální stav):
 - `chatStore` — historie AI chatu (persist do localStorage) — Bod 14.
 - `instrumentStore` — profil nástroje pro obrazovku „Kytara" (persist do
   localStorage, na načtení projde type guardem) — Bod 21.
+- `ampPresetsStore` — uživatelovy vlastní amp presety (persist do
+  localStorage, na načtení projde type guardem) — Bod 16.
+- `ampStore` — sdílené aparát settings + presetId (persist do localStorage).
+  **Nedrží aktivní stav** — každá obrazovka, která hostuje aparát, má
+  vlastní lokální chain přes hook `useLocalAmpChain`. Důvod: `output:
+  'export'` dělá z navigace plný document reload, takže ani sdílený
+  singleton AmpEngine by AudioContext napříč obrazovkami neudržel.
 
 Stores se vzorem „zrcadlo" (`audioStore`, `metronomeStore`,
 `gallopPlayerStore`, `riffPlayerStore`, `recordingsStore`) jen odrážejí stav
@@ -234,7 +267,7 @@ Každý nástroj je samostatný procesor zapojený do enginu:
 | Přehrávač riffů | Web Audio scheduler + syntéza tónů (Bod 12) | přehrává tab riffu syntetizovanými tóny v nastavitelném tempu |
 | Palm Mute detektor | `AnalyserNode` FFT → spektrální těžiště (Bod 12) | „jas" zvuku; kalibrace na konkrétní sestavu |
 | AlphaTab přehrávač | `@coderline/alphatab` (Bod 15) | prohlížeč Guitar Pro / MusicXML; vykreslování i MIDI syntéza na hlavním vlákně (`useWorkers: false`) |
-| Ampsim řetězec | Web Audio uzly — `ampChain` (Bod 16) | pre-gain, zkreslení (WaveShaper), 3-pásmový EQ, filtrová simulace reproboxu, delay |
+| Ampsim řetězec | Web Audio uzly — `ampChain` (Bod 16) | pre-gain, zkreslení (WaveShaper), 3-pásmový EQ, filtrová simulace reproboxu, delay, reverb, chorus. Životní cyklus per obrazovka přes hook `useLocalAmpChain` (`src/components/amp/`) — chain se vytvoří při zapnutí na dané obrazovce a dispose při unmount (Aparát = lokální, ne sdílený singleton; důvod viz sekce 1) |
 | Multi-track engine | MediaRecorder + `OfflineAudioContext` (Bod 17) | nahrávání stop přes sebe, mixdown a export do WAV |
 | Loop pedál | `AudioBufferSourceNode` s `loop=true` (Bod 17) | bezešvá smyčka, vrstvení dalších vrstev přes ni |
 

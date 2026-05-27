@@ -125,3 +125,14 @@ quirky sandboxu, záludnosti knihoven, proč bylo něco rozhodnuto takhle.)*
   Gemini (jiná adresa) — ten z prohlížeče nejde; nativní `generateContent`
   ano. Klíč se posílá v hlavičce `x-goog-api-key`. AI vrstva je
   v `src/lib/ai/` (čistý fetch, žádná SDK závislost navíc).
+- **`output: 'export'` dělá z každé `<Link>` navigace plný document
+  reload.** Ověřeno přes `performance.getEntriesByType("navigation")[0]
+  .type === "navigate"` — žádné client-side route transitions. Důsledek:
+  **window se mezi obrazovkami resetuje**, JS state nepřežije, AudioContext
+  zhasne. Žádné singleton triky (modul-level cache, `globalThis`, Zustand
+  persist) tuto fyzickou bariéru neobejdou. Sdílet jde jen perzistovaný
+  state (přes localStorage/IndexedDB). Pokud někdy bude potřeba
+  „audio žije přes obrazovky" (např. Aparát na pozadí), bude nutné
+  přepnout na server-rendered Next.js — což rozbije PWA / Vercel free
+  tier. Aktuálně se s omezením žije: `useLocalAmpChain` drží
+  `AmpChain` lokálně per komponenta, sdílené jsou jen settings.
