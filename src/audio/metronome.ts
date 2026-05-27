@@ -11,6 +11,7 @@ import type {
   ClickSoundId,
   GapConfig,
   PerBeatSound,
+  PolyrhythmConfig,
   RampConfig,
 } from "@/lib/metronomeConfig";
 import {
@@ -19,6 +20,7 @@ import {
   clampSwing,
   cycleAccent,
   DEFAULT_GAP,
+  DEFAULT_POLYRHYTHM,
   DEFAULT_RAMP,
   DEFAULT_SWING,
   defaultAccentPattern,
@@ -28,6 +30,7 @@ import {
   resizeAccentPattern,
   resizeSoundPattern,
   sanitizeGap,
+  sanitizePolyrhythm,
   sanitizeRamp,
   swingedTickDuration,
 } from "@/lib/metronomeConfig";
@@ -62,6 +65,8 @@ export interface MetronomeState {
    * by setters.
    */
   isCountingIn: boolean;
+  /** Secondary polyrhythmic click layer. */
+  polyrhythm: PolyrhythmConfig;
   /**
    * Optional per-beat sound override (drum mode). Same length as
    * accentPattern; non-null entries take precedence over `sound`.
@@ -94,6 +99,7 @@ const INITIAL_STATE: MetronomeState = {
   swing: DEFAULT_SWING,
   countInBars: 0,
   isCountingIn: false,
+  polyrhythm: { ...DEFAULT_POLYRHYTHM },
   currentBeat: -1,
   currentBar: -1,
 };
@@ -126,6 +132,15 @@ class Metronome {
   private queue: ScheduledNote[] = [];
   private noiseBuffer: AudioBuffer | null = null;
   private noiseContext: AudioContext | null = null;
+  /**
+   * Secondary polyrhythm scheduler state. Independent tick stream, but
+   * phase-aligned to the main downbeat at start(). Snaps back to the bar
+   * boundary every time a new bar begins.
+   */
+  private secondaryNextNoteTime = 0;
+  private secondaryTickInBar = 0;
+  /** Bar index of the next secondary tick — kept in sync with scheduledBar. */
+  private secondaryBar = 0;
 
   getState(): MetronomeState {
     return this.state;
@@ -248,6 +263,13 @@ class Metronome {
     this.setState({ countInBars: clampCountInBars(bars) });
   }
 
+  /** Patches the secondary polyrhythm layer (merge style like ramp/gap). */
+  setPolyrhythm(patch: Partial<PolyrhythmConfig>): void {
+    this.setState({
+      polyrhythm: sanitizePolyrhythm({ ...this.state.polyrhythm, ...patch }),
+    });
+  }
+
   setVolume(volume: number): void {
     this.setState({ volume: clamp01(volume) });
   }
@@ -279,6 +301,11 @@ class Metronome {
     this.scheduledBar = -countIn;
     this.rampBarCounter = 0;
     this.nextNoteTime = context.currentTime + 0.1;
+    // Secondary polyrhythm starts on the same downbeat — the layers meet
+    // again at every bar boundary.
+    this.secondaryNextNoteTime = this.nextNoteTime;
+    this.secondaryTickInBar = 0;
+    this.secondaryBar = -countIn;
     this.queue = [];
     this.setState({
       isPlaying: true,
@@ -346,6 +373,72 @@ class Metronome {
         this.applyRamp(this.scheduledBar);
       }
       this.currentTick = nextTick;
+    }
+
+    // Independent secondary polyrhythm scheduler. Walks its own tick stream
+    // at `60 / bpm / ticksPerBeat` seconds per tick. Phase-aligned to the
+    // main downbeat at start() and snapped back at every bar boundary so
+    // mid-bar BPM changes don't drift permanently.
+    this.scheduleSecondary(context);
+  }
+
+  /** Schedules secondary polyrhythmic ticks inside the look-ahead window. */
+  private scheduleSecondary(context: AudioContext): void {
+    const { polyrhythm, bpm, beatsPerBar } = this.state;
+    if (!polyrhythm.enabled) return;
+    const ticksPerBar = beatsPerBar * polyrhythm.ticksPerBeat;
+    const secondaryTickSeconds = 60 / bpm / polyrhythm.ticksPerBeat;
+    while (
+      this.secondaryNextNoteTime < context.currentTime + SCHEDULE_AHEAD_S
+    ) {
+      // Skip count-in bars (negative) and silent gap bars — the secondary
+      // layer is an extra colour, not a counting aid.
+      const audible =
+        this.secondaryBar >= 0 && !isSilentBar(this.secondaryBar, this.state.gap);
+      if (audible) {
+        const level =
+          polyrhythm.volume * this.state.volume * 0.5; // headroom for the layer
+        if (level >= 0.0005) {
+          this.playSecondaryTick(
+            context,
+            this.secondaryNextNoteTime,
+            level,
+            polyrhythm.sound,
+          );
+        }
+      }
+      this.secondaryNextNoteTime += secondaryTickSeconds;
+      this.secondaryTickInBar += 1;
+      if (this.secondaryTickInBar >= ticksPerBar) {
+        this.secondaryTickInBar = 0;
+        this.secondaryBar += 1;
+      }
+    }
+  }
+
+  /** Plays a single secondary tick using the same synth as the main layer. */
+  private playSecondaryTick(
+    context: AudioContext,
+    time: number,
+    level: number,
+    sound: ClickSoundId,
+  ): void {
+    switch (sound) {
+      case "classic":
+        this.playTone(context, time, level, "sine", 1100, 0.04);
+        break;
+      case "wood":
+        this.playTone(context, time, level, "triangle", 950, 0.03);
+        break;
+      case "beep":
+        this.playTone(context, time, level, "sine", 900, 0.08, 0.004);
+        break;
+      case "click":
+        this.playNoise(context, time, level, 2000, 0.012);
+        break;
+      case "hihat":
+        this.playNoise(context, time, level, 7500, 0.035);
+        break;
     }
   }
 

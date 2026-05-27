@@ -8,6 +8,7 @@ import {
   clampSwing,
   cycleAccent,
   DEFAULT_GAP,
+  DEFAULT_POLYRHYTHM,
   DEFAULT_RAMP,
   DEFAULT_SWING,
   defaultAccentPattern,
@@ -21,6 +22,7 @@ import {
   sanitizeAccentPattern,
   sanitizeGap,
   sanitizeMetronomeConfig,
+  sanitizePolyrhythm,
   sanitizePreset,
   sanitizeRamp,
   sanitizeSoundPattern,
@@ -506,5 +508,51 @@ describe("sanitizeMetronomeConfig — count-in", () => {
   it("defaults countInBars to 0", () => {
     expect(sanitizeMetronomeConfig({}).countInBars).toBe(0);
     expect(defaultMetronomeConfig().countInBars).toBe(0);
+  });
+});
+
+describe("sanitizePolyrhythm", () => {
+  it("returns the default for garbage input", () => {
+    expect(sanitizePolyrhythm("nope")).toEqual(DEFAULT_POLYRHYTHM);
+    expect(sanitizePolyrhythm(null)).toEqual(DEFAULT_POLYRHYTHM);
+  });
+
+  it("clamps ticksPerBeat into 2..7", () => {
+    expect(sanitizePolyrhythm({ ticksPerBeat: 99 }).ticksPerBeat).toBe(7);
+    expect(sanitizePolyrhythm({ ticksPerBeat: 1 }).ticksPerBeat).toBe(2);
+    expect(sanitizePolyrhythm({ ticksPerBeat: 5 }).ticksPerBeat).toBe(5);
+  });
+
+  it("clamps volume into 0..1", () => {
+    expect(sanitizePolyrhythm({ volume: 1.5 }).volume).toBe(1);
+    expect(sanitizePolyrhythm({ volume: -0.3 }).volume).toBe(0);
+    expect(sanitizePolyrhythm({ volume: 0.4 }).volume).toBe(0.4);
+  });
+
+  it("keeps a valid sound id and falls back for unknown", () => {
+    expect(sanitizePolyrhythm({ sound: "wood" }).sound).toBe("wood");
+    expect(sanitizePolyrhythm({ sound: "bogus" }).sound).toBe(
+      DEFAULT_POLYRHYTHM.sound,
+    );
+  });
+
+  it("treats non-true enabled as off", () => {
+    expect(sanitizePolyrhythm({ enabled: 1 }).enabled).toBe(false);
+    expect(sanitizePolyrhythm({ enabled: true }).enabled).toBe(true);
+  });
+});
+
+describe("sanitizeMetronomeConfig — polyrhythm", () => {
+  it("includes polyrhythm with sanitised fields", () => {
+    const config = sanitizeMetronomeConfig({
+      polyrhythm: { enabled: true, ticksPerBeat: 99, sound: "wood" },
+    });
+    expect(config.polyrhythm.enabled).toBe(true);
+    expect(config.polyrhythm.ticksPerBeat).toBe(7);
+    expect(config.polyrhythm.sound).toBe("wood");
+  });
+
+  it("default config has polyrhythm off", () => {
+    expect(defaultMetronomeConfig().polyrhythm).toEqual(DEFAULT_POLYRHYTHM);
   });
 });

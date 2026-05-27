@@ -48,6 +48,7 @@ export function MetronomeWidget() {
     metronome.setGap(config.gap);
     metronome.setSwing(config.swing);
     metronome.setCountInBars(config.countInBars);
+    metronome.setPolyrhythm(config.polyrhythm);
     metronome.setSoundPattern(config.soundPattern);
     metronome.setSubdivisionSound(config.subdivisionSound);
   }, []);
@@ -69,6 +70,7 @@ export function MetronomeWidget() {
       gap: state.gap,
       swing: state.swing,
       countInBars: state.countInBars,
+      polyrhythm: state.polyrhythm,
       soundPattern: state.soundPattern,
       subdivisionSound: state.subdivisionSound,
     });

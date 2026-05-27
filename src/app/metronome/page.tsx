@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { audioEngine } from "@/audio/AudioEngine";
 import { metronome } from "@/audio/metronome";
 import { BeatIndicator } from "@/components/metronome/BeatIndicator";
+import { PolyrhythmPanel } from "@/components/metronome/PolyrhythmPanel";
 import { PresetPanel } from "@/components/metronome/PresetPanel";
 import { TrainerPanel } from "@/components/metronome/TrainerPanel";
 import { PageContainer } from "@/components/PageContainer";
@@ -14,6 +15,7 @@ import type {
   ClickSoundId,
   GapConfig,
   MetronomePreset,
+  PolyrhythmConfig,
   RampConfig,
 } from "@/lib/metronomeConfig";
 import { CLICK_SOUNDS, TIME_SIGNATURES } from "@/lib/metronomeConfig";
@@ -56,6 +58,7 @@ export default function MetronomePage() {
   const countInBars = useMetronomeStore((state) => state.countInBars);
   const isCountingIn = useMetronomeStore((state) => state.isCountingIn);
   const currentBar = useMetronomeStore((state) => state.currentBar);
+  const polyrhythm = useMetronomeStore((state) => state.polyrhythm);
   const soundPattern = useMetronomeStore((state) => state.soundPattern);
   const subdivisionSound = useMetronomeStore((state) => state.subdivisionSound);
 
@@ -90,6 +93,7 @@ export default function MetronomePage() {
     metronome.setGap(config.gap);
     metronome.setSwing(config.swing);
     metronome.setCountInBars(config.countInBars);
+    metronome.setPolyrhythm(config.polyrhythm);
     metronome.setSoundPattern(config.soundPattern);
     metronome.setSubdivisionSound(config.subdivisionSound);
   }, []);
@@ -119,6 +123,7 @@ export default function MetronomePage() {
       gap: state.gap,
       swing: state.swing,
       countInBars: state.countInBars,
+      polyrhythm: state.polyrhythm,
       soundPattern: state.soundPattern,
       subdivisionSound: state.subdivisionSound,
     });
@@ -210,6 +215,11 @@ export default function MetronomePage() {
     syncConfig();
   }
 
+  function changePolyrhythm(patch: Partial<PolyrhythmConfig>) {
+    metronome.setPolyrhythm(patch);
+    syncConfig();
+  }
+
   function applyPreset(preset: MetronomePreset) {
     metronome.setBpm(preset.bpm);
     metronome.setBeatsPerBar(preset.beatsPerBar);
@@ -222,6 +232,7 @@ export default function MetronomePage() {
     metronome.setGap(preset.gap);
     metronome.setSwing(preset.swing);
     metronome.setCountInBars(preset.countInBars);
+    metronome.setPolyrhythm(preset.polyrhythm);
     metronome.setSoundPattern(preset.soundPattern);
     metronome.setSubdivisionSound(preset.subdivisionSound);
     syncConfig();
@@ -503,6 +514,14 @@ export default function MetronomePage() {
           onSave={handleSavePreset}
           onApply={applyPreset}
           onDelete={handleDeletePreset}
+        />
+      </div>
+
+      <div className="mt-6">
+        <PolyrhythmPanel
+          polyrhythm={polyrhythm}
+          subdivision={subdivision}
+          onChange={changePolyrhythm}
         />
       </div>
 

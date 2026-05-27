@@ -273,6 +273,49 @@ export const DEFAULT_GAP: GapConfig = {
   silentBars: 1,
 };
 
+/**
+ * Polyrhythm — a secondary click layer running its own tick count against
+ * the main pulse. Classic "3 against 4" drill: ticksPerBeat = 3 against the
+ * main subdivision = 4.
+ */
+export interface PolyrhythmConfig {
+  enabled: boolean;
+  /** Ticks per main beat; 2..7. Equal to subdivision = no audible polyrhythm. */
+  ticksPerBeat: number;
+  /** Sound for the secondary layer. */
+  sound: ClickSoundId;
+  /** Volume relative to the master metronome volume (0..1). */
+  volume: number;
+}
+
+export const POLYRHYTHM_MIN_TICKS = 2;
+export const POLYRHYTHM_MAX_TICKS = 7;
+
+export const DEFAULT_POLYRHYTHM: PolyrhythmConfig = {
+  enabled: false,
+  ticksPerBeat: 3,
+  sound: "hihat",
+  volume: 0.6,
+};
+
+/** Coerces an untrusted value into a valid polyrhythm config. */
+export function sanitizePolyrhythm(value: unknown): PolyrhythmConfig {
+  const v = (value ?? {}) as Partial<PolyrhythmConfig>;
+  return {
+    enabled: v.enabled === true,
+    ticksPerBeat: clampInt(
+      v.ticksPerBeat,
+      POLYRHYTHM_MIN_TICKS,
+      POLYRHYTHM_MAX_TICKS,
+      DEFAULT_POLYRHYTHM.ticksPerBeat,
+    ),
+    sound: isClickSoundId(v.sound) ? v.sound : DEFAULT_POLYRHYTHM.sound,
+    volume: clamp01(
+      typeof v.volume === "number" ? v.volume : DEFAULT_POLYRHYTHM.volume,
+    ),
+  };
+}
+
 function clampInt(
   value: unknown,
   min: number,
@@ -346,6 +389,8 @@ export interface MetronomeConfig {
    * Trainers (e.g. Power Chord Trainer) override to 0.
    */
   countInBars: number;
+  /** Optional secondary polyrhythmic click layer. */
+  polyrhythm: PolyrhythmConfig;
   /**
    * Optional per-beat sound override (drum mode). When set, each non-null
    * entry plays its own sound on that beat; null entries fall back to
@@ -381,6 +426,7 @@ export function defaultMetronomeConfig(): MetronomeConfig {
     gap: { ...DEFAULT_GAP },
     swing: DEFAULT_SWING,
     countInBars: 0,
+    polyrhythm: { ...DEFAULT_POLYRHYTHM },
     // soundPattern and subdivisionSound stay undefined by default — a fresh
     // metronome behaves like the classic one until the user opens "Pokročilé".
   };
@@ -409,6 +455,7 @@ export function sanitizeMetronomeConfig(value: unknown): MetronomeConfig {
     gap: sanitizeGap(v.gap),
     swing: clampSwing(v.swing),
     countInBars: clampCountInBars(v.countInBars),
+    polyrhythm: sanitizePolyrhythm(v.polyrhythm),
   };
   if (soundPattern) config.soundPattern = soundPattern;
   const subdivisionSound = sanitizeSubdivisionSound(v.subdivisionSound);

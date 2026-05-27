@@ -38,7 +38,7 @@ Než příští session začne: přečíst `AGENTS.md` a `SKILL.md` (pravidla
 spolupráce), pak tento soubor.
 
 ## ✅ Hotovo
-**430 automatických testů**, vše prochází; `tsc` čistý. Roadmapa: Fáze 0–4
+**437 automatických testů**, vše prochází; `tsc` čistý. Roadmapa: Fáze 0–4
 hotové, Fáze 5 hotová (body 15–17; 18 vynechán), Fáze 6 z velké části
 hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
 
@@ -166,6 +166,24 @@ hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
   „Předtakt: X/N takt(y)" s `aria-live="polite"`. Power Chord Trainer
   resetuje `countInBars = 0` při startu — má vlastní beat-counter loop.
   +6 testů (`clampCountInBars`, extension testy `sanitizeMetronomeConfig`).
+  **Polyrytmus (2026-05-27, Fáze 4 z plánu vylepšení metronomu):**
+  `MetronomeConfig` rozšířen o `polyrhythm: PolyrhythmConfig` (enabled,
+  ticksPerBeat 2–7, sound, volume 0–1; default off / 3 ticky / hi-hat /
+  0.6). `sanitizePolyrhythm` s fallback na default — staré configy beze
+  změny. Engine: druhá nezávislá smyčka v `scheduler()` plánuje
+  sekundární ticky s vlastním `60 / bpm / ticksPerBeat` intervalem. Při
+  `start()` fázově zarovnaná na hlavní downbeat. Tichá během count-in
+  (`bar < 0`) a `isSilentBar` (gap) — polyrytmus je extra barva, ne
+  pomůcka pro orientaci. Hlasitost = `polyrhythm.volume * volume * 0.5`
+  (headroom). Žádné akcenty — všechny sekundární ticky stejné. Vlastní
+  syntéza v `playSecondaryTick` (laděné nižší než hlavní vrstva, aby se
+  oddělila). Nová komponenta `PolyrhythmPanel.tsx` v
+  `src/components/metronome/` — checkbox aktivace, segmented control 2–7,
+  dropdown zvuku, slider hlasitosti, dynamický popisek („3 not proti 4
+  hlavního metronomu"). Vložená dolů pod Presety v pravém sloupci. Power
+  Chord Trainer vypíná polyrytmus při startu. +7 testů (`sanitizePolyrhythm`
+  pro garbage / clamp ticksPerBeat / clamp volume / sound fallback /
+  enabled coercion, extension testy `sanitizeMetronomeConfig`).
 - **Responzivní PC rozvržení** — všech 16 obrazovek dostalo rozvržení
   pro PC, řízené stejným přepínačem Počítač/Mobil/Automaticky jako
   navigace (`useResolvedLayoutMode`). Tři znovupoužitelné díly:

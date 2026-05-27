@@ -233,6 +233,8 @@ export function PowerChordTrainer() {
       // No count-in inside the trainer — it has its own beat-counter loop
       // and the user expects the click to start immediately.
       metronome.setCountInBars(0);
+      // Polyrhythm would muddy the metal drill — turn the secondary layer off.
+      metronome.setPolyrhythm({ enabled: false });
       metronome.start(context);
     })();
   }
