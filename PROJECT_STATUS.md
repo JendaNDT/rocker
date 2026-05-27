@@ -214,6 +214,16 @@ hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
   na všech vzhledech přes filter). JS toggle v Pendulum přes class
   add/remove se setTimeout. Force reflow přes `void box.offsetWidth`
   restartuje animaci i při dvou akcentech back-to-back.
+  **Fix accentVolume — extra-gain model (2026-05-27):** stará rovnice
+  `accent = 0.9 * accentVolume` měla problém: rozdíl mezi akcentem
+  (max 0.9) a normální dobou (fixní 0.6) byl jen ~1.5× (~+3.5 dB) a při
+  snižování klesl akcent pod normální (~67 % → akcent rovný normálu,
+  pod tím tišší). Uživatel tipoval, že se nic nemění.
+  Nová rovnice `accent = 0.6 + 0.4 * accentVolume`: 0 % = stejně jako
+  normální doba (bez přízvuku), 100 % = 1.0 (~+4.5 dB nad normálem,
+  výrazný akcent). Intuitivnější — snížení = menší rozdíl, ne mizející
+  doba. Pro úplné ztišení akcentní doby slouží stávající „muted" stav
+  v BeatIndicatoru.
   **Tovární presety (2026-05-27, Fáze 6 z plánu vylepšení metronomu,
   poslední):** nová konstanta `FACTORY_PRESETS: readonly
   MetronomePreset[]` v `metronomePresets.ts` se šesti predefinovanými

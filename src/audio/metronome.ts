@@ -498,8 +498,13 @@ class Metronome {
 
     const accent = kind === "accent";
     const sub = kind === "sub";
+    // Extra-gain model for the accent: 0 % = no extra over a normal beat,
+    // 100 % = +0.4 above it (peak 1.0). The old model (0.9 * accentVolume)
+    // bottomed out as "silence" at 0 % and never gave a really loud accent;
+    // this one lets the user dial the contrast intuitively. To fully mute
+    // an accented beat, the user clicks it on the BeatIndicator to "muted".
     let level = accent
-      ? 0.9 * this.state.accentVolume
+      ? 0.6 + 0.4 * this.state.accentVolume
       : sub
         ? 0.32
         : 0.6;
