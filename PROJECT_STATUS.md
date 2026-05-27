@@ -1,5 +1,5 @@
 # Rocker – Project Status
-*Naposled aktualizováno: 26. 05. 2026*
+*Naposled aktualizováno: 27. 05. 2026*
 
 ## 🎯 Co to je
 PWA kytarový asistent pro učení a hraní na elektrickou kytaru. Funguje na PC
@@ -38,7 +38,7 @@ Než příští session začne: přečíst `AGENTS.md` a `SKILL.md` (pravidla
 spolupráce), pak tento soubor.
 
 ## ✅ Hotovo
-**395 automatických testů**, vše prochází; `tsc` čistý. Roadmapa: Fáze 0–4
+**411 automatických testů**, vše prochází; `tsc` čistý. Roadmapa: Fáze 0–4
 hotové, Fáze 5 hotová (body 15–17; 18 vynechán), Fáze 6 z velké části
 hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
 
@@ -116,6 +116,23 @@ hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
   `src/lib/metronomeConfig.ts` + `metronomePresets.ts` (s testy),
   persistovaný store `src/stores/metronomeSettingsStore.ts`, komponenty
   v `src/components/metronome/`. Zvuk a UI čekají na ruční ověření Jendou.
+  **Per-beat zvuk + drum mode (2026-05-27, Fáze 1 z plánu vylepšení
+  metronomu):** `MetronomeConfig` rozšířen o volitelná pole
+  `soundPattern?: PerBeatSound` (per dobu null = fallback na globální
+  `sound`, jinak konkrétní zvuk) a `subdivisionSound?: ClickSoundId`
+  (přebíjí každý tik mezi dobami, např. hi-hat nad kick/snare). Sanitizéry
+  v `metronomeConfig.ts` s fallbackem na undefined — staré presety se
+  nerozbijí. Engine `metronome.ts` má `setSoundPattern`, `setBeatSound`,
+  `setSubdivisionSound`; `playClick` přijímá vybraný `ClickSoundId` přes
+  novou funkci `soundForTick`. UI: toggle „Pokročilé" nad přízvuky;
+  dropdown subdivisionSound se zobrazí, jen když `subdivision >= 2`;
+  dropdown pod každou tečkou v `BeatIndicator` s defaultem „Stejný
+  (<globální>)". Per Jendovo rozhodnutí 3A se data zachovají i po vypnutí
+  toggle. Power Chord Trainer explicitně resetuje `soundPattern` a
+  `subdivisionSound` na undefined při startu — drum mode mu nepřeteče.
+  Gallop Trainer engine nepoužívá. +16 testů (`sanitizeSoundPattern`,
+  `resizeSoundPattern`, `sanitizeSubdivisionSound`, extension testy
+  `sanitizeMetronomeConfig`).
 - **Responzivní PC rozvržení** — všech 16 obrazovek dostalo rozvržení
   pro PC, řízené stejným přepínačem Počítač/Mobil/Automaticky jako
   navigace (`useResolvedLayoutMode`). Tři znovupoužitelné díly:

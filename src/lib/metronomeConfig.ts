@@ -129,6 +129,62 @@ export function isClickSoundId(value: unknown): value is ClickSoundId {
   );
 }
 
+/**
+ * Per-beat sound override. Same length as the accent pattern. Each entry is
+ * either a ClickSoundId (this beat plays that sound) or null (this beat falls
+ * back to the global `sound` field). Used by the "drum mode" — kick on 1,
+ * snare on 2, etc. The whole field is optional on the config; undefined means
+ * "no override anywhere, use global sound on every beat".
+ */
+export type PerBeatSound = (ClickSoundId | null)[];
+
+/**
+ * Resizes a per-beat sound pattern to a new bar length, keeping existing
+ * entries and padding any new beats with null (= use global sound).
+ */
+export function resizeSoundPattern(
+  pattern: PerBeatSound,
+  beatsPerBar: number,
+): PerBeatSound {
+  const count = clampBeatsPerBar(beatsPerBar);
+  return Array.from({ length: count }, (_, index) => {
+    const entry = pattern[index];
+    return isClickSoundId(entry) ? entry : null;
+  });
+}
+
+/**
+ * Coerces an untrusted value into a valid per-beat sound pattern of the
+ * given length, or undefined when the input is missing or empty (all
+ * entries fall back to the global sound).
+ */
+export function sanitizeSoundPattern(
+  value: unknown,
+  beatsPerBar: number,
+): PerBeatSound | undefined {
+  if (value === undefined || value === null) return undefined;
+  if (!Array.isArray(value)) return undefined;
+  const count = clampBeatsPerBar(beatsPerBar);
+  const pattern: PerBeatSound = Array.from({ length: count }, (_, index) => {
+    const entry = value[index];
+    return isClickSoundId(entry) ? entry : null;
+  });
+  // An all-null pattern is equivalent to "no override" — drop it so the
+  // engine and persisted config stay as small as possible.
+  if (pattern.every((entry) => entry === null)) return undefined;
+  return pattern;
+}
+
+/**
+ * Coerces an untrusted value into a ClickSoundId for the subdivision tick,
+ * or undefined when missing — subdivisions then play the beat's own sound.
+ */
+export function sanitizeSubdivisionSound(
+  value: unknown,
+): ClickSoundId | undefined {
+  return isClickSoundId(value) ? value : undefined;
+}
+
 /** Progressive speed-up trainer: raise the tempo every few bars. */
 export interface RampConfig {
   enabled: boolean;
@@ -223,6 +279,19 @@ export interface MetronomeConfig {
   accentVolume: number;
   ramp: RampConfig;
   gap: GapConfig;
+  /**
+   * Optional per-beat sound override (drum mode). When set, each non-null
+   * entry plays its own sound on that beat; null entries fall back to
+   * `sound`. When undefined, every beat uses `sound` (= classic metronome).
+   */
+  soundPattern?: PerBeatSound;
+  /**
+   * Optional sound used for subdivision ticks (8ths, triplets, 16ths). When
+   * set, every subdivision tick plays this sound regardless of the beat it
+   * sits on (think hi-hat over kick/snare). When undefined, subdivisions
+   * play the beat's own sound.
+   */
+  subdivisionSound?: ClickSoundId;
 }
 
 /** A named, saved metronome configuration. */
@@ -243,6 +312,8 @@ export function defaultMetronomeConfig(): MetronomeConfig {
     accentVolume: 1,
     ramp: { ...DEFAULT_RAMP },
     gap: { ...DEFAULT_GAP },
+    // soundPattern and subdivisionSound stay undefined by default — a fresh
+    // metronome behaves like the classic one until the user opens "Pokročilé".
   };
 }
 
@@ -252,7 +323,8 @@ export function sanitizeMetronomeConfig(value: unknown): MetronomeConfig {
   const beatsPerBar = clampBeatsPerBar(
     typeof v.beatsPerBar === "number" ? v.beatsPerBar : 4,
   );
-  return {
+  const soundPattern = sanitizeSoundPattern(v.soundPattern, beatsPerBar);
+  const config: MetronomeConfig = {
     bpm: clampBpm(typeof v.bpm === "number" ? v.bpm : 100),
     beatsPerBar,
     subdivision: clampSubdivision(
@@ -267,6 +339,10 @@ export function sanitizeMetronomeConfig(value: unknown): MetronomeConfig {
     ramp: sanitizeRamp(v.ramp),
     gap: sanitizeGap(v.gap),
   };
+  if (soundPattern) config.soundPattern = soundPattern;
+  const subdivisionSound = sanitizeSubdivisionSound(v.subdivisionSound);
+  if (subdivisionSound) config.subdivisionSound = subdivisionSound;
+  return config;
 }
 
 /** Type guard: a loosely-typed value is shaped like a stored preset. */

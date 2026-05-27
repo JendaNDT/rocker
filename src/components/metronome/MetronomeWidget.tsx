@@ -46,6 +46,8 @@ export function MetronomeWidget() {
     metronome.setAccentVolume(config.accentVolume);
     metronome.setRamp(config.ramp);
     metronome.setGap(config.gap);
+    metronome.setSoundPattern(config.soundPattern);
+    metronome.setSubdivisionSound(config.subdivisionSound);
   }, []);
 
   // Mirrors the engine's configuration into the persistent store after a
@@ -63,6 +65,8 @@ export function MetronomeWidget() {
       accentVolume: state.accentVolume,
       ramp: state.ramp,
       gap: state.gap,
+      soundPattern: state.soundPattern,
+      subdivisionSound: state.subdivisionSound,
     });
   }
 

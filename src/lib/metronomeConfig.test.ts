@@ -14,11 +14,14 @@ import {
   isSilentBar,
   nextRampBpm,
   resizeAccentPattern,
+  resizeSoundPattern,
   sanitizeAccentPattern,
   sanitizeGap,
   sanitizeMetronomeConfig,
   sanitizePreset,
   sanitizeRamp,
+  sanitizeSoundPattern,
+  sanitizeSubdivisionSound,
   TIME_SIGNATURES,
 } from "./metronomeConfig";
 
@@ -277,5 +280,108 @@ describe("sanitizePreset", () => {
 
   it("rejects a non-preset value", () => {
     expect(sanitizePreset({ bpm: 120 })).toBeNull();
+  });
+});
+
+describe("sanitizeSoundPattern", () => {
+  it("returns undefined for missing input", () => {
+    expect(sanitizeSoundPattern(undefined, 4)).toBeUndefined();
+    expect(sanitizeSoundPattern(null, 4)).toBeUndefined();
+  });
+
+  it("returns undefined for non-array input", () => {
+    expect(sanitizeSoundPattern("nope", 4)).toBeUndefined();
+  });
+
+  it("returns undefined when every entry is null (= no override)", () => {
+    expect(sanitizeSoundPattern([null, null, null, null], 4)).toBeUndefined();
+  });
+
+  it("keeps valid sound ids and nulls invalid entries", () => {
+    expect(
+      sanitizeSoundPattern(["wood", "bogus", "hihat", 42], 4),
+    ).toEqual(["wood", null, "hihat", null]);
+  });
+
+  it("pads shorter input with null", () => {
+    expect(sanitizeSoundPattern(["wood"], 3)).toEqual(["wood", null, null]);
+  });
+
+  it("truncates longer input", () => {
+    expect(
+      sanitizeSoundPattern(["wood", "click", "hihat", "beep"], 2),
+    ).toEqual(["wood", "click"]);
+  });
+});
+
+describe("resizeSoundPattern", () => {
+  it("keeps existing entries when growing", () => {
+    expect(resizeSoundPattern(["wood", "click"], 4)).toEqual([
+      "wood",
+      "click",
+      null,
+      null,
+    ]);
+  });
+
+  it("truncates when shrinking", () => {
+    expect(resizeSoundPattern(["wood", "click", "hihat"], 2)).toEqual([
+      "wood",
+      "click",
+    ]);
+  });
+});
+
+describe("sanitizeSubdivisionSound", () => {
+  it("accepts a valid sound id", () => {
+    expect(sanitizeSubdivisionSound("hihat")).toBe("hihat");
+  });
+
+  it("returns undefined for unknown values", () => {
+    expect(sanitizeSubdivisionSound("bogus")).toBeUndefined();
+    expect(sanitizeSubdivisionSound(undefined)).toBeUndefined();
+    expect(sanitizeSubdivisionSound(null)).toBeUndefined();
+  });
+});
+
+describe("sanitizeMetronomeConfig — per-beat extensions", () => {
+  it("keeps a valid soundPattern", () => {
+    const config = sanitizeMetronomeConfig({
+      beatsPerBar: 4,
+      soundPattern: ["wood", "click", null, "click"],
+    });
+    expect(config.soundPattern).toEqual(["wood", "click", null, "click"]);
+  });
+
+  it("resizes soundPattern to match beatsPerBar", () => {
+    const config = sanitizeMetronomeConfig({
+      beatsPerBar: 3,
+      soundPattern: ["wood", "click", "hihat", "beep"],
+    });
+    expect(config.soundPattern).toEqual(["wood", "click", "hihat"]);
+  });
+
+  it("drops an all-null soundPattern", () => {
+    const config = sanitizeMetronomeConfig({
+      beatsPerBar: 4,
+      soundPattern: [null, null, null, null],
+    });
+    expect(config.soundPattern).toBeUndefined();
+  });
+
+  it("keeps a valid subdivisionSound", () => {
+    const config = sanitizeMetronomeConfig({ subdivisionSound: "hihat" });
+    expect(config.subdivisionSound).toBe("hihat");
+  });
+
+  it("drops an unknown subdivisionSound", () => {
+    const config = sanitizeMetronomeConfig({ subdivisionSound: "bogus" });
+    expect(config.subdivisionSound).toBeUndefined();
+  });
+
+  it("default config has no per-beat overrides", () => {
+    const config = defaultMetronomeConfig();
+    expect(config.soundPattern).toBeUndefined();
+    expect(config.subdivisionSound).toBeUndefined();
   });
 });

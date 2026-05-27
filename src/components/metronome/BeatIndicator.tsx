@@ -1,7 +1,12 @@
 "use client";
 
 import { useActiveTheme } from "@/lib/useActiveTheme";
-import type { AccentLevel } from "@/lib/metronomeConfig";
+import type {
+  AccentLevel,
+  ClickSoundId,
+  PerBeatSound,
+} from "@/lib/metronomeConfig";
+import { CLICK_SOUNDS } from "@/lib/metronomeConfig";
 
 const LEVEL_LABEL: Record<AccentLevel, string> = {
   accent: "přízvuk",
@@ -19,20 +24,38 @@ const LEVEL_LABEL: Record<AccentLevel, string> = {
  *  - vintage : brass "speed knob" coin with an engraved beat number
  *  - glassy  : neon pink orb with a halo blur
  *  - default : original surface-tinted disc — also the pre-hydration fallback
+ *
+ * When `showSoundDropdowns` is true, a small select appears under each beat
+ * (drum mode). "Stejný" = null entry = beat falls back to `globalSound`.
  */
 export function BeatIndicator({
   accentPattern,
   currentBeat,
   onCycle,
+  soundPattern,
+  globalSound,
+  showSoundDropdowns = false,
+  onBeatSoundChange,
 }: {
   accentPattern: AccentLevel[];
   currentBeat: number;
   onCycle: (beat: number) => void;
+  /** Per-beat sound override; same length as accentPattern. */
+  soundPattern?: PerBeatSound;
+  /** Global click sound — shown as "Stejný (<label>)" in the dropdown. */
+  globalSound?: ClickSoundId;
+  /** Whether to render the per-beat sound dropdowns. */
+  showSoundDropdowns?: boolean;
+  /** Called when the user picks a sound for a single beat. */
+  onBeatSoundChange?: (beat: number, sound: ClickSoundId | null) => void;
 }) {
   const theme = useActiveTheme();
+  const globalLabel = globalSound
+    ? CLICK_SOUNDS.find((option) => option.id === globalSound)?.label ?? "celkový"
+    : "celkový";
   return (
     <div>
-      <div className="flex flex-wrap justify-center gap-3">
+      <div className="flex flex-wrap items-start justify-center gap-3">
         {accentPattern.map((level, index) => {
           const active = index === currentBeat;
           const ariaLabel = `Doba ${index + 1}: ${LEVEL_LABEL[level]}`;
@@ -43,10 +66,38 @@ export function BeatIndicator({
             ariaLabel,
             onClick: () => onCycle(index),
           };
-          if (theme === "studio") return <StudioBeat key={index} {...props} />;
-          if (theme === "vintage") return <VintageBeat key={index} {...props} />;
-          if (theme === "glassy") return <GlassyBeat key={index} {...props} />;
-          return <DefaultBeat key={index} {...props} />;
+          let dot;
+          if (theme === "studio") dot = <StudioBeat {...props} />;
+          else if (theme === "vintage") dot = <VintageBeat {...props} />;
+          else if (theme === "glassy") dot = <GlassyBeat {...props} />;
+          else dot = <DefaultBeat {...props} />;
+
+          return (
+            <div key={index} className="flex flex-col items-center gap-1">
+              {dot}
+              {showSoundDropdowns && onBeatSoundChange ? (
+                <select
+                  aria-label={`Zvuk doby ${index + 1}`}
+                  value={soundPattern?.[index] ?? ""}
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    onBeatSoundChange(
+                      index,
+                      value === "" ? null : (value as ClickSoundId),
+                    );
+                  }}
+                  className="mt-1 rounded border border-line bg-surface px-1 py-0.5 text-[10px] text-text"
+                >
+                  <option value="">Stejný ({globalLabel})</option>
+                  {CLICK_SOUNDS.map((option) => (
+                    <option key={option.id} value={option.id}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              ) : null}
+            </div>
+          );
         })}
       </div>
       <p className="mt-3 text-center text-xs text-muted">

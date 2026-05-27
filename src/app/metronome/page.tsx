@@ -11,6 +11,7 @@ import { SplitColumns } from "@/components/SplitColumns";
 import { useWakeLock } from "@/components/useWakeLock";
 import { KnobControl } from "@/components/widgets/KnobControl";
 import type {
+  ClickSoundId,
   GapConfig,
   MetronomePreset,
   RampConfig,
@@ -51,6 +52,8 @@ export default function MetronomePage() {
   const currentBeat = useMetronomeStore((state) => state.currentBeat);
   const ramp = useMetronomeStore((state) => state.ramp);
   const gap = useMetronomeStore((state) => state.gap);
+  const soundPattern = useMetronomeStore((state) => state.soundPattern);
+  const subdivisionSound = useMetronomeStore((state) => state.subdivisionSound);
 
   const persistConfig = useMetronomeSettingsStore((state) => state.setConfig);
   const presets = useMetronomeSettingsStore((state) => state.presets);
@@ -59,6 +62,12 @@ export default function MetronomePage() {
   const hydrated = useHydrated();
 
   const [haptics, setHaptics] = useState(false);
+  // "Pokročilé" is a session-only toggle — when on, the user can pick a
+  // different sound for every beat (drum mode) and a separate sound for
+  // subdivision ticks (hi-hat over kick/snare). Per Jenda's choice 3A, the
+  // underlying data is kept when the toggle is flipped off, so reopening
+  // brings the same drum setup back.
+  const [advancedOpen, setAdvancedOpen] = useState(false);
   const tapsRef = useRef<number[]>([]);
 
   // Load the saved configuration into the engine once on mount. The engine is
@@ -75,6 +84,8 @@ export default function MetronomePage() {
     metronome.setAccentVolume(config.accentVolume);
     metronome.setRamp(config.ramp);
     metronome.setGap(config.gap);
+    metronome.setSoundPattern(config.soundPattern);
+    metronome.setSubdivisionSound(config.subdivisionSound);
   }, []);
 
   // Vibrate on each beat when haptics are enabled (Android only — desktop
@@ -100,6 +111,8 @@ export default function MetronomePage() {
       accentVolume: state.accentVolume,
       ramp: state.ramp,
       gap: state.gap,
+      soundPattern: state.soundPattern,
+      subdivisionSound: state.subdivisionSound,
     });
   }
 
@@ -149,6 +162,16 @@ export default function MetronomePage() {
     syncConfig();
   }
 
+  function changeBeatSound(beat: number, value: ClickSoundId | null) {
+    metronome.setBeatSound(beat, value);
+    syncConfig();
+  }
+
+  function changeSubdivisionSound(value: ClickSoundId | undefined) {
+    metronome.setSubdivisionSound(value);
+    syncConfig();
+  }
+
   function changeVolume(value: number) {
     metronome.setVolume(value);
     syncConfig();
@@ -179,6 +202,8 @@ export default function MetronomePage() {
     metronome.setAccentVolume(preset.accentVolume);
     metronome.setRamp(preset.ramp);
     metronome.setGap(preset.gap);
+    metronome.setSoundPattern(preset.soundPattern);
+    metronome.setSubdivisionSound(preset.subdivisionSound);
     syncConfig();
   }
 
@@ -247,14 +272,60 @@ export default function MetronomePage() {
       </div>
 
       <div className="mt-8">
-        <div className="text-sm font-medium text-text">Přízvuky</div>
+        <div className="flex items-center justify-between">
+          <div className="text-sm font-medium text-text">Přízvuky</div>
+          <button
+            type="button"
+            onClick={() => setAdvancedOpen((open) => !open)}
+            aria-expanded={advancedOpen}
+            className="rounded-md border border-line bg-surface px-2 py-0.5 text-xs text-dim transition-colors hover:border-line-strong hover:text-text"
+          >
+            {advancedOpen ? "Skrýt pokročilé" : "Pokročilé"}
+          </button>
+        </div>
         <div className="mt-3">
           <BeatIndicator
             accentPattern={accentPattern}
             currentBeat={currentBeat}
             onCycle={cycleAccent}
+            soundPattern={soundPattern}
+            globalSound={sound}
+            showSoundDropdowns={advancedOpen}
+            onBeatSoundChange={changeBeatSound}
           />
         </div>
+        {advancedOpen && subdivision >= 2 ? (
+          <div className="mt-4 rounded-lg border border-line bg-surface p-3">
+            <label className="flex items-center justify-between gap-3 text-sm text-text">
+              <span>
+                Zvuk subdivizí{" "}
+                <span className="text-xs text-muted">(přebíjí každý tik mezi dobami)</span>
+              </span>
+              <select
+                aria-label="Zvuk subdivizí"
+                value={subdivisionSound ?? ""}
+                onChange={(event) => {
+                  const value = event.target.value;
+                  changeSubdivisionSound(
+                    value === "" ? undefined : (value as ClickSoundId),
+                  );
+                }}
+                className="rounded border border-line bg-surface px-2 py-1 text-xs text-text"
+              >
+                <option value="">Stejný jako doba</option>
+                {CLICK_SOUNDS.map((option) => (
+                  <option key={option.id} value={option.id}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <p className="mt-2 text-xs text-muted">
+              Tip: Hi-hat pro subdivize + Cvak/Dřevo na doby = jednoduchý
+              bicí groove.
+            </p>
+          </div>
+        ) : null}
       </div>
 
       <div className="mt-8 flex justify-center">

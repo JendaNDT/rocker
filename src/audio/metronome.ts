@@ -10,6 +10,7 @@ import type {
   AccentLevel,
   ClickSoundId,
   GapConfig,
+  PerBeatSound,
   RampConfig,
 } from "@/lib/metronomeConfig";
 import {
@@ -18,9 +19,11 @@ import {
   DEFAULT_GAP,
   DEFAULT_RAMP,
   defaultAccentPattern,
+  isClickSoundId,
   isSilentBar,
   nextRampBpm,
   resizeAccentPattern,
+  resizeSoundPattern,
   sanitizeGap,
   sanitizeRamp,
 } from "@/lib/metronomeConfig";
@@ -45,6 +48,18 @@ export interface MetronomeState {
   ramp: RampConfig;
   /** Gap trainer (alternating audible and silent bars). */
   gap: GapConfig;
+  /**
+   * Optional per-beat sound override (drum mode). Same length as
+   * accentPattern; non-null entries take precedence over `sound`.
+   * undefined = every beat uses `sound`.
+   */
+  soundPattern?: PerBeatSound;
+  /**
+   * Optional sound used for subdivision ticks. When set, every subdivision
+   * tick plays this sound (e.g. hi-hat over kick/snare). undefined =
+   * subdivisions play the beat's own sound.
+   */
+  subdivisionSound?: ClickSoundId;
   /** Beat currently sounding (0-based), or -1 when stopped or in a gap. */
   currentBeat: number;
   /** Bar currently sounding (0-based), or -1 when stopped. */
@@ -119,7 +134,20 @@ class Metronome {
 
   setBeatsPerBar(beatsPerBar: number): void {
     const pattern = resizeAccentPattern(this.state.accentPattern, beatsPerBar);
-    this.setState({ beatsPerBar, accentPattern: pattern });
+    const sounds = this.state.soundPattern
+      ? resizeSoundPattern(this.state.soundPattern, beatsPerBar)
+      : undefined;
+    const patch: Partial<MetronomeState> = {
+      beatsPerBar,
+      accentPattern: pattern,
+    };
+    // Keep the field absent when there is no override — every beat uses sound.
+    if (sounds && sounds.some((entry) => entry !== null)) {
+      patch.soundPattern = sounds;
+    } else if (this.state.soundPattern) {
+      patch.soundPattern = undefined;
+    }
+    this.setState(patch);
     // Re-align to a downbeat: a mid-play change shrinks ticksPerBar() and the
     // running currentTick could otherwise land on a stray, mis-accented tick.
     if (this.state.isPlaying) this.currentTick = 0;
@@ -146,6 +174,51 @@ class Metronome {
 
   setSound(sound: ClickSoundId): void {
     this.setState({ sound });
+  }
+
+  /**
+   * Replaces the whole per-beat sound pattern. Pass undefined to clear it
+   * (every beat then uses the global `sound`).
+   */
+  setSoundPattern(pattern: PerBeatSound | undefined): void {
+    if (!pattern) {
+      this.setState({ soundPattern: undefined });
+      return;
+    }
+    const resized = resizeSoundPattern(pattern, this.state.beatsPerBar);
+    // An all-null pattern is the "no override" state — drop it so the rest
+    // of the engine can keep checking soundPattern as a single truthy flag.
+    if (resized.every((entry) => entry === null)) {
+      this.setState({ soundPattern: undefined });
+    } else {
+      this.setState({ soundPattern: resized });
+    }
+  }
+
+  /**
+   * Sets the sound for a single beat. Pass null to clear the override on
+   * that beat (it falls back to the global `sound`).
+   */
+  setBeatSound(beat: number, sound: ClickSoundId | null): void {
+    if (beat < 0 || beat >= this.state.beatsPerBar) return;
+    const current =
+      this.state.soundPattern ??
+      Array.from({ length: this.state.beatsPerBar }, () => null as ClickSoundId | null);
+    const next: PerBeatSound = current.slice();
+    next[beat] = sound;
+    this.setSoundPattern(next);
+  }
+
+  /**
+   * Sets the sound used for every subdivision tick (e.g. hi-hat on 8ths).
+   * Pass undefined to clear it — subdivisions then play the beat's own sound.
+   */
+  setSubdivisionSound(sound: ClickSoundId | undefined): void {
+    if (sound === undefined) {
+      this.setState({ subdivisionSound: undefined });
+    } else if (isClickSoundId(sound)) {
+      this.setState({ subdivisionSound: sound });
+    }
   }
 
   setVolume(volume: number): void {
@@ -237,7 +310,10 @@ class Metronome {
   private scheduleTick(tick: number, time: number, bar: number): void {
     const silent = isSilentBar(bar, this.state.gap);
     this.queue.push({ tick, time, bar, silent });
-    if (!silent) this.playClick(time, this.clickKind(tick));
+    if (!silent) {
+      const kind = this.clickKind(tick);
+      this.playClick(time, kind, this.soundForTick(tick, kind));
+    }
   }
 
   /** Decides what a tick should sound like from the accent pattern. */
@@ -250,8 +326,22 @@ class Metronome {
     return level === "accent" ? "accent" : "beat";
   }
 
+  /**
+   * Picks the click sound for a tick. Precedence:
+   *  - subdivision tick  → subdivisionSound (if set) else beat's own sound
+   *  - beat tick         → soundPattern[beat] (if set) else global `sound`
+   */
+  private soundForTick(tick: number, kind: ClickKind): ClickSoundId {
+    const { subdivision, sound, soundPattern, subdivisionSound } = this.state;
+    if (kind === "sub" && subdivisionSound) return subdivisionSound;
+    const beatIndex = Math.floor(tick / subdivision);
+    const override = soundPattern?.[beatIndex];
+    if (override) return override;
+    return sound;
+  }
+
   /** Plays the selected synthesised click — no audio files needed. */
-  private playClick(time: number, kind: ClickKind): void {
+  private playClick(time: number, kind: ClickKind, sound: ClickSoundId): void {
     const context = this.context;
     if (!context || kind === "muted") return;
 
@@ -265,7 +355,7 @@ class Metronome {
     level *= this.state.volume;
     if (level < 0.0005) return;
 
-    switch (this.state.sound) {
+    switch (sound) {
       case "classic":
         this.playTone(
           context,

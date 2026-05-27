@@ -223,6 +223,10 @@ export function PowerChordTrainer() {
       metronome.setSubdivision(1);
       metronome.setBeatsPerBar(4);
       metronome.setBpm(stateRef.current.bpm);
+      // Drop any drum-mode overrides the user may have left on the metronome
+      // screen — the trainer expects a plain click on every beat.
+      metronome.setSoundPattern(undefined);
+      metronome.setSubdivisionSound(undefined);
       metronome.start(context);
     })();
   }
