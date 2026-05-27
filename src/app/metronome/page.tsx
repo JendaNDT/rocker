@@ -52,6 +52,7 @@ export default function MetronomePage() {
   const currentBeat = useMetronomeStore((state) => state.currentBeat);
   const ramp = useMetronomeStore((state) => state.ramp);
   const gap = useMetronomeStore((state) => state.gap);
+  const swing = useMetronomeStore((state) => state.swing);
   const soundPattern = useMetronomeStore((state) => state.soundPattern);
   const subdivisionSound = useMetronomeStore((state) => state.subdivisionSound);
 
@@ -84,6 +85,7 @@ export default function MetronomePage() {
     metronome.setAccentVolume(config.accentVolume);
     metronome.setRamp(config.ramp);
     metronome.setGap(config.gap);
+    metronome.setSwing(config.swing);
     metronome.setSoundPattern(config.soundPattern);
     metronome.setSubdivisionSound(config.subdivisionSound);
   }, []);
@@ -111,6 +113,7 @@ export default function MetronomePage() {
       accentVolume: state.accentVolume,
       ramp: state.ramp,
       gap: state.gap,
+      swing: state.swing,
       soundPattern: state.soundPattern,
       subdivisionSound: state.subdivisionSound,
     });
@@ -192,6 +195,11 @@ export default function MetronomePage() {
     syncConfig();
   }
 
+  function changeSwing(value: number) {
+    metronome.setSwing(value);
+    syncConfig();
+  }
+
   function applyPreset(preset: MetronomePreset) {
     metronome.setBpm(preset.bpm);
     metronome.setBeatsPerBar(preset.beatsPerBar);
@@ -202,6 +210,7 @@ export default function MetronomePage() {
     metronome.setAccentVolume(preset.accentVolume);
     metronome.setRamp(preset.ramp);
     metronome.setGap(preset.gap);
+    metronome.setSwing(preset.swing);
     metronome.setSoundPattern(preset.soundPattern);
     metronome.setSubdivisionSound(preset.subdivisionSound);
     syncConfig();
@@ -437,8 +446,11 @@ export default function MetronomePage() {
           <TrainerPanel
             ramp={ramp}
             gap={gap}
+            swing={swing}
+            subdivision={subdivision}
             onChangeRamp={changeRamp}
             onChangeGap={changeGap}
+            onChangeSwing={changeSwing}
           />
         </div>
       </div>

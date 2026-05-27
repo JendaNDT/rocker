@@ -38,7 +38,7 @@ Než příští session začne: přečíst `AGENTS.md` a `SKILL.md` (pravidla
 spolupráce), pak tento soubor.
 
 ## ✅ Hotovo
-**411 automatických testů**, vše prochází; `tsc` čistý. Roadmapa: Fáze 0–4
+**424 automatických testů**, vše prochází; `tsc` čistý. Roadmapa: Fáze 0–4
 hotové, Fáze 5 hotová (body 15–17; 18 vynechán), Fáze 6 z velké části
 hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
 
@@ -133,6 +133,24 @@ hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
   Gallop Trainer engine nepoužívá. +16 testů (`sanitizeSoundPattern`,
   `resizeSoundPattern`, `sanitizeSubdivisionSound`, extension testy
   `sanitizeMetronomeConfig`).
+  **Swing / Shuffle (2026-05-27, Fáze 2 z plánu vylepšení metronomu):**
+  `MetronomeConfig` rozšířen o `swing: number` (0.5–0.75, default 0.5 =
+  rovné osminy). Hodnoty: 0.5 rovné, ~0.667 jazzový triolový swing, 0.75
+  ostrý dotted shuffle. Žádný extra „enabled" flag — neutrální hodnota
+  stačí. Čistá lib funkce `swingedTickDuration(tickInBeat, baseDuration,
+  subdivision, swing)`: sudé ticky páru dostanou `2*swing`, liché
+  `2*(1-swing)`, součet páru zůstává `2*base` — beat sám zůstává přesně
+  v čase, posouvají se jen vnitřní subdivize. Funguje na `subdivision ∈
+  {2, 4}` (osminy a šestnáctiny); čtvrťové a trioly se nemění. Engine
+  scheduler v `metronome.ts` volá `swingedTickDuration` místo statického
+  `secondsPerTick`. UI v `TrainerPanel`: slider 50–75 % se zobrazí jako
+  první sekce nad Ramp a Gap, s dynamickým popiskem (rovné / lehký swing /
+  triolový / shuffle). Při `subdivision ∈ {1, 3}` je slider zašednutý
+  s hintem „Swing funguje jen na osminy a šestnáctiny". Power Chord
+  Trainer resetuje swing na 0.5 při startu (defenzivní — trenažér jede ve
+  čtvrtkách, ale příprava na případnou změnu). +13 testů
+  (`clampSwing`, `swingSupported`, `swingedTickDuration` ve všech
+  subdivizích, extension testy `sanitizeMetronomeConfig`).
 - **Responzivní PC rozvržení** — všech 16 obrazovek dostalo rozvržení
   pro PC, řízené stejným přepínačem Počítač/Mobil/Automaticky jako
   navigace (`useResolvedLayoutMode`). Tři znovupoužitelné díly:

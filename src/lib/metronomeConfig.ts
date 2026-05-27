@@ -108,6 +108,54 @@ export const TIME_SIGNATURES: TimeSignature[] = [
   },
 ];
 
+/**
+ * Swing / shuffle feel. 0.5 = straight eighths (no swing), 0.667 = triplet
+ * jazz swing, 0.75 = sharp dotted shuffle. Only the values inside this range
+ * are accepted; everything else clamps to 0.5.
+ */
+export const SWING_MIN = 0.5;
+export const SWING_MAX = 0.75;
+/** Default value — neutral, equivalent to "swing off". */
+export const DEFAULT_SWING = 0.5;
+
+/** Coerces an untrusted value into a valid swing ratio. */
+export function clampSwing(value: unknown): number {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    return DEFAULT_SWING;
+  }
+  return Math.max(SWING_MIN, Math.min(SWING_MAX, value));
+}
+
+/**
+ * Seconds a single subdivision tick should occupy, after applying swing.
+ * Even-indexed ticks (0, 2, …) take a `2*swing` share of the pair; odd
+ * ticks take the remaining `2*(1-swing)`. The pair sums to `2*baseDuration`,
+ * so the beat itself stays exactly on time — only its inner ticks slide.
+ *
+ * Swing applies to eighths (subdivision = 2) and sixteenths (subdivision = 4).
+ * Triplets (3) are already triplet — swinging them would warp them off-feel.
+ * Quarters (1) have nothing to swing.
+ */
+export function swingedTickDuration(
+  tickInBeat: number,
+  baseDuration: number,
+  subdivision: number,
+  swing: number,
+): number {
+  if (subdivision !== 2 && subdivision !== 4) return baseDuration;
+  const ratio = clampSwing(swing);
+  // The very first tick of every beat sits on the downbeat — for sixteenths
+  // the swing pairs are (0,1) and (2,3), so we look at parity within the pair.
+  const isOffbeat = tickInBeat % 2 === 1;
+  const weight = isOffbeat ? 2 * (1 - ratio) : 2 * ratio;
+  return baseDuration * weight;
+}
+
+/** True when the current subdivision lets swing have an audible effect. */
+export function swingSupported(subdivision: number): boolean {
+  return subdivision === 2 || subdivision === 4;
+}
+
 /** Identifier of a synthesised click sound. */
 export type ClickSoundId = "classic" | "wood" | "beep" | "click" | "hihat";
 
@@ -280,6 +328,11 @@ export interface MetronomeConfig {
   ramp: RampConfig;
   gap: GapConfig;
   /**
+   * Swing / shuffle feel for paired subdivisions. 0.5 = straight (off),
+   * 0.667 = jazz triplet, 0.75 = dotted shuffle.
+   */
+  swing: number;
+  /**
    * Optional per-beat sound override (drum mode). When set, each non-null
    * entry plays its own sound on that beat; null entries fall back to
    * `sound`. When undefined, every beat uses `sound` (= classic metronome).
@@ -312,6 +365,7 @@ export function defaultMetronomeConfig(): MetronomeConfig {
     accentVolume: 1,
     ramp: { ...DEFAULT_RAMP },
     gap: { ...DEFAULT_GAP },
+    swing: DEFAULT_SWING,
     // soundPattern and subdivisionSound stay undefined by default — a fresh
     // metronome behaves like the classic one until the user opens "Pokročilé".
   };
@@ -338,6 +392,7 @@ export function sanitizeMetronomeConfig(value: unknown): MetronomeConfig {
     ),
     ramp: sanitizeRamp(v.ramp),
     gap: sanitizeGap(v.gap),
+    swing: clampSwing(v.swing),
   };
   if (soundPattern) config.soundPattern = soundPattern;
   const subdivisionSound = sanitizeSubdivisionSound(v.subdivisionSound);

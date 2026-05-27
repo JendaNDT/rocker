@@ -46,6 +46,7 @@ export function MetronomeWidget() {
     metronome.setAccentVolume(config.accentVolume);
     metronome.setRamp(config.ramp);
     metronome.setGap(config.gap);
+    metronome.setSwing(config.swing);
     metronome.setSoundPattern(config.soundPattern);
     metronome.setSubdivisionSound(config.subdivisionSound);
   }, []);
@@ -65,6 +66,7 @@ export function MetronomeWidget() {
       accentVolume: state.accentVolume,
       ramp: state.ramp,
       gap: state.gap,
+      swing: state.swing,
       soundPattern: state.soundPattern,
       subdivisionSound: state.subdivisionSound,
     });

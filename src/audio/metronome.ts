@@ -15,9 +15,11 @@ import type {
 } from "@/lib/metronomeConfig";
 import {
   clamp01,
+  clampSwing,
   cycleAccent,
   DEFAULT_GAP,
   DEFAULT_RAMP,
+  DEFAULT_SWING,
   defaultAccentPattern,
   isClickSoundId,
   isSilentBar,
@@ -26,6 +28,7 @@ import {
   resizeSoundPattern,
   sanitizeGap,
   sanitizeRamp,
+  swingedTickDuration,
 } from "@/lib/metronomeConfig";
 import { clampBpm } from "@/lib/tempo";
 
@@ -48,6 +51,8 @@ export interface MetronomeState {
   ramp: RampConfig;
   /** Gap trainer (alternating audible and silent bars). */
   gap: GapConfig;
+  /** Swing / shuffle feel for paired subdivisions (0.5 = straight). */
+  swing: number;
   /**
    * Optional per-beat sound override (drum mode). Same length as
    * accentPattern; non-null entries take precedence over `sound`.
@@ -77,6 +82,7 @@ const INITIAL_STATE: MetronomeState = {
   accentVolume: 1,
   ramp: { ...DEFAULT_RAMP },
   gap: { ...DEFAULT_GAP },
+  swing: DEFAULT_SWING,
   currentBeat: -1,
   currentBar: -1,
 };
@@ -221,6 +227,11 @@ class Metronome {
     }
   }
 
+  /** Sets the swing / shuffle ratio (0.5 = straight, up to 0.75). */
+  setSwing(swing: number): void {
+    this.setState({ swing: clampSwing(swing) });
+  }
+
   setVolume(volume: number): void {
     this.setState({ volume: clamp01(volume) });
   }
@@ -285,8 +296,18 @@ class Metronome {
     if (!context) return;
     while (this.nextNoteTime < context.currentTime + SCHEDULE_AHEAD_S) {
       this.scheduleTick(this.currentTick, this.nextNoteTime, this.scheduledBar);
-      const secondsPerTick = 60 / this.state.bpm / this.state.subdivision;
-      this.nextNoteTime += secondsPerTick;
+      const { bpm, subdivision, swing } = this.state;
+      const baseDuration = 60 / bpm / subdivision;
+      // Swing slides the inner ticks of every beat — the beat itself stays
+      // exactly on time. tickInBeat is the position within the current beat
+      // (0..subdivision-1).
+      const tickInBeat = this.currentTick % subdivision;
+      this.nextNoteTime += swingedTickDuration(
+        tickInBeat,
+        baseDuration,
+        subdivision,
+        swing,
+      );
       const nextTick = (this.currentTick + 1) % this.ticksPerBar();
       if (nextTick === 0) {
         this.scheduledBar += 1;

@@ -4,9 +4,11 @@ import {
   clamp01,
   clampBeatsPerBar,
   clampSubdivision,
+  clampSwing,
   cycleAccent,
   DEFAULT_GAP,
   DEFAULT_RAMP,
+  DEFAULT_SWING,
   defaultAccentPattern,
   defaultMetronomeConfig,
   isClickSoundId,
@@ -22,6 +24,8 @@ import {
   sanitizeRamp,
   sanitizeSoundPattern,
   sanitizeSubdivisionSound,
+  swingedTickDuration,
+  swingSupported,
   TIME_SIGNATURES,
 } from "./metronomeConfig";
 
@@ -383,5 +387,87 @@ describe("sanitizeMetronomeConfig — per-beat extensions", () => {
     const config = defaultMetronomeConfig();
     expect(config.soundPattern).toBeUndefined();
     expect(config.subdivisionSound).toBeUndefined();
+  });
+});
+
+describe("clampSwing", () => {
+  it("keeps values inside the supported range", () => {
+    expect(clampSwing(0.5)).toBe(0.5);
+    expect(clampSwing(0.6)).toBe(0.6);
+    expect(clampSwing(0.75)).toBe(0.75);
+  });
+
+  it("clamps below 0.5 and above 0.75", () => {
+    expect(clampSwing(0)).toBe(0.5);
+    expect(clampSwing(0.9)).toBe(0.75);
+  });
+
+  it("falls back to the default for invalid input", () => {
+    expect(clampSwing("nope")).toBe(DEFAULT_SWING);
+    expect(clampSwing(Number.NaN)).toBe(DEFAULT_SWING);
+    expect(clampSwing(undefined)).toBe(DEFAULT_SWING);
+  });
+});
+
+describe("swingSupported", () => {
+  it("supports eighths and sixteenths", () => {
+    expect(swingSupported(2)).toBe(true);
+    expect(swingSupported(4)).toBe(true);
+  });
+
+  it("does not support quarters or triplets", () => {
+    expect(swingSupported(1)).toBe(false);
+    expect(swingSupported(3)).toBe(false);
+  });
+});
+
+describe("swingedTickDuration", () => {
+  // baseDuration of 1 makes the maths easy to read.
+  it("leaves a quarter beat unchanged (no subdivisions to swing)", () => {
+    expect(swingedTickDuration(0, 1, 1, 0.6)).toBe(1);
+  });
+
+  it("leaves triplets unchanged — already triplet-feel", () => {
+    expect(swingedTickDuration(0, 1, 3, 0.667)).toBe(1);
+    expect(swingedTickDuration(1, 1, 3, 0.667)).toBe(1);
+    expect(swingedTickDuration(2, 1, 3, 0.667)).toBe(1);
+  });
+
+  it("at swing 0.5 leaves eighths perfectly even", () => {
+    expect(swingedTickDuration(0, 1, 2, 0.5)).toBe(1);
+    expect(swingedTickDuration(1, 1, 2, 0.5)).toBe(1);
+  });
+
+  it("at swing 0.75 splits eighths 1.5 vs 0.5 (dotted shuffle)", () => {
+    expect(swingedTickDuration(0, 1, 2, 0.75)).toBe(1.5);
+    expect(swingedTickDuration(1, 1, 2, 0.75)).toBe(0.5);
+  });
+
+  it("at swing 2/3 splits eighths into triplet feel", () => {
+    const downbeat = swingedTickDuration(0, 1, 2, 2 / 3);
+    const offbeat = swingedTickDuration(1, 1, 2, 2 / 3);
+    expect(downbeat).toBeCloseTo(4 / 3, 6);
+    expect(offbeat).toBeCloseTo(2 / 3, 6);
+    // The pair must always add up to two base durations.
+    expect(downbeat + offbeat).toBeCloseTo(2, 6);
+  });
+
+  it("for sixteenths swings each pair independently", () => {
+    // ticks within a beat: (0, 1, 2, 3) → pairs (0,1) and (2,3)
+    expect(swingedTickDuration(0, 1, 4, 0.75)).toBe(1.5);
+    expect(swingedTickDuration(1, 1, 4, 0.75)).toBe(0.5);
+    expect(swingedTickDuration(2, 1, 4, 0.75)).toBe(1.5);
+    expect(swingedTickDuration(3, 1, 4, 0.75)).toBe(0.5);
+  });
+});
+
+describe("sanitizeMetronomeConfig — swing", () => {
+  it("clamps swing into range", () => {
+    expect(sanitizeMetronomeConfig({ swing: 0.9 }).swing).toBe(0.75);
+    expect(sanitizeMetronomeConfig({ swing: 0.4 }).swing).toBe(0.5);
+  });
+
+  it("defaults swing to 0.5 when missing", () => {
+    expect(sanitizeMetronomeConfig({}).swing).toBe(DEFAULT_SWING);
   });
 });

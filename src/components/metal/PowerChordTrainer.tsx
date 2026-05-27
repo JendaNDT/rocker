@@ -227,6 +227,9 @@ export function PowerChordTrainer() {
       // screen — the trainer expects a plain click on every beat.
       metronome.setSoundPattern(undefined);
       metronome.setSubdivisionSound(undefined);
+      // Quarters can't swing in practice, but reset to be defensive in case
+      // the trainer later moves to eighths.
+      metronome.setSwing(0.5);
       metronome.start(context);
     })();
   }
