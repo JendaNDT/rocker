@@ -15,6 +15,7 @@ import type {
 } from "@/lib/metronomeConfig";
 import {
   clamp01,
+  clampCountInBars,
   clampSwing,
   cycleAccent,
   DEFAULT_GAP,
@@ -53,6 +54,14 @@ export interface MetronomeState {
   gap: GapConfig;
   /** Swing / shuffle feel for paired subdivisions (0.5 = straight). */
   swing: number;
+  /** Count-in bars (0, 1 or 2) — played before the main tempo starts. */
+  countInBars: number;
+  /**
+   * True while the engine is in the count-in phase. Drives the small
+   * countdown widget on the screen. Set only by the scheduler; ignored
+   * by setters.
+   */
+  isCountingIn: boolean;
   /**
    * Optional per-beat sound override (drum mode). Same length as
    * accentPattern; non-null entries take precedence over `sound`.
@@ -83,6 +92,8 @@ const INITIAL_STATE: MetronomeState = {
   ramp: { ...DEFAULT_RAMP },
   gap: { ...DEFAULT_GAP },
   swing: DEFAULT_SWING,
+  countInBars: 0,
+  isCountingIn: false,
   currentBeat: -1,
   currentBar: -1,
 };
@@ -232,6 +243,11 @@ class Metronome {
     this.setState({ swing: clampSwing(swing) });
   }
 
+  /** Sets how many count-in bars (0, 1 or 2) play before the main tempo. */
+  setCountInBars(bars: number): void {
+    this.setState({ countInBars: clampCountInBars(bars) });
+  }
+
   setVolume(volume: number): void {
     this.setState({ volume: clamp01(volume) });
   }
@@ -256,11 +272,22 @@ class Metronome {
     if (this.state.isPlaying) this.stop();
     this.context = context;
     this.currentTick = 0;
-    this.scheduledBar = 0;
+    // Count-in plays its bars at indices -countInBars..-1; the user's first
+    // "real" downbeat sits at bar 0. The scheduledBar counter advances at
+    // every bar boundary just as before.
+    const countIn = this.state.countInBars;
+    this.scheduledBar = -countIn;
     this.rampBarCounter = 0;
     this.nextNoteTime = context.currentTime + 0.1;
     this.queue = [];
-    this.setState({ isPlaying: true, currentBeat: -1, currentBar: -1 });
+    this.setState({
+      isPlaying: true,
+      isCountingIn: countIn > 0,
+      currentBeat: -1,
+      // currentBar starts at the first count-in bar so the UI countdown
+      // ("2/2 taktů") can show as soon as the first tick sounds.
+      currentBar: countIn > 0 ? -countIn : -1,
+    });
     this.timerId = setInterval(() => this.scheduler(), LOOKAHEAD_MS);
     this.rafId = requestAnimationFrame(() => this.drawLoop());
   }
@@ -275,7 +302,12 @@ class Metronome {
       this.rafId = 0;
     }
     this.queue = [];
-    this.setState({ isPlaying: false, currentBeat: -1, currentBar: -1 });
+    this.setState({
+      isPlaying: false,
+      isCountingIn: false,
+      currentBeat: -1,
+      currentBar: -1,
+    });
   }
 
   toggle(context: AudioContext): void {
@@ -311,14 +343,19 @@ class Metronome {
       const nextTick = (this.currentTick + 1) % this.ticksPerBar();
       if (nextTick === 0) {
         this.scheduledBar += 1;
-        this.applyRamp();
+        this.applyRamp(this.scheduledBar);
       }
       this.currentTick = nextTick;
     }
   }
 
-  /** At each bar boundary, raises the tempo if the ramp trainer is due. */
-  private applyRamp(): void {
+  /**
+   * At each bar boundary, raises the tempo if the ramp trainer is due.
+   * Count-in bars (bar < 0) are excluded — the trainer kicks in only once
+   * the real performance begins.
+   */
+  private applyRamp(bar: number): void {
+    if (bar < 0) return;
     const { ramp } = this.state;
     if (!ramp.enabled) return;
     this.rampBarCounter += 1;
@@ -507,11 +544,17 @@ class Metronome {
       if (note && note.tick % this.state.subdivision === 0) {
         // A silent gap bar lights no dot; the bar counter still advances.
         const beat = note.silent ? -1 : note.tick / this.state.subdivision;
+        const isCountingIn = note.bar < 0;
         if (
           beat !== this.state.currentBeat ||
-          note.bar !== this.state.currentBar
+          note.bar !== this.state.currentBar ||
+          isCountingIn !== this.state.isCountingIn
         ) {
-          this.setState({ currentBeat: beat, currentBar: note.bar });
+          this.setState({
+            currentBeat: beat,
+            currentBar: note.bar,
+            isCountingIn,
+          });
         }
       }
     }

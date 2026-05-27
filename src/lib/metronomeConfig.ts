@@ -156,6 +156,15 @@ export function swingSupported(subdivision: number): boolean {
   return subdivision === 2 || subdivision === 4;
 }
 
+/** Maximum number of count-in bars the user can pick. */
+export const MAX_COUNT_IN_BARS = 2;
+
+/** Coerces an untrusted value into a valid count-in bar count (0..2). */
+export function clampCountInBars(value: unknown): number {
+  if (typeof value !== "number" || !Number.isFinite(value)) return 0;
+  return Math.max(0, Math.min(MAX_COUNT_IN_BARS, Math.round(value)));
+}
+
 /** Identifier of a synthesised click sound. */
 export type ClickSoundId = "classic" | "wood" | "beep" | "click" | "hihat";
 
@@ -333,6 +342,11 @@ export interface MetronomeConfig {
    */
   swing: number;
   /**
+   * Count-in bars played before the main tempo starts (0 = off, max 2).
+   * Trainers (e.g. Power Chord Trainer) override to 0.
+   */
+  countInBars: number;
+  /**
    * Optional per-beat sound override (drum mode). When set, each non-null
    * entry plays its own sound on that beat; null entries fall back to
    * `sound`. When undefined, every beat uses `sound` (= classic metronome).
@@ -366,6 +380,7 @@ export function defaultMetronomeConfig(): MetronomeConfig {
     ramp: { ...DEFAULT_RAMP },
     gap: { ...DEFAULT_GAP },
     swing: DEFAULT_SWING,
+    countInBars: 0,
     // soundPattern and subdivisionSound stay undefined by default — a fresh
     // metronome behaves like the classic one until the user opens "Pokročilé".
   };
@@ -393,6 +408,7 @@ export function sanitizeMetronomeConfig(value: unknown): MetronomeConfig {
     ramp: sanitizeRamp(v.ramp),
     gap: sanitizeGap(v.gap),
     swing: clampSwing(v.swing),
+    countInBars: clampCountInBars(v.countInBars),
   };
   if (soundPattern) config.soundPattern = soundPattern;
   const subdivisionSound = sanitizeSubdivisionSound(v.subdivisionSound);

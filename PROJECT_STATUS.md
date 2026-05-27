@@ -38,7 +38,7 @@ Než příští session začne: přečíst `AGENTS.md` a `SKILL.md` (pravidla
 spolupráce), pak tento soubor.
 
 ## ✅ Hotovo
-**424 automatických testů**, vše prochází; `tsc` čistý. Roadmapa: Fáze 0–4
+**430 automatických testů**, vše prochází; `tsc` čistý. Roadmapa: Fáze 0–4
 hotové, Fáze 5 hotová (body 15–17; 18 vynechán), Fáze 6 z velké části
 hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
 
@@ -151,6 +151,21 @@ hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
   čtvrtkách, ale příprava na případnou změnu). +13 testů
   (`clampSwing`, `swingSupported`, `swingedTickDuration` ve všech
   subdivizích, extension testy `sanitizeMetronomeConfig`).
+  **Count-in / Předtakt (2026-05-27, Fáze 3 z plánu vylepšení
+  metronomu):** `MetronomeConfig` rozšířen o `countInBars: number`
+  (0, 1, 2; default 0 = bez předtaktu). `clampCountInBars` zaokrouhluje
+  a clampuje, fallback 0. Engine: nový derivovaný stav `isCountingIn:
+  boolean` a `currentBar` se může pohybovat v záporném rozsahu během
+  count-in. `start()` nastavuje `scheduledBar = -countInBars`. `applyRamp`
+  ignoruje záporné takty (ramp trainer se aktivuje až od `bar >= 0`); gap
+  trainer (přes `isSilentBar`) také záporné takty přeskakuje. Zvuk během
+  count-in: stávající accent pattern + zvuk; žádné speciální tlumení —
+  jednoduché a drum mode automaticky funguje (kick/snare se ozve i v
+  předtaktu). UI: segmented control `Bez | 1 takt | 2 takty` v levém
+  sloupci nad tlačítkem Spustit. Pod tlačítkem countdown
+  „Předtakt: X/N takt(y)" s `aria-live="polite"`. Power Chord Trainer
+  resetuje `countInBars = 0` při startu — má vlastní beat-counter loop.
+  +6 testů (`clampCountInBars`, extension testy `sanitizeMetronomeConfig`).
 - **Responzivní PC rozvržení** — všech 16 obrazovek dostalo rozvržení
   pro PC, řízené stejným přepínačem Počítač/Mobil/Automaticky jako
   navigace (`useResolvedLayoutMode`). Tři znovupoužitelné díly:

@@ -53,6 +53,9 @@ export default function MetronomePage() {
   const ramp = useMetronomeStore((state) => state.ramp);
   const gap = useMetronomeStore((state) => state.gap);
   const swing = useMetronomeStore((state) => state.swing);
+  const countInBars = useMetronomeStore((state) => state.countInBars);
+  const isCountingIn = useMetronomeStore((state) => state.isCountingIn);
+  const currentBar = useMetronomeStore((state) => state.currentBar);
   const soundPattern = useMetronomeStore((state) => state.soundPattern);
   const subdivisionSound = useMetronomeStore((state) => state.subdivisionSound);
 
@@ -86,6 +89,7 @@ export default function MetronomePage() {
     metronome.setRamp(config.ramp);
     metronome.setGap(config.gap);
     metronome.setSwing(config.swing);
+    metronome.setCountInBars(config.countInBars);
     metronome.setSoundPattern(config.soundPattern);
     metronome.setSubdivisionSound(config.subdivisionSound);
   }, []);
@@ -114,6 +118,7 @@ export default function MetronomePage() {
       ramp: state.ramp,
       gap: state.gap,
       swing: state.swing,
+      countInBars: state.countInBars,
       soundPattern: state.soundPattern,
       subdivisionSound: state.subdivisionSound,
     });
@@ -200,6 +205,11 @@ export default function MetronomePage() {
     syncConfig();
   }
 
+  function changeCountInBars(value: number) {
+    metronome.setCountInBars(value);
+    syncConfig();
+  }
+
   function applyPreset(preset: MetronomePreset) {
     metronome.setBpm(preset.bpm);
     metronome.setBeatsPerBar(preset.beatsPerBar);
@@ -211,6 +221,7 @@ export default function MetronomePage() {
     metronome.setRamp(preset.ramp);
     metronome.setGap(preset.gap);
     metronome.setSwing(preset.swing);
+    metronome.setCountInBars(preset.countInBars);
     metronome.setSoundPattern(preset.soundPattern);
     metronome.setSubdivisionSound(preset.subdivisionSound);
     syncConfig();
@@ -337,7 +348,31 @@ export default function MetronomePage() {
         ) : null}
       </div>
 
-      <div className="mt-8 flex justify-center">
+      <div className="mt-8">
+        <div className="text-center text-xs font-medium text-dim">Předtakt</div>
+        <div className="mt-2 flex justify-center">
+          <div className="inline-flex rounded-lg border border-line p-1">
+            {[
+              { value: 0, label: "Bez" },
+              { value: 1, label: "1 takt" },
+              { value: 2, label: "2 takty" },
+            ].map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => changeCountInBars(option.value)}
+                className={
+                  countInBars === option.value ? SEGMENT_ACTIVE : SEGMENT_IDLE
+                }
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-4 flex flex-col items-center gap-2">
         <button
           type="button"
           onClick={togglePlay}
@@ -349,6 +384,12 @@ export default function MetronomePage() {
         >
           {isPlaying ? "Zastavit" : "Spustit"}
         </button>
+        {isPlaying && isCountingIn && countInBars > 0 ? (
+          <div className="text-xs text-accent" aria-live="polite">
+            Předtakt: {countInBars + currentBar + 1}/{countInBars}{" "}
+            {countInBars === 1 ? "takt" : "takty"}
+          </div>
+        ) : null}
       </div>
     </>
   );

@@ -3,6 +3,7 @@ import {
   CLICK_SOUNDS,
   clamp01,
   clampBeatsPerBar,
+  clampCountInBars,
   clampSubdivision,
   clampSwing,
   cycleAccent,
@@ -469,5 +470,41 @@ describe("sanitizeMetronomeConfig — swing", () => {
 
   it("defaults swing to 0.5 when missing", () => {
     expect(sanitizeMetronomeConfig({}).swing).toBe(DEFAULT_SWING);
+  });
+});
+
+describe("clampCountInBars", () => {
+  it("keeps 0, 1, 2", () => {
+    expect(clampCountInBars(0)).toBe(0);
+    expect(clampCountInBars(1)).toBe(1);
+    expect(clampCountInBars(2)).toBe(2);
+  });
+
+  it("clamps above 2 and below 0", () => {
+    expect(clampCountInBars(5)).toBe(2);
+    expect(clampCountInBars(-1)).toBe(0);
+  });
+
+  it("rounds fractions", () => {
+    expect(clampCountInBars(1.7)).toBe(2);
+    expect(clampCountInBars(0.4)).toBe(0);
+  });
+
+  it("falls back to 0 for invalid input", () => {
+    expect(clampCountInBars("nope")).toBe(0);
+    expect(clampCountInBars(Number.NaN)).toBe(0);
+    expect(clampCountInBars(undefined)).toBe(0);
+  });
+});
+
+describe("sanitizeMetronomeConfig — count-in", () => {
+  it("clamps countInBars", () => {
+    expect(sanitizeMetronomeConfig({ countInBars: 5 }).countInBars).toBe(2);
+    expect(sanitizeMetronomeConfig({ countInBars: -3 }).countInBars).toBe(0);
+  });
+
+  it("defaults countInBars to 0", () => {
+    expect(sanitizeMetronomeConfig({}).countInBars).toBe(0);
+    expect(defaultMetronomeConfig().countInBars).toBe(0);
   });
 });

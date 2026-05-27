@@ -230,6 +230,9 @@ export function PowerChordTrainer() {
       // Quarters can't swing in practice, but reset to be defensive in case
       // the trainer later moves to eighths.
       metronome.setSwing(0.5);
+      // No count-in inside the trainer — it has its own beat-counter loop
+      // and the user expects the click to start immediately.
+      metronome.setCountInBars(0);
       metronome.start(context);
     })();
   }
