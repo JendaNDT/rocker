@@ -38,7 +38,7 @@ Než příští session začne: přečíst `AGENTS.md` a `SKILL.md` (pravidla
 spolupráce), pak tento soubor.
 
 ## ✅ Hotovo
-**440 automatických testů**, vše prochází; `tsc` čistý. Roadmapa: Fáze 0–4
+**449 automatických testů**, vše prochází; `tsc` čistý. Roadmapa: Fáze 0–4
 hotové, Fáze 5 hotová (body 15–17; 18 vynechán), Fáze 6 z velké části
 hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
 
@@ -205,6 +205,34 @@ hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
   `Body | Kyvadlo` v sekci Přízvuky vedle tlačítka „Pokročilé".
   V `MetronomeWidget` na obrazovce Cvičení zůstávají body (kompaktní,
   bez toggle). +3 testy (`sanitizeVisualMode`).
+  **Tovární presety (2026-05-27, Fáze 6 z plánu vylepšení metronomu,
+  poslední):** nová konstanta `FACTORY_PRESETS: readonly
+  MetronomePreset[]` v `metronomePresets.ts` se šesti predefinovanými
+  presety, které využívají všechny předchozí fáze: **Blues shuffle**
+  (4/4 osminy, swing 2/3, kick/snare + hi-hat na osminy), **Metal
+  gallop** (4/4 šestnáctky, ramp 130→200 po 8 taktech, kick/snare),
+  **Funk groove** (4/4 šestnáctky, accent na 2+4, snare na 2+4, hi-hat
+  na 16.), **Waltz 3/4** (3/4 čtvrtky, accent jen na 1), **Jazz swing**
+  (4/4 osminy, swing 2/3, hi-hat na osminy), **Polyrytmus 3 proti 4**
+  (4/4 šestnáctky, polyrytmus 3 ticks/beat). Aproximace bicích zvuků
+  bere existujících 5 syntetizovaných: kick = „Cvak", snare = „Dřevo",
+  hi-hat = „Hi-hat". Helper `isFactoryPreset(id)` rozliší podle prefixu
+  `factory-`. Tovární presety procházejí přes `sanitizeMetronomeConfig`,
+  takže zůstávají validní i pokud se defaulty pohnou v dalším release.
+  UI: `PresetPanel` rozdělen na dvě sekce — **Tovární** nahoře
+  (read-only, jen tlačítko Použít) a **Moje** níže (stávající chování
+  s Uložit + Smazat). Tovární nejdou smazat — defenzivní guard
+  `isFactoryPreset(id)` v `handleDeletePreset` zahodí pokus, i kdyby
+  staré uložená data propašovala factory id do uživatelského seznamu.
+  Když uživatel chce vlastní verzi továrního presetu, klikne Použít,
+  upraví a uloží pod novým jménem přes stávající input. +9 testů
+  (`isFactoryPreset`, FACTORY_PRESETS integrita, ids, swing/ramp/poly
+  obsah).
+
+  **Tím je 6-fázový plán vylepšení metronomu hotový.** Bonus přibyly:
+  per-beat zvuk (drum mode), swing/shuffle, count-in, polyrytmus,
+  vizuální kyvadlo, 6 továrních presetů. Bonus k Bodu 4 z roadmapy.
+  Vše čeká na ruční ověření Jendou.
 - **Responzivní PC rozvržení** — všech 16 obrazovek dostalo rozvržení
   pro PC, řízené stejným přepínačem Počítač/Mobil/Automaticky jako
   navigace (`useResolvedLayoutMode`). Tři znovupoužitelné díly:

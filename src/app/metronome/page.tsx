@@ -20,6 +20,7 @@ import type {
   RampConfig,
 } from "@/lib/metronomeConfig";
 import { CLICK_SOUNDS, TIME_SIGNATURES } from "@/lib/metronomeConfig";
+import { FACTORY_PRESETS, isFactoryPreset } from "@/lib/metronomePresets";
 import { bpmFromTaps, clampBpm, MAX_BPM, MIN_BPM } from "@/lib/tempo";
 import { useHydrated } from "@/lib/useHydrated";
 import { useMetronomeStore } from "@/stores/metronomeStore";
@@ -250,6 +251,10 @@ export default function MetronomePage() {
   }
 
   function handleDeletePreset(id: string) {
+    // Defensive: the UI never wires a delete button for factory presets,
+    // but if some old saved data sneaks a factory- id into `presets`, drop
+    // the request rather than persisting a "user-deleted factory" entry.
+    if (isFactoryPreset(id)) return;
     const preset = presets.find((item) => item.id === id);
     const label = preset ? `„${preset.name}"` : "tento preset";
     if (
@@ -546,6 +551,7 @@ export default function MetronomePage() {
 
       <div className="mt-6">
         <PresetPanel
+          factoryPresets={FACTORY_PRESETS}
           presets={presets}
           hydrated={hydrated}
           onSave={handleSavePreset}
