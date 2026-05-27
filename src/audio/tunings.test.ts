@@ -17,6 +17,61 @@ describe("getTuning", () => {
       expect(tuning.strings).toHaveLength(6);
     }
   });
+
+  it("every tuning's strings ascend in MIDI low to high", () => {
+    // The Guided tuner labels strings 6→1 left to right; the data is stored
+    // low (6th) to high (1st) and every entry should be strictly monotonic
+    // so the UI doesn't show a string out of order.
+    for (const tuning of TUNINGS) {
+      for (let i = 1; i < tuning.strings.length; i += 1) {
+        expect(tuning.strings[i].midi).toBeGreaterThan(
+          tuning.strings[i - 1].midi,
+        );
+      }
+    }
+  });
+
+  it("contains the three open / alternate tunings added in Phase 3A", () => {
+    expect(TUNINGS.some((t) => t.id === "open-g")).toBe(true);
+    expect(TUNINGS.some((t) => t.id === "open-d")).toBe(true);
+    expect(TUNINGS.some((t) => t.id === "dadgad")).toBe(true);
+  });
+
+  it("Open G is D G D G B D", () => {
+    const tuning = getTuning("open-g");
+    expect(tuning.strings.map((s) => s.note)).toEqual([
+      "D2",
+      "G2",
+      "D3",
+      "G3",
+      "B3",
+      "D4",
+    ]);
+  });
+
+  it("Open D is D A D F# A D", () => {
+    const tuning = getTuning("open-d");
+    expect(tuning.strings.map((s) => s.note)).toEqual([
+      "D2",
+      "A2",
+      "D3",
+      "F#3",
+      "A3",
+      "D4",
+    ]);
+  });
+
+  it("DADGAD is D A D G A D", () => {
+    const tuning = getTuning("dadgad");
+    expect(tuning.strings.map((s) => s.note)).toEqual([
+      "D2",
+      "A2",
+      "D3",
+      "G3",
+      "A3",
+      "D4",
+    ]);
+  });
 });
 
 describe("nearestString", () => {

@@ -90,6 +90,42 @@ export const TUNINGS: Tuning[] = [
       { note: "C#4", midi: 61 },
     ],
   },
+  {
+    id: "open-g",
+    label: "Open G (D G D G B D)",
+    strings: [
+      { note: "D2", midi: 38 },
+      { note: "G2", midi: 43 },
+      { note: "D3", midi: 50 },
+      { note: "G3", midi: 55 },
+      { note: "B3", midi: 59 },
+      { note: "D4", midi: 62 },
+    ],
+  },
+  {
+    id: "open-d",
+    label: "Open D (D A D F# A D)",
+    strings: [
+      { note: "D2", midi: 38 },
+      { note: "A2", midi: 45 },
+      { note: "D3", midi: 50 },
+      { note: "F#3", midi: 54 },
+      { note: "A3", midi: 57 },
+      { note: "D4", midi: 62 },
+    ],
+  },
+  {
+    id: "dadgad",
+    label: "DADGAD (D A D G A D)",
+    strings: [
+      { note: "D2", midi: 38 },
+      { note: "A2", midi: 45 },
+      { note: "D3", midi: 50 },
+      { note: "G3", midi: 55 },
+      { note: "A3", midi: 57 },
+      { note: "D4", midi: 62 },
+    ],
+  },
 ];
 
 export const DEFAULT_TUNING_ID = "standard";
