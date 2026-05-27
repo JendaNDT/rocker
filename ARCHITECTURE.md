@@ -100,11 +100,12 @@ CSS proměnné v `src/app/theme-tokens.css` pro 6 kombinací; Tailwind v4
 aktivní. `ThemeProvider` (mountovaný v `AppShell`) synchronizuje volbu ze
 `settingsStore` na atributy `data-theme`/`data-mode` na `<html>` a v auto
 režimu sleduje `prefers-color-scheme`. Výjimky čtoucí téma přímo:
-`VintageFrame` (mosazné cvočky jen ve Vintage) a od 2026-05-26 i pět
+`VintageFrame` (mosazné cvočky jen ve Vintage) a od 2026-05-26 i šest
 polymorfních widgetů, kde se mění **forma** (ne jen barva): `CentsBar`
 (ladička), `InputLevelMeter` (VU), `BeatIndicator` (mince/LED/orb),
-`KnobControl` (otočné knoby v Aparátu a hlasitosti metronomu) a
-`NotationViewer` rám displeje not. Všechny čtou téma přes sdílený hook
+`KnobControl` (otočné knoby v Aparátu a hlasitosti metronomu),
+`NotationViewer` rám displeje not a od 2026-05-27 i `Pendulum` —
+alternativní vizualizace metronomu (Wittner kyvadlo) v sekci Přízvuky. Všechny čtou téma přes sdílený hook
 `useActiveTheme()` v `src/lib/`, který vrátí téma až po hydrataci (jinak
 `null`) — komponenta tak má SSR-safe default fallback.
 
@@ -124,6 +125,10 @@ Oddělené malé stores podle domény (aktuální stav):
   (persist do localStorage). Načtená data prochází validací (`merge`).
 - `audioStore` — zrcadlo stavu audio enginu (běží/neběží, latence, zařízení).
 - `metronomeStore` — zrcadlo stavu metronomu.
+- `metronomeSettingsStore` — persistovaný konfig metronomu + presety
+  + `visualMode: "dots" | "pendulum"` (globální preference, mimo
+  config — uživatel má typicky jednu oblíbenou vizualizaci napříč
+  všemi presety). Sanitizace na rehydrate.
 - `gallopPlayerStore` — zrcadlo stavu gallop přehrávače (Bod 12).
 - `riffPlayerStore` — zrcadlo stavu přehrávače riffů (Bod 12).
 - `lessonProgressStore` — dokončené lekce (persist do localStorage).
@@ -182,6 +187,16 @@ s `persist` přežijí restart.
   (skládání smyček) z Bodu 17, `wav` (kódování WAV).
 - **Záloha dat** — `backup`: sestavení a validace přenosné zálohy
   localStorage dat (export/import nastavení a pokroku do JSON souboru).
+- **Metronom — config a presety** — `metronomeConfig` drží celý
+  `MetronomeConfig` schéma se sanitizéry (`sanitizeMetronomeConfig`)
+  a čistou funkci `swingedTickDuration` pro asymetrické posouvání
+  vnitřních subdivizí v scheduleru. `metronomePresets` má pomocníky
+  `createPreset` / `sanitizePresetList` plus konstanta
+  `FACTORY_PRESETS` se šesti read-only presety (Blues shuffle, Metal
+  gallop, Funk groove, Waltz 3/4, Jazz swing, Polyrytmus 3 proti 4)
+  a helper `isFactoryPreset(id)`. Tovární presety procházejí přes
+  `sanitizeMetronomeConfig`, takže zůstávají validní i po pozdějších
+  defaultech.
 
 ### 2.5 Audio engine
 
@@ -277,6 +292,22 @@ Metronom nesmí používat JavaScript časovače (`setTimeout`/`setInterval`) �
 ty na mobilu "ujíždějí". Správné řešení (vzor "A Tale of Two Clocks" od
 Chrise Wilsona): plánovat klikání dopředu s ~25 ms lookahead oknem přímo na
 audio časové ose. To samé platí pro count-in v riff traineru.
+
+Engine `metronome.ts` má dvě paralelní smyčky ve stejném `scheduler()`
+callbacku: **hlavní** (s accent patternem, swingem a drum modem
+přes `soundPattern` / `subdivisionSound`) a **sekundární polyrhythm**
+(vlastní `ticksPerBeat`, vlastní zvuk a hlasitost). Polyrytmus je
+fázově zarovnaný na hlavní downbeat při `start()` a zůstává tichý
+během count-in (`bar < 0`) i během silent bar gap traineru. Count-in
+je realizovaný záporným `scheduledBar` — ramp i gap se aktivují
+až od `bar >= 0`. Swing posouvá vnitřní subdivize (osminy /
+šestnáctky); sám beat zůstává v čase. Drum mode hraje per-beat
+zvuky přes `soundPattern` (kick/snare na 1/2/3/4) a separátní
+`subdivisionSound` na vnitřní ticky (hi-hat). Drum mode + swing
++ polyrhythm kombinují bez vzájemné kolize. Power Chord Trainer
+sdílí engine, ale resetuje `soundPattern`, `subdivisionSound`,
+`swing`, `countInBars` a `polyrhythm.enabled` při startu, aby
+uživatelovo nastavení nepřeteklo do trenažéru.
 
 ### 3.5 Latence — realistická očekávání
 

@@ -15,11 +15,12 @@ IndexedDB (přes `idb`) pro velké bloby — nahrávky.
 ## ⏭️ Příští krok
 Roadmapa je prakticky hotová — body 1–21 dokončené (18 a 20 vědomě
 vynechané), zbývá poslední **Bod 22 (sdílení a organizace)**. Nad rámec
-roadmapy přibylo 9 vylepšení (vzhledy, šumová brána + autokalibrace,
+roadmapy přibylo 10 vln vylepšení (vzhledy, šumová brána + autokalibrace,
 upozornění na verzi, krok vzhledu v úvodu, záloha dat, rozšířený
 metronom, responzivní PC rozvržení, polymorfní widgety vzhledů
-inspirované Soltonem, AmpWidget na obrazovkách Cvičení a Metal) — vše
-nasazené.
+inspirované Soltonem, AmpWidget na obrazovkách Cvičení a Metal,
+**šestifázový upgrade metronomu** s drum modem, swingem, count-in,
+polyrytmem, vizuálním kyvadlem a továrními presety) — vše nasazené.
 
 Otevřené úkoly:
 - **Bod 22 (sdílení a organizace)** — poslední bod roadmapy. Záloha dat
@@ -27,7 +28,11 @@ Otevřené úkoly:
 - **Reálné testy s kytarou — na Jendovi.** **Aparát** (Bod 16) a **Studio
   / Looper** (Bod 17) jsou postavené naslepo — zvuk, latence i overdub
   NEOVĚŘENÉ. Palm Mute Studio — prahy v `useMuteDetector.ts` můžou chtít
-  doladit. Hodila by se jedna seance s kytarou.
+  doladit. Hodila by se jedna seance s kytarou. **Metronom** —
+  šestifázový upgrade (drum mode, swing, count-in, polyrytmus, kyvadlo,
+  factory presety) je kompletně postavený, Jenda po hlavní ověření jen
+  jednu věc (`accentVolume`) — opraveno. Zbývá detailní reálné poslechové
+  ověření drum módu, polyrytmu a kyvadla v různých vzhledech.
 - **Beta test s 5–10 lidmi** — vědomě odložený, lze provést kdykoliv.
 
 Pozn.: plný `npm run build` se v sandboxu nedá ověřit (EPERM — známý quirk,

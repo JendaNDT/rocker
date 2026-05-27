@@ -61,8 +61,10 @@ Sample-accurate scheduler (lookahead, žádný `setTimeout`). 40–240 BPM, takt
 (Web Vibration API na Androidu).
 *Výsledek:* spolehlivý metronom bez driftu.
 *Stav:* hotovo — build, `tsc` i testy (28) ověřené. Reálný test je na Jendovi.
-*Pozn.:* metronom byl později rozšířen nad rámec původního zadání — viz
-sekce „Mimo roadmapu" níže (rozšířený metronom).
+*Pozn.:* metronom byl později rozšířen ve dvou vlnách nad rámec
+původního zadání — viz sekce „Mimo roadmapu" níže (Rozšířený metronom
+a Šestifázový upgrade s drum modem, swingem, count-in, polyrytmem,
+kyvadlem a továrními presety).
 
 ### ✅ Bod 5 — Knihovna akordů a stupnic
 SVG diagramy akordů (open, barré, power), prstoklad, barré indikátor, audio
@@ -323,6 +325,41 @@ Metronom (Bod 4) rozšířen o: 7 taktových měr (2/4, 3/4, 4/4, 5/4, 6/8, 7/8,
 hlasitost metronomu a přízvuku, trenažér tempa (progresivní zrychlování
 a „cvičné ticho" — gap trainer) a presety s persistencí nastavení mezi
 spuštěními. Detaily v `PROJECT_STATUS.md`.
+
+### ✅ Metronom — šestifázový upgrade (2026-05-27)
+Druhá vlna rozšíření metronomu nad rámec první, postavená přes šest
+fází po sobě. Detaily a důvody v `PROJECT_STATUS.md`, tady jen
+seznam toho, co přibylo:
+
+- **F1 — Per-beat zvuk (drum mode):** každá doba může mít jiný zvuk
+  (kick/snare/hi-hat), plus samostatný zvuk pro subdivize. Skrytý pod
+  toggle „Pokročilé" v sekci Přízvuky, aby základní UI zůstalo
+  jednoduché. `MetronomeConfig.soundPattern` a `subdivisionSound`,
+  oboje volitelná pole se zpětnou kompatibilitou.
+- **F2 — Swing / Shuffle:** slider 50–75 % posouvá vnitřní subdivize
+  beatu (osminy a šestnáctky); beat sám zůstává v čase. Klasický
+  Wittner cyklus: 50 % rovné, 67 % jazz triolový, 75 % dotted shuffle.
+  Trojky a čtvrtky se nemění.
+- **F3 — Count-in (předtakt):** 0, 1 nebo 2 takty „naprázdno" před
+  spuštěním. Ramp a gap trainer ignorují záporné takty. UI countdown
+  „Předtakt: X/N takt(y)" pod tlačítkem Spustit.
+- **F4 — Polyrytmus (sekundární vrstva):** druhá nezávislá smyčka
+  v `scheduler()` plánuje N ticks/beat s vlastním zvukem a hlasitostí.
+  Klasické 3-proti-4 cvičení. Tichá během count-in a gap silent bar.
+- **F5 — Vizuální kyvadlo (Pendulum):** alternativa k BeatIndicatoru,
+  polymorfní (Studio chrom, Vintage Solton brass, Glassy neon, default).
+  Sinusoidální Wittner easing, jedna sekvence = 2 doby, ±45°. Polish:
+  brightness flash na každou akcentní dobu (260 ms, univerzální CSS
+  keyframe). Globální preference `visualMode` v
+  `metronomeSettingsStore` mimo `config`.
+- **F6 — Tovární presety:** 6 read-only presetů využívajících všechny
+  předchozí fáze (Blues shuffle s swingem a kick/snare, Metal gallop
+  s rampem, Funk groove se snare na 2+4, Waltz 3/4, Jazz swing,
+  Polyrytmus 3 proti 4). `PresetPanel` rozdělen na sekce „Tovární"
+  a „Moje".
+
+Plus drobný fix `accentVolume` na extra-gain model
+(0 % = bez přízvuku, 100 % = max).
 
 ### ✅ Responzivní PC rozvržení
 Všech 16 obrazovek dostalo rozvržení pro PC — dosud měla appka na počítači

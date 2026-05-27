@@ -26,7 +26,11 @@ metr, knoby, beat-mince, rám not.
 - **Ladička** — Pitchy detekce, vedený i chromatický režim, 6 ladění,
   šumová brána s autokalibrací
 - **Metronom** — sample-accurate scheduler, 7 taktových měr, presety,
-  trenažér tempa s progresivním zrychlováním
+  trenažér tempa s progresivním zrychlováním a „cvičným tichem", swing /
+  shuffle feel (50–75 %), počítadlo předtaktu (count-in), drum mode
+  (kick/snare/hi-hat per dobu), polyrytmus (3 proti 4 cvičení),
+  alternativní vizualizace **Wittner kyvadlem** s accent flashem,
+  6 továrních presetů (Blues shuffle, Metal gallop, Funk groove…)
 - **Cvičení** — Riff Trainer + YouTube Practice Player (A/B smyčka,
   slow-down) + Surgical Mode (drill problémového místa)
 - **AI tutor** — chat „zeptej se", generátor cvičení, zpětná vazba —
@@ -52,7 +56,7 @@ Lekce: 18 vestavěných lekcí (Stage 1–3) s „Try it" detekcí tónu.
 - **Audio**: Web Audio API + getUserMedia, detekce tónů přes Pitchy
 - **Notace**: @coderline/alphatab (SONiVOX soundfont)
 - **AI**: Google Gemini API (BYOK, bez proxy serveru)
-- **Testy**: Vitest (395 testů, čistá logika v `src/lib/`)
+- **Testy**: Vitest (449 testů, čistá logika v `src/lib/`)
 - **PWA**: ručně psaný service worker, manifest, instalovatelnost
 - **Nasazení**: Vercel, auto-deploy z `main`
 
@@ -99,7 +103,9 @@ najdeš v ostatních dokumentech repa:
 Nad rámec roadmapy: 3 přepínatelné vzhledy + polymorfní widgety
 (Solton-inspired Vintage), audit a opravy, šumová brána, upozornění
 na novou verzi, záloha dat, Vercel deploy, rozšířený metronom,
-responzivní PC rozvržení, Stage 3 lekce.
+responzivní PC rozvržení, Stage 3 lekce. **Šestifázový upgrade
+metronomu** (2026-05-27): per-beat zvuk, swing, count-in, polyrytmus,
+vizuální kyvadlo, tovární presety.
 
 Detaily v `ROADMAP.md` a `PROJECT_STATUS.md`.
 
