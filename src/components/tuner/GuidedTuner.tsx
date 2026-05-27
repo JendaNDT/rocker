@@ -1,6 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import {
+  playConfirmationChime,
+  pulseHaptic,
+} from "@/audio/confirmationSound";
 import { ReferenceTone } from "@/audio/referenceTone";
 import { nearestString } from "@/audio/tunings";
 import type { Tuning } from "@/audio/tunings";
@@ -11,6 +15,9 @@ import { useSettingsStore } from "@/stores/settingsStore";
 
 // Within this many cents a string counts as in tune.
 const IN_TUNE_CENTS = 5;
+// How long the string must stay in the in-tune zone before the chime fires.
+// Filters out brief zero-crossings while the user is still turning the peg.
+const CONFIRM_HOLD_MS = 400;
 
 /**
  * Guided tuner — shows the six strings of a tuning, highlights the one being
@@ -28,14 +35,22 @@ export function GuidedTuner({
   const [tuned, setTuned] = useState<Set<number>>(new Set());
   const [playingIndex, setPlayingIndex] = useState<number | null>(null);
   const referenceTone = useRef<ReferenceTone | null>(null);
-  // Read the volume through a ref so changing the slider mid-press doesn't
-  // require restarting the tone — the next play() call picks up the value.
+  // Read settings through refs so live toggles don't tear down the
+  // pitch-detection loop or the reference-tone player.
   const volumeRef = useRef(
     useSettingsStore.getState().referenceToneVolume,
+  );
+  const confirmSoundRef = useRef(
+    useSettingsStore.getState().tunerConfirmSound,
+  );
+  const confirmHapticRef = useRef(
+    useSettingsStore.getState().tunerConfirmHaptic,
   );
   useEffect(() => {
     return useSettingsStore.subscribe((state) => {
       volumeRef.current = state.referenceToneVolume;
+      confirmSoundRef.current = state.tunerConfirmSound;
+      confirmHapticRef.current = state.tunerConfirmHaptic;
     });
   }, []);
 
@@ -82,6 +97,37 @@ export function GuidedTuner({
       });
     }
   }, [activeIndex, activeCents]);
+
+  // Confirmation chime / haptic when a string holds in-tune for ~400 ms.
+  // confirmedIndexRef tracks which string has already chimed so the same
+  // string can't keep re-triggering while the user sits in the zone — it
+  // re-confirms only after leaving the zone (or after the user moves on
+  // to a different string and comes back).
+  const confirmedIndexRef = useRef<number | null>(null);
+  useEffect(() => {
+    // Moving to a different string clears the prior confirmation so the
+    // new string can chime fresh — and so coming *back* to the original
+    // string later also gets fresh feedback.
+    if (activeIndex !== confirmedIndexRef.current) {
+      confirmedIndexRef.current = null;
+    }
+    if (activeIndex === null || !activeInTune) {
+      // Stopped playing, or drifted out of the zone — allow re-confirm
+      // next time it lands in tune.
+      if (!activeInTune && confirmedIndexRef.current === activeIndex) {
+        confirmedIndexRef.current = null;
+      }
+      return;
+    }
+    if (confirmedIndexRef.current === activeIndex) return;
+
+    const timer = setTimeout(() => {
+      confirmedIndexRef.current = activeIndex;
+      if (confirmSoundRef.current) playConfirmationChime();
+      if (confirmHapticRef.current) pulseHaptic();
+    }, CONFIRM_HOLD_MS);
+    return () => clearTimeout(timer);
+  }, [activeIndex, activeInTune]);
 
   return (
     <div className="rounded-lg border border-line bg-surface p-6">

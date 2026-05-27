@@ -66,6 +66,19 @@ interface SettingsState {
    */
   referenceToneVolume: number;
   setReferenceToneVolume: (volume: number) => void;
+  /**
+   * Play a short chime when the Guided tuner detects a string has settled
+   * in the in-tune zone. Off by default — the user opts in.
+   */
+  tunerConfirmSound: boolean;
+  setTunerConfirmSound: (enabled: boolean) => void;
+  /**
+   * Fire a haptic pulse when the Guided tuner detects a string has settled
+   * in the in-tune zone. Off by default. Silently a no-op on devices that
+   * do not support navigator.vibrate (iOS Safari).
+   */
+  tunerConfirmHaptic: boolean;
+  setTunerConfirmHaptic: (enabled: boolean) => void;
   /** Whether the first-run onboarding has been completed or skipped. */
   onboarded: boolean;
   setOnboarded: (onboarded: boolean) => void;
@@ -96,6 +109,11 @@ export const useSettingsStore = create<SettingsState>()(
       referenceToneVolume: DEFAULT_REFERENCE_TONE_VOLUME,
       setReferenceToneVolume: (volume) =>
         set({ referenceToneVolume: clampReferenceVolume(volume) }),
+      tunerConfirmSound: false,
+      setTunerConfirmSound: (enabled) => set({ tunerConfirmSound: enabled }),
+      tunerConfirmHaptic: false,
+      setTunerConfirmHaptic: (enabled) =>
+        set({ tunerConfirmHaptic: enabled }),
       onboarded: false,
       setOnboarded: (onboarded) => set({ onboarded }),
     }),
@@ -155,6 +173,12 @@ export const useSettingsStore = create<SettingsState>()(
             safe.referenceToneVolume = clampReferenceVolume(
               stored.referenceToneVolume,
             );
+          }
+          if (typeof stored.tunerConfirmSound === "boolean") {
+            safe.tunerConfirmSound = stored.tunerConfirmSound;
+          }
+          if (typeof stored.tunerConfirmHaptic === "boolean") {
+            safe.tunerConfirmHaptic = stored.tunerConfirmHaptic;
           }
           if (typeof stored.zenMode === "boolean") {
             safe.zenMode = stored.zenMode;
