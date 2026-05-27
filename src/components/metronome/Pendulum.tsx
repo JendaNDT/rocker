@@ -26,14 +26,17 @@ export function Pendulum() {
   const isPlaying = useMetronomeStore((state) => state.isPlaying);
   const bpm = useMetronomeStore((state) => state.bpm);
   const currentBeat = useMetronomeStore((state) => state.currentBeat);
+  const accentPattern = useMetronomeStore((state) => state.accentPattern);
 
   const armRef = useRef<HTMLDivElement>(null);
+  const boxRef = useRef<HTMLDivElement>(null);
   // Live refs let the rAF loop read the latest values without re-creating.
   const bpmRef = useRef(bpm);
   const beatRef = useRef(currentBeat);
   const beatStartRef = useRef<number>(
     typeof performance !== "undefined" ? performance.now() : 0,
   );
+  const lastFlashBeatRef = useRef(-1);
 
   // Sync refs whenever React renders with new values.
   bpmRef.current = bpm;
@@ -44,6 +47,28 @@ export function Pendulum() {
       beatStartRef.current = performance.now();
     }
   }, [currentBeat]);
+
+  // Flash the whole box briefly whenever an accented beat starts. The CSS
+  // class `pendulum-accent-flash` lives in globals.css and runs a 220 ms
+  // brightness flash via @keyframes.
+  useEffect(() => {
+    if (currentBeat < 0) return;
+    if (currentBeat === lastFlashBeatRef.current) return;
+    lastFlashBeatRef.current = currentBeat;
+    if (accentPattern[currentBeat] !== "accent") return;
+    const box = boxRef.current;
+    if (!box) return;
+    box.classList.remove("pendulum-accent-flash");
+    // Force reflow so removing+re-adding the class restarts the animation
+    // even when two accent beats land back-to-back.
+    void box.offsetWidth;
+    box.classList.add("pendulum-accent-flash");
+    const timeout = setTimeout(
+      () => box.classList.remove("pendulum-accent-flash"),
+      260,
+    );
+    return () => clearTimeout(timeout);
+  }, [currentBeat, accentPattern]);
 
   // Single rAF loop while the metronome is playing.
   useEffect(() => {
@@ -77,42 +102,51 @@ export function Pendulum() {
     return () => cancelAnimationFrame(raf);
   }, [isPlaying]);
 
-  if (theme === "studio") return <StudioPendulum armRef={armRef} />;
-  if (theme === "vintage") return <VintagePendulum armRef={armRef} />;
-  if (theme === "glassy") return <GlassyPendulum armRef={armRef} />;
-  return <DefaultPendulum armRef={armRef} />;
+  if (theme === "studio")
+    return <StudioPendulum armRef={armRef} boxRef={boxRef} />;
+  if (theme === "vintage")
+    return <VintagePendulum armRef={armRef} boxRef={boxRef} />;
+  if (theme === "glassy")
+    return <GlassyPendulum armRef={armRef} boxRef={boxRef} />;
+  return <DefaultPendulum armRef={armRef} boxRef={boxRef} />;
 }
 
-type PendulumProps = { armRef: React.RefObject<HTMLDivElement | null> };
+type PendulumProps = {
+  armRef: React.RefObject<HTMLDivElement | null>;
+  boxRef: React.RefObject<HTMLDivElement | null>;
+};
 
 /** Container that hosts the arm — common to every theme. */
 function PendulumBox({
   children,
+  boxRef,
   background,
   border,
   bevel,
 }: {
   children: React.ReactNode;
+  boxRef?: React.RefObject<HTMLDivElement | null>;
   background?: string;
   border?: string;
   bevel?: string;
 }) {
   return (
     <div
-      className="relative mx-auto"
+      ref={boxRef}
+      className="pendulum-box relative mx-auto"
       style={{
-        width: 160,
-        height: 140,
+        width: 240,
+        height: 220,
         background,
         border,
-        borderRadius: 12,
+        borderRadius: 14,
         boxShadow: bevel,
       }}
     >
       {/* The pivot sits at the bottom centre. */}
       <div
         className="absolute"
-        style={{ left: "50%", bottom: 16, transform: "translateX(-50%)" }}
+        style={{ left: "50%", bottom: 22, transform: "translateX(-50%)" }}
       >
         {children}
       </div>
@@ -121,9 +155,10 @@ function PendulumBox({
 }
 
 /** Original — also the pre-hydration fallback. */
-function DefaultPendulum({ armRef }: PendulumProps) {
+function DefaultPendulum({ armRef, boxRef }: PendulumProps) {
   return (
     <PendulumBox
+      boxRef={boxRef}
       background="var(--surface-2, #2a2a2a)"
       border="1px solid var(--line, #444)"
     >
@@ -131,10 +166,10 @@ function DefaultPendulum({ armRef }: PendulumProps) {
         ref={armRef}
         aria-hidden="true"
         style={{
-          width: 4,
-          height: 100,
+          width: 6,
+          height: 170,
           background: "var(--text, #ddd)",
-          borderRadius: 2,
+          borderRadius: 3,
           transformOrigin: "50% 100%",
           transform: "rotate(0deg)",
           willChange: "transform",
@@ -146,9 +181,9 @@ function DefaultPendulum({ armRef }: PendulumProps) {
         className="absolute"
         style={{
           left: "50%",
-          bottom: -4,
-          width: 10,
-          height: 10,
+          bottom: -6,
+          width: 14,
+          height: 14,
           borderRadius: "50%",
           background: "var(--accent, #ffaa66)",
           transform: "translateX(-50%)",
@@ -159,24 +194,25 @@ function DefaultPendulum({ armRef }: PendulumProps) {
 }
 
 /** STUDIO — chromed arm with a brass tip in a dark brass bezel. */
-function StudioPendulum({ armRef }: PendulumProps) {
+function StudioPendulum({ armRef, boxRef }: PendulumProps) {
   return (
     <PendulumBox
+      boxRef={boxRef}
       background="radial-gradient(circle at 50% 30%, #1a1410 0%, #050302 100%)"
       border="2px solid"
-      bevel="inset 0 0 6px rgba(0,0,0,0.7), 0 1px 3px rgba(0,0,0,0.5)"
+      bevel="inset 0 0 8px rgba(0,0,0,0.7), 0 2px 4px rgba(0,0,0,0.5)"
     >
       <div
         ref={armRef}
         aria-hidden="true"
         style={{
-          width: 6,
-          height: 105,
+          width: 8,
+          height: 175,
           background:
             "linear-gradient(180deg, #f5e0a6 0%, #c0a070 40%, #6e5023 100%)",
-          borderRadius: 3,
+          borderRadius: 4,
           boxShadow:
-            "inset 1px 0 0 rgba(255,240,180,0.5), 0 0 6px rgba(212,168,62,0.4)",
+            "inset 1px 0 0 rgba(255,240,180,0.5), 0 0 8px rgba(212,168,62,0.4)",
           transformOrigin: "50% 100%",
           transform: "rotate(0deg)",
           willChange: "transform",
@@ -187,12 +223,12 @@ function StudioPendulum({ armRef }: PendulumProps) {
           aria-hidden="true"
           style={{
             position: "absolute",
-            top: 12,
+            top: 20,
             left: "50%",
             transform: "translateX(-50%)",
-            width: 18,
-            height: 10,
-            borderRadius: 2,
+            width: 26,
+            height: 14,
+            borderRadius: 3,
             background:
               "radial-gradient(circle at 35% 30%, #f5e0a6 0%, #d4a83e 50%, #6e5023 100%)",
             boxShadow: "inset 0 1px 1px rgba(255,240,180,0.5)",
@@ -205,9 +241,9 @@ function StudioPendulum({ armRef }: PendulumProps) {
         className="absolute"
         style={{
           left: "50%",
-          bottom: -6,
-          width: 14,
-          height: 14,
+          bottom: -8,
+          width: 20,
+          height: 20,
           borderRadius: "50%",
           background:
             "radial-gradient(circle at 35% 30%, #f5e0a6 0%, #d4a83e 50%, #6e5023 100%)",
@@ -220,24 +256,25 @@ function StudioPendulum({ armRef }: PendulumProps) {
 }
 
 /** VINTAGE — Solton-leaning warm mahogany casing with a brass arm. */
-function VintagePendulum({ armRef }: PendulumProps) {
+function VintagePendulum({ armRef, boxRef }: PendulumProps) {
   return (
     <PendulumBox
+      boxRef={boxRef}
       background="linear-gradient(180deg, #3a1e10 0%, #2a1408 100%)"
       border="1px solid #4a2818"
-      bevel="inset 0 1px 1px rgba(255,240,180,0.2), inset 0 -1px 2px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.5)"
+      bevel="inset 0 1px 2px rgba(255,240,180,0.2), inset 0 -1px 3px rgba(0,0,0,0.5), 0 2px 4px rgba(0,0,0,0.5)"
     >
       <div
         ref={armRef}
         aria-hidden="true"
         style={{
-          width: 5,
-          height: 105,
+          width: 7,
+          height: 175,
           background:
             "linear-gradient(180deg, #f5e0a6 0%, #d4a83e 50%, #8a6f3a 100%)",
-          borderRadius: 2,
+          borderRadius: 3,
           boxShadow:
-            "inset 0 1px 0 rgba(255,240,180,0.4), 0 0 4px rgba(212,168,62,0.5)",
+            "inset 0 1px 0 rgba(255,240,180,0.4), 0 0 6px rgba(212,168,62,0.5)",
           transformOrigin: "50% 100%",
           transform: "rotate(0deg)",
           willChange: "transform",
@@ -248,12 +285,12 @@ function VintagePendulum({ armRef }: PendulumProps) {
           aria-hidden="true"
           style={{
             position: "absolute",
-            top: 14,
+            top: 22,
             left: "50%",
             transform: "translateX(-50%)",
-            width: 22,
-            height: 14,
-            borderRadius: 3,
+            width: 32,
+            height: 20,
+            borderRadius: 4,
             background:
               "radial-gradient(circle at 35% 30%, #f5e0a6 0%, #d4a83e 40%, #8a6f3a 80%, #4a2818 100%)",
             boxShadow:
@@ -266,9 +303,9 @@ function VintagePendulum({ armRef }: PendulumProps) {
         className="absolute"
         style={{
           left: "50%",
-          bottom: -6,
-          width: 16,
-          height: 16,
+          bottom: -8,
+          width: 22,
+          height: 22,
           borderRadius: "50%",
           background:
             "radial-gradient(circle at 35% 30%, #f5e0a6 0%, #d4a83e 50%, #8a6f3a 100%)",
@@ -282,24 +319,25 @@ function VintagePendulum({ armRef }: PendulumProps) {
 }
 
 /** GLASSY — frosted neon stroke with a halo. */
-function GlassyPendulum({ armRef }: PendulumProps) {
+function GlassyPendulum({ armRef, boxRef }: PendulumProps) {
   return (
     <PendulumBox
+      boxRef={boxRef}
       background="linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)"
       border="1px solid rgba(255,255,255,0.18)"
-      bevel="inset 0 1px 0 rgba(255,255,255,0.25), 0 0 16px rgba(255,77,138,0.15)"
+      bevel="inset 0 1px 0 rgba(255,255,255,0.25), 0 0 22px rgba(255,77,138,0.18)"
     >
       <div
         ref={armRef}
         aria-hidden="true"
         style={{
-          width: 4,
-          height: 105,
+          width: 6,
+          height: 175,
           background:
             "linear-gradient(180deg, #ff85b0 0%, var(--accent, #ff4d8a) 100%)",
-          borderRadius: 2,
+          borderRadius: 3,
           boxShadow:
-            "0 0 8px rgba(255,77,138,0.7), 0 0 14px 2px rgba(255,77,138,0.35)",
+            "0 0 10px rgba(255,77,138,0.7), 0 0 18px 3px rgba(255,77,138,0.35)",
           transformOrigin: "50% 100%",
           transform: "rotate(0deg)",
           willChange: "transform",
@@ -310,15 +348,15 @@ function GlassyPendulum({ armRef }: PendulumProps) {
           aria-hidden="true"
           style={{
             position: "absolute",
-            top: 10,
+            top: 16,
             left: "50%",
             transform: "translateX(-50%)",
-            width: 16,
-            height: 16,
+            width: 24,
+            height: 24,
             borderRadius: "50%",
             background:
               "radial-gradient(circle at 35% 30%, #ff85b0 0%, var(--accent, #ff4d8a) 60%, #c8265f 100%)",
-            boxShadow: "0 0 12px 2px rgba(255,77,138,0.65)",
+            boxShadow: "0 0 16px 3px rgba(255,77,138,0.65)",
           }}
         />
       </div>
@@ -327,13 +365,13 @@ function GlassyPendulum({ armRef }: PendulumProps) {
         className="absolute"
         style={{
           left: "50%",
-          bottom: -6,
-          width: 14,
-          height: 14,
+          bottom: -8,
+          width: 20,
+          height: 20,
           borderRadius: "50%",
           background:
             "radial-gradient(circle at 35% 30%, #ff85b0 0%, var(--accent, #ff4d8a) 60%, #c8265f 100%)",
-          boxShadow: "0 0 10px rgba(255,77,138,0.7)",
+          boxShadow: "0 0 14px rgba(255,77,138,0.7)",
           transform: "translateX(-50%)",
         }}
       />

@@ -204,7 +204,16 @@ hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
   `sanitizeVisualMode` vyexportován pro testy. UI: segmented control
   `Body | Kyvadlo` v sekci Přízvuky vedle tlačítka „Pokročilé".
   V `MetronomeWidget` na obrazovce Cvičení zůstávají body (kompaktní,
-  bez toggle). +3 testy (`sanitizeVisualMode`).
+  bez toggle). +3 testy (`sanitizeVisualMode`). **Polish (2026-05-27):**
+  kyvadlo zvětšeno z 160×140 na **240×220 px**, arm ze 100 na **170 px**
+  (proporcionálně i závaží a pivot ve všech 4 vzhledech) — autentičtější
+  „kus dřeva před tebou". **Accent flash na akcentní dobu:** každá doba,
+  která má v accentPatternu „accent", spustí krátký 260 ms záblesk přes
+  `filter: brightness(1.5) saturate(1.2)`. CSS keyframe
+  `pendulum-accent-flash` v `globals.css` (univerzální, funguje stejně
+  na všech vzhledech přes filter). JS toggle v Pendulum přes class
+  add/remove se setTimeout. Force reflow přes `void box.offsetWidth`
+  restartuje animaci i při dvou akcentech back-to-back.
   **Tovární presety (2026-05-27, Fáze 6 z plánu vylepšení metronomu,
   poslední):** nová konstanta `FACTORY_PRESETS: readonly
   MetronomePreset[]` v `metronomePresets.ts` se šesti predefinovanými

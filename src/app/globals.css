@@ -114,6 +114,18 @@ body {
   to { opacity: 0.55; }
 }
 
+/* Krátký univerzální záblesk pro akcentní dobu na kyvadle.
+   Aplikuje se přes JS (.pendulum-accent-flash) na ~260 ms. Funguje na
+   všech vzhledech stejně přes filter: brightness — netřeba per-theme
+   keyframes. */
+@keyframes pendulum-accent-flash {
+  0%   { filter: brightness(1.5) saturate(1.2); }
+  100% { filter: brightness(1) saturate(1); }
+}
+.pendulum-accent-flash {
+  animation: pendulum-accent-flash 260ms ease-out;
+}
+
 /* ---------- Vintage dark: lesklý mahagonový lak ----------
    Inspirováno tělem kytary Solton Double Cut — sytě hnědý mahagon
    s vlnitou maple texturou pod vysokým lakem. Surface třídy dostávají
