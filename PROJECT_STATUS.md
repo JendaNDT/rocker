@@ -38,7 +38,7 @@ Než příští session začne: přečíst `AGENTS.md` a `SKILL.md` (pravidla
 spolupráce), pak tento soubor.
 
 ## ✅ Hotovo
-**437 automatických testů**, vše prochází; `tsc` čistý. Roadmapa: Fáze 0–4
+**440 automatických testů**, vše prochází; `tsc` čistý. Roadmapa: Fáze 0–4
 hotové, Fáze 5 hotová (body 15–17; 18 vynechán), Fáze 6 z velké části
 hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
 
@@ -184,6 +184,27 @@ hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
   Chord Trainer vypíná polyrytmus při startu. +7 testů (`sanitizePolyrhythm`
   pro garbage / clamp ticksPerBeat / clamp volume / sound fallback /
   enabled coercion, extension testy `sanitizeMetronomeConfig`).
+  **Vizuální kyvadlo / Pendulum (2026-05-27, Fáze 5 z plánu vylepšení
+  metronomu):** nová polymorfní komponenta `Pendulum.tsx` v
+  `src/components/metronome/` — čtyři rendery přes `useActiveTheme()`:
+  Studio chromová tyčka s mosazným závažím v dark brass bezelu, Vintage
+  mahogany krabička s brass arm a vyrytým coin závažím (Solton estetika),
+  Glassy frosted neon stopa s pink halo, default minimalistický
+  fallback. Animace v rAF loopu přes ref (přímá DOM manipulace
+  `style.transform`, ne `useState` per frame). Sinusoidální easing
+  (`sin((phase-0.5)*π)`) dává klasický Wittner feel — pomalé na krajích,
+  rychlé uprostřed. Jedna plná sekvence = 2 doby (sudé beaty kývou
+  vlevo→vpravo, liché zpět). Rozsah ±45°. Když metronom nehraje,
+  kyvadlo zaparkuje uprostřed (0°). Subdivize ignorovány — kyvadlo se
+  kýve **po dobách**, ne po 16. notách. Akcent zatím vizuálně
+  nezvýrazněný (uživatel akcent slyší). Persistence: nová pole
+  `visualMode: "dots" | "pendulum"` přímo v `metronomeSettingsStore`
+  **mimo `config`** — globální preference, ne per-preset (uživatel má
+  typicky jednu oblíbenou vizualizaci, nemíchá ji s presety).
+  `sanitizeVisualMode` vyexportován pro testy. UI: segmented control
+  `Body | Kyvadlo` v sekci Přízvuky vedle tlačítka „Pokročilé".
+  V `MetronomeWidget` na obrazovce Cvičení zůstávají body (kompaktní,
+  bez toggle). +3 testy (`sanitizeVisualMode`).
 - **Responzivní PC rozvržení** — všech 16 obrazovek dostalo rozvržení
   pro PC, řízené stejným přepínačem Počítač/Mobil/Automaticky jako
   navigace (`useResolvedLayoutMode`). Tři znovupoužitelné díly:

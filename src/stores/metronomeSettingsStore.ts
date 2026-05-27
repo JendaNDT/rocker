@@ -7,17 +7,34 @@ import {
 } from "@/lib/metronomeConfig";
 import { createPreset, sanitizePresetList } from "@/lib/metronomePresets";
 
+/**
+ * How the beat is displayed on the main metronome screen. "dots" = the
+ * classic BeatIndicator with per-beat circles; "pendulum" = a swinging
+ * Wittner-style arm. Global preference, not per-preset — most users have
+ * one favourite and never switch back.
+ */
+export type VisualMode = "dots" | "pendulum";
+
+/** Coerces an untrusted value into a valid VisualMode (defaults to "dots"). */
+export function sanitizeVisualMode(value: unknown): VisualMode {
+  return value === "pendulum" ? "pendulum" : "dots";
+}
+
 interface MetronomeSettingsState {
   /** The user's last-used metronome configuration. */
   config: MetronomeConfig;
   /** Named saved configurations. */
   presets: MetronomePreset[];
+  /** How the beat is displayed on the main metronome screen. */
+  visualMode: VisualMode;
   /** Merges a patch into the stored configuration. */
   setConfig: (patch: Partial<MetronomeConfig>) => void;
   /** Saves the current configuration as a named preset. */
   savePreset: (name: string) => void;
   /** Removes a preset by id. */
   deletePreset: (id: string) => void;
+  /** Switches between the dot row and the swinging pendulum. */
+  setVisualMode: (mode: VisualMode) => void;
 }
 
 /**
@@ -35,6 +52,7 @@ export const useMetronomeSettingsStore = create<MetronomeSettingsState>()(
     (set) => ({
       config: defaultMetronomeConfig(),
       presets: [],
+      visualMode: "dots",
       setConfig: (patch) =>
         set((state) => ({
           config: sanitizeMetronomeConfig({ ...state.config, ...patch }),
@@ -50,6 +68,7 @@ export const useMetronomeSettingsStore = create<MetronomeSettingsState>()(
         set((state) => ({
           presets: state.presets.filter((preset) => preset.id !== id),
         })),
+      setVisualMode: (mode) => set({ visualMode: sanitizeVisualMode(mode) }),
     }),
     {
       name: "rocker-metronome",
@@ -62,6 +81,7 @@ export const useMetronomeSettingsStore = create<MetronomeSettingsState>()(
           const stored = persisted as Record<string, unknown>;
           safe.config = sanitizeMetronomeConfig(stored.config);
           safe.presets = sanitizePresetList(stored.presets);
+          safe.visualMode = sanitizeVisualMode(stored.visualMode);
         }
         return safe;
       },

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { audioEngine } from "@/audio/AudioEngine";
 import { metronome } from "@/audio/metronome";
 import { BeatIndicator } from "@/components/metronome/BeatIndicator";
+import { Pendulum } from "@/components/metronome/Pendulum";
 import { PolyrhythmPanel } from "@/components/metronome/PolyrhythmPanel";
 import { PresetPanel } from "@/components/metronome/PresetPanel";
 import { TrainerPanel } from "@/components/metronome/TrainerPanel";
@@ -66,6 +67,10 @@ export default function MetronomePage() {
   const presets = useMetronomeSettingsStore((state) => state.presets);
   const savePreset = useMetronomeSettingsStore((state) => state.savePreset);
   const deletePreset = useMetronomeSettingsStore((state) => state.deletePreset);
+  const visualMode = useMetronomeSettingsStore((state) => state.visualMode);
+  const setVisualMode = useMetronomeSettingsStore(
+    (state) => state.setVisualMode,
+  );
   const hydrated = useHydrated();
 
   const [haptics, setHaptics] = useState(false);
@@ -303,27 +308,59 @@ export default function MetronomePage() {
       </div>
 
       <div className="mt-8">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-3">
           <div className="text-sm font-medium text-text">Přízvuky</div>
-          <button
-            type="button"
-            onClick={() => setAdvancedOpen((open) => !open)}
-            aria-expanded={advancedOpen}
-            className="rounded-md border border-line bg-surface px-2 py-0.5 text-xs text-dim transition-colors hover:border-line-strong hover:text-text"
-          >
-            {advancedOpen ? "Skrýt pokročilé" : "Pokročilé"}
-          </button>
+          <div className="flex items-center gap-2">
+            <div className="inline-flex rounded-md border border-line p-0.5">
+              <button
+                type="button"
+                onClick={() => setVisualMode("dots")}
+                aria-pressed={visualMode === "dots"}
+                className={
+                  visualMode === "dots"
+                    ? "rounded bg-surface-2 px-2 py-0.5 text-xs text-accent"
+                    : "rounded px-2 py-0.5 text-xs text-dim transition-colors hover:text-text"
+                }
+              >
+                Body
+              </button>
+              <button
+                type="button"
+                onClick={() => setVisualMode("pendulum")}
+                aria-pressed={visualMode === "pendulum"}
+                className={
+                  visualMode === "pendulum"
+                    ? "rounded bg-surface-2 px-2 py-0.5 text-xs text-accent"
+                    : "rounded px-2 py-0.5 text-xs text-dim transition-colors hover:text-text"
+                }
+              >
+                Kyvadlo
+              </button>
+            </div>
+            <button
+              type="button"
+              onClick={() => setAdvancedOpen((open) => !open)}
+              aria-expanded={advancedOpen}
+              className="rounded-md border border-line bg-surface px-2 py-0.5 text-xs text-dim transition-colors hover:border-line-strong hover:text-text"
+            >
+              {advancedOpen ? "Skrýt pokročilé" : "Pokročilé"}
+            </button>
+          </div>
         </div>
         <div className="mt-3">
-          <BeatIndicator
-            accentPattern={accentPattern}
-            currentBeat={currentBeat}
-            onCycle={cycleAccent}
-            soundPattern={soundPattern}
-            globalSound={sound}
-            showSoundDropdowns={advancedOpen}
-            onBeatSoundChange={changeBeatSound}
-          />
+          {visualMode === "pendulum" ? (
+            <Pendulum />
+          ) : (
+            <BeatIndicator
+              accentPattern={accentPattern}
+              currentBeat={currentBeat}
+              onCycle={cycleAccent}
+              soundPattern={soundPattern}
+              globalSound={sound}
+              showSoundDropdowns={advancedOpen}
+              onBeatSoundChange={changeBeatSound}
+            />
+          )}
         </div>
         {advancedOpen && subdivision >= 2 ? (
           <div className="mt-4 rounded-lg border border-line bg-surface p-3">
