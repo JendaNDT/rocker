@@ -286,18 +286,15 @@ export function AmpStudio() {
 
       {active && (
         <div className="mt-5 space-y-5">
-          <div className="space-y-3">
-            <InputLevelMeter />
-            <SignalLevelMeter
-              analyser={outputAnalyser}
-              active={active}
-              label="Úroveň výstupu"
-            />
-            <SignalScope analyser={outputAnalyser} active={active} />
-          </div>
-
-          <div className="rounded-lg border border-line bg-bg p-3">
-            <div className="flex flex-wrap items-center gap-3">
+          <div className="rounded-lg border border-accent/40 bg-accent/5 p-3">
+            <div className="text-sm font-medium text-text">
+              Nahrát zaaparátovaný zvuk
+            </div>
+            <p className="mt-1 text-xs text-muted">
+              Zachytí zvuk po efektech — na rozdíl od sekce Nahrávání, která
+              bere suchý vstup. Take se uloží do Nahrávání.
+            </p>
+            <div className="mt-3 flex flex-wrap items-center gap-3">
               {recording ? (
                 <button
                   type="button"
@@ -323,9 +320,19 @@ export function AmpStudio() {
                   ? `Nahrávám ${formatDuration(takeElapsed)}`
                   : savingTake
                     ? "Ukládám…"
-                    : "Záznam zvuku po efektech — uloží se do Nahrávání."}
+                    : null}
               </span>
             </div>
+          </div>
+
+          <div className="space-y-3">
+            <InputLevelMeter />
+            <SignalLevelMeter
+              analyser={outputAnalyser}
+              active={active}
+              label="Úroveň výstupu"
+            />
+            <SignalScope analyser={outputAnalyser} active={active} />
           </div>
 
           <div>
