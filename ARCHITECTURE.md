@@ -69,6 +69,22 @@ nikdy ne nad sebou. Tím zůstane kód přehledný i když poroste.
 └─────────────────────────────────────────────────────────┘
 ```
 
+**Dvě záměrné výjimky z pravidla „vrstva zná jen vrstvu pod sebou":**
+
+1. **Mirror stores znají vrstvu 5 (audio).** Stores se vzorem „zrcadlo"
+   (`audioStore`, `metronomeStore`, `gallopPlayerStore`, `riffPlayerStore`,
+   `ampEngineStore`, `recordingsStore`) odebírají z audio singletonu /
+   IndexedDB pomocí `subscribe(...)` a jen kopírují stav, aby ho React mohl
+   číst přes `useStore`. Žádnou logiku nepřidávají. Detail je v 2.3.
+2. **UI volá audio singletony imperativně, ne přes stores.** Komponenty
+   typu `MetronomeWidget`, `TunerDisplay`, `AmpStudio`, `RecorderControls`,
+   `LoopPedal` atd. importují `audioEngine`, `metronome`, `ampEngine`,
+   `recorder`, `riffPlayer`, `gallopPlayer`, `loopPedal`, `multitrackEngine`
+   napřímo a volají jejich metody. Stores jsou jen *čtené zrcadlo* pro
+   renderování. Plyne z toho, že refaktor audio modulu má širokou kontaktní
+   plochu (~40 míst napříč `src/components/`), což je třeba zvážit při
+   změnách veřejného API jakéhokoliv audio singletonu.
+
 ### 2.1 PWA shell
 
 Zajišťuje, že aplikaci jde nainstalovat na plochu / domovskou obrazovku a že
@@ -112,6 +128,15 @@ polymorfních widgetů, kde se mění **forma** (ne jen barva): `CentsBar`
 alternativní vizualizace metronomu (Wittner kyvadlo) v sekci Přízvuky. Všechny čtou téma přes sdílený hook
 `useActiveTheme()` v `src/lib/`, který vrátí téma až po hydrataci (jinak
 `null`) — komponenta tak má SSR-safe default fallback.
+
+**SVG hmatníky jsou vědomě fix-themed.** `Fretboard`, `ChordDiagram`,
+`RiffLibrary`, `PowerChordTrainer`, `FretboardGame` a `Waveform` ve
+svých SVG drží pevné hex barvy (dřevo, struny, prsty) místo theme
+tokenů, aby hmatník vypadal napříč všemi třemi vzhledy stejně —
+hudebně-instruktivní obraz nemá výhodu z vintage/glassy stylizace,
+naopak rozkmitané barvy ladění pozice by mátly. Pokud někdy přidáme
+další SVG nástroj, drž stejné rozhodnutí (nebo ho v tomto seznamu
+vědomě obrať).
 
 **Vintage = Solton Double Cut.** Vintage dark paleta je vědomě
 inspirovaná reálnou kytarou Solton Double Cut (mahogany surfacy, brass

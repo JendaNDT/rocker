@@ -40,8 +40,13 @@ v `SKILL.md`. Stručně:
 - UI texty, hlášky a popisky **česky**.
 - Sedm vrstev architektury (viz `ARCHITECTURE.md`, sekce 2) — vrstva zná jen
   vrstvu pod sebou, nikdy ne nad sebou.
-- Čistá logika a data (`src/lib/`) je TypeScript bez Reactu a bez audia —
-  aby šla testovat. Testy `*.test.ts` leží vedle ní.
+- Čistá logika a data (`src/lib/`) je TypeScript bez audia — aby šla
+  testovat. Testy `*.test.ts` leží vedle ní. **Výjimka:** několik
+  drobných React hooků (`useHydrated`, `useActiveTheme`, `layout`,
+  `resolveTuning` lookup nad customTuningsStore) v `src/lib/` zůstalo —
+  jsou to sdílené utility, které potřebují Reactový kontext nebo store
+  read. Plánuje se přesun do dedicated `src/hooks/` ve FIX_PLAN kroku
+  20; do té doby je `src/lib/` „čistý TS plus pár hooků".
 - Data z úložiště vždy projdou type guardem; poškozený záznam se zahodí, appka
   nespadne.
 - UI používá theme-aware Tailwind třídy (`bg-surface`, `text-accent`,

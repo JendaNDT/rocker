@@ -18,10 +18,14 @@ interface AmpStoreState {
 }
 
 /**
- * Shared aparát settings. Active state is intentionally NOT here — every
- * screen (full /amp, AmpWidget on /practice and /metal) owns its own
- * AmpChain instance because Next.js `output: 'export'` reloads the whole
- * document on every Link navigation, killing the AudioContext anyway.
+ * Shared aparát settings. Active state is intentionally NOT here — the
+ * AmpChain lives in a single shared singleton (`src/audio/ampEngine.ts`)
+ * hosted in `AppShell` via `AmpHost`, so the amp survives screen-to-screen
+ * Link navigation (Next.js does client-side soft navigation in static
+ * export — see ARCHITECTURE.md sections 1 and 2.5). The earlier comment
+ * here claimed every screen owned its own AmpChain because navigation
+ * tore the AudioContext down on every Link — that turned out to be
+ * inaccurate and was corrected in 2026-06.
  *
  * What this store DOES persist (and shares across screens):
  *  - settings (sliders, distortion type, cabinet)
