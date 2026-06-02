@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { audioEngine } from "@/audio/AudioEngine";
 import { recorder } from "@/audio/recorder";
+import { InputLevelMeter } from "@/components/InputLevelMeter";
 import { type Recording, formatDuration } from "@/lib/recordings";
 import { useAudioStore } from "@/stores/audioStore";
 import { useRecordingsStore } from "@/stores/recordingsStore";
@@ -134,44 +135,55 @@ export function RecorderControls() {
       )}
 
       {running && !isRecording && (
-        <div className="flex items-center gap-4">
-          <button
-            type="button"
-            onClick={startRecording}
-            disabled={busy}
-            className="flex items-center gap-2 rounded-lg bg-danger px-6 py-2.5 text-sm font-semibold text-text transition-colors hover:bg-danger disabled:opacity-60"
-          >
-            <span className="h-3 w-3 rounded-full bg-surface" />
-            {busy ? "Ukládám…" : "Nahrávat"}
-          </button>
-          <span className="text-sm text-dim">Vstup běží</span>
+        <div className="space-y-3">
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={startRecording}
+              disabled={busy}
+              className="flex items-center gap-2 rounded-lg bg-danger px-6 py-2.5 text-sm font-semibold text-text transition-colors hover:bg-danger disabled:opacity-60"
+            >
+              <span className="h-3 w-3 rounded-full bg-surface" />
+              {busy ? "Ukládám…" : "Nahrávat"}
+            </button>
+            <span className="text-sm text-dim">Vstup běží</span>
+          </div>
+          {/* Live VU meter — proof that the engine is hearing the guitar
+              BEFORE the user commits to a take. Without it, "Vstup běží"
+              tells you nothing about whether the signal actually flows. */}
+          <InputLevelMeter />
         </div>
       )}
 
       {isRecording && (
-        <div className="flex items-center gap-4">
-          <button
-            type="button"
-            onClick={() => void stopRecording()}
-            disabled={busy}
-            className="flex items-center gap-2 rounded-lg border border-line-strong bg-bg px-6 py-2.5 text-sm font-semibold transition-colors hover:border-line-strong disabled:opacity-60"
-          >
-            <span className="h-3 w-3 bg-danger" />
-            Zastavit
-          </button>
-          <span className="flex items-center gap-2 text-sm tabular-nums text-danger">
-            <span
-              className="h-2 w-2 animate-pulse rounded-full bg-danger"
-              aria-hidden="true"
-            />
-            {/* The "Nahrávám" label fires the screen-reader status announcement
-                once; the ticking timer is muted with aria-hidden so SR users
-                are not spammed every 200 ms. */}
-            <span role="status" aria-live="polite">
-              Nahrávám
+        <div className="space-y-3">
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={() => void stopRecording()}
+              disabled={busy}
+              className="flex items-center gap-2 rounded-lg border border-line-strong bg-bg px-6 py-2.5 text-sm font-semibold transition-colors hover:border-line-strong disabled:opacity-60"
+            >
+              <span className="h-3 w-3 bg-danger" />
+              Zastavit
+            </button>
+            <span className="flex items-center gap-2 text-sm tabular-nums text-danger">
+              <span
+                className="h-2 w-2 animate-pulse rounded-full bg-danger"
+                aria-hidden="true"
+              />
+              {/* The "Nahrávám" label fires the screen-reader status announcement
+                  once; the ticking timer is muted with aria-hidden so SR users
+                  are not spammed every 200 ms. */}
+              <span role="status" aria-live="polite">
+                Nahrávám
+              </span>
+              <span aria-hidden="true">{formatDuration(elapsed)}</span>
             </span>
-            <span aria-hidden="true">{formatDuration(elapsed)}</span>
-          </span>
+          </div>
+          {/* Keep the meter visible while recording too — instant visual
+              feedback if the cable comes loose mid-take. */}
+          <InputLevelMeter />
         </div>
       )}
 
