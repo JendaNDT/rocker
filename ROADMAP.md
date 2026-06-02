@@ -54,6 +54,9 @@ je na Jendovi.
 *Poznámka:* detekce běží na hlavním vlákně přes `AnalyserNode` + Pitchy
 (ne v AudioWorkletu, jak původně počítala architektura) — pro ladičku je to
 ověřený standard a obchází to balicí potíže s Turbopackem.
+*Pozn.:* Ladička byla později rozšířena ve čtyřfázové sérii (referenční
+tón na strunu, konfirmace naladění, 3 nová tovární ladění, vlastní
+uživatelská ladění) — viz sekce „Mimo roadmapu" níže.
 
 ### ✅ Bod 4 — Metronom
 Sample-accurate scheduler (lookahead, žádný `setTimeout`). 40–240 BPM, takty
@@ -408,6 +411,41 @@ unmount. Sdílený singleton AmpEngine se ukázal jako fyzicky nemožný
 kvůli `output: 'export'` (každá `<Link>` navigace je plný document
 reload, AudioContext zhasne). Sdílený je tedy jen state (settings,
 presetId), ne audio engine. Detaily v `PROJECT_STATUS.md`.
+
+### ✅ Ladička — čtyřfázový upgrade (2026-06-02)
+Čtyři postupné commity, které posunuly Ladičku (Bod 3) z „funkční
+základ" do plnohodnotného nástroje s referenčním tónem, audio/haptic
+konfirmací, rozšířeným seznamem ladění a vlastními ladění. Detaily
+a důvody v `PROJECT_STATUS.md`, tady jen seznam:
+
+- **F1 — Referenční tón cílové struny:** vedle každé struny ve
+  Vedeném režimu hold-to-play tlačítko ♪. Krátký kytarově obarvený
+  tón (sinus + 2. a 3. harmonika), vlastní lazy `AudioContext`
+  v `src/audio/referenceTone.ts`, hlasitost posuvníkem v Profilu →
+  Ladička (default 30 %), safety cap 5 s.
+- **F2 — Konfirmace naladění (zvuk + haptika):** krátký dvounótový
+  chime (1320 → 1980 Hz) a `navigator.vibrate(60)`, když struna
+  vydrží v zóně ±5 centů po dobu 400 ms. Re-trigger logika: stejná
+  struna v zóně se ozve jen jednou; reset při výpadku ze zóny.
+  Modul `src/audio/confirmationSound.ts` (vlastní lazy `AudioContext`).
+  Toggles `tunerConfirmSound` / `tunerConfirmHaptic` v Profilu →
+  Ladička, oboje default vypnuto. Haptický toggle se sám disabluje
+  na zařízeních bez `navigator.vibrate` (iOS Safari).
+- **F3A — Tři nová tovární ladění:** Open G (D G D G B D), Open D
+  (D A D F# A D), DADGAD (D A D G A D). Vědomě bez Open E / Open A
+  (vysoká ladění, na elektrice riziko napětí strun — uživatel si
+  je může vyrobit jako vlastní).
+- **F3B — Vlastní uživatelská ladění:** nový store
+  `customTuningsStore` (Zustand persist, defenzivní sanitizace,
+  cap MAX 20, MIDI range 24–84). Nový helper
+  `src/lib/resolveTuning.ts` jako **jediný zdroj pravdy pro lookup
+  ladění** — 6 callsitů přepnuto (Knihovna, AI tutor, Power Chord
+  / Gallop Trainer), takže vlastní ladění doteče i tam. Inline
+  editor `CustomTuningEditor` s tlačítky ±1 půltón, frekvencí v Hz,
+  indikátorem změny vs. základní ladění. Edit vědomě nepodporován —
+  workflow je „použij existující, uprav, ulož jako nové, staré smaž".
+  V Ladičce select s `<optgroup>` Tovární / Vlastní, tlačítka
+  „Vytvořit vlastní…" a „Smazat (confirm)".
 
 ---
 

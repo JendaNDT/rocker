@@ -23,8 +23,11 @@ metr, knoby, beat-mince, rám not.
 ## Funkce
 
 - **Domů** — denní plán cvičení (~15 min), streaky, 11 achievementů
-- **Ladička** — Pitchy detekce, vedený i chromatický režim, 6 ladění,
-  šumová brána s autokalibrací
+- **Ladička** — Pitchy detekce, vedený i chromatický režim, 9 továrních
+  ladění (Standard, Drop D/C/B, Eb std, D std, Open G, Open D, DADGAD)
+  + vlastní uživatelská ladění, **referenční tón na strunu**
+  (hold-to-play, kytarově obarvený), zvuková a haptická **konfirmace
+  naladění** (volitelné), šumová brána s autokalibrací
 - **Metronom** — sample-accurate scheduler, 7 taktových měr, presety,
   trenažér tempa s progresivním zrychlováním a „cvičným tichem", swing /
   shuffle feel (50–75 %), počítadlo předtaktu (count-in), drum mode
@@ -56,7 +59,7 @@ Lekce: 18 vestavěných lekcí (Stage 1–3) s „Try it" detekcí tónu.
 - **Audio**: Web Audio API + getUserMedia, detekce tónů přes Pitchy
 - **Notace**: @coderline/alphatab (SONiVOX soundfont)
 - **AI**: Google Gemini API (BYOK, bez proxy serveru)
-- **Testy**: Vitest (449 testů, čistá logika v `src/lib/`)
+- **Testy**: Vitest (489 testů, čistá logika v `src/lib/`)
 - **PWA**: ručně psaný service worker, manifest, instalovatelnost
 - **Nasazení**: Vercel, auto-deploy z `main`
 
@@ -105,7 +108,10 @@ Nad rámec roadmapy: 3 přepínatelné vzhledy + polymorfní widgety
 na novou verzi, záloha dat, Vercel deploy, rozšířený metronom,
 responzivní PC rozvržení, Stage 3 lekce. **Šestifázový upgrade
 metronomu** (2026-05-27): per-beat zvuk, swing, count-in, polyrytmus,
-vizuální kyvadlo, tovární presety.
+vizuální kyvadlo, tovární presety. **Čtyřfázový upgrade Ladičky**
+(2026-06-02): referenční tón na strunu, konfirmace naladění (zvuk
++ haptika), 3 nová tovární ladění (Open G / Open D / DADGAD),
+vlastní uživatelská ladění s inline editorem.
 
 Detaily v `ROADMAP.md` a `PROJECT_STATUS.md`.
 

@@ -208,7 +208,11 @@ Statická data dodaná s aplikací jako JSON soubory (žádný backend):
 
 - `chords.json` — tvary akordů (open, barré, power), prsty, SVG data.
 - `scales.json` — stupnice (pentatonika, dur/moll, harmonická moll, frygická).
-- `tunings.json` — ladění a frekvence strun (standard, Drop D/C/B/A, Eb, D std).
+- `tunings.json` — tovární ladění (Standard, Drop D, Eb std, D std, Drop
+  C, Drop B, Open G, Open D, DADGAD; 9 ladění). Vlastní uživatelská
+  ladění žijí mimo statiku v `customTuningsStore` (perzistence
+  v localStorage); lookup obou zdrojů obhospodaří helper
+  `src/lib/resolveTuning.ts` jako jediný zdroj pravdy.
 - `lessons/` — definice lekcí po Stage.
 - `riffs/` — metalové riffy (tab data + metadata; audio dodá uživatel nebo YouTube).
 
@@ -451,11 +455,15 @@ rocker/
 │   │                        #   gallopPlayer, riffPlayer, pitchDetector,
 │   │                        #   muteAnalyzer, chordPlayer, countIn,
 │   │                        #   tunings, recorder, ampChain,
-│   │                        #   multitrackEngine, loopPedal
+│   │                        #   multitrackEngine, loopPedal,
+│   │                        #   referenceTone, confirmationSound
 │   ├── lib/                 # doménová logika (4), data/obsah (6),
 │   │                        #   IndexedDB vrstva (7), čisté utility,
+│   │                        #   resolveTuning (jediný zdroj pravdy pro
+│   │                        #   lookup ladění — tovární i vlastní),
 │   │                        #   ai/ (Gemini klient) + testy *.test.ts
-│   └── stores/              # Zustand stores (vrstva 3)
+│   └── stores/              # Zustand stores (vrstva 3) — settings,
+│                            #   customTunings, …
 ├── ARCHITECTURE.md
 ├── ROADMAP.md
 ├── AGENTS.md

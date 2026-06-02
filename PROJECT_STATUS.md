@@ -1,5 +1,5 @@
 # Rocker – Project Status
-*Naposled aktualizováno: 27. 05. 2026*
+*Naposled aktualizováno: 02. 06. 2026*
 
 ## 🎯 Co to je
 PWA kytarový asistent pro učení a hraní na elektrickou kytaru. Funguje na PC
@@ -15,12 +15,15 @@ IndexedDB (přes `idb`) pro velké bloby — nahrávky.
 ## ⏭️ Příští krok
 Roadmapa je prakticky hotová — body 1–21 dokončené (18 a 20 vědomě
 vynechané), zbývá poslední **Bod 22 (sdílení a organizace)**. Nad rámec
-roadmapy přibylo 10 vln vylepšení (vzhledy, šumová brána + autokalibrace,
+roadmapy přibylo 11 vln vylepšení (vzhledy, šumová brána + autokalibrace,
 upozornění na verzi, krok vzhledu v úvodu, záloha dat, rozšířený
 metronom, responzivní PC rozvržení, polymorfní widgety vzhledů
 inspirované Soltonem, AmpWidget na obrazovkách Cvičení a Metal,
 **šestifázový upgrade metronomu** s drum modem, swingem, count-in,
-polyrytmem, vizuálním kyvadlem a továrními presety) — vše nasazené.
+polyrytmem, vizuálním kyvadlem a továrními presety, **čtyřfázový
+upgrade Ladičky** s referenčním tónem na strunu, konfirmací naladění,
+3 novými továrními laděními a vlastními uživatelskými laděními) — vše
+nasazené.
 
 Otevřené úkoly:
 - **Bod 22 (sdílení a organizace)** — poslední bod roadmapy. Záloha dat
@@ -43,7 +46,7 @@ Než příští session začne: přečíst `AGENTS.md` a `SKILL.md` (pravidla
 spolupráce), pak tento soubor.
 
 ## ✅ Hotovo
-**449 automatických testů**, vše prochází; `tsc` čistý. Roadmapa: Fáze 0–4
+**489 automatických testů**, vše prochází; `tsc` čistý. Roadmapa: Fáze 0–4
 hotové, Fáze 5 hotová (body 15–17; 18 vynechán), Fáze 6 z velké části
 hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
 
@@ -54,7 +57,8 @@ hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
 - **Bod 2** — audio engine: AudioContext, výběr vstupu, oprávnění,
   indikátor úrovně, měření latence
 - **Bod 3** — ladička: detekce výšky tónu (Pitchy), chromatický i vedený
-  režim, 6 ladění, odchylka v centech
+  režim, 9 továrních ladění + uživatelská vlastní ladění (viz
+  Čtyřfázový upgrade Ladičky níže), odchylka v centech
 - **Bod 4** — metronom: sample-accurate scheduler, 40–240 BPM, takty,
   subdivize, akcent, tap tempo, haptika
 - **Bod 5** — knihovna: 26 akordů, 6 stupnic, přepínač leváci/praváci
@@ -334,6 +338,75 @@ hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
   startuje s ním. `active` flag tam vědomě NENÍ — každá obrazovka má
   svůj lokální. Persist whitelist v `partialize` drží jen settings
   a presetId; rehydrate je sanituje přes `sanitizeAmpSettings`.
+- **Čtyřfázový upgrade Ladičky (2026-06-02)** — Ladička (Bod 3)
+  rozšířena ve čtyřech postupných commitech. Bonus k Bodu 3 z roadmapy.
+  Vše nasazené, čeká reálný test s kytarou.
+
+  **Fáze 1 — Referenční tón cílové struny:** vedle každé struny ve
+  Vedeném režimu malé tlačítko ♪. Přidržíš → modul `referenceTone.ts`
+  spustí krátký kytarově obarvený tón (sinus fundamental + 2. harmonika
+  s gainem 0.3 + 3. harmonika s gainem 0.15) cílové výšky. Vlastní lazy
+  `AudioContext` (nezávislý na `audioEngine`, takže funguje i bez
+  spuštěné ladičky). Attack/release envelope 30/50 ms, safety cap 5 s
+  (kdyby pointerUp nedorazil). Pointer Events: `onPointerDown/Up/Leave/
+  Cancel` + `onBlur` pojistka. Hold-to-play. Hlasitost (default 30 %)
+  posuvníkem v Profilu → Ladička, čtená v komponentě přes `useRef`
+  ze Zustand subscribe, takže pohyb posuvníkem se projeví okamžitě.
+  +6 testů (clampReferenceVolume, isPlayableFrequency).
+
+  **Fáze 2 — Konfirmace naladění (zvuk + haptika):** když struna ve
+  Vedeném režimu vydrží v zóně ±5 centů po dobu 400 ms, spustí se
+  krátký dvounótový chime (1320 Hz → 1980 Hz, sequence ~250 ms, modul
+  `confirmationSound.ts` — vlastní lazy `AudioContext`, module-singleton
+  player) plus `navigator.vibrate(60)`. Re-trigger logika přes
+  `confirmedIndexRef`: stejná struna v zóně se pípne jen jednou, reset
+  při výpadku ze zóny nebo přepnutí na jinou strunu. Toggles
+  `tunerConfirmSound` a `tunerConfirmHaptic` (oboje default **vypnuto**)
+  v Profilu → Ladička. Haptický checkbox se sám disabluje na zařízení
+  bez `navigator.vibrate` (iOS Safari) s popiskem „(toto zařízení
+  vibrace nepodporuje)". +7 testů (clamp, no-window guard, haptic
+  detection + invocation + exception swallowing).
+
+  **Fáze 3A — Tři nová tovární ladění:** **Open G** (D G D G B D),
+  **Open D** (D A D F# A D), **DADGAD** (D A D G A D) přidány na
+  konec `TUNINGS` v `src/audio/tunings.ts`. Open E a Open A vědomě
+  vynechány — obě jsou „vysoká" ladění, na elektrice s tenčími drátky
+  hrozí napětí strun; uživatel si je může vyrobit jako vlastní (Fáze
+  3B). Plus defenzivní invariant test ve všech továrních laděních
+  (MIDI rostoucí low→high). +5 testů.
+
+  **Fáze 3B — Vlastní uživatelská ladění:** nový store
+  `customTuningsStore` (Zustand persist, klíč `rocker-custom-tunings`)
+  s `addTuning`, `removeTuning`, defenzivní `sanitizeList` v `merge`
+  (drop garbage, dedupe id, cap MAX 20, MIDI range 24–84). ID format
+  `custom-<crypto.randomUUID()>` s fallbackem na `custom-<timestamp>-
+  <random>` pro starší prohlížeče. Nový helper `src/lib/resolveTuning.
+  ts` jako **jediný zdroj pravdy pro lookup ladění** — bere id a pole
+  custom tunings, vrátí Tuning bez ohledu na to, jestli je tovární
+  nebo vlastní; graceful fallback na `standard` pro neznámé id
+  (včetně právě smazaného custom). Nová komponenta
+  `CustomTuningEditor` — inline panel pod selectem (žádný modal),
+  6 strun s tlačítky `−` `+` o půltón, MIDI clamp 24–84, frekvence
+  v Hz a indikátor „(původně E2)", validace neprázdného názvu (po
+  trim), Uložit/Zrušit/Reset. Edit existujícího vlastního ladění
+  vědomě **není** podporován — uživatel klikne „Vytvořit vlastní…"
+  se selectovaným ladění jako základem, upraví, uloží jako nové,
+  staré smaže. Jednodušší UI, méně edge cases. `tuner/page.tsx`
+  rozšířena: select s `<optgroup>` Tovární / Vlastní, tlačítka
+  „Vytvořit vlastní…" a „Smazat (s confirm dialogem)". Smazání
+  aktivního vlastního ladění přepíná `setTuningId(DEFAULT_TUNING_ID)`
+  — žádné zombie id ve storage. **Provázanost:** 6 callsitů, které
+  dosud volaly `getTuning(id)` přímo, přepnuto na `resolveTuning`:
+  `library/page.tsx` (Knihovna stupnic), všechny tři tutor panely
+  (`PlanPanel`, `ChatPanel`, `FeedbackPanel` — AI kontext o ladění),
+  `PowerChordTrainer` a `GallopTrainer` (metal trenažéry). Vlastní
+  ladění tak doteče i tam — bez dalšího drátku. `settingsStore.merge`
+  toleruje `tuningId` začínající `custom-` (jinak by se aktivní
+  vlastní ladění při startu appky resetovalo). +22 testů (16 v
+  `customTuningsStore.test.ts` — sanitizace garbage / out-of-range
+  MIDI / non-custom prefix / empty label / dedupe / trim / cap,
+  add+remove API; 6 v `resolveTuning.test.ts` — factory / custom /
+  deleted custom / empty customs / order).
 - **Provázání funkcí** — komplexní plán v `INTERCONNECT_PLAN.md` (4 fáze,
   od snadných výher po sjednocení audio enginů). Vznikl z auditu
   provázanosti; nic v něm nejsou opravy bugů, jen chytřejší propojení.
@@ -498,6 +571,30 @@ streamu — má teoreticky stejnou jednostrannou vadu, samostatná oprava.
   unmount. `useAmpStore` sdílí jen settings a presetId. Přechod na
   server-rendered Next.js by problém vyřešil, ale rozbil PWA / Vercel
   free tier setup — vědomě vynecháno.
+- **Ladění — `resolveTuning` jako jediný zdroj pravdy (2026-06-02):**
+  s příchodem vlastních uživatelských ladění (Fáze 3B) bylo potřeba
+  místo dosavadního `getTuning(id)` (čistě tovární lookup) zavést
+  helper, který bere id i pole vlastních ladění a vrátí Tuning bez
+  ohledu na zdroj. Žádná komponenta už **přímo nevolá `getTuning`** —
+  jen `resolveTuning(id, customs)` (případně `resolveAllTunings` pro
+  select boxy). Fallback na `standard` pro neznámé id (včetně právě
+  smazaného vlastního) drží appku v konzistentním stavu, i kdyby
+  uživatel ručně přepsal localStorage. Vedlejší úprava:
+  `settingsStore.merge` toleruje `tuningId` začínající `custom-` —
+  jinak by rehydratace zahodila aktivní vlastní ladění. `resolveTuning`
+  ho gracefully obhospodaří, kdyby ho mezitím někdo smazal.
+  Vlastní ladění tak doteče do Knihovny stupnic, AI tutora i metalových
+  trenažérů — bez dalšího drátku, díky propojení z Fáze C interconnectu
+  (`settingsStore.tuningId` jako jediný zdroj id).
+- **Ladička — vlastní `AudioContext` per modul (referenceTone,
+  confirmationSound, 2026-06-02):** moduly Ladičky (referenční tón
+  na strunu, konfirmační chime) si **nesahají na `audioEngine`** —
+  každý drží vlastní lazy `AudioContext`. Důvod: obě funkce musí
+  fungovat, i když uživatel Ladičku nespustil (mikrofon není potřeba
+  pro přehrání cílového tónu) nebo když `audioEngine` mezitím
+  zastavil. AudioContext se vytvoří až při první uživatelské
+  interakci (browsery policy). Drobná režie navíc (dva extra kontexty
+  vedle hlavního), ale moduly jsou tak plně izolované a testovatelné.
 - **Co neděláme:** vlastní DB tabů, stem separation v prohlížeči, online
   multiplayer jam, iOS-specifické funkce.
 
@@ -515,7 +612,9 @@ streamu — má teoreticky stejnou jednostrannou vadu, samostatná oprava.
 - `src/audio/` — audio vrstva (AudioEngine, metronome, gallopPlayer,
   riffPlayer, pitchDetector — detekce tónů + šumová brána, muteAnalyzer,
   chordPlayer, countIn, tunings, recorder, ampChain, multitrackEngine,
-  loopPedal)
+  loopPedal, **referenceTone** — hold-to-play referenční tón pro
+  Ladičku, **confirmationSound** — dvounótový chime + haptika pro
+  konfirmaci naladění)
 - `src/lib/` — čistá logika a data (pitch, tempo, metronomeConfig,
   metronomePresets, chords, scales, lessons,
   surgicalEngine, exercises, youtube, progress, achievements, dailyPlan,
@@ -523,12 +622,15 @@ streamu — má teoreticky stejnou jednostrannou vadu, samostatná oprava.
   metalRiffs, powerChordTrainer, gallopTrainer, palmMute, breakReminder,
   ampPresets, multitrack, wav, loopMix, fretboardGame, earTraining,
   instrument, backup, useHydrated, **useActiveTheme** — sdílený hook pro
-  polymorfní widgety, ai/ — Gemini klient, prompty, generátor
-  plánu, kontext o cvičení, typy) — vedle leží testy `*.test.ts`
+  polymorfní widgety, **resolveTuning** — jediný zdroj pravdy pro
+  lookup ladění (tovární i vlastní), ai/ — Gemini klient, prompty,
+  generátor plánu, kontext o cvičení, typy) — vedle leží testy
+  `*.test.ts`
 - `src/stores/` — Zustand stores (settings, audio, metronome,
   metronomeSettings, lessonProgress, ytLoop, progress, recordings,
   gallopPlayer, riffPlayer, ai, chat, instrument, ampPresets, **amp** —
-  sdílené aparát settings a presetId)
+  sdílené aparát settings a presetId, **customTunings** — uživatelská
+  vlastní ladění s defenzivní sanitizací v rehydraci)
 - `scripts/stamp-sw.mjs` — razítkuje `sw.js` verzí při buildu
 - `public/sw.js` — ručně psaný service worker; `public/alphatab/` — font
   Bravura a SONiVOX soundfont (Bod 15)
