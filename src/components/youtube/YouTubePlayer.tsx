@@ -33,7 +33,11 @@ function formatTime(seconds: number): string {
  * practice screen (screen-consolidation plan, fáze C).
  */
 export function YouTubePlayer() {
-  const player = useYouTubePlayer(PLAYER_ID);
+  const player = useYouTubePlayer(PLAYER_ID, () =>
+    setError(
+      "Tohle video se nepodařilo přehrát — může být soukromé, smazané nebo nedovoluje přehrávání mimo YouTube.",
+    ),
+  );
   const { getCurrentTime, getDuration, seekTo } = player;
 
   const loops = useYtLoopStore((state) => state.loops);

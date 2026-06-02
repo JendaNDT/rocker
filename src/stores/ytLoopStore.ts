@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { sanitizeSavedLoops } from "@/lib/ytLoops";
 
 export interface SavedLoop {
   id: string;
@@ -34,6 +35,20 @@ export const useYtLoopStore = create<YtLoopState>()(
           loops: state.loops.filter((loop) => loop.id !== id),
         })),
     }),
-    { name: "rocker-yt-loops" },
+    {
+      name: "rocker-yt-loops",
+      // Defensive: corrupt or hand-edited data must not crash the YouTube
+      // player (loops.filter). Drop any malformed loop on rehydrate.
+      merge: (persistedState, currentState) => {
+        const persisted =
+          persistedState && typeof persistedState === "object"
+            ? (persistedState as { loops?: unknown })
+            : {};
+        return {
+          ...currentState,
+          loops: sanitizeSavedLoops(persisted.loops),
+        };
+      },
+    },
   ),
 );

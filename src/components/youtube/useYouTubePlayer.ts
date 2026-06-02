@@ -16,9 +16,15 @@ export interface YouTubePlayerControls {
  * Creates and manages a YouTube IFrame player attached to the element with
  * the given id. The element is replaced by the player iframe.
  */
-export function useYouTubePlayer(containerId: string): YouTubePlayerControls {
+export function useYouTubePlayer(
+  containerId: string,
+  onError?: () => void,
+): YouTubePlayerControls {
   const playerRef = useRef<YT.Player | null>(null);
   const [ready, setReady] = useState(false);
+  // Keep the latest onError without re-creating the player on every render.
+  const onErrorRef = useRef(onError);
+  onErrorRef.current = onError;
 
   useEffect(() => {
     let cancelled = false;
@@ -32,6 +38,9 @@ export function useYouTubePlayer(containerId: string): YouTubePlayerControls {
         events: {
           onReady: () => {
             if (!cancelled) setReady(true);
+          },
+          onError: () => {
+            if (!cancelled) onErrorRef.current?.();
           },
         },
       });

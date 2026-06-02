@@ -46,6 +46,7 @@ export function RiffTrainer() {
   const [countInEnabled, setCountInEnabled] = useState(false);
   const [countInBpm, setCountInBpm] = useState(90);
   const [rampEnabled, setRampEnabled] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Release the object URL and mark unmounted when the component goes away.
   useEffect(() => {
@@ -114,6 +115,7 @@ export function RiffTrainer() {
     setPeaks([]);
     setLoopStart(null);
     setLoopEnd(null);
+    setError(null);
 
     const audio = audioRef.current;
     if (audio) {
@@ -172,6 +174,12 @@ export function RiffTrainer() {
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
         onEnded={() => setIsPlaying(false)}
+        onError={() => {
+          setIsPlaying(false);
+          setError(
+            "Soubor se nepodařilo přehrát — zkus jiný (podporované jsou hlavně MP3 a WAV).",
+          );
+        }}
       />
 
       <label className="inline-block cursor-pointer rounded-lg border border-line bg-surface px-4 py-2 text-sm transition-colors hover:border-accent">
@@ -194,6 +202,7 @@ export function RiffTrainer() {
       {fileName && (
         <div className="mt-4 rounded-lg border border-line bg-surface p-5">
           <p className="truncate text-sm text-dim">{fileName}</p>
+          {error && <p className="mt-2 text-sm text-danger">{error}</p>}
 
           <div className="mt-4">
             <Waveform

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { sanitizeCompletedLessonIds } from "@/lib/lessonProgress";
 
 interface LessonProgressState {
   /** Ids of lessons the learner has finished. */
@@ -27,6 +28,23 @@ export const useLessonProgressStore = create<LessonProgressState>()(
         ),
       resetProgress: () => set({ completedLessonIds: [] }),
     }),
-    { name: "rocker-lesson-progress" },
+    {
+      name: "rocker-lesson-progress",
+      // Defensive: a corrupt or hand-edited value (this key is also restored
+      // from the data backup) must not crash the dashboard / daily plan /
+      // tutor that read this list. Coerce to a clean string array.
+      merge: (persistedState, currentState) => {
+        const persisted =
+          persistedState && typeof persistedState === "object"
+            ? (persistedState as { completedLessonIds?: unknown })
+            : {};
+        return {
+          ...currentState,
+          completedLessonIds: sanitizeCompletedLessonIds(
+            persisted.completedLessonIds,
+          ),
+        };
+      },
+    },
   ),
 );

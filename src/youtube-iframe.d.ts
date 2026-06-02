@@ -4,6 +4,7 @@
 interface YouTubePlayerEvents {
   onReady?: () => void;
   onStateChange?: (event: { data: number }) => void;
+  onError?: (event: { data: number }) => void;
 }
 
 interface YouTubePlayerOptions {
