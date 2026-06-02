@@ -126,6 +126,21 @@ body {
   animation: pendulum-accent-flash 260ms ease-out;
 }
 
+/* ---------- Focus-visible — viditelný ring na klávesnici ----------
+   For a11y: every interactive element gets a visible 2 px accent-coloured
+   outline on keyboard focus. `:focus-visible` (not `:focus`) keeps it off
+   for mouse clicks. The colour comes from the theme accent token, so it
+   adapts per Studio/Vintage/Glassy automatically. `:where(...)` keeps
+   specificity zero — any component that styles its own focus (e.g.
+   `KnobControl` ring) wins without `!important`. `outline` is used over
+   `box-shadow` so it doesn't trigger layout shift and modern browsers
+   already round it to match `border-radius`.
+*/
+:where(button, a, input, select, textarea, summary, [role="button"], [role="slider"], [role="switch"], [role="tab"]):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 /* ---------- Vintage dark: lesklý mahagonový lak ----------
    Inspirováno tělem kytary Solton Double Cut — sytě hnědý mahagon
    s vlnitou maple texturou pod vysokým lakem. Surface třídy dostávají
