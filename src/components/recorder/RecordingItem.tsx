@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { downloadBlob } from "@/lib/download";
 import {
   type Marker,
   type RecordingMeta,
@@ -118,14 +119,10 @@ export function RecordingItem({ recording }: { recording: RecordingMeta }) {
   async function handleExport() {
     const full = await getRecording(recording.id);
     if (!full) return;
-    const url = URL.createObjectURL(full.blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = recordingFileName(recording.name, recording.mimeType);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(url);
+    downloadBlob(
+      full.blob,
+      recordingFileName(recording.name, recording.mimeType),
+    );
   }
 
   return (

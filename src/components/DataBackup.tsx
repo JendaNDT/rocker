@@ -7,6 +7,7 @@ import {
   isValidBackup,
   knownBackupEntries,
 } from "@/lib/backup";
+import { downloadBlob } from "@/lib/download";
 
 const SECONDARY =
   "rounded-lg border border-line bg-bg px-4 py-2 text-sm transition-colors hover:border-line-strong";
@@ -28,12 +29,10 @@ export function DataBackup() {
     }
     const json = JSON.stringify(buildBackup(entries), null, 2);
     const blob = new Blob([json], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `rocker-zaloha-${new Date().toISOString().slice(0, 10)}.json`;
-    link.click();
-    URL.revokeObjectURL(url);
+    downloadBlob(
+      blob,
+      `rocker-zaloha-${new Date().toISOString().slice(0, 10)}.json`,
+    );
   }
 
   async function restoreFromFile(file: File) {

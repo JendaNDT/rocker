@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { multitrackEngine } from "@/audio/multitrackEngine";
+import { downloadBlob } from "@/lib/download";
 import {
   type MultitrackProject,
   type Track,
@@ -116,12 +117,7 @@ export function Studio() {
       setError("Mixdown se nepodařil.");
       return;
     }
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "rocker-mix.wav";
-    link.click();
-    URL.revokeObjectURL(url);
+    downloadBlob(blob, "rocker-mix.wav");
   }
 
   return (
