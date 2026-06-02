@@ -15,15 +15,18 @@ IndexedDB (přes `idb`) pro velké bloby — nahrávky.
 ## ⏭️ Příští krok
 Roadmapa je prakticky hotová — body 1–21 dokončené (18 a 20 vědomě
 vynechané), zbývá poslední **Bod 22 (sdílení a organizace)**. Nad rámec
-roadmapy přibylo 11 vln vylepšení (vzhledy, šumová brána + autokalibrace,
+roadmapy přibylo 12 vln vylepšení (vzhledy, šumová brána + autokalibrace,
 upozornění na verzi, krok vzhledu v úvodu, záloha dat, rozšířený
 metronom, responzivní PC rozvržení, polymorfní widgety vzhledů
 inspirované Soltonem, AmpWidget na obrazovkách Cvičení a Metal,
 **šestifázový upgrade metronomu** s drum modem, swingem, count-in,
 polyrytmem, vizuálním kyvadlem a továrními presety, **čtyřfázový
 upgrade Ladičky** s referenčním tónem na strunu, konfirmací naladění,
-3 novými továrními laděními a vlastními uživatelskými laděními) — vše
-nasazené.
+3 novými továrními laděními a vlastními uživatelskými laděními,
+**balík oprav z reálné zpětné vazby (2026-06-02)** — nahrávání do
+obou repráčků, aparát hrající napříč obrazovkami přes sdílený
+AmpEngine, spolehlivý export, audit validace vstupů/výstupů s opravami
+a zviditelněné nahrávání v Aparátu) — vše nasazené.
 
 Otevřené úkoly:
 - **Bod 22 (sdílení a organizace)** — poslední bod roadmapy. Záloha dat
@@ -46,7 +49,7 @@ Než příští session začne: přečíst `AGENTS.md` a `SKILL.md` (pravidla
 spolupráce), pak tento soubor.
 
 ## ✅ Hotovo
-**489 automatických testů**, vše prochází; `tsc` čistý. Roadmapa: Fáze 0–4
+**496 automatických testů**, vše prochází; `tsc` čistý. Roadmapa: Fáze 0–4
 hotové, Fáze 5 hotová (body 15–17; 18 vynechán), Fáze 6 z velké části
 hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
 
@@ -338,6 +341,12 @@ hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
   startuje s ním. `active` flag tam vědomě NENÍ — každá obrazovka má
   svůj lokální. Persist whitelist v `partialize` drží jen settings
   a presetId; rehydrate je sanituje přes `sanitizeAmpSettings`.
+
+  **Pozn. (2026-06-02): `useLocalAmpChain` byl nahrazen sdíleným
+  `AmpEngine` singletonem** — aparát teď žije v `AppShellu` a hraje
+  napříč obrazovkami, `active` stav drží engine. Tento odstavec popisuje
+  původní (superseded) návrh; aktuální viz „Refaktor Aparátu" výše
+  a Klíčová rozhodnutí.
 - **Čtyřfázový upgrade Ladičky (2026-06-02)** — Ladička (Bod 3)
   rozšířena ve čtyřech postupných commitech. Bonus k Bodu 3 z roadmapy.
   Vše nasazené, čeká reálný test s kytarou.
@@ -442,6 +451,50 @@ hotová (19 a 21 hotové, 20 vynechán, zbývá 22).
   nahrát zaaparátovaný zvuk (odbočka z výstupu → `MediaRecorder` →
   `recordingsStore`), take se objeví v Nahrávání. Plán sloučení obrazovek
   je tím celý hotový.
+- **Nahrávání do obou repráčků (2026-06-02)** — z reálné zpětné vazby:
+  Nahrávky, Studio i Looper braly syrový vstup z `getInputStream()`.
+  Dvouvstupová zvukovka (M-Track Solo) posílá kytaru v jednom kanálu, takže
+  nahrávka hrála jen z jednoho repráčku. `AudioEngine` nově vystavuje
+  `getRecordingStream()` — mono-sečtený `MediaStreamAudioDestinationNode`
+  napojený na existující `monoMix`. Tři nahrávací cesty (`RecorderControls`,
+  `multitrackEngine`, `loopPedal`) přepnuty na něj; kytara se sečte do mono
+  a zní z obou repráčků. Aparát má vlastní (zaaparátovaný) stream beze změny.
+- **Refaktor Aparátu — sdílený AmpEngine přes obrazovky (2026-06-02)** —
+  aparát už nežije v komponentě obrazovky (`useLocalAmpChain`, který ho
+  rušil při každé navigaci), ale v **modul-level singletonu `AmpEngine`**
+  (`src/audio/ampEngine.ts`) — stejný vzor jako `audioEngine`. Komponenta
+  `AmpHost` v `AppShellu` synchronizuje `ampStore.settings` do enginu; hook
+  `useAmpEngine` zrcadlí stav pro konzumenty (`AmpStudio`, `AmpWidget`).
+  Protože singleton i `AppShell` přežijí client-side navigaci, aparát hraje
+  dál i po přepnutí obrazovky a widget na Cvičení/Metalu zrcadlí tentýž
+  běžící aparát. `useLocalAmpChain` odstraněn. Doplněn `onunmount` guard
+  v `AmpStudio`, který dokončí a uloží probíhající nahrávání (engine žije
+  dál). **Service worker** (`public/sw.js`) navíc servíruje Next.js RSC
+  data (`.txt` payloady) network-first, aby přepnutí obrazovky nepadalo na
+  full reload po deploy. Tím padlo dřívější (chybné) přesvědčení, že
+  „static export = full reload, audio přes obrazovky nemožné" — viz
+  Klíčová rozhodnutí.
+- **Spolehlivý export (2026-06-02)** — z reálné zpětné vazby „nemohu
+  exportovat nahranou věc". Příčina: export rušil `URL.revokeObjectURL`
+  synchronně hned po kliknutí, což u větší nahrávky stažení zruší dřív,
+  než začne. Nový helper `src/lib/download.ts` (`downloadBlob`) připojí
+  odkaz do DOM (kvůli Firefoxu) a URL uvolní až po prodlevě. Použit
+  v `RecordingItem` (export nahrávky), `Studio` (export mixu) a
+  `DataBackup` (záloha) — Studio a záloha navíc dřív ani nepřipojovaly
+  odkaz do stránky.
+- **Audit a opravy validace vstupů/výstupů (2026-06-02)** — kompletní
+  audit (perzistence, soubory, externí, UI). Většina vzorová; dvě reálné
+  díry zaceleny: `lessonProgressStore` a `ytLoopStore` neměly `merge`
+  guard (corrupt data mohla shodit dashboard/tutor, resp. YouTube
+  přehrávač). Nové čisté sanitizéry `src/lib/lessonProgress.ts`
+  a `src/lib/ytLoops.ts` (s testy) zapojené do `merge` obou stores —
+  tím mají guard všechny persist stores. Plus dvě UX hlášky: `RiffTrainer`
+  (`<audio onError>`) a YouTube přehrávač (`onError` IFrame API) teď
+  hlásí selhání přehrávání místo tichého nic.
+- **Zviditelněné nahrávání v Aparátu (2026-06-02)** — blok „Nahrát
+  zaaparátovaný zvuk" v `AmpStudio` posunut nad metry, accent rámeček
+  a vysvětlivka (zachytí zvuk po efektech, na rozdíl od sekce Nahrávání =
+  suchý vstup; uloží do Nahrávání).
 - **Bod 22 — sdílení a organizace** (poslední bod roadmapy) — share-a-riff,
   songbook organizér
 - Beta test s 5–10 lidmi — vědomě odložený
@@ -459,8 +512,10 @@ ale ten některé prohlížeče ignorují; spolehlivá oprava je v audio grafu
 `AudioEngine.ts` — `ChannelSplitter` + `GainNode` sečtou vstupní kanály
 do mono (`getInputSource()` vrací ten mono uzel), stereo výstup ho
 zkopíruje do obou stran. Čeká ověření reálným testem se zvukem.
-Pozn.: nahrávání ve Studiu/Looperu jede přes `MediaRecorder` napřímo ze
-streamu — má teoreticky stejnou jednostrannou vadu, samostatná oprava.
+Pozn.: stejná jednostranná vada u samostatného nahrávání (Nahrávky,
+Studio, Looper) je od 2026-06-02 také opravena — recorder bere
+mono-sečtený `getRecordingStream()` místo syrového streamu (viz
+„Nahrávání do obou repráčků" v Hotovo). Vše čeká reálný poslechový test.
 
 ## 🏗️ Klíčová rozhodnutí
 *(Aby ses k tomu zase zbytečně nevracel.)*
@@ -559,18 +614,24 @@ streamu — má teoreticky stejnou jednostrannou vadu, samostatná oprava.
   `PageContainer` má dvě velikosti: `wide` (xl→5xl, pro dvousloupcové
   obrazovky) a `focused` (3xl, pro soustředěné nástroje, kde by plná šířka
   obsah jen roztáhla).
-- **Aparát — lokální chain per obrazovka, ne sdílený singleton
-  (2026-05-26):** Snaha udržet AmpChain naživu napříč obrazovkami
-  selhala kvůli **fyzické bariéře Next.js `output: 'export'`**: každá
-  navigace přes `<Link>` je `performance.getEntriesByType("navigation")
-  [0].type === "navigate"`, tj. plný document reload. Window se
-  resetuje, AudioContext zhasne, žádný JS singleton (globalThis,
-  module-level cache, persist trik) tuto bariéru neobejde — ověřeno.
-  Místo toho každá obrazovka, která hostuje aparát, vytváří vlastní
-  krátkodobou instanci přes `useLocalAmpChain`, která se dispose při
-  unmount. `useAmpStore` sdílí jen settings a presetId. Přechod na
-  server-rendered Next.js by problém vyřešil, ale rozbil PWA / Vercel
-  free tier setup — vědomě vynecháno.
+- **Aparát — sdílený AmpEngine singleton v AppShellu (2026-06-02,
+  nahrazuje dřívější „lokální chain per obrazovka"):** Dřívější verze
+  tvrdila, že `output: 'export'` dělá z každé `<Link>` navigace plný
+  document reload, takže aparát nemůže přežít přechod mezi obrazovkami.
+  **To bylo nepřesné.** Next.js i u statického exportu přepíná obrazovky
+  client-side (soft navigace), takže `AppShell` i modul-level singletony
+  navigaci přežijí. Aparát teď žije v singletonu `AmpEngine`
+  (`src/audio/ampEngine.ts`, vzor jako `audioEngine`); `AmpHost`
+  v `AppShellu` do něj synchronizuje settings, hook `useAmpEngine` ho
+  zrcadlí. `AmpStudio` i `AmpWidget` ovládají tentýž běžící chain, takže
+  aparát hraje napříč obrazovkami a widget zrcadlí jeho stav. Dřívější
+  pozorovaný „full reload" nastával jen **po nasazení nové verze** —
+  známý Next.js jev (selhání fetche RSC payloadu), zhoršený tím, že
+  service worker servíroval RSC `.txt` data cache-first. Oprava: SW je
+  teď servíruje network-first (`public/sw.js`). `useAmpStore` dál sdílí
+  jen settings a presetId (persist), aktivní stav drží engine.
+  `useLocalAmpChain` odstraněn. Přechod na server-rendered Next.js není
+  potřeba — appka zůstává statická PWA na Vercelu.
 - **Ladění — `resolveTuning` jako jediný zdroj pravdy (2026-06-02):**
   s příchodem vlastních uživatelských ladění (Fáze 3B) bylo potřeba
   místo dosavadního `getTuning(id)` (čistě tovární lookup) zavést
@@ -603,7 +664,8 @@ streamu — má teoreticky stejnou jednostrannou vadu, samostatná oprava.
   `theme-tokens.css` (CSS proměnné 3 vzhledů × 2 režimy)
 - `src/components/` — React komponenty (po doménách: tuner, metronome,
   library, practice, youtube, dashboard, profile, recorder, metal, tutor,
-  notation, amp — včetně `AmpWidget` a hooku `useLocalAmpChain`, studio,
+  notation, amp — včetně `AmpWidget`, `AmpHost` (drží sdílený aparát
+  v AppShellu) a hooku `useAmpEngine`, studio,
   looper, games, instrument, **widgets** — sdílené polymorfní widgety,
   dnes `KnobControl`). Napříč appkou: `ThemeProvider`, `ThemePicker`,
   `VintageFrame` (vzhledy), `ServiceWorkerRegister` (registrace SW + lišta
@@ -611,7 +673,8 @@ streamu — má teoreticky stejnou jednostrannou vadu, samostatná oprava.
   `Onboarding`, `PageContainer` + `SplitColumns` (responzivní PC rozvržení)
 - `src/audio/` — audio vrstva (AudioEngine, metronome, gallopPlayer,
   riffPlayer, pitchDetector — detekce tónů + šumová brána, muteAnalyzer,
-  chordPlayer, countIn, tunings, recorder, ampChain, multitrackEngine,
+  chordPlayer, countIn, tunings, recorder, ampChain, **ampEngine** —
+  sdílený singleton aparátu žijící přes obrazovky, multitrackEngine,
   loopPedal, **referenceTone** — hold-to-play referenční tón pro
   Ladičku, **confirmationSound** — dvounótový chime + haptika pro
   konfirmaci naladění)
@@ -621,7 +684,9 @@ streamu — má teoreticky stejnou jednostrannou vadu, samostatná oprava.
   practiceTime, recordings, recordingsDb, powerChords, metalExercises,
   metalRiffs, powerChordTrainer, gallopTrainer, palmMute, breakReminder,
   ampPresets, multitrack, wav, loopMix, fretboardGame, earTraining,
-  instrument, backup, useHydrated, **useActiveTheme** — sdílený hook pro
+  instrument, backup, **download** — spolehlivé stažení blobu,
+  **lessonProgress** + **ytLoops** — sanitizéry perzistence stores,
+  useHydrated, **useActiveTheme** — sdílený hook pro
   polymorfní widgety, **resolveTuning** — jediný zdroj pravdy pro
   lookup ladění (tovární i vlastní), ai/ — Gemini klient, prompty,
   generátor plánu, kontext o cvičení, typy) — vedle leží testy
@@ -629,7 +694,8 @@ streamu — má teoreticky stejnou jednostrannou vadu, samostatná oprava.
 - `src/stores/` — Zustand stores (settings, audio, metronome,
   metronomeSettings, lessonProgress, ytLoop, progress, recordings,
   gallopPlayer, riffPlayer, ai, chat, instrument, ampPresets, **amp** —
-  sdílené aparát settings a presetId, **customTunings** — uživatelská
+  sdílené aparát settings a presetId, **ampEngine** — zrcadlo stavu
+  sdíleného AmpEngine, **customTunings** — uživatelská
   vlastní ladění s defenzivní sanitizací v rehydraci)
 - `scripts/stamp-sw.mjs` — razítkuje `sw.js` verzí při buildu
 - `public/sw.js` — ručně psaný service worker; `public/alphatab/` — font

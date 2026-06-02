@@ -31,18 +31,18 @@ pořadí) je v `ROADMAP.md`.
 > BYOK přímo z prohlížeče (nativní endpoint posílá CORS hlavičky); aplikace
 > zůstala čistě statická PWA.
 
-> **Cena statického exportu:** `output: 'export'` znamená, že každá `<Link>`
-> navigace je **plný document reload** (ověřeno přes
-> `performance.getEntriesByType("navigation")[0].type === "navigate"`), ne
-> client-side route transition. Window se mezi obrazovkami resetuje, JS state
-> se zahazuje, AudioContext zhasne. Žádné singletons (modul-level cache,
-> `globalThis`, Zustand persist) tuto fyzickou bariéru neobejdou. Důsledek:
-> dlouhodobé audio (Aparát, metronom) nemůže žít napříč obrazovkami; když
-> chceš sdílet stav mezi obrazovkami, musí to jít přes localStorage/IndexedDB.
-> Aparát řeší `useLocalAmpChain` — každá obrazovka, která ho hostuje, má
-> vlastní krátkodobou instanci `AmpChain` (viz 2.5 a 2.3). Přechod na
-> server-rendered Next.js by problém vyřešil, ale rozbil PWA / Vercel free
-> tier setup — vědomě vynecháno.
+> **Statický export a navigace:** `output: 'export'` neznamená plný reload
+> při každém přechodu — Next.js i ve statickém exportu přepíná obrazovky
+> **client-side** (soft navigace přes `<Link>`, data routy jako `.txt` RSC
+> payloady). `AppShell` i modul-level singletony tedy navigaci přežijí, takže
+> dlouhodobé audio (Aparát) **může** žít napříč obrazovkami — řeší to
+> singleton `AmpEngine` hostovaný v `AppShellu` (viz 2.3 a 2.5). K **plnému
+> reloadu** dochází jen výjimečně: typicky první navigace **po nasazení nové
+> verze**, kdy se nepodaří fetchnout RSC payload (známý Next.js jev). Service
+> worker to zhoršoval tím, že RSC `.txt` data servíroval cache-first; oprava
+> je servíruje network-first (viz 2.1). (Dřívější verze tohoto dokumentu
+> tvrdila, že export = vždy full reload a audio přes obrazovky je nemožné —
+> to bylo nepřesné a je opraveno.)
 
 ---
 
@@ -83,7 +83,11 @@ funguje offline.
   builderu. Nová verze SW se po nasazení tiše nepřebírá — počká, dokud
   uživatel nepotvrdí lištu „nová verze" (`ServiceWorkerRegister`). Aby
   prohlížeč novou verzi vůbec poznal, build razítkuje `sw.js` unikátní
-  verzí (`scripts/stamp-sw.mjs`).
+  verzí (`scripts/stamp-sw.mjs`). Navigace a Next.js RSC data (`.txt`
+  payloady klientské navigace) se servírují **network-first** (offline
+  fallback na cache), aby přepnutí obrazovky po nasazení nedostalo
+  zastaralou kopii a nepadlo na plný reload; ostatní soubory jsou
+  cache-first.
 - **Wake Lock API** — drží obrazovku rozsvícenou během cvičení.
 
 ### 2.2 UI vrstva
@@ -144,10 +148,11 @@ Oddělené malé stores podle domény (aktuální stav):
 - `ampPresetsStore` — uživatelovy vlastní amp presety (persist do
   localStorage, na načtení projde type guardem) — Bod 16.
 - `ampStore` — sdílené aparát settings + presetId (persist do localStorage).
-  **Nedrží aktivní stav** — každá obrazovka, která hostuje aparát, má
-  vlastní lokální chain přes hook `useLocalAmpChain`. Důvod: `output:
-  'export'` dělá z navigace plný document reload, takže ani sdílený
-  singleton AmpEngine by AudioContext napříč obrazovkami neudržel.
+  **Nedrží aktivní stav** — ten žije v singletonu `AmpEngine` (vrstva 5),
+  který aparát hostuje napříč obrazovkami. `AmpHost` v `AppShellu` do enginu
+  synchronizuje settings; o aktivaci/vypnutí rozhoduje uživatel, ne unmount.
+- `ampEngineStore` — zrcadlo stavu `AmpEngine` (běží/neběží, error) pro
+  React, stejný vzor jako `audioStore`.
 
 Stores se vzorem „zrcadlo" (`audioStore`, `metronomeStore`,
 `gallopPlayerStore`, `riffPlayerStore`, `recordingsStore`) jen odrážejí stav
@@ -270,6 +275,12 @@ Jediný objekt (singleton), který vlastní `AudioContext` a stará se o:
   uloží a podle toho upraví UX (viz 3.5).
 - **Životní cyklus** — spuštění/zastavení, uvolnění zdrojů, ošetření situace
   kdy uživatel odpojí zvukovku za chodu.
+- **Mono sečtení vstupu** — dvouvstupová zvukovka (M-Track Solo) posílá
+  kytaru jen v jednom kanálu; engine sčítá vstupní kanály do mono přes
+  `ChannelSplitter` + `GainNode`. Aparát čte mono uzel přes
+  `getInputSource()`, nahrávání (Nahrávky/Studio/Looper) přes
+  `getRecordingStream()` (mono `MediaStreamAudioDestinationNode`) — aby
+  zvuk a nahrávka nešly jen z jednoho repráčku.
 
 ### 3.3 Procesory (moduly nad enginem)
 
@@ -286,7 +297,7 @@ Každý nástroj je samostatný procesor zapojený do enginu:
 | Přehrávač riffů | Web Audio scheduler + syntéza tónů (Bod 12) | přehrává tab riffu syntetizovanými tóny v nastavitelném tempu |
 | Palm Mute detektor | `AnalyserNode` FFT → spektrální těžiště (Bod 12) | „jas" zvuku; kalibrace na konkrétní sestavu |
 | AlphaTab přehrávač | `@coderline/alphatab` (Bod 15) | prohlížeč Guitar Pro / MusicXML; vykreslování i MIDI syntéza na hlavním vlákně (`useWorkers: false`) |
-| Ampsim řetězec | Web Audio uzly — `ampChain` (Bod 16) | pre-gain, zkreslení (WaveShaper), 3-pásmový EQ, filtrová simulace reproboxu, delay, reverb, chorus. Životní cyklus per obrazovka přes hook `useLocalAmpChain` (`src/components/amp/`) — chain se vytvoří při zapnutí na dané obrazovce a dispose při unmount (Aparát = lokální, ne sdílený singleton; důvod viz sekce 1) |
+| Ampsim řetězec | Web Audio uzly — `ampChain` (Bod 16) | pre-gain, zkreslení (WaveShaper), 3-pásmový EQ, filtrová simulace reproboxu, delay, reverb, chorus. Životní cyklus drží sdílený singleton `AmpEngine` (`src/audio/ampEngine.ts`) hostovaný v `AppShellu` — chain se vytvoří při zapnutí a žije napříč obrazovkami, dokud ho uživatel nevypne. Obrazovky (`AmpStudio`, `AmpWidget`) ho ovládají přes hook `useAmpEngine` (viz sekce 1) |
 | Multi-track engine | MediaRecorder + `OfflineAudioContext` (Bod 17) | nahrávání stop přes sebe, mixdown a export do WAV |
 | Loop pedál | `AudioBufferSourceNode` s `loop=true` (Bod 17) | bezešvá smyčka, vrstvení dalších vrstev přes ni |
 
@@ -454,13 +465,16 @@ rocker/
 │   ├── audio/               # audio vrstva (5): AudioEngine, metronome,
 │   │                        #   gallopPlayer, riffPlayer, pitchDetector,
 │   │                        #   muteAnalyzer, chordPlayer, countIn,
-│   │                        #   tunings, recorder, ampChain,
+│   │                        #   tunings, recorder, ampChain, ampEngine
+│   │                        #   (sdílený singleton aparátu),
 │   │                        #   multitrackEngine, loopPedal,
 │   │                        #   referenceTone, confirmationSound
 │   ├── lib/                 # doménová logika (4), data/obsah (6),
 │   │                        #   IndexedDB vrstva (7), čisté utility,
 │   │                        #   resolveTuning (jediný zdroj pravdy pro
 │   │                        #   lookup ladění — tovární i vlastní),
+│   │                        #   download (stažení blobu), lessonProgress
+│   │                        #   + ytLoops (sanitizéry perzistence),
 │   │                        #   ai/ (Gemini klient) + testy *.test.ts
 │   └── stores/              # Zustand stores (vrstva 3) — settings,
 │                            #   customTunings, …

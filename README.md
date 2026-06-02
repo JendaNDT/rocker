@@ -43,6 +43,8 @@ metr, knoby, beat-mince, rám not.
 - **Aparát** — efektový řetězec (komprese, zkreslení, EQ, delay,
   dozvuk, chorus), presety + vlastní. Mini `AmpWidget` (ON/OFF
   + 4 vestavěné presety) sedí i v Cvičení a Metalu, sdílí nastavení.
+  Aparát hraje napříč obrazovkami (sdílený engine) a umí nahrát
+  zaaparátovaný zvuk.
 - **Knihovna** — 26 akordů, 6 stupnic, 14 riffů (2 ikonické +
   12 originálních ve stylu rock/metal)
 - **Noty** — AlphaTab prohlížeč Guitar Pro / MusicXML s přehráváním
@@ -59,7 +61,7 @@ Lekce: 18 vestavěných lekcí (Stage 1–3) s „Try it" detekcí tónu.
 - **Audio**: Web Audio API + getUserMedia, detekce tónů přes Pitchy
 - **Notace**: @coderline/alphatab (SONiVOX soundfont)
 - **AI**: Google Gemini API (BYOK, bez proxy serveru)
-- **Testy**: Vitest (489 testů, čistá logika v `src/lib/`)
+- **Testy**: Vitest (496 testů, čistá logika v `src/lib/`)
 - **PWA**: ručně psaný service worker, manifest, instalovatelnost
 - **Nasazení**: Vercel, auto-deploy z `main`
 
@@ -111,7 +113,10 @@ metronomu** (2026-05-27): per-beat zvuk, swing, count-in, polyrytmus,
 vizuální kyvadlo, tovární presety. **Čtyřfázový upgrade Ladičky**
 (2026-06-02): referenční tón na strunu, konfirmace naladění (zvuk
 + haptika), 3 nová tovární ladění (Open G / Open D / DADGAD),
-vlastní uživatelská ladění s inline editorem.
+vlastní uživatelská ladění s inline editorem. **Balík oprav z reálné
+zpětné vazby** (2026-06-02): nahrávání do obou repráčků, aparát hrající
+přes obrazovky (sdílený engine + SW fix), spolehlivý export, audit
+validace vstupů/výstupů s opravami, zviditelněné nahrávání v Aparátu.
 
 Detaily v `ROADMAP.md` a `PROJECT_STATUS.md`.
 

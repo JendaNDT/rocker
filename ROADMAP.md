@@ -404,13 +404,14 @@ Crunch / Lead / Metal), live `InputLevelMeter` jen když aktivní, link
 Aparátem přes `useAmpStore` — tone tweak na jedné obrazovce se projeví
 všude.
 
-Architekturně: každá obrazovka, která hostuje aparát, drží **vlastní
-krátkodobou instanci `AmpChain`** přes hook `useLocalAmpChain`
-(`src/components/amp/useLocalAmpChain.ts`). Chain se dispose při
-unmount. Sdílený singleton AmpEngine se ukázal jako fyzicky nemožný
-kvůli `output: 'export'` (každá `<Link>` navigace je plný document
-reload, AudioContext zhasne). Sdílený je tedy jen state (settings,
-presetId), ne audio engine. Detaily v `PROJECT_STATUS.md`.
+Architekturně (původní návrh): widget držel vlastní krátkodobou
+instanci `AmpChain` přes hook `useLocalAmpChain`, která se dispose při
+unmount. **Nahrazeno 2026-06-02** sdíleným singletonem `AmpEngine`
+v `AppShellu` — aparát hraje napříč obrazovkami a widget zrcadlí tentýž
+běžící chain. Dřívější závěr, že sdílený singleton je „kvůli
+`output: 'export'` fyzicky nemožný", byl nepřesný — soft navigace
+statického exportu funguje. Detaily v `PROJECT_STATUS.md` (Refaktor
+Aparátu) a `ARCHITECTURE.md`.
 
 ### ✅ Ladička — čtyřfázový upgrade (2026-06-02)
 Čtyři postupné commity, které posunuly Ladičku (Bod 3) z „funkční
@@ -446,6 +447,27 @@ a důvody v `PROJECT_STATUS.md`, tady jen seznam:
   workflow je „použij existující, uprav, ulož jako nové, staré smaž".
   V Ladičce select s `<optgroup>` Tovární / Vlastní, tlačítka
   „Vytvořit vlastní…" a „Smazat (confirm)".
+
+### ✅ Balík oprav z reálné zpětné vazby + refaktor Aparátu (2026-06-02)
+Z reálné zpětné vazby uživatele a navazujícího auditu. Detaily
+v `PROJECT_STATUS.md`, tady jen seznam:
+
+- **Nahrávání do obou repráčků** — Nahrávky/Studio/Looper braly syrový
+  vstup; dvouvstupová zvukovka má kytaru v jednom kanálu, takže nahrávka
+  hrála jen z jednoho repráčku. Recorder teď bere mono-sečtený
+  `getRecordingStream()`.
+- **Aparát žije přes obrazovky** — refaktor z lokálního chainu per
+  obrazovka na sdílený singleton `AmpEngine` v `AppShellu`. Aparát hraje
+  dál i po přepnutí obrazovky; widget na Cvičení/Metalu zrcadlí tentýž
+  aparát. Padlo dřívější (chybné) přesvědčení, že statický export to
+  neumožňuje. Service worker servíruje RSC data network-first kvůli
+  plynulé navigaci po nasazení.
+- **Spolehlivý export** — helper `downloadBlob` (odložený revoke +
+  připojení odkazu do DOM) opravuje export nahrávek, mixu i zálohy.
+- **Audit validace vstupů/výstupů** — guardy pro `lessonProgressStore`
+  a `ytLoopStore`, hlášky při selhání přehrávání (RiffTrainer, YouTube).
+- **Zviditelněné nahrávání v Aparátu** — výraznější tlačítko „Nahrát
+  zaaparátovaný zvuk" s vysvětlivkou (zvuk po efektech vs. suchý vstup).
 
 ---
 

@@ -125,14 +125,26 @@ quirky sandboxu, záludnosti knihoven, proč bylo něco rozhodnuto takhle.)*
   Gemini (jiná adresa) — ten z prohlížeče nejde; nativní `generateContent`
   ano. Klíč se posílá v hlavičce `x-goog-api-key`. AI vrstva je
   v `src/lib/ai/` (čistý fetch, žádná SDK závislost navíc).
-- **`output: 'export'` dělá z každé `<Link>` navigace plný document
-  reload.** Ověřeno přes `performance.getEntriesByType("navigation")[0]
-  .type === "navigate"` — žádné client-side route transitions. Důsledek:
-  **window se mezi obrazovkami resetuje**, JS state nepřežije, AudioContext
-  zhasne. Žádné singleton triky (modul-level cache, `globalThis`, Zustand
-  persist) tuto fyzickou bariéru neobejdou. Sdílet jde jen perzistovaný
-  state (přes localStorage/IndexedDB). Pokud někdy bude potřeba
-  „audio žije přes obrazovky" (např. Aparát na pozadí), bude nutné
-  přepnout na server-rendered Next.js — což rozbije PWA / Vercel free
-  tier. Aktuálně se s omezením žije: `useLocalAmpChain` drží
-  `AmpChain` lokálně per komponenta, sdílené jsou jen settings.
+- **`output: 'export'` NEdělá z navigace plný reload — soft navigace
+  funguje (oprava dřívějšího lessonu, 2026-06-02).** Dřívější verze tvrdila
+  opak; bylo to nepřesné. Next.js i ve statickém exportu přepíná obrazovky
+  **client-side** přes `<Link>` (data routy jako `.txt` RSC payloady), takže
+  `AppShell` i modul-level singletony navigaci přežijí — proto **může
+  „audio žít přes obrazovky"**: Aparát běží v singletonu `AmpEngine`
+  (`src/audio/ampEngine.ts`) hostovaném v `AppShellu` přes `AmpHost`, ne
+  v komponentě obrazovky. K plnému reloadu dochází jen výjimečně, typicky
+  první navigace **po nasazení nové verze** kvůli selhání fetche RSC
+  payloadu; zhoršoval to service worker, který RSC `.txt` servíroval
+  cache-first — oprava je servíruje network-first (`public/sw.js`). Přechod
+  na server-rendered Next.js tedy NENÍ potřeba, appka zůstává statická PWA.
+- **Synchronní `URL.revokeObjectURL` hned po `link.click()` může zrušit
+  stažení** většího blobu dřív, než vůbec začne — projevilo se to jako
+  „nemohu exportovat nahrávku". Spolehlivé stahování je v
+  `src/lib/download.ts` (`downloadBlob`): připojí `<a>` do DOM (jinak
+  Firefox stažení ignoruje) a URL uvolní až po prodlevě. Používat ten
+  helper, ne ad-hoc `<a download>`.
+- **Nahrávací cesty berou mono `getRecordingStream()`, ne syrový
+  `getInputStream()`.** Dvouvstupová zvukovka má kytaru jen v jednom
+  kanálu; syrový stream nahraje jen jeden repráček. `getRecordingStream()`
+  (v `AudioEngine`) vrací mono-sečtený stream. Aparát má vlastní
+  zaaparátovaný stream (`AmpChain.recordingStream`).
