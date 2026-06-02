@@ -227,46 +227,67 @@ export async function streamChat(
   let buffer = "";
   let fullText = "";
 
+  // Outer try/finally guarantees the reader is released on every path
+  // (success, network error, abort, early return). Without this, an
+  // aborted or errored stream used to leave the underlying connection
+  // hanging until GC — wasted BYOK quota on every unmount mid-stream.
   try {
-    for (;;) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buffer += decoder.decode(value, { stream: true });
+    try {
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
 
-      // SSE events are newline-delimited; process every complete line and
-      // keep the unfinished tail in the buffer for the next read.
-      let newlineIndex = buffer.indexOf("\n");
-      while (newlineIndex !== -1) {
-        const line = buffer.slice(0, newlineIndex).trim();
-        buffer = buffer.slice(newlineIndex + 1);
-        if (line.startsWith("data:")) {
-          const piece = parseSseData(line.slice(5).trim());
-          if (piece) {
-            fullText += piece;
-            onChunk(fullText);
+        // SSE events are newline-delimited; process every complete line and
+        // keep the unfinished tail in the buffer for the next read.
+        let newlineIndex = buffer.indexOf("\n");
+        while (newlineIndex !== -1) {
+          const line = buffer.slice(0, newlineIndex).trim();
+          buffer = buffer.slice(newlineIndex + 1);
+          if (line.startsWith("data:")) {
+            const piece = parseSseData(line.slice(5).trim());
+            if (piece) {
+              fullText += piece;
+              onChunk(fullText);
+            }
           }
+          newlineIndex = buffer.indexOf("\n");
         }
-        newlineIndex = buffer.indexOf("\n");
+      }
+    } catch {
+      if (signal?.aborted) return { ok: false, error: ERR_ABORTED };
+      return { ok: false, error: ERR_NETWORK };
+    }
+
+    // The final SSE event can arrive without a trailing newline, so a last
+    // `data:` line may still be sitting in the buffer — process it too.
+    const tail = buffer.trim();
+    if (tail.startsWith("data:")) {
+      const piece = parseSseData(tail.slice(5).trim());
+      if (piece) {
+        fullText += piece;
+        onChunk(fullText);
       }
     }
-  } catch {
-    if (signal?.aborted) return { ok: false, error: ERR_ABORTED };
-    return { ok: false, error: ERR_NETWORK };
-  }
 
-  // The final SSE event can arrive without a trailing newline, so a last
-  // `data:` line may still be sitting in the buffer — process it too.
-  const tail = buffer.trim();
-  if (tail.startsWith("data:")) {
-    const piece = parseSseData(tail.slice(5).trim());
-    if (piece) {
-      fullText += piece;
-      onChunk(fullText);
+    const text = fullText.trim();
+    if (!text) return { ok: false, error: ERR_EMPTY };
+
+    return { ok: true, text };
+  } finally {
+    // Await ensures the underlying connection is released *before* this
+    // function resolves — important so callers know the BYOK quota is no
+    // longer being consumed. cancel() resolves silently if the stream is
+    // already closed; the .catch() swallows the rejection some browsers
+    // throw when the stream is in a terminal error state. releaseLock()
+    // is a belt-and-braces follow-up: per spec cancel() releases the lock
+    // implicitly, but doing it explicitly makes the contract obvious and
+    // tolerates polyfills that miss the implicit release.
+    await reader.cancel().catch(() => {});
+    try {
+      reader.releaseLock();
+    } catch {
+      // Already released — fine.
     }
   }
-
-  const text = fullText.trim();
-  if (!text) return { ok: false, error: ERR_EMPTY };
-
-  return { ok: true, text };
 }

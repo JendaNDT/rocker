@@ -53,11 +53,15 @@ export function ChatPanel() {
 
   const endRef = useRef<HTMLDivElement>(null);
   const mountedRef = useRef(true);
+  // Aborts the in-flight stream on unmount so an abandoned conversation
+  // does not keep eating tokens from the user's BYOK quota.
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   // Track mount state so an in-flight stream can't update an unmounted panel.
   useEffect(() => {
     return () => {
       mountedRef.current = false;
+      abortControllerRef.current?.abort();
     };
   }, []);
 
@@ -68,6 +72,11 @@ export function ChatPanel() {
 
   /** Streams a reply from the AI for the given history and appends it. */
   async function ask(history: ChatMessage[]) {
+    // Cancel any in-flight stream from a previous ask() (e.g. fast retry).
+    abortControllerRef.current?.abort();
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
     setBusy(true);
     setError(null);
     setStreaming("");
@@ -86,11 +95,17 @@ export function ChatPanel() {
       apiKey,
       model,
       history,
+      signal: controller.signal,
       systemPrompt: `${TUTOR_SYSTEM_PROMPT}\n\n${practiceContext}\n\n${instrumentContext}`,
       onChunk: (text) => {
         if (mountedRef.current) setStreaming(text);
       },
     });
+    // Clear our ref only if this request is still the latest one — a newer
+    // ask() may have replaced it while we were awaiting.
+    if (abortControllerRef.current === controller) {
+      abortControllerRef.current = null;
+    }
     // A finished reply is saved to the store even if the user navigated away;
     // component-state updates are skipped once the panel has unmounted.
     if (result.ok) {

@@ -328,4 +328,95 @@ describe("streamChat", () => {
     expect(result.ok).toBe(false);
     expect(fetchMock).not.toHaveBeenCalled();
   });
+
+  describe("reader cleanup", () => {
+    it("releases the reader lock after a successful stream", async () => {
+      const encoder = new TextEncoder();
+      const stream = new ReadableStream<Uint8Array>({
+        start(controller) {
+          controller.enqueue(encoder.encode(sseEvent("ok")));
+          controller.close();
+        },
+      });
+      const response = {
+        ok: true,
+        status: 200,
+        body: stream,
+      } as unknown as Response;
+      vi.stubGlobal("fetch", vi.fn(async () => response));
+
+      await streamChat({
+        apiKey: "key-123",
+        model: "gemini-2.5-flash",
+        history: HISTORY,
+        apiBase: API_BASE,
+        onChunk: () => {},
+      });
+
+      // After streamChat returns, no reader should still hold a lock —
+      // the body is free for the GC / for cleanup. Locked means a hanging
+      // connection, which is exactly the BYOK leak we are preventing.
+      expect(stream.locked).toBe(false);
+    });
+
+    it("releases the reader lock when the stream errors mid-way", async () => {
+      const encoder = new TextEncoder();
+      const stream = new ReadableStream<Uint8Array>({
+        start(controller) {
+          controller.enqueue(encoder.encode(sseEvent("partial ")));
+          // Subsequent read() rejects, mimicking a torn connection.
+          setTimeout(() => controller.error(new Error("connection lost")), 0);
+        },
+      });
+      const response = {
+        ok: true,
+        status: 200,
+        body: stream,
+      } as unknown as Response;
+      vi.stubGlobal("fetch", vi.fn(async () => response));
+
+      const result = await streamChat({
+        apiKey: "key-123",
+        model: "gemini-2.5-flash",
+        history: HISTORY,
+        apiBase: API_BASE,
+        onChunk: () => {},
+      });
+
+      expect(result.ok).toBe(false);
+      expect(stream.locked).toBe(false);
+    });
+
+    it("releases the reader lock on abort", async () => {
+      const controller = new AbortController();
+      const stream = new ReadableStream<Uint8Array>({
+        async pull(streamController) {
+          // Aborting the AbortController makes the next read() reject,
+          // which our try/catch turns into ERR_ABORTED. We trigger abort
+          // on the first pull so the test resolves quickly.
+          controller.abort();
+          streamController.error(new DOMException("aborted", "AbortError"));
+        },
+      });
+      const response = {
+        ok: true,
+        status: 200,
+        body: stream,
+      } as unknown as Response;
+      vi.stubGlobal("fetch", vi.fn(async () => response));
+
+      const result = await streamChat({
+        apiKey: "key-123",
+        model: "gemini-2.5-flash",
+        history: HISTORY,
+        apiBase: API_BASE,
+        signal: controller.signal,
+        onChunk: () => {},
+      });
+
+      expect(result.ok).toBe(false);
+      if (!result.ok) expect(result.error).toContain("zrušen");
+      expect(stream.locked).toBe(false);
+    });
+  });
 });
