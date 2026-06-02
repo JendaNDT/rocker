@@ -212,13 +212,17 @@ export function ChatPanel() {
         )}
 
         {busy && streaming.length === 0 && (
-          <div className="mr-auto max-w-[85%] rounded-lg border border-line bg-surface px-3 py-2 text-sm text-muted">
+          <div
+            role="status"
+            aria-live="polite"
+            className="mr-auto max-w-[85%] rounded-lg border border-line bg-surface px-3 py-2 text-sm text-muted"
+          >
             Přemýšlí…
           </div>
         )}
 
         {error && (
-          <div className="mr-auto max-w-[85%]">
+          <div className="mr-auto max-w-[85%]" role="alert">
             <p className="text-sm text-danger">{error}</p>
             <button
               type="button"

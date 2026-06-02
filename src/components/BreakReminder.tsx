@@ -56,7 +56,11 @@ export function BreakReminder() {
   if (!show) return null;
 
   return (
-    <div className="fixed inset-x-3 bottom-24 z-20 mx-auto max-w-md rounded-xl border border-accent bg-surface p-4 shadow-lg md:bottom-4">
+    <div
+      role="status"
+      aria-live="polite"
+      className="fixed inset-x-3 bottom-24 z-20 mx-auto max-w-md rounded-xl border border-accent bg-surface p-4 shadow-lg md:bottom-4"
+    >
       <p className="text-sm text-text">
         Cvičíš už 45 minut. Dej si pauzu — protáhni prsty a nech uši
         odpočinout.

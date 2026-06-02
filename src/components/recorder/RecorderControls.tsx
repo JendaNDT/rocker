@@ -160,8 +160,17 @@ export function RecorderControls() {
             Zastavit
           </button>
           <span className="flex items-center gap-2 text-sm tabular-nums text-danger">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-danger" />
-            Nahrávám {formatDuration(elapsed)}
+            <span
+              className="h-2 w-2 animate-pulse rounded-full bg-danger"
+              aria-hidden="true"
+            />
+            {/* The "Nahrávám" label fires the screen-reader status announcement
+                once; the ticking timer is muted with aria-hidden so SR users
+                are not spammed every 200 ms. */}
+            <span role="status" aria-live="polite">
+              Nahrávám
+            </span>
+            <span aria-hidden="true">{formatDuration(elapsed)}</span>
           </span>
         </div>
       )}
