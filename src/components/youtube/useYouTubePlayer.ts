@@ -29,9 +29,14 @@ export function useYouTubePlayer(
   useEffect(() => {
     let cancelled = false;
 
-    void loadYouTubeApi().then((yt) => {
-      if (cancelled) return;
-      playerRef.current = new yt.Player(containerId, {
+    // Keep the build promise so cleanup can wait for it. If unmount happens
+    // between loadYouTubeApi() and its .then(), the player created (if any)
+    // is destroyed by the cleanup below — without this, a player born after
+    // cleanup would orphan its iframe (a "ghost iframe" in React Strict mode
+    // where every effect runs twice).
+    const playerBuild = loadYouTubeApi().then<YT.Player | null>((yt) => {
+      if (cancelled) return null;
+      const player = new yt.Player(containerId, {
         width: "100%",
         height: "100%",
         playerVars: { rel: 0, modestbranding: 1 },
@@ -44,12 +49,16 @@ export function useYouTubePlayer(
           },
         },
       });
+      playerRef.current = player;
+      return player;
     });
 
     return () => {
       cancelled = true;
-      playerRef.current?.destroy();
       playerRef.current = null;
+      void playerBuild.then((player) => {
+        player?.destroy();
+      });
     };
   }, [containerId]);
 
