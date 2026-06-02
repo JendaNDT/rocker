@@ -2,6 +2,8 @@
 // Unit-tested in multitrack.test.ts. Every helper is immutable: it returns a
 // new project rather than mutating the given one.
 
+import { clampGainOrSilent } from "./math";
+
 /** One recorded track in a multi-track project. */
 export interface Track {
   id: string;
@@ -31,11 +33,6 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-/** Clamps a value into 0..1; non-finite input becomes 0. */
-function clamp01(value: number): number {
-  if (!Number.isFinite(value)) return 0;
-  return Math.max(0, Math.min(1, value));
-}
 
 /** A fresh project with no tracks. */
 export function emptyProject(): MultitrackProject {
@@ -91,7 +88,7 @@ export function setTrackGain(
   id: string,
   gain: number,
 ): MultitrackProject {
-  return patchTrack(project, id, { gain: clamp01(gain) });
+  return patchTrack(project, id, { gain: clampGainOrSilent(gain) });
 }
 
 /** Renames a track. */
@@ -142,7 +139,7 @@ export function sanitizeTrack(value: unknown): Track | null {
     mimeType,
     durationSec,
     gain:
-      typeof gain === "number" && Number.isFinite(gain) ? clamp01(gain) : 1,
+      typeof gain === "number" && Number.isFinite(gain) ? clampGainOrSilent(gain) : 1,
     muted: muted === true,
   };
 }

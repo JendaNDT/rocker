@@ -1,7 +1,17 @@
 // Metronome configuration — pure types, defaults and sanitisers.
 // Architecture layer 3 (lib): no React, no audio, unit-tested.
 
+import { clampGainOrFull } from "./math";
 import { clampBpm } from "./tempo";
+
+/**
+ * Re-export under the legacy name so existing call sites
+ * (`audio/metronome.ts`, `components/metal/PalmMuteStudio.tsx`) and the
+ * metronomeConfig test suite keep working. The underlying helper lives
+ * in `./math` next to its mirror (`clampGainOrSilent`); the metronome
+ * uses the "or full" variant — see the math module for why.
+ */
+export const clamp01 = clampGainOrFull;
 
 /** Accent level applied to a single beat in the bar. */
 export type AccentLevel = "muted" | "normal" | "accent";
@@ -36,12 +46,6 @@ const VALID_SUBDIVISIONS = [1, 2, 3, 4];
 /** Clamps a subdivision to one of the supported values (1, 2, 3, 4). */
 export function clampSubdivision(value: number): number {
   return VALID_SUBDIVISIONS.includes(value) ? value : 1;
-}
-
-/** Clamps a 0..1 gain value; invalid input falls back to full volume. */
-export function clamp01(value: number): number {
-  if (!Number.isFinite(value)) return 1;
-  return Math.max(0, Math.min(1, value));
 }
 
 /** First beat accented, every other beat normal. */

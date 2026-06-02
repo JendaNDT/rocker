@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { audioEngine } from "@/audio/AudioEngine";
+import { clampUnit } from "@/lib/math";
 import {
   PALM_MUTE_DRILLS,
   calibrate,
@@ -36,10 +37,6 @@ const FRESH_STUDIO: StudioState = {
   openSamples: [],
   mutedSamples: [],
 };
-
-function clamp01(value: number): number {
-  return Math.max(0, Math.min(1, value));
-}
 
 /** Short cell label for a technique. */
 function techniqueLabel(technique: MuteTechnique): string {
@@ -304,8 +301,12 @@ function DetectorView({
   reading: { centroid: number; hitCount: number; lastHitCentroid: number };
 }) {
   const span = calibration.openMean - calibration.mutedMean;
-  const markerPosition = clamp01(
+  // If openMean === mutedMean (degenerate calibration), span = 0 and the
+  // division yields ±Infinity / NaN. clampUnit's neutral fallback (0.5)
+  // puts the marker in the middle instead of breaking the CSS `width`.
+  const markerPosition = clampUnit(
     (reading.centroid - calibration.mutedMean) / span,
+    0.5,
   );
   const verdict =
     reading.hitCount > 0
