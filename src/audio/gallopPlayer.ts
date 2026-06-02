@@ -1,13 +1,16 @@
 // Gallop Player — architecture layer 5 (audio).
 //
 // Plays a gallop rhythm cell on a loop using the same "two clocks" pattern as
-// the metronome: a coarse setInterval scheduler queues clicks slightly ahead
-// on the AudioContext clock so they never drift, and a requestAnimationFrame
-// loop reports which note is sounding for the UI.
+// the metronome, owned by the shared LoopRunner helper (src/audio/loopRunner.ts)
+// so the stop() contract is uniform across every audio player. The scheduler
+// queues clicks slightly ahead on the AudioContext clock so they never drift,
+// and a requestAnimationFrame loop reports which note is sounding for the UI.
 //
 // The cell and tempo are plain configuration set by the component (the
 // GallopTrainer engine in src/lib/gallopTrainer.ts owns that state). The
 // player only reports playback position back through GallopPlayerState.
+
+import { LoopRunner, SCHEDULE_AHEAD_S } from "@/audio/loopRunner";
 
 export interface GallopPlayerState {
   isPlaying: boolean;
@@ -23,10 +26,6 @@ const INITIAL_STATE: GallopPlayerState = {
   cellsPlayed: 0,
 };
 
-// How often the scheduler wakes up (ms) and how far ahead it schedules (s).
-const LOOKAHEAD_MS = 25;
-const SCHEDULE_AHEAD_S = 0.12;
-
 type ClickKind = "accent" | "soft";
 type Listener = (state: GallopPlayerState) => void;
 type QueuedNote = { onset: number; cellEnd: boolean; time: number };
@@ -34,9 +33,10 @@ type QueuedNote = { onset: number; cellEnd: boolean; time: number };
 class GallopPlayer {
   private state: GallopPlayerState = INITIAL_STATE;
   private listeners = new Set<Listener>();
-  private context: AudioContext | null = null;
-  private timerId: ReturnType<typeof setInterval> | null = null;
-  private rafId = 0;
+  private readonly runner = new LoopRunner({
+    schedule: (context) => this.scheduler(context),
+    draw: (context) => this.drawLoop(context),
+  });
   private bpm = 90;
   private cell: number[] = [0.5, 0.25, 0.25];
   private nextNoteTime = 0;
@@ -83,25 +83,16 @@ class GallopPlayer {
   /** Starts the player on the given (output) AudioContext. */
   start(context: AudioContext): void {
     if (this.state.isPlaying) this.stop();
-    this.context = context;
     this.onsetIndex = 0;
     this.completedCells = 0;
     this.nextNoteTime = context.currentTime + 0.1;
     this.queue = [];
     this.setState({ isPlaying: true, currentOnset: -1, cellsPlayed: 0 });
-    this.timerId = setInterval(() => this.scheduler(), LOOKAHEAD_MS);
-    this.rafId = requestAnimationFrame(() => this.drawLoop());
+    this.runner.start(context);
   }
 
   stop(): void {
-    if (this.timerId !== null) {
-      clearInterval(this.timerId);
-      this.timerId = null;
-    }
-    if (this.rafId !== 0) {
-      cancelAnimationFrame(this.rafId);
-      this.rafId = 0;
-    }
+    this.runner.stop();
     this.queue = [];
     this.setState({ isPlaying: false, currentOnset: -1 });
   }
@@ -115,14 +106,12 @@ class GallopPlayer {
   }
 
   /** Schedules every onset whose time falls inside the look-ahead window. */
-  private scheduler(): void {
-    const context = this.context;
-    if (!context) return;
+  private scheduler(context: AudioContext): void {
     while (this.nextNoteTime < context.currentTime + SCHEDULE_AHEAD_S) {
       const onset = this.onsetIndex;
       const isLast = onset === this.cell.length - 1;
       this.queue.push({ onset, cellEnd: isLast, time: this.nextNoteTime });
-      this.playClick(this.nextNoteTime, onset === 0 ? "accent" : "soft");
+      this.playClick(context, this.nextNoteTime, onset === 0 ? "accent" : "soft");
 
       const secondsPerBeat = 60 / this.bpm;
       this.nextNoteTime += this.cell[onset] * secondsPerBeat;
@@ -131,9 +120,7 @@ class GallopPlayer {
   }
 
   /** Synthesises a short click with an oscillator — no audio files needed. */
-  private playClick(time: number, kind: ClickKind): void {
-    const context = this.context;
-    if (!context) return;
+  private playClick(context: AudioContext, time: number, kind: ClickKind): void {
     const oscillator = context.createOscillator();
     const gain = context.createGain();
     oscillator.connect(gain);
@@ -149,9 +136,7 @@ class GallopPlayer {
   }
 
   /** Reports the sounding note to the UI as scheduled onsets come due. */
-  private drawLoop(): void {
-    const context = this.context;
-    if (!context) return;
+  private drawLoop(context: AudioContext): void {
     while (
       this.queue.length > 0 &&
       this.queue[0].time <= context.currentTime
@@ -165,7 +150,7 @@ class GallopPlayer {
       }
       this.setState(patch);
     }
-    this.rafId = requestAnimationFrame(() => this.drawLoop());
+    // No rAF re-arm here — LoopRunner does it (only while running).
   }
 }
 
