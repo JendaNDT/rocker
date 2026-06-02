@@ -4,8 +4,11 @@
 // JS timer (setInterval) wakes up regularly and schedules clicks slightly
 // ahead of time directly on the AudioContext clock, so the clicks themselves
 // never drift. A requestAnimationFrame loop reports which beat is sounding
-// for the visual indicator.
+// for the visual indicator. The lifecycle of both loops lives in the shared
+// LoopRunner helper (see src/audio/loopRunner.ts) so the stop() contract is
+// uniform across every audio player.
 
+import { LoopRunner, SCHEDULE_AHEAD_S } from "@/audio/loopRunner";
 import type {
   AccentLevel,
   ClickSoundId,
@@ -104,10 +107,6 @@ const INITIAL_STATE: MetronomeState = {
   currentBar: -1,
 };
 
-// How often the scheduler wakes up (ms) and how far ahead it schedules (s).
-const LOOKAHEAD_MS = 25;
-const SCHEDULE_AHEAD_S = 0.12;
-
 type ClickKind = "accent" | "beat" | "sub" | "muted";
 type Listener = (state: MetronomeState) => void;
 
@@ -122,9 +121,10 @@ interface ScheduledNote {
 class Metronome {
   private state: MetronomeState = INITIAL_STATE;
   private listeners = new Set<Listener>();
-  private context: AudioContext | null = null;
-  private timerId: ReturnType<typeof setInterval> | null = null;
-  private rafId = 0;
+  private readonly runner = new LoopRunner({
+    schedule: (context) => this.scheduler(context),
+    draw: (context) => this.drawLoop(context),
+  });
   private nextNoteTime = 0;
   private currentTick = 0;
   private scheduledBar = 0;
@@ -292,7 +292,6 @@ class Metronome {
   /** Starts the metronome on the given (output) AudioContext. */
   start(context: AudioContext): void {
     if (this.state.isPlaying) this.stop();
-    this.context = context;
     this.currentTick = 0;
     // Count-in plays its bars at indices -countInBars..-1; the user's first
     // "real" downbeat sits at bar 0. The scheduledBar counter advances at
@@ -315,19 +314,11 @@ class Metronome {
       // ("2/2 taktů") can show as soon as the first tick sounds.
       currentBar: countIn > 0 ? -countIn : -1,
     });
-    this.timerId = setInterval(() => this.scheduler(), LOOKAHEAD_MS);
-    this.rafId = requestAnimationFrame(() => this.drawLoop());
+    this.runner.start(context);
   }
 
   stop(): void {
-    if (this.timerId !== null) {
-      clearInterval(this.timerId);
-      this.timerId = null;
-    }
-    if (this.rafId !== 0) {
-      cancelAnimationFrame(this.rafId);
-      this.rafId = 0;
-    }
+    this.runner.stop();
     this.queue = [];
     this.setState({
       isPlaying: false,
@@ -350,11 +341,9 @@ class Metronome {
   }
 
   /** Schedules every click whose time falls inside the look-ahead window. */
-  private scheduler(): void {
-    const context = this.context;
-    if (!context) return;
+  private scheduler(context: AudioContext): void {
     while (this.nextNoteTime < context.currentTime + SCHEDULE_AHEAD_S) {
-      this.scheduleTick(this.currentTick, this.nextNoteTime, this.scheduledBar);
+      this.scheduleTick(context, this.currentTick, this.nextNoteTime, this.scheduledBar);
       const { bpm, subdivision, swing } = this.state;
       const baseDuration = 60 / bpm / subdivision;
       // Swing slides the inner ticks of every beat — the beat itself stays
@@ -458,12 +447,17 @@ class Metronome {
     if (next !== this.state.bpm) this.setBpm(next);
   }
 
-  private scheduleTick(tick: number, time: number, bar: number): void {
+  private scheduleTick(
+    context: AudioContext,
+    tick: number,
+    time: number,
+    bar: number,
+  ): void {
     const silent = isSilentBar(bar, this.state.gap);
     this.queue.push({ tick, time, bar, silent });
     if (!silent) {
       const kind = this.clickKind(tick);
-      this.playClick(time, kind, this.soundForTick(tick, kind));
+      this.playClick(context, time, kind, this.soundForTick(tick, kind));
     }
   }
 
@@ -492,9 +486,13 @@ class Metronome {
   }
 
   /** Plays the selected synthesised click — no audio files needed. */
-  private playClick(time: number, kind: ClickKind, sound: ClickSoundId): void {
-    const context = this.context;
-    if (!context || kind === "muted") return;
+  private playClick(
+    context: AudioContext,
+    time: number,
+    kind: ClickKind,
+    sound: ClickSoundId,
+  ): void {
+    if (kind === "muted") return;
 
     const accent = kind === "accent";
     const sub = kind === "sub";
@@ -634,9 +632,7 @@ class Metronome {
   }
 
   /** Reports the sounding beat to the UI as scheduled clicks come due. */
-  private drawLoop(): void {
-    const context = this.context;
-    if (!context) return;
+  private drawLoop(context: AudioContext): void {
     while (this.queue.length > 0 && this.queue[0].time <= context.currentTime) {
       const note = this.queue.shift();
       if (note && note.tick % this.state.subdivision === 0) {
@@ -656,7 +652,7 @@ class Metronome {
         }
       }
     }
-    this.rafId = requestAnimationFrame(() => this.drawLoop());
+    // No rAF re-arm here — LoopRunner does it (only while running).
   }
 }
 
