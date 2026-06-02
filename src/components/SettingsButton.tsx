@@ -11,8 +11,12 @@ export function SettingsButton() {
     <Link
       href="/profile"
       aria-label="Nastavení"
-      className="settings-cog fixed top-3 right-3 z-20 flex h-12 w-12 items-center justify-center rounded-full transition-colors"
+      className="settings-cog fixed z-20 flex h-12 w-12 items-center justify-center rounded-full transition-colors"
       style={{
+        // Respect notch / rounded corners on iPhone landscape; falls back
+        // to the original 12 px on devices without safe-area insets.
+        top: "max(0.75rem, env(safe-area-inset-top, 0.75rem))",
+        right: "max(0.75rem, env(safe-area-inset-right, 0.75rem))",
         background: "var(--surface)",
         color: "var(--text)",
         border: "1px solid var(--line)",

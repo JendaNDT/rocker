@@ -59,7 +59,10 @@ export function BreakReminder() {
     <div
       role="status"
       aria-live="polite"
-      className="fixed inset-x-3 bottom-24 z-20 mx-auto max-w-md rounded-xl border border-accent bg-surface p-4 shadow-lg md:bottom-4"
+      // On desktop (md+) the side rail eats the left 14rem, so the reminder
+      // centres only within the main content column. Bottom 24 leaves room
+      // for the mobile bottom-bar nav.
+      className="fixed inset-x-3 bottom-24 z-20 mx-auto max-w-md rounded-xl border border-accent bg-surface p-4 shadow-lg md:right-4 md:bottom-4 md:left-[14.75rem] md:mx-0"
     >
       <p className="text-sm text-text">
         Cvičíš už 45 minut. Dej si pauzu — protáhni prsty a nech uši

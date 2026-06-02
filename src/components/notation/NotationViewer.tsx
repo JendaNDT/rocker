@@ -138,6 +138,7 @@ export function NotationViewer() {
         <p className="mt-3 text-sm text-muted">
           Nahraj soubor Guitar Pro (.gp, .gpx) nebo MusicXML (.xml,
           .musicxml) — tabulatura i notový zápis se zobrazí níže.
+          Soubor zůstane ve tvém prohlížeči, nikam se neposílá.
         </p>
       )}
       {status === "loading" && (

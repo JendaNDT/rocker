@@ -50,6 +50,9 @@ export function ChatPanel() {
   const [error, setError] = useState<string | null>(null);
   // The reply currently streaming in — empty until the first chunk arrives.
   const [streaming, setStreaming] = useState("");
+  // Index of the most recently copied assistant message. Reset after 2 s so
+  // the "Zkopírováno" feedback fades back to "Kopírovat".
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
   const endRef = useRef<HTMLDivElement>(null);
   const mountedRef = useRef(true);
@@ -117,6 +120,19 @@ export function ChatPanel() {
     if (!result.ok) {
       setError(result.error);
     }
+  }
+
+  /** Copies an assistant reply into the clipboard with brief visual feedback. */
+  function copyReply(index: number, text: string): void {
+    if (typeof navigator === "undefined" || !navigator.clipboard) return;
+    void navigator.clipboard.writeText(text).then(() => {
+      setCopiedIndex(index);
+      window.setTimeout(() => {
+        // Only reset if this is still the current copy — a later copy on
+        // another reply shouldn't get its feedback shortened.
+        setCopiedIndex((current) => (current === index ? null : current));
+      }, 2000);
+    });
   }
 
   /** Sends the given text as a new user message. */
@@ -192,18 +208,34 @@ export function ChatPanel() {
           </div>
         )}
 
-        {messages.map((message, index) => (
-          <div
-            key={index}
-            className={
-              message.role === "user"
-                ? "ml-auto max-w-[85%] rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-sm whitespace-pre-wrap"
-                : "mr-auto max-w-[85%] rounded-lg border border-line bg-surface px-3 py-2 text-sm whitespace-pre-wrap"
-            }
-          >
-            {message.text}
-          </div>
-        ))}
+        {messages.map((message, index) => {
+          const isModel = message.role === "model";
+          return (
+            <div
+              key={index}
+              className={isModel ? "mr-auto max-w-[85%]" : "ml-auto max-w-[85%]"}
+            >
+              <div
+                className={
+                  isModel
+                    ? "rounded-lg border border-line bg-surface px-3 py-2 text-sm whitespace-pre-wrap"
+                    : "rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-sm whitespace-pre-wrap"
+                }
+              >
+                {message.text}
+              </div>
+              {isModel && (
+                <button
+                  type="button"
+                  onClick={() => copyReply(index, message.text)}
+                  className="mt-1 text-xs text-dim transition-colors hover:text-text"
+                >
+                  {copiedIndex === index ? "Zkopírováno" : "Kopírovat"}
+                </button>
+              )}
+            </div>
+          );
+        })}
 
         {busy && streaming.length > 0 && (
           <div className="mr-auto max-w-[85%] rounded-lg border border-line bg-surface px-3 py-2 text-sm whitespace-pre-wrap">
@@ -237,7 +269,10 @@ export function ChatPanel() {
         <div ref={endRef} />
       </div>
 
-      <div className="mt-3 flex gap-2">
+      {/* On narrow screens (< 640 px) the textarea sits above the button so a
+          rows=2 + paddings don't overflow the 320 px iPhone width. On sm+
+          the original side-by-side layout is back. */}
+      <div className="mt-3 flex flex-col gap-2 sm:flex-row">
         <textarea
           value={input}
           onChange={(event) => setInput(event.target.value)}
@@ -250,7 +285,7 @@ export function ChatPanel() {
           type="button"
           onClick={send}
           disabled={busy || input.trim().length === 0}
-          className="shrink-0 self-end rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-50"
+          className="min-h-12 self-end rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-50 sm:shrink-0"
         >
           Odeslat
         </button>
