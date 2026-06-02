@@ -10,7 +10,7 @@ import { PresetPanel } from "@/components/metronome/PresetPanel";
 import { TrainerPanel } from "@/components/metronome/TrainerPanel";
 import { PageContainer } from "@/components/PageContainer";
 import { SplitColumns } from "@/components/SplitColumns";
-import { useWakeLock } from "@/components/useWakeLock";
+import { useWakeLock } from "@/hooks/useWakeLock";
 import { KnobControl } from "@/components/widgets/KnobControl";
 import type {
   ClickSoundId,
@@ -22,7 +22,7 @@ import type {
 import { CLICK_SOUNDS, TIME_SIGNATURES } from "@/lib/metronomeConfig";
 import { FACTORY_PRESETS, isFactoryPreset } from "@/lib/metronomePresets";
 import { bpmFromTaps, clampBpm, MAX_BPM, MIN_BPM } from "@/lib/tempo";
-import { useHydrated } from "@/lib/useHydrated";
+import { useHydrated } from "@/hooks/useHydrated";
 import { useMetronomeStore } from "@/stores/metronomeStore";
 import { useMetronomeSettingsStore } from "@/stores/metronomeSettingsStore";
 

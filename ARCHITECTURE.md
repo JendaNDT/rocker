@@ -496,6 +496,10 @@ rocker/
 │   ├── app/                 # Next.js App Router — 13 obrazovek + 4 legacy
 │   │                        #   redirecty, globals.css, theme-tokens.css (3 vzhledy)
 │   ├── components/          # React komponenty (UI vrstva), po doménách
+│   ├── hooks/               # sdílené React hooky — useHydrated,
+│   │                        #   useActiveTheme, useResolvedLayoutMode,
+│   │                        #   useWakeLock (oddělené od lib, aby lib
+│   │                        #   zůstal čistý TS bez Reactu)
 │   ├── audio/               # audio vrstva (5): AudioEngine, metronome,
 │   │                        #   gallopPlayer, riffPlayer, pitchDetector,
 │   │                        #   muteAnalyzer, chordPlayer, countIn,

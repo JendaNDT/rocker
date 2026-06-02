@@ -7,12 +7,12 @@ import { LessonPlayer } from "@/components/practice/LessonPlayer";
 import { RiffTrainer } from "@/components/practice/RiffTrainer";
 import { SurgicalTrainer } from "@/components/practice/SurgicalTrainer";
 import { PageContainer } from "@/components/PageContainer";
-import { useWakeLock } from "@/components/useWakeLock";
+import { useWakeLock } from "@/hooks/useWakeLock";
 import { YouTubePlayer } from "@/components/youtube/YouTubePlayer";
-import { useResolvedLayoutMode } from "@/lib/layout";
+import { useResolvedLayoutMode } from "@/hooks/useResolvedLayoutMode";
 import { stageCompletion } from "@/lib/lessonEngine";
 import { getLesson, STAGES } from "@/lib/lessons";
-import { useHydrated } from "@/lib/useHydrated";
+import { useHydrated } from "@/hooks/useHydrated";
 import { useLessonProgressStore } from "@/stores/lessonProgressStore";
 
 type Tab = "lessons" | "play" | "surgical";

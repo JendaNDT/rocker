@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Dashboard } from "@/components/dashboard/Dashboard";
 import { PageContainer } from "@/components/PageContainer";
-import { useResolvedLayoutMode } from "@/lib/layout";
+import { useResolvedLayoutMode } from "@/hooks/useResolvedLayoutMode";
 import { SCREENS } from "@/lib/screens";
 
 // "Vše v aplikaci" tiles, following the Auto / Desktop / Mobile switch.

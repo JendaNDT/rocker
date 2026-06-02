@@ -6,7 +6,7 @@ import { GallopTrainer } from "@/components/metal/GallopTrainer";
 import { PalmMuteStudio } from "@/components/metal/PalmMuteStudio";
 import { PowerChordTrainer } from "@/components/metal/PowerChordTrainer";
 import { PageContainer } from "@/components/PageContainer";
-import { useWakeLock } from "@/components/useWakeLock";
+import { useWakeLock } from "@/hooks/useWakeLock";
 
 type Tab = "power" | "gallop" | "palm";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useResolvedLayoutMode } from "@/lib/layout";
+import { useResolvedLayoutMode } from "@/hooks/useResolvedLayoutMode";
 
 /**
  * Page-level width container. Follows the same Auto / Desktop / Mobile switch

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { generateDailyPlan } from "@/lib/dailyPlan";
-import { useHydrated } from "@/lib/useHydrated";
+import { useHydrated } from "@/hooks/useHydrated";
 import { useLessonProgressStore } from "@/stores/lessonProgressStore";
 
 /**

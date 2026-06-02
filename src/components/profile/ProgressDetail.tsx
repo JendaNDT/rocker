@@ -6,7 +6,7 @@ import {
   totalMinutes,
   totalPracticeDays,
 } from "@/lib/progress";
-import { useHydrated } from "@/lib/useHydrated";
+import { useHydrated } from "@/hooks/useHydrated";
 import { useProgressStore } from "@/stores/progressStore";
 
 function Figure({ value, label }: { value: string; label: string }) {

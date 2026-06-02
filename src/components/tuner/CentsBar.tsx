@@ -1,6 +1,6 @@
 "use client";
 
-import { useActiveTheme } from "@/lib/useActiveTheme";
+import { useActiveTheme } from "@/hooks/useActiveTheme";
 
 /**
  * Cents-deviation indicator. Marker position maps cents -50..+50 to 0..100%.

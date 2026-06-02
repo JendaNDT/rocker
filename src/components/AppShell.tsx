@@ -9,7 +9,7 @@ import { PracticeTimeTracker } from "@/components/PracticeTimeTracker";
 import { SettingsButton } from "@/components/SettingsButton";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { VintageFrame } from "@/components/VintageFrame";
-import { useResolvedLayoutMode } from "@/lib/layout";
+import { useResolvedLayoutMode } from "@/hooks/useResolvedLayoutMode";
 import type { LayoutMode } from "@/stores/settingsStore";
 
 // Content padding leaves room for the nav (bottom bar or side rail).

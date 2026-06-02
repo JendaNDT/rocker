@@ -8,9 +8,9 @@ import { ScaleExplorer } from "@/components/library/ScaleExplorer";
 import { PageContainer } from "@/components/PageContainer";
 import { CHORD_CATEGORY_LABELS, CHORDS } from "@/lib/chords";
 import type { ChordCategory } from "@/lib/chords";
-import { useResolvedLayoutMode } from "@/lib/layout";
+import { useResolvedLayoutMode } from "@/hooks/useResolvedLayoutMode";
 import { resolveTuning } from "@/lib/resolveTuning";
-import { useHydrated } from "@/lib/useHydrated";
+import { useHydrated } from "@/hooks/useHydrated";
 import { useCustomTuningsStore } from "@/stores/customTuningsStore";
 import { useSettingsStore } from "@/stores/settingsStore";
 

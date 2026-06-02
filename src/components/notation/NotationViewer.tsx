@@ -2,7 +2,7 @@
 
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import type { AlphaTabApi } from "@coderline/alphatab";
-import { useActiveTheme } from "@/lib/useActiveTheme";
+import { useActiveTheme } from "@/hooks/useActiveTheme";
 import type { Theme } from "@/stores/settingsStore";
 
 /** Loading state of the notation viewer. */

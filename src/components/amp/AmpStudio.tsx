@@ -7,7 +7,7 @@ import { SignalScope } from "@/components/amp/SignalScope";
 import { useAmpEngine } from "@/components/amp/useAmpEngine";
 import { InputLevelMeter } from "@/components/InputLevelMeter";
 import { KnobControl } from "@/components/widgets/KnobControl";
-import { useResolvedLayoutMode } from "@/lib/layout";
+import { useResolvedLayoutMode } from "@/hooks/useResolvedLayoutMode";
 import {
   AMP_PRESETS,
   type AmpPreset,

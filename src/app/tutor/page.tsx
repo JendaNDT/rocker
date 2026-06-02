@@ -6,7 +6,7 @@ import { ChatPanel } from "@/components/tutor/ChatPanel";
 import { FeedbackPanel } from "@/components/tutor/FeedbackPanel";
 import { PlanPanel } from "@/components/tutor/PlanPanel";
 import { PageContainer } from "@/components/PageContainer";
-import { useHydrated } from "@/lib/useHydrated";
+import { useHydrated } from "@/hooks/useHydrated";
 import { useAiStore } from "@/stores/aiStore";
 
 /** Which AI tutor tool is shown. */

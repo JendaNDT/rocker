@@ -7,7 +7,7 @@ import { InputLevelMeter } from "@/components/InputLevelMeter";
 import { NoteCheck } from "@/components/practice/NoteCheck";
 import { chordMidiNotes, getChord } from "@/lib/chords";
 import type { LessonStep } from "@/lib/lessons";
-import { useHydrated } from "@/lib/useHydrated";
+import { useHydrated } from "@/hooks/useHydrated";
 import { useAudioStore } from "@/stores/audioStore";
 import { useSettingsStore } from "@/stores/settingsStore";
 

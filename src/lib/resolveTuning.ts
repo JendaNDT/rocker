@@ -14,8 +14,10 @@ import {
   getTuning,
   type Tuning,
 } from "@/audio/tunings";
-import { isCustomTuningId } from "@/stores/customTuningsStore";
-import type { CustomTuning } from "@/stores/customTuningsStore";
+import {
+  type CustomTuning,
+  isCustomTuningId,
+} from "@/lib/customTunings";
 
 /**
  * Resolves a tuning by id, falling back to the default ("standard") when

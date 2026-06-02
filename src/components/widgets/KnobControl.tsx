@@ -8,7 +8,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { useActiveTheme } from "@/lib/useActiveTheme";
+import { useActiveTheme } from "@/hooks/useActiveTheme";
 import type { Theme } from "@/stores/settingsStore";
 
 /**

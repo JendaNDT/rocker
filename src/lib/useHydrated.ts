@@ -1,16 +1,7 @@
-"use client";
+// Deprecated location — moved to src/hooks/useHydrated.ts in FIX_PLAN step 20
+// so the lib layer can be React-free. This file is a thin re-export kept only
+// because the sandbox cannot delete files; once Jenda runs `git rm
+// src/lib/useHydrated.ts` locally, the rest of the codebase already imports
+// from the new path.
 
-import { useEffect, useState } from "react";
-
-/**
- * Returns false during server prerender and the first client render, then
- * true once mounted. Use to gate values that come from persisted storage so
- * the first render matches the prerendered HTML (no hydration mismatch).
- */
-export function useHydrated(): boolean {
-  const [hydrated, setHydrated] = useState(false);
-  useEffect(() => {
-    setHydrated(true);
-  }, []);
-  return hydrated;
-}
+export { useHydrated } from "@/hooks/useHydrated";

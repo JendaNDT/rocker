@@ -11,7 +11,7 @@ import { ProfileCard } from "@/components/instrument/ProfileCard";
 import { ToneAdvisor } from "@/components/instrument/ToneAdvisor";
 import { ProgressDetail } from "@/components/profile/ProgressDetail";
 import { TunerSettings } from "@/components/tuner/TunerSettings";
-import { useResolvedLayoutMode } from "@/lib/layout";
+import { useResolvedLayoutMode } from "@/hooks/useResolvedLayoutMode";
 import type { Notation } from "@/lib/pitch";
 import { useSettingsStore } from "@/stores/settingsStore";
 

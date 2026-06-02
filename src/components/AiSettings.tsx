@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { AI_MODELS } from "@/lib/ai/config";
 import { sendChat } from "@/lib/ai/geminiClient";
-import { useHydrated } from "@/lib/useHydrated";
+import { useHydrated } from "@/hooks/useHydrated";
 import { useAiStore } from "@/stores/aiStore";
 
 /** State of the "test connection" check. */

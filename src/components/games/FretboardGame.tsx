@@ -4,7 +4,7 @@ import { useState } from "react";
 import { getTuning } from "@/audio/tunings";
 import { noteAtFret, pickTarget } from "@/lib/fretboardGame";
 import { pitchClassName } from "@/lib/pitch";
-import { useHydrated } from "@/lib/useHydrated";
+import { useHydrated } from "@/hooks/useHydrated";
 import { useSettingsStore } from "@/stores/settingsStore";
 
 // Standard tuning, low string first. Fretboard memory is a standard-tuning

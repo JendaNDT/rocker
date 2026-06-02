@@ -1,6 +1,6 @@
 "use client";
 
-import { useActiveTheme } from "@/lib/useActiveTheme";
+import { useActiveTheme } from "@/hooks/useActiveTheme";
 import type {
   AccentLevel,
   ClickSoundId,

@@ -8,9 +8,9 @@ import { GuidedTuner } from "@/components/tuner/GuidedTuner";
 import { TunerDisplay } from "@/components/tuner/TunerDisplay";
 import { useTuner } from "@/components/tuner/useTuner";
 import { PageContainer } from "@/components/PageContainer";
-import { useWakeLock } from "@/components/useWakeLock";
+import { useWakeLock } from "@/hooks/useWakeLock";
 import { resolveTuning } from "@/lib/resolveTuning";
-import { useHydrated } from "@/lib/useHydrated";
+import { useHydrated } from "@/hooks/useHydrated";
 import { useAudioStore } from "@/stores/audioStore";
 import {
   isCustomTuningId,

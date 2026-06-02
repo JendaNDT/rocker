@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { AchievementsCard } from "@/components/dashboard/AchievementsCard";
 import { DailyPlanCard } from "@/components/dashboard/DailyPlanCard";
 import { StatsRow } from "@/components/dashboard/StatsRow";
-import { useResolvedLayoutMode } from "@/lib/layout";
+import { useResolvedLayoutMode } from "@/hooks/useResolvedLayoutMode";
 import { useSettingsStore } from "@/stores/settingsStore";
 
 // Daily plan + achievements: side by side on desktop, stacked on mobile.

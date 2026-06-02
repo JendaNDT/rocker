@@ -6,7 +6,16 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { TuningString } from "@/audio/tunings";
+import {
+  type CustomTuning,
+  CUSTOM_TUNING_PREFIX,
+  isCustomTuningId,
+} from "@/lib/customTunings";
 import { midiToLabel } from "@/lib/pitch";
+
+// Re-export the shape + id check from the lib layer so existing call sites
+// importing them from "@/stores/customTuningsStore" keep working.
+export { type CustomTuning, isCustomTuningId };
 
 /**
  * Defensive cap on the number of saved custom tunings. The list is one of
@@ -21,13 +30,7 @@ export const MAX_TUNING_MIDI = 84;
 /** Every tuning has six strings. */
 export const STRINGS_PER_TUNING = 6;
 /** Prefix used so custom ids can never collide with factory ones. */
-const CUSTOM_PREFIX = "custom-";
-
-export interface CustomTuning {
-  id: string;
-  label: string;
-  strings: TuningString[];
-}
+const CUSTOM_PREFIX = CUSTOM_TUNING_PREFIX;
 
 /** Generates an id like "custom-…". Uses crypto.randomUUID when available. */
 function newCustomTuningId(): string {
@@ -40,11 +43,6 @@ function newCustomTuningId(): string {
   // Fallback for environments without crypto.randomUUID — combines time
   // with a small random suffix. Good enough for a local list of 20 items.
   return `${CUSTOM_PREFIX}${Date.now()}-${Math.floor(Math.random() * 1e9).toString(36)}`;
-}
-
-/** Whether an id was minted by us (i.e. lives in this store). */
-export function isCustomTuningId(id: string): boolean {
-  return typeof id === "string" && id.startsWith(CUSTOM_PREFIX);
 }
 
 /**

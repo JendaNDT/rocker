@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useResolvedLayoutMode } from "@/lib/layout";
+import { useResolvedLayoutMode } from "@/hooks/useResolvedLayoutMode";
 
 /**
  * Two-column page layout that collapses to a single stacked column on mobile

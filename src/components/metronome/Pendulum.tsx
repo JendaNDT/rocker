@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useActiveTheme } from "@/lib/useActiveTheme";
+import { useActiveTheme } from "@/hooks/useActiveTheme";
 import { useMetronomeStore } from "@/stores/metronomeStore";
 
 /** Maximum swing angle each side of vertical. */

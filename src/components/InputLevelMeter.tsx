@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { audioEngine } from "@/audio/AudioEngine";
 import { INPUT_LEVEL_SCALE, computeRms } from "@/audio/pitchDetector";
-import { useActiveTheme } from "@/lib/useActiveTheme";
+import { useActiveTheme } from "@/hooks/useActiveTheme";
 import { useAudioStore } from "@/stores/audioStore";
 
 // Above this 0..1 level the signal is treated as clipping.

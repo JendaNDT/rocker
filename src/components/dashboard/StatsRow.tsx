@@ -1,7 +1,7 @@
 "use client";
 
 import { currentStreak, todayKey, totalMinutes } from "@/lib/progress";
-import { useHydrated } from "@/lib/useHydrated";
+import { useHydrated } from "@/hooks/useHydrated";
 import { useProgressStore } from "@/stores/progressStore";
 
 function Stat({ value, label }: { value: string; label: string }) {

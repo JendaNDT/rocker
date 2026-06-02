@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useYouTubePlayer } from "@/components/youtube/useYouTubePlayer";
-import { useResolvedLayoutMode } from "@/lib/layout";
-import { useHydrated } from "@/lib/useHydrated";
+import { useResolvedLayoutMode } from "@/hooks/useResolvedLayoutMode";
+import { useHydrated } from "@/hooks/useHydrated";
 import { extractVideoId } from "@/lib/youtube";
 import { useYtLoopStore } from "@/stores/ytLoopStore";
 

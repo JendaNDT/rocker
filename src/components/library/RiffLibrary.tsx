@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { audioEngine } from "@/audio/AudioEngine";
 import { riffPlayer } from "@/audio/riffPlayer";
-import { useWakeLock } from "@/components/useWakeLock";
+import { useWakeLock } from "@/hooks/useWakeLock";
 import {
   METAL_RIFFS,
   RIFF_DIFFICULTY_LABELS,

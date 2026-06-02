@@ -19,7 +19,7 @@ import type { PowerChordTrainerState } from "@/lib/powerChordTrainer";
 import { type Notation, pitchClassName } from "@/lib/pitch";
 import { resolveTuning } from "@/lib/resolveTuning";
 import { clampBpm } from "@/lib/tempo";
-import { useHydrated } from "@/lib/useHydrated";
+import { useHydrated } from "@/hooks/useHydrated";
 import { useCustomTuningsStore } from "@/stores/customTuningsStore";
 import { useMetronomeStore } from "@/stores/metronomeStore";
 import { useProgressStore } from "@/stores/progressStore";

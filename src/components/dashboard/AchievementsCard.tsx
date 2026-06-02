@@ -1,7 +1,7 @@
 "use client";
 
 import { ACHIEVEMENTS } from "@/lib/achievements";
-import { useHydrated } from "@/lib/useHydrated";
+import { useHydrated } from "@/hooks/useHydrated";
 import { useProgressStore } from "@/stores/progressStore";
 
 /**

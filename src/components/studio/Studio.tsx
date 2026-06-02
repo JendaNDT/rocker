@@ -14,7 +14,7 @@ import {
   setTrackGain,
   setTrackMuted,
 } from "@/lib/multitrack";
-import { useResolvedLayoutMode } from "@/lib/layout";
+import { useResolvedLayoutMode } from "@/hooks/useResolvedLayoutMode";
 import { formatDuration } from "@/lib/recordings";
 
 // Track list: two columns on desktop, stacked on mobile.
