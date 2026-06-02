@@ -61,7 +61,7 @@ export function RecorderControls() {
 
   function startRecording() {
     setLocalError(null);
-    const stream = audioEngine.getInputStream();
+    const stream = audioEngine.getRecordingStream();
     if (!stream) {
       setLocalError("Vstup neběží — nejdřív zapni zvukový vstup.");
       return;

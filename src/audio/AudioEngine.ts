@@ -55,6 +55,7 @@ class AudioEngine {
   private analyser: AnalyserNode | null = null;
   private splitter: ChannelSplitterNode | null = null;
   private monoMix: GainNode | null = null;
+  private recordingDest: MediaStreamAudioDestinationNode | null = null;
 
   getState(): AudioEngineState {
     return this.state;
@@ -74,11 +75,24 @@ class AudioEngine {
   }
 
   /**
-   * The live input MediaStream, or null if the input is not running. Used by
-   * the recorder (Bod 11) to capture takes from the selected device.
+   * The raw input MediaStream straight from getUserMedia, or null if the input
+   * is not running. May carry the guitar on a single channel on a two-input
+   * interface — recorders should use getRecordingStream() instead, which is
+   * summed to mono. Kept for any consumer that needs the unprocessed stream.
    */
   getInputStream(): MediaStream | null {
     return this.stream;
+  }
+
+  /**
+   * A mono-summed MediaStream of the live input, or null if the input is not
+   * running. Recorders (takes, multitrack, looper) capture from this so a
+   * two-input interface (with the guitar on a single channel) records to both
+   * channels instead of one speaker only. The amp records its own post-effects
+   * stream; this is the dry-input equivalent.
+   */
+  getRecordingStream(): MediaStream | null {
+    return this.recordingDest?.stream ?? null;
   }
 
   /**
@@ -219,11 +233,18 @@ class AudioEngine {
       splitter.connect(monoMix, 0);
       splitter.connect(monoMix, 1);
 
+      // Recording tap: a MediaStream destination fed by the mono mix. The
+      // recorders capture from this stream (via getRecordingStream) so a take
+      // plays from both speakers, not just the channel the guitar arrived on.
+      const recordingDest = context.createMediaStreamDestination();
+      monoMix.connect(recordingDest);
+
       this.stream = stream;
       this.source = source;
       this.analyser = analyser;
       this.splitter = splitter;
       this.monoMix = monoMix;
+      this.recordingDest = recordingDest;
 
       // Detect the device being unplugged mid-session.
       stream.getAudioTracks()[0]?.addEventListener("ended", () => {
@@ -252,11 +273,13 @@ class AudioEngine {
     this.analyser?.disconnect();
     this.splitter?.disconnect();
     this.monoMix?.disconnect();
+    this.recordingDest?.disconnect();
     this.stream?.getTracks().forEach((track) => track.stop());
     this.source = null;
     this.analyser = null;
     this.splitter = null;
     this.monoMix = null;
+    this.recordingDest = null;
     this.stream = null;
     if (this.state.status === "running" || this.state.status === "starting") {
       this.setState({ status: "idle" });

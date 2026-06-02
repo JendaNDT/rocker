@@ -110,7 +110,7 @@ class MultitrackEngine {
 
     const running = await audioEngine.ensureListening();
     if (!running) return false;
-    const stream = audioEngine.getInputStream();
+    const stream = audioEngine.getRecordingStream();
     if (!stream) return false;
 
     await this.startPlayback(monitorTracks, () => {});

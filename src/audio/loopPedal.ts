@@ -37,7 +37,7 @@ class LoopPedal {
   private async input(): Promise<MediaStream | null> {
     const running = await audioEngine.ensureListening();
     if (!running) return null;
-    return audioEngine.getInputStream();
+    return audioEngine.getRecordingStream();
   }
 
   /** Starts recording the base loop. */
