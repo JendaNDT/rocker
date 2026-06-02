@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { recorder } from "@/audio/recorder";
 import { SignalLevelMeter } from "@/components/amp/SignalLevelMeter";
 import { SignalScope } from "@/components/amp/SignalScope";
-import { useLocalAmpChain } from "@/components/amp/useLocalAmpChain";
+import { useAmpEngine } from "@/components/amp/useAmpEngine";
 import { InputLevelMeter } from "@/components/InputLevelMeter";
 import { KnobControl } from "@/components/widgets/KnobControl";
 import { useResolvedLayoutMode } from "@/lib/layout";
@@ -80,7 +80,7 @@ export function AmpStudio() {
     recordingStream,
     start: startChain,
     stop: stopChain,
-  } = useLocalAmpChain(settings);
+  } = useAmpEngine();
 
   const [presetName, setPresetName] = useState("");
   // A/B compare — two stored tone snapshots the user can flip between.
@@ -157,6 +157,18 @@ export function AmpStudio() {
     }
     setSavingTake(false);
   }
+
+  // Leaving /amp no longer tears the aparát down (it lives in the shared
+  // engine now), so a take in progress would otherwise keep recording with no
+  // UI to stop it. Finish and save it on unmount. A ref keeps the latest
+  // stopTake closure so the saved take gets the correct number.
+  const stopTakeRef = useRef(stopTake);
+  stopTakeRef.current = stopTake;
+  useEffect(() => {
+    return () => {
+      if (recorder.isRecording()) void stopTakeRef.current();
+    };
+  }, []);
 
   function applyPreset(preset: AmpPreset) {
     storeSetSettings(preset.settings, preset.id);

@@ -5,6 +5,9 @@
 //               over immediately — it waits until the user accepts the
 //               update (the page posts "SKIP_WAITING").
 //   - navigate: network-first, fall back to cache when offline
+//   - RSC data (.txt route payloads): network-first too, so a fresh deploy is
+//               not shadowed by a stale cached payload that points at deleted
+//               chunks and forces a full page reload
 //   - other GET: cache-first, then network (and cache the result)
 //
 // Hashed Next.js assets are cached at runtime as they are first requested,
@@ -53,6 +56,8 @@ self.addEventListener("fetch", (event) => {
   const request = event.request;
   if (request.method !== "GET") return;
 
+  const url = new URL(request.url);
+
   // Navigations: try the network first, fall back to the cached shell.
   if (request.mode === "navigate") {
     event.respondWith(
@@ -69,14 +74,32 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  // Next.js client-side navigation data: the per-route .txt RSC payloads in a
+  // static export (and any App Router RSC request). Network-first, like real
+  // navigations — after a deploy these payloads reference freshly hashed
+  // chunks, so a stale cached copy would point at deleted files and make Next
+  // fall back to a full page reload, tearing down long-lived audio (the
+  // aparát) on the first navigation after every update. Fall back to cache
+  // when offline.
+  if (request.headers.get("RSC") === "1" || url.pathname.endsWith(".txt")) {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          const copy = response.clone();
+          caches.open(CACHE).then((cache) => cache.put(request, copy));
+          return response;
+        })
+        .catch(() => caches.match(request)),
+    );
+    return;
+  }
+
   // Everything else: serve from cache if present, otherwise fetch and cache.
   event.respondWith(
     caches.match(request).then((cached) => {
       if (cached) return cached;
       return fetch(request).then((response) => {
-        const sameOrigin =
-          new URL(request.url).origin === self.location.origin;
-        if (response.ok && sameOrigin) {
+        if (response.ok && url.origin === self.location.origin) {
           const copy = response.clone();
           caches.open(CACHE).then((cache) => cache.put(request, copy));
         }

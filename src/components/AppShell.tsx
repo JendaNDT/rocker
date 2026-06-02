@@ -1,6 +1,7 @@
 "use client";
 
 import { AchievementWatcher } from "@/components/AchievementWatcher";
+import { AmpHost } from "@/components/amp/AmpHost";
 import { BreakReminder } from "@/components/BreakReminder";
 import { Nav } from "@/components/Nav";
 import { Onboarding } from "@/components/Onboarding";
@@ -29,6 +30,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <>
       <ThemeProvider />
+      <AmpHost />
       <VintageFrame />
       <Nav layout={layout} />
       <SettingsButton />

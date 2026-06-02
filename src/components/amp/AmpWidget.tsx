@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useLocalAmpChain } from "@/components/amp/useLocalAmpChain";
+import { useAmpEngine } from "@/components/amp/useAmpEngine";
 import { InputLevelMeter } from "@/components/InputLevelMeter";
 import { AMP_PRESETS } from "@/lib/ampPresets";
 import { useAmpStore } from "@/stores/ampStore";
@@ -33,7 +33,7 @@ export function AmpWidget() {
   const settings = useAmpStore((s) => s.settings);
   const presetId = useAmpStore((s) => s.presetId);
   const setSettings = useAmpStore((s) => s.setSettings);
-  const { active, starting, error, start, stop } = useLocalAmpChain(settings);
+  const { active, starting, error, start, stop } = useAmpEngine();
   const latencyMs = useAudioStore((s) => s.latencyMs);
 
   return (
