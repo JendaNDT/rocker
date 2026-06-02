@@ -52,6 +52,20 @@ self.addEventListener("message", (event) => {
   }
 });
 
+// Stores a successful response in the cache. Two guards:
+//   - response.ok keeps 404/500 out of the cache — otherwise an offline
+//     visit would happily replay an error page.
+//   - event.waitUntil keeps the worker alive until the write finishes;
+//     a bare fire-and-forget cache.put can be killed mid-write when the
+//     worker idles out.
+function cachePut(event, request, response) {
+  if (!response || !response.ok) return;
+  const copy = response.clone();
+  event.waitUntil(
+    caches.open(CACHE).then((cache) => cache.put(request, copy)),
+  );
+}
+
 self.addEventListener("fetch", (event) => {
   const request = event.request;
   if (request.method !== "GET") return;
@@ -63,8 +77,7 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       fetch(request)
         .then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE).then((cache) => cache.put(request, copy));
+          cachePut(event, request, response);
           return response;
         })
         .catch(() =>
@@ -85,8 +98,7 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       fetch(request)
         .then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE).then((cache) => cache.put(request, copy));
+          cachePut(event, request, response);
           return response;
         })
         .catch(() => caches.match(request)),
@@ -99,9 +111,10 @@ self.addEventListener("fetch", (event) => {
     caches.match(request).then((cached) => {
       if (cached) return cached;
       return fetch(request).then((response) => {
-        if (response.ok && url.origin === self.location.origin) {
-          const copy = response.clone();
-          caches.open(CACHE).then((cache) => cache.put(request, copy));
+        // Only cache same-origin GETs — CDN responses can vary by visitor
+        // and are managed by the browser cache, not us.
+        if (url.origin === self.location.origin) {
+          cachePut(event, request, response);
         }
         return response;
       });
