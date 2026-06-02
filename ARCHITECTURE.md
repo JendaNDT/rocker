@@ -408,30 +408,39 @@ záznam se zahodí, aplikace nespadne.
 Vychází z UX konceptu z rešeršních dokumentů — dva dominantní režimy:
 **Cvičení** (bohaté na vedení) a **Live** (minimální, rychlé).
 
-Skutečný stav navigace — 17 obrazovek (zdroj pravdy je `src/lib/screens.ts`):
+Skutečný stav navigace — **13 obrazovek v navu** (zdroj pravdy je
+`src/lib/screens.ts`) plus 4 legacy redirect stránky pro zpětnou
+kompatibilitu starých záložek a URL:
 
 | Route | Obrazovka | Účel |
 |---|---|---|
-| `/` | Domů | denní plán, streak, "Naladit", "Pokračovat", rychlý vstup do Live |
+| `/` | Domů | denní plán, streak, primární CTA „Hraj teď" do Live |
+| `/live` | Live | minimalistické hraní: velká ladička + BPM + jediný Rec toggle, Wake Lock automatický |
 | `/tuner` | Ladička | chromatická + vedená podle ladění, displej v centech |
-| `/metronome` | Metronom | BPM, takty, akcenty, tap tempo |
-| `/practice` | Cvičení | lekce + riff trainer + Surgical mode |
+| `/metronome` | Metronom | BPM, takty, akcenty, tap tempo, swing, polyrytmus, presety |
+| `/practice` | Cvičení | lekce + riff trainer + Surgical mode + YouTube player |
 | `/tutor` | AI tutor | chat, generátor cvičení, zpětná vazba (Bod 14) |
 | `/games` | Hry | hmatníková hra a ear training (Bod 19) |
 | `/metal` | Metal | rock/metal trenažéry: power chord, gallop, palm mute |
 | `/amp` | Aparát | ampsim a efekty, presety (Bod 16) |
-| `/instrument` | Kytara | profil nástroje a tónový poradce (Bod 21) |
 | `/library` | Knihovna | akordy, stupnice, riffy (tab + zpomalení, Stojan režim) |
 | `/notation` | Noty | prohlížeč Guitar Pro / MusicXML souborů (Bod 15) |
-| `/youtube` | YouTube player | A/B loop, slow-down, štítky sekcí |
-| `/recorder` | Nahrávání | nahrání take-u, přehrání, A/B srovnání |
-| `/studio` | Studio | multi-track nahrávání přes sebe (Bod 17) |
-| `/looper` | Looper | loop pedál se smyčkováním (Bod 17) |
-| `/live` | Live mód | velká tlačítka: ladička, metronom, rec — bez rušení |
-| `/profile` | Profil | nastavení, vstupní zařízení, export/smazání dat |
+| `/recorder` | Nahrávání | take-y, multi-track Studio i Looper na jednom místě |
+| `/profile` | Profil | nastavení, profil nástroje, vstupní zařízení, export/smazání dat |
 
-Navigace: spodní lišta na mobilu, boční na PC. Vždy dostupné rychlé tlačítko
-ladička + metronom (floating action button).
+**Legacy redirecty** (kód v `src/app/*/page.tsx`, jen `router.replace`,
+do navu se nedostanou — `screens.ts` je nemá):
+
+| Route | Přesměrovává na | Důvod |
+|---|---|---|
+| `/instrument` | `/profile` | profil nástroje se sloučil do Profilu (fáze A konsolidace) |
+| `/youtube` | `/practice` | YouTube player se sloučil do záložky „Hraj se skladbou" v Cvičení (fáze C) |
+| `/studio` | `/recorder` | multi-track Studio se sloučil do unifikovaného Nahrávání (fáze D) |
+| `/looper` | `/recorder` | Looper se sloučil tamtéž |
+
+Navigace: spodní lišta na mobilu, boční na PC. Profil je dosažitelný přes
+trvalou ozubenku v pravém horním rohu (`SettingsButton`), takže v navu
+chybí, aby nebyl duplikován.
 
 ### Responzivita PC vs mobil
 
@@ -459,8 +468,8 @@ rocker/
 ├── scripts/
 │   └── stamp-sw.mjs         # razítkuje sw.js verzí při buildu
 ├── src/
-│   ├── app/                 # Next.js App Router — stránky (17 obrazovek),
-│   │                        #   globals.css, theme-tokens.css (3 vzhledy)
+│   ├── app/                 # Next.js App Router — 13 obrazovek + 4 legacy
+│   │                        #   redirecty, globals.css, theme-tokens.css (3 vzhledy)
 │   ├── components/          # React komponenty (UI vrstva), po doménách
 │   ├── audio/               # audio vrstva (5): AudioEngine, metronome,
 │   │                        #   gallopPlayer, riffPlayer, pitchDetector,

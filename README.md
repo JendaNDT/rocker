@@ -22,7 +22,10 @@ metr, knoby, beat-mince, rám not.
 
 ## Funkce
 
-- **Domů** — denní plán cvičení (~15 min), streaky, 11 achievementů
+- **Domů** — denní plán cvičení (~15 min), streaky, 11 achievementů,
+  primární CTA „Hraj teď" rovnou do Live módu
+- **Live** — hraní s kytarou v ruce: velká ladička, velký BPM s play/tap
+  a jeden Rec toggle. Žádné menu, Wake Lock automatický
 - **Ladička** — Pitchy detekce, vedený i chromatický režim, 9 továrních
   ladění (Standard, Drop D/C/B, Eb std, D std, Open G, Open D, DADGAD)
   + vlastní uživatelská ladění, **referenční tón na strunu**

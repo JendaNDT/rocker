@@ -660,8 +660,9 @@ mono-sečtený `getRecordingStream()` místo syrového streamu (viz
   multiplayer jam, iOS-specifické funkce.
 
 ## 📁 Mapa kódu
-- `src/app/` — stránky (17 obrazovek, App Router), `globals.css`,
-  `theme-tokens.css` (CSS proměnné 3 vzhledů × 2 režimy)
+- `src/app/` — stránky (13 obrazovek v navu + 4 legacy redirecty pro
+  staré URL, App Router), `globals.css`, `theme-tokens.css` (CSS proměnné
+  3 vzhledů × 2 režimy)
 - `src/components/` — React komponenty (po doménách: tuner, metronome,
   library, practice, youtube, dashboard, profile, recorder, metal, tutor,
   notation, amp — včetně `AmpWidget`, `AmpHost` (drží sdílený aparát
