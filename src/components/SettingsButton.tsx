@@ -11,7 +11,7 @@ export function SettingsButton() {
     <Link
       href="/profile"
       aria-label="Nastavení"
-      className="settings-cog fixed top-3 right-3 z-20 flex h-11 w-11 items-center justify-center rounded-full transition-colors"
+      className="settings-cog fixed top-3 right-3 z-20 flex h-12 w-12 items-center justify-center rounded-full transition-colors"
       style={{
         background: "var(--surface)",
         color: "var(--text)",

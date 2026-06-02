@@ -181,21 +181,21 @@ export function RecordingItem({ recording }: { recording: RecordingMeta }) {
             <button
               type="button"
               onClick={() => setEditing(true)}
-              className="rounded-md border border-line bg-bg px-2.5 py-1 text-xs text-dim transition-colors hover:border-line-strong"
+              className="min-h-12 rounded-md border border-line bg-bg px-3 py-1 text-xs text-dim transition-colors hover:border-line-strong"
             >
               Přejmenovat
             </button>
             <button
               type="button"
               onClick={() => void handleExport()}
-              className="rounded-md border border-line bg-bg px-2.5 py-1 text-xs text-dim transition-colors hover:border-accent"
+              className="min-h-12 rounded-md border border-line bg-bg px-3 py-1 text-xs text-dim transition-colors hover:border-accent"
             >
               Exportovat
             </button>
             <button
               type="button"
               onClick={handleDelete}
-              className="rounded-md border border-line bg-bg px-2.5 py-1 text-xs text-dim transition-colors hover:border-danger hover:text-danger"
+              className="min-h-12 rounded-md border border-line bg-bg px-3 py-1 text-xs text-dim transition-colors hover:border-danger hover:text-danger"
             >
               Smazat
             </button>
@@ -258,7 +258,10 @@ export function RecordingItem({ recording }: { recording: RecordingMeta }) {
                   type="button"
                   onClick={() => removeMarker(marker.id)}
                   aria-label={`Smazat marker ${marker.label}`}
-                  className="rounded px-1 text-muted transition-colors hover:text-danger"
+                  // Tiny visible "×" with an invisible ::before pad — gives
+                  // a 48 px-ish hit area without making the inline marker
+                  // bubble look heavy.
+                  className="relative rounded px-1 text-muted transition-colors hover:text-danger before:absolute before:-inset-4 before:content-['']"
                 >
                   ×
                 </button>

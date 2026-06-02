@@ -166,9 +166,12 @@ export function GuidedTuner({
                   if (isPlaying) stopReference();
                 }}
                 className={
+                  // Visible dot stays 28 px so it fits in the string slot, but
+                  // a transparent ::before pad expands the hit area to ~48 px
+                  // for thumbs on mobile (28 + 2×10 = 48).
                   isPlaying
-                    ? "mx-auto mt-2 flex h-7 w-7 items-center justify-center rounded-md border border-accent bg-accent-soft text-accent"
-                    : "mx-auto mt-2 flex h-7 w-7 items-center justify-center rounded-md border border-line text-dim transition-colors hover:border-line-strong hover:text-text"
+                    ? "relative mx-auto mt-2 flex h-7 w-7 items-center justify-center rounded-md border border-accent bg-accent-soft text-accent before:absolute before:-inset-2.5 before:content-['']"
+                    : "relative mx-auto mt-2 flex h-7 w-7 items-center justify-center rounded-md border border-line text-dim transition-colors hover:border-line-strong hover:text-text before:absolute before:-inset-2.5 before:content-['']"
                 }
                 title="Přidrž pro přehrání referenčního tónu"
               >

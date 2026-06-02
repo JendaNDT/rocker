@@ -129,7 +129,7 @@ function DefaultBeat({ level, active, ariaLabel, onClick }: BeatProps) {
       type="button"
       onClick={onClick}
       aria-label={ariaLabel}
-      className={`h-10 w-10 rounded-full transition-all duration-75 ${base}${activeRing}`}
+      className={`relative h-10 w-10 rounded-full transition-all duration-75 before:absolute before:-inset-1.5 before:content-[''] ${base}${activeRing}`}
     />
   );
 }
@@ -164,7 +164,7 @@ function StudioBeat({
       type="button"
       onClick={onClick}
       aria-label={ariaLabel}
-      className="relative h-10 w-10 rounded-full transition-transform duration-75"
+      className="relative h-10 w-10 rounded-full transition-transform duration-75 before:absolute before:-inset-1.5 before:content-['']"
       style={{
         background: "radial-gradient(circle at 50% 50%, #1a1410 0%, #050302 100%)",
         border: "2px solid",
@@ -224,7 +224,7 @@ function VintageBeat({
       type="button"
       onClick={onClick}
       aria-label={ariaLabel}
-      className="relative h-10 w-10 rounded-full font-display transition-all duration-150"
+      className="relative h-10 w-10 rounded-full font-display transition-all duration-150 before:absolute before:-inset-1.5 before:content-['']"
       style={{
         background: face,
         color: numberColour,
@@ -286,7 +286,7 @@ function GlassyBeat({
       type="button"
       onClick={onClick}
       aria-label={ariaLabel}
-      className="relative h-10 w-10 rounded-full transition-transform duration-75"
+      className="relative h-10 w-10 rounded-full transition-transform duration-75 before:absolute before:-inset-1.5 before:content-['']"
       style={{
         background: fill,
         border,

@@ -124,7 +124,7 @@ export function Onboarding() {
           type="button"
           disabled={step === 0}
           onClick={() => setStep((current) => current - 1)}
-          className="rounded-lg border border-line bg-surface px-5 py-2.5 text-sm transition-colors hover:border-line-strong disabled:opacity-40"
+          className="rounded-lg border border-line bg-surface min-h-12 px-5 py-2.5 text-sm transition-colors hover:border-line-strong disabled:opacity-40"
         >
           Zpět
         </button>
@@ -132,7 +132,7 @@ export function Onboarding() {
           <button
             type="button"
             onClick={() => setStep((current) => current + 1)}
-            className="rounded-lg bg-accent px-6 py-2.5 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90"
+            className="min-h-12 rounded-lg bg-accent px-6 py-2.5 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90"
           >
             Dál
           </button>
@@ -140,7 +140,7 @@ export function Onboarding() {
           <button
             type="button"
             onClick={finish}
-            className="rounded-lg bg-accent px-6 py-2.5 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90"
+            className="min-h-12 rounded-lg bg-accent px-6 py-2.5 text-sm font-semibold text-accent-fg transition-colors hover:bg-accent/90"
           >
             Jdeme na to
           </button>

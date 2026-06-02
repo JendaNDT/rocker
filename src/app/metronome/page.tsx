@@ -279,7 +279,7 @@ export default function MetronomePage() {
           type="button"
           aria-label="Snížit tempo"
           onClick={() => changeBpm(bpm - 1)}
-          className="h-10 w-10 rounded-lg border border-line bg-surface text-lg transition-colors hover:border-line-strong"
+          className="h-12 w-12 rounded-lg border border-line bg-surface text-lg transition-colors hover:border-line-strong"
         >
           −
         </button>
@@ -296,7 +296,7 @@ export default function MetronomePage() {
           type="button"
           aria-label="Zvýšit tempo"
           onClick={() => changeBpm(bpm + 1)}
-          className="h-10 w-10 rounded-lg border border-line bg-surface text-lg transition-colors hover:border-line-strong"
+          className="h-12 w-12 rounded-lg border border-line bg-surface text-lg transition-colors hover:border-line-strong"
         >
           +
         </button>
