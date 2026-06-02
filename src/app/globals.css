@@ -104,6 +104,22 @@ body {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
   }
+
+  /* Standard a11y rule: collapse every animation and transition to a
+     single quick step for users who opted out of motion. !important so
+     this stylesheet beats inline style="animation: ..." authored by JS
+     in BeatIndicator (pulsing LED on the active beat) and
+     InputLevelMeter (clipping pulse). Also covers Tailwind's
+     animate-pulse (recorder dot) and the JS-applied
+     `.pendulum-accent-flash` class. */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* ---------- Animace ----------
