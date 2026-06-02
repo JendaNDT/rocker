@@ -10,6 +10,11 @@ export interface Screen {
 
 export const SCREENS: Screen[] = [
   { href: "/", label: "Domů", description: "Denní plán a rychlý přehled." },
+  {
+    href: "/live",
+    label: "Live",
+    description: "Hraní s kytarou v ruce — ladička, metronom, nahrávání.",
+  },
   { href: "/tuner", label: "Ladička", description: "Naladění kytary v centech." },
   { href: "/metronome", label: "Metronom", description: "Tempo, takty, akcenty." },
   { href: "/practice", label: "Cvičení", description: "Lekce a riff trainer." },

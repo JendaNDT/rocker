@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AchievementsCard } from "@/components/dashboard/AchievementsCard";
 import { DailyPlanCard } from "@/components/dashboard/DailyPlanCard";
@@ -15,9 +16,11 @@ const PLAN_GRID = {
 };
 
 /**
- * Home-screen dashboard (Bod 10): headline stats, today's practice plan, and
- * achievements. Hidden entirely in Zen mode (Bod 13) for a calmer home
- * screen — progress is still tracked, only its display is hidden.
+ * Home-screen dashboard (Bod 10): big "play now" CTA, headline stats,
+ * today's practice plan, and achievements. The CTA shortcut into Live
+ * mode skips the typical 3-4 click path to "guitar in hand". Hidden
+ * entirely in Zen mode (Bod 13) for a calmer home screen — progress is
+ * still tracked, only its display is hidden.
  */
 export function Dashboard() {
   const zenMode = useSettingsStore((state) => state.zenMode);
@@ -31,6 +34,12 @@ export function Dashboard() {
 
   return (
     <div className="space-y-4">
+      <Link
+        href="/live"
+        className="flex min-h-12 items-center justify-center rounded-lg bg-accent px-6 py-3 text-base font-semibold text-accent-fg transition-colors hover:bg-accent/90"
+      >
+        Hraj teď
+      </Link>
       <StatsRow />
       <div className={PLAN_GRID[layoutMode]}>
         <DailyPlanCard />
