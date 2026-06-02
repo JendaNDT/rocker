@@ -56,6 +56,16 @@ class AudioEngine {
   private splitter: ChannelSplitterNode | null = null;
   private monoMix: GainNode | null = null;
   private recordingDest: MediaStreamAudioDestinationNode | null = null;
+  /**
+   * Monotonically increasing counter. Every start() call captures the
+   * generation it belongs to into the closures it registers (the track's
+   * "ended" listener) and into the local control flow around the await on
+   * stop(). A listener whose captured generation no longer matches
+   * `startGeneration` is from a torn-down session and ignores its event —
+   * this prevents a late "ended" from the previous stream (unplugged
+   * device, fast device switch) from killing a freshly started engine.
+   */
+  private startGeneration = 0;
 
   getState(): AudioEngineState {
     return this.state;
@@ -201,7 +211,11 @@ class AudioEngine {
       });
       return;
     }
+    const generation = ++this.startGeneration;
     await this.stop();
+    // If another start() began while we were awaiting stop(), it has already
+    // bumped startGeneration and is the one in charge — back off.
+    if (generation !== this.startGeneration) return;
     this.setState({ status: "starting", error: null });
     try {
       const context = this.getContext();
@@ -246,8 +260,11 @@ class AudioEngine {
       this.monoMix = monoMix;
       this.recordingDest = recordingDest;
 
-      // Detect the device being unplugged mid-session.
+      // Detect the device being unplugged mid-session. The captured
+      // generation guards against stale events from a torn-down session
+      // (see startGeneration above).
       stream.getAudioTracks()[0]?.addEventListener("ended", () => {
+        if (generation !== this.startGeneration) return;
         this.handleDeviceLost();
       });
 
@@ -287,6 +304,10 @@ class AudioEngine {
   }
 
   private handleDeviceLost(): void {
+    // Only surface the device-lost error if we are actually running. A
+    // manual stop() will have left us in `idle`; the "ended" event from
+    // the just-stopped track would otherwise pop up as a spurious error.
+    if (this.state.status !== "running") return;
     void this.stop();
     this.setState({
       status: "error",
