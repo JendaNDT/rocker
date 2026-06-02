@@ -6,8 +6,13 @@
 
 /**
  * localStorage keys holding persisted app data, all written by Zustand
- * `persist`. Settings, progress, instrument profile, lesson progress,
- * YouTube loops, AI settings and chat history.
+ * `persist`. Covers settings, progress, instrument profile, lesson progress,
+ * YouTube loops, AI settings and chat history, amp settings, amp presets,
+ * metronome config and custom tunings.
+ *
+ * When adding a new persisted store, bump BACKUP_VERSION below and add the
+ * store's persist `name` here. Older backups stay restorable — see the
+ * version note on BACKUP_VERSION.
  */
 export const BACKUP_KEYS: readonly string[] = [
   "rocker-settings",
@@ -17,10 +22,23 @@ export const BACKUP_KEYS: readonly string[] = [
   "rocker-yt-loops",
   "rocker-ai",
   "rocker-chat",
+  "rocker-amp",
+  "rocker-amp-presets",
+  "rocker-metronome",
+  "rocker-custom-tunings",
 ];
 
-/** Backup file format version. */
-export const BACKUP_VERSION = 1;
+/**
+ * Backup file format version. Informative only — `isValidBackup` checks the
+ * type, not the value, and `knownBackupEntries` restores whichever keys the
+ * file happens to contain (missing keys are simply skipped). This means
+ * older backups (version 1 — without amp / amp-presets / metronome /
+ * custom-tunings) still restore cleanly under the current code; the user
+ * just keeps whatever those stores currently hold for the not-yet-included
+ * keys. Bump on any additive change so support traffic can tell which
+ * generation a user's file is from.
+ */
+export const BACKUP_VERSION = 2;
 
 /** A Rocker data backup. `data` maps each backed-up key to its raw value. */
 export interface Backup {
