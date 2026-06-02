@@ -49,18 +49,34 @@ class LoopPedal {
     return true;
   }
 
-  /** Stops the base recording and starts the loop playing. */
+  /**
+   * Stops the base recording and starts the loop playing.
+   *
+   * Throws a Czech-language Error if decoding the recorded blob fails (corrupt
+   * webm, unsupported codec, etc.) — the pedal is fully reset to `idle` in
+   * that case rather than left in a half-initialised state. Callers (the
+   * LoopPedal component) catch and surface the message.
+   */
   async stopBase(): Promise<void> {
     if (this.state !== "recordingBase") return;
     const result = await recorder.stop();
     this.state = "idle";
     if (!result) return;
-    const context = await audioEngine.getOutputContext();
-    this.loopBuffer = await context.decodeAudioData(
-      await result.blob.arrayBuffer(),
-    );
-    this.layers = 1;
-    this.startLoop(context);
+    try {
+      const context = await audioEngine.getOutputContext();
+      this.loopBuffer = await context.decodeAudioData(
+        await result.blob.arrayBuffer(),
+      );
+      this.layers = 1;
+      this.startLoop(context);
+    } catch {
+      // The recording is unusable — drop the half-loaded buffer, keep the
+      // pedal in `idle` so the user can simply try again.
+      this.loopBuffer = null;
+      this.layers = 0;
+      this.state = "idle";
+      throw new Error("Nahranou smyčku se nepodařilo zpracovat. Zkus to znovu.");
+    }
   }
 
   /** Starts recording an overdub layer over the running loop. */
@@ -72,19 +88,33 @@ class LoopPedal {
     return true;
   }
 
-  /** Stops the overdub and mixes the layer into the loop. */
+  /**
+   * Stops the overdub and mixes the layer into the loop.
+   *
+   * Throws a Czech-language Error if decoding the overlay fails. The base
+   * loop is preserved and keeps playing — only the failed overlay is
+   * dropped. Callers (the LoopPedal component) catch and surface the
+   * message.
+   */
   async stopOverdub(): Promise<void> {
     if (this.state !== "recordingOverdub" || !this.loopBuffer) return;
     const result = await recorder.stop();
     this.state = "looping";
     if (!result) return;
-    const context = await audioEngine.getOutputContext();
-    const overlay = await context.decodeAudioData(
-      await result.blob.arrayBuffer(),
-    );
-    this.loopBuffer = this.combine(context, this.loopBuffer, overlay);
-    this.layers += 1;
-    this.startLoop(context);
+    try {
+      const context = await audioEngine.getOutputContext();
+      const overlay = await context.decodeAudioData(
+        await result.blob.arrayBuffer(),
+      );
+      this.loopBuffer = this.combine(context, this.loopBuffer, overlay);
+      this.layers += 1;
+      this.startLoop(context);
+    } catch {
+      // The overlay is unusable, but the base loop is intact and the
+      // previously-running source from the earlier startLoop() keeps
+      // playing — nothing to tear down. State stays at `looping`.
+      throw new Error("Vrstvu se nepodařilo přidat. Smyčka hraje dál.");
+    }
   }
 
   /** Stops everything and clears the loop. */

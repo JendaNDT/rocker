@@ -42,7 +42,11 @@ export function LoopPedal() {
   async function stopBase() {
     if (busy) return;
     setBusy(true);
-    await loopPedal.stopBase();
+    try {
+      await loopPedal.stopBase();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Smyčku se nepodařilo zpracovat.");
+    }
     setBusy(false);
     setState(loopPedal.getState());
     setLayers(loopPedal.getLayerCount());
@@ -64,7 +68,11 @@ export function LoopPedal() {
   async function stopOverdub() {
     if (busy) return;
     setBusy(true);
-    await loopPedal.stopOverdub();
+    try {
+      await loopPedal.stopOverdub();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Vrstvu se nepodařilo přidat.");
+    }
     setBusy(false);
     setState(loopPedal.getState());
     setLayers(loopPedal.getLayerCount());
