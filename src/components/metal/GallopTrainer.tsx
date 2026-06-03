@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { audioEngine } from "@/audio/AudioEngine";
+import { audioEngine } from "@/audio/audioEngine";
 import { gallopPlayer } from "@/audio/gallopPlayer";
 import { DEFAULT_TUNING_ID } from "@/audio/tunings";
 import { GALLOP_EXERCISES } from "@/lib/metalExercises";

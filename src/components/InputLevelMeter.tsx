@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { audioEngine } from "@/audio/AudioEngine";
+import { audioEngine } from "@/audio/audioEngine";
 import { INPUT_LEVEL_SCALE, computeRms } from "@/audio/pitchDetector";
 import { useActiveTheme } from "@/hooks/useActiveTheme";
 import { useAudioStore } from "@/stores/audioStore";

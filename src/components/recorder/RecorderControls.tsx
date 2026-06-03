@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { audioEngine } from "@/audio/AudioEngine";
+import { audioEngine } from "@/audio/audioEngine";
 import { recorder } from "@/audio/recorder";
 import { InputLevelMeter } from "@/components/InputLevelMeter";
 import { type Recording, formatDuration } from "@/lib/recordings";

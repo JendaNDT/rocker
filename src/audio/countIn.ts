@@ -1,6 +1,6 @@
 // One-shot count-in — a few clicks before playback starts.
 
-import { audioEngine } from "@/audio/AudioEngine";
+import { audioEngine } from "@/audio/audioEngine";
 
 /**
  * Plays `beats` count-in clicks at the given tempo and resolves once the

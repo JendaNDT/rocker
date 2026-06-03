@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { audioEngine } from "@/audio/AudioEngine";
+import { audioEngine } from "@/audio/audioEngine";
 import { MuteAnalyzer } from "@/audio/muteAnalyzer";
 import { isOnset } from "@/lib/palmMute";
 import { useAudioStore } from "@/stores/audioStore";

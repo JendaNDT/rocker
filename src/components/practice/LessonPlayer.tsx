@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { audioEngine } from "@/audio/AudioEngine";
+import { audioEngine } from "@/audio/audioEngine";
 import { StepView } from "@/components/practice/StepView";
 import type { Lesson } from "@/lib/lessons";
 

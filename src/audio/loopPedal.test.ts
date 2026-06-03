@@ -2,8 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 // Mock the audio dependencies before importing loopPedal so the singleton
 // captures the mocked modules. Paths must match the relative imports in
-// loopPedal.ts ("./AudioEngine" and "./recorder").
-vi.mock("./AudioEngine", () => ({
+// loopPedal.ts ("./audioEngine" and "./recorder").
+vi.mock("./audioEngine", () => ({
   audioEngine: {
     ensureListening: vi.fn().mockResolvedValue(true),
     getRecordingStream: vi.fn(),
@@ -18,7 +18,7 @@ vi.mock("./recorder", () => ({
   },
 }));
 
-import { audioEngine } from "./AudioEngine";
+import { audioEngine } from "./audioEngine";
 import { loopPedal } from "./loopPedal";
 import { recorder } from "./recorder";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { audioEngine } from "@/audio/AudioEngine";
+import { audioEngine } from "@/audio/audioEngine";
 import { DEFAULT_TUNING_ID, TUNINGS } from "@/audio/tunings";
 import { CustomTuningEditor } from "@/components/tuner/CustomTuningEditor";
 import { GuidedTuner } from "@/components/tuner/GuidedTuner";

@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import { audioEngine } from "@/audio/AudioEngine";
-import type { AudioEngineState } from "@/audio/AudioEngine";
+import { audioEngine } from "@/audio/audioEngine";
+import type { AudioEngineState } from "@/audio/audioEngine";
 
 /**
  * Reactive mirror of the AudioEngine state for React components.

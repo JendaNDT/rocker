@@ -1,6 +1,6 @@
 "use client";
 
-import { audioEngine } from "@/audio/AudioEngine";
+import { audioEngine } from "@/audio/audioEngine";
 import { playChord } from "@/audio/chordPlayer";
 import { ChordDiagram } from "@/components/library/ChordDiagram";
 import { InputLevelMeter } from "@/components/InputLevelMeter";

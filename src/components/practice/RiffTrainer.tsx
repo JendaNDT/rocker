@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { audioEngine } from "@/audio/AudioEngine";
+import { audioEngine } from "@/audio/audioEngine";
 import { playCountIn } from "@/audio/countIn";
 import { Waveform } from "@/components/practice/Waveform";
 import { computePeaks } from "@/lib/waveform";

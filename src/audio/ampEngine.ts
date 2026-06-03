@@ -12,7 +12,7 @@
 
 import type { AmpSettings } from "@/lib/ampPresets";
 import { AmpChain } from "./ampChain";
-import { audioEngine } from "./AudioEngine";
+import { audioEngine } from "./audioEngine";
 
 export type AmpStatus = "idle" | "starting" | "running" | "error";
 

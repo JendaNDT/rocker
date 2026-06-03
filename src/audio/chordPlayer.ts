@@ -1,7 +1,7 @@
 // Chord preview — strums a set of MIDI notes through the output AudioContext.
 // Each note is a short synthesised pluck; notes are staggered to mimic a strum.
 
-import { audioEngine } from "@/audio/AudioEngine";
+import { audioEngine } from "@/audio/audioEngine";
 import { midiToFrequency } from "@/lib/pitch";
 
 const STRUM_STEP_S = 0.03;

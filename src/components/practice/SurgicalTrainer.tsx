@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { audioEngine } from "@/audio/AudioEngine";
+import { audioEngine } from "@/audio/audioEngine";
 import { useTuner } from "@/components/tuner/useTuner";
 import { EXERCISES } from "@/lib/exercises";
 import type { Exercise } from "@/lib/exercises";

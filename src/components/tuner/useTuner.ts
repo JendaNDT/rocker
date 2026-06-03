@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { audioEngine } from "@/audio/AudioEngine";
+import { audioEngine } from "@/audio/audioEngine";
 import { PitchAnalyzer } from "@/audio/pitchDetector";
 import { frequencyToNote } from "@/lib/pitch";
 import type { NoteInfo } from "@/lib/pitch";

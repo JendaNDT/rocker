@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { audioEngine } from "@/audio/AudioEngine";
+import { audioEngine } from "@/audio/audioEngine";
 import { metronome } from "@/audio/metronome";
 import { recorder } from "@/audio/recorder";
 import { PageContainer } from "@/components/PageContainer";

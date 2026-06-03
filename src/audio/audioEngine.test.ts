@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { audioEngine } from "@/audio/AudioEngine";
+import { audioEngine } from "@/audio/audioEngine";
 
 // A controllable fake MediaStreamTrack: lets the test simulate the
 // device-unplugged "ended" event by calling fireEnded().

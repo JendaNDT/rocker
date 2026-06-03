@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { audioEngine } from "@/audio/AudioEngine";
+import { audioEngine } from "@/audio/audioEngine";
 import { metronome } from "@/audio/metronome";
 import { DEFAULT_TUNING_ID } from "@/audio/tunings";
 import { POWER_CHORD_EXERCISES } from "@/lib/metalExercises";

@@ -9,7 +9,7 @@
 
 import type { Track } from "@/lib/multitrack";
 import { encodeWav } from "@/lib/wav";
-import { audioEngine } from "./AudioEngine";
+import { audioEngine } from "./audioEngine";
 import { type RecordingResult, recorder } from "./recorder";
 
 class MultitrackEngine {

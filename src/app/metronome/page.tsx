@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { audioEngine } from "@/audio/AudioEngine";
+import { audioEngine } from "@/audio/audioEngine";
 import { metronome } from "@/audio/metronome";
 import { BeatIndicator } from "@/components/metronome/BeatIndicator";
 import { Pendulum } from "@/components/metronome/Pendulum";

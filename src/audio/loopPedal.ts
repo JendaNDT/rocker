@@ -8,7 +8,7 @@
 // is "close enough" for practice rather than pedal-tight.
 
 import { mixLoopLayer } from "@/lib/loopMix";
-import { audioEngine } from "./AudioEngine";
+import { audioEngine } from "./audioEngine";
 import { recorder } from "./recorder";
 
 /** The loop pedal's lifecycle state. */
