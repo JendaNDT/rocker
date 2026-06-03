@@ -148,7 +148,7 @@ export function SurgicalTrainer() {
             const variant = current
               ? "border-accent text-accent"
               : done
-                ? "border-success/60 text-success"
+                ? "border-success text-success"
                 : "border-line text-muted";
             return (
               <div
@@ -220,7 +220,7 @@ export function SurgicalTrainer() {
           const variant = current
             ? "border-accent text-accent"
             : done
-              ? "border-success/60 text-success"
+              ? "border-success text-success"
               : "border-line text-muted";
           return (
             <div

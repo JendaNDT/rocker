@@ -260,6 +260,10 @@ function SheetFrame({
             "0 0 22px rgba(212,168,62,0.25), 0 4px 14px rgba(0,0,0,0.45)",
         }}
       >
+        {/* bg-white is intentional across all NotationViewer variants —
+            sheet music is read on a white page everywhere; tinting the
+            paper to the theme would harm contrast and tradition. The
+            surrounding frame stays themed (brass / paper / glass). */}
         <div
           className="overflow-x-auto rounded-md bg-white p-3"
           style={{

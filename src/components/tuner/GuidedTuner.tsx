@@ -139,7 +139,7 @@ export function GuidedTuner({
           const variant = isActive
             ? "border-accent text-accent"
             : isTuned
-              ? "border-success/60 text-success"
+              ? "border-success text-success"
               : "border-line text-dim";
           const noteLabel = midiToLabelIn(string.midi, notation);
           return (

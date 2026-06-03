@@ -323,15 +323,17 @@ function DetectorView({
           <div className="text-3xl font-bold text-accent">UTLUMENO</div>
         )}
         {verdict === "open" && (
-          <div className="text-3xl font-bold text-sky-400">OTEVŘENO</div>
+          <div className="text-3xl font-bold text-success">OTEVŘENO</div>
         )}
       </div>
 
       <div className="mt-5">
-        <div className="relative h-4 rounded-full bg-gradient-to-r from-accent via-line-strong to-sky-900">
+        {/* Gradient runs from "muted" end (accent) → mid → "open" end (bg).
+            The visual axis is brightness; tokens follow the active theme. */}
+        <div className="relative h-4 rounded-full bg-gradient-to-r from-accent via-line-strong to-bg">
           <div className="absolute inset-y-0 left-1/2 w-0.5 -translate-x-1/2 bg-surface-2" />
           <div
-            className="absolute top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-line bg-white transition-all duration-75"
+            className="absolute top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-line bg-text transition-all duration-75"
             style={{ left: `${markerPosition * 100}%` }}
           />
         </div>

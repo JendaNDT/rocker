@@ -163,6 +163,9 @@ export function YouTubePlayer() {
 
       <div className={VIDEO_GRID[layoutMode]}>
         <div>
+          {/* bg-black is intentional here — YouTube's letterbox is black on
+              every platform; a theme-tinted fill would look like a styling
+              bug when the player is loading. */}
           <div className="aspect-video w-full overflow-hidden rounded-lg border border-line bg-black">
             <div id={PLAYER_ID} className="h-full w-full" />
           </div>
