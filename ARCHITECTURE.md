@@ -287,7 +287,7 @@ balicí potíže s Turbopackem. Metronom je přesný díky sample-accurate plán
 na časové ose `AudioContext` (technika „dvojích hodin"), worklet tedy nepotřebuje
 ani on. AudioWorklet zůstává jako možnost pro budoucí náročné funkce.
 
-### 3.2 Centrální `AudioEngine`
+### 3.2 Centrální `audioEngine`
 
 Jediný objekt (singleton), který vlastní `AudioContext` a stará se o:
 
@@ -332,6 +332,15 @@ Metronom nesmí používat JavaScript časovače (`setTimeout`/`setInterval`) �
 ty na mobilu "ujíždějí". Správné řešení (vzor "A Tale of Two Clocks" od
 Chrise Wilsona): plánovat klikání dopředu s ~25 ms lookahead oknem přímo na
 audio časové ose. To samé platí pro count-in v riff traineru.
+
+Pattern „two clocks" (setInterval scheduler + requestAnimationFrame draw
+loop + spolehlivý stop) sdílejí tři přehrávače: `metronome`, `riffPlayer`
+a `gallopPlayer`. Lifecycle obojí smyčky drží sdílený `LoopRunner` helper
+v `src/audio/loopRunner.ts` — vystavuje `start(context)`/`stop()`/`isRunning()`
+a garantuje, že po `stop()` se ani scheduler ani rAF už nevyvolají
+(running flag + cleared context, žádný rAF re-arm v draw callbacku).
+Bez tohoto helperu trojice přehrávačů sdílela kopie té samé fragilní
+two-clocks logiky.
 
 Engine `metronome.ts` má dvě paralelní smyčky ve stejném `scheduler()`
 callbacku: **hlavní** (s accent patternem, swingem a drum modem
@@ -500,20 +509,24 @@ rocker/
 │   │                        #   useActiveTheme, useResolvedLayoutMode,
 │   │                        #   useWakeLock (oddělené od lib, aby lib
 │   │                        #   zůstal čistý TS bez Reactu)
-│   ├── audio/               # audio vrstva (5): AudioEngine, metronome,
-│   │                        #   gallopPlayer, riffPlayer, pitchDetector,
-│   │                        #   muteAnalyzer, chordPlayer, countIn,
-│   │                        #   tunings, recorder, ampChain, ampEngine
-│   │                        #   (sdílený singleton aparátu),
-│   │                        #   multitrackEngine, loopPedal,
+│   ├── audio/               # audio vrstva (5): audioEngine, metronome,
+│   │                        #   gallopPlayer, riffPlayer, loopRunner
+│   │                        #   (sdílený "two clocks" helper pro tři
+│   │                        #   přehrávače), pitchDetector, muteAnalyzer,
+│   │                        #   chordPlayer, countIn, tunings, recorder,
+│   │                        #   ampChain, ampEngine (sdílený singleton
+│   │                        #   aparátu), multitrackEngine, loopPedal,
 │   │                        #   referenceTone, confirmationSound
 │   ├── lib/                 # doménová logika (4), data/obsah (6),
 │   │                        #   IndexedDB vrstva (7), čisté utility,
 │   │                        #   resolveTuning (jediný zdroj pravdy pro
 │   │                        #   lookup ladění — tovární i vlastní),
-│   │                        #   download (stažení blobu), lessonProgress
-│   │                        #   + ytLoops (sanitizéry perzistence),
-│   │                        #   ai/ (Gemini klient) + testy *.test.ts
+│   │                        #   customTunings (typ + isCustomTuningId,
+│   │                        #   oddělené ze store), math (clampGainOrFull
+│   │                        #   / clampGainOrSilent), download (stažení
+│   │                        #   blobu), lessonProgress + ytLoops
+│   │                        #   (sanitizéry perzistence), ai/ (Gemini
+│   │                        #   klient) + testy *.test.ts
 │   └── stores/              # Zustand stores (vrstva 3) — settings,
 │                            #   customTunings, …
 ├── ARCHITECTURE.md

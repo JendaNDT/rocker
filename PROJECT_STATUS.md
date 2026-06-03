@@ -1,5 +1,5 @@
 # Rocker – Project Status
-*Naposled aktualizováno: 02. 06. 2026*
+*Naposled aktualizováno: 03. 06. 2026*
 
 ## 🎯 Co to je
 PWA kytarový asistent pro učení a hraní na elektrickou kytaru. Funguje na PC
@@ -14,8 +14,11 @@ IndexedDB (přes `idb`) pro velké bloby — nahrávky.
 
 ## ⏭️ Příští krok
 Roadmapa je prakticky hotová — body 1–21 dokončené (18 a 20 vědomě
-vynechané), zbývá poslední **Bod 22 (sdílení a organizace)**. Nad rámec
-roadmapy přibylo 12 vln vylepšení (vzhledy, šumová brána + autokalibrace,
+vynechané), zbývá poslední **Bod 22 (sdílení a organizace)**. Před ním
+proběhl komplexní 28krokový **FIX_PLAN refactor** (2026-06-03), všech
+28 kroků hotových: appka je stabilní, odolná, dokumentace odpovídá
+realitě, mobilní zážitek důstojný, kódová báze technicky čistá. Nad
+rámec roadmapy přibylo 13 vln vylepšení (vzhledy, šumová brána + autokalibrace,
 upozornění na verzi, krok vzhledu v úvodu, záloha dat, rozšířený
 metronom, responzivní PC rozvržení, polymorfní widgety vzhledů
 inspirované Soltonem, AmpWidget na obrazovkách Cvičení a Metal,
@@ -26,7 +29,15 @@ upgrade Ladičky** s referenčním tónem na strunu, konfirmací naladění,
 **balík oprav z reálné zpětné vazby (2026-06-02)** — nahrávání do
 obou repráčků, aparát hrající napříč obrazovkami přes sdílený
 AmpEngine, spolehlivý export, audit validace vstupů/výstupů s opravami
-a zviditelněné nahrávání v Aparátu) — vše nasazené.
+a zviditelněné nahrávání v Aparátu, **komplexní audit + 28krokový
+FIX_PLAN (2026-06-03)** — Live mód implementace, sdílený `LoopRunner`
+helper (zavřel 3 kritické rAF leaky + duplicity), `src/hooks/` (oddělené
+od `src/lib/`), kompletní backup pokrytí všech 11 perzistovaných stores,
+generation guard v `audioEngine` (start/stop race), ESLint flat config
+s `any`/`@ts-ignore` ban, lifecycle testy všech audio singletonů,
+theme-token cleanup, a11y baterie (tap targety 48 px, focus-visible
+ring, `prefers-reduced-motion`, `aria-live` regiony) — viz `AUDIT.md`
+a `FIX_PLAN.md`) — vše nasazené.
 
 Otevřené úkoly:
 - **Bod 22 (sdílení a organizace)** — poslední bod roadmapy. Záloha dat
@@ -672,26 +683,31 @@ mono-sečtený `getRecordingStream()` místo syrového streamu (viz
   `VintageFrame` (vzhledy), `ServiceWorkerRegister` (registrace SW + lišta
   nové verze), `DataBackup`, `AudioInputSettings`, `InputLevelMeter`,
   `Onboarding`, `PageContainer` + `SplitColumns` (responzivní PC rozvržení)
-- `src/audio/` — audio vrstva (AudioEngine, metronome, gallopPlayer,
-  riffPlayer, pitchDetector — detekce tónů + šumová brána, muteAnalyzer,
-  chordPlayer, countIn, tunings, recorder, ampChain, **ampEngine** —
-  sdílený singleton aparátu žijící přes obrazovky, multitrackEngine,
-  loopPedal, **referenceTone** — hold-to-play referenční tón pro
-  Ladičku, **confirmationSound** — dvounótový chime + haptika pro
-  konfirmaci naladění)
-- `src/lib/` — čistá logika a data (pitch, tempo, metronomeConfig,
-  metronomePresets, chords, scales, lessons,
+- `src/audio/` — audio vrstva (**audioEngine** (camelCase soubor;
+  obsahuje třídu `AudioEngine`), metronome, gallopPlayer, riffPlayer,
+  **loopRunner** — sdílený "two clocks" lifecycle helper pro 3
+  přehrávače výše, pitchDetector — detekce tónů + šumová brána,
+  muteAnalyzer, chordPlayer, countIn, tunings, recorder, ampChain,
+  **ampEngine** — sdílený singleton aparátu žijící přes obrazovky,
+  multitrackEngine, loopPedal, **referenceTone** — hold-to-play
+  referenční tón pro Ladičku, **confirmationSound** — dvounótový chime
+  + haptika pro konfirmaci naladění). Každý singleton má lifecycle
+  test (`*.test.ts` vedle něj).
+- `src/lib/` — čistá logika a data, **bez Reactu** (pitch, tempo,
+  metronomeConfig, metronomePresets, chords, scales, lessons,
   surgicalEngine, exercises, youtube, progress, achievements, dailyPlan,
   practiceTime, recordings, recordingsDb, powerChords, metalExercises,
   metalRiffs, powerChordTrainer, gallopTrainer, palmMute, breakReminder,
   ampPresets, multitrack, wav, loopMix, fretboardGame, earTraining,
-  instrument, backup, **download** — spolehlivé stažení blobu,
-  **lessonProgress** + **ytLoops** — sanitizéry perzistence stores,
-  useHydrated, **useActiveTheme** — sdílený hook pro
-  polymorfní widgety, **resolveTuning** — jediný zdroj pravdy pro
-  lookup ladění (tovární i vlastní), ai/ — Gemini klient, prompty,
-  generátor plánu, kontext o cvičení, typy) — vedle leží testy
-  `*.test.ts`
+  instrument, backup, **math** — `clampGainOrFull` / `clampGainOrSilent`
+  s explicitními fallbacky, **customTunings** — typ + `isCustomTuningId`
+  (oddělené ze store, vyhnutí cyklu), **download** — spolehlivé stažení
+  blobu, **lessonProgress** + **ytLoops** — sanitizéry perzistence,
+  **resolveTuning** — jediný zdroj pravdy pro lookup ladění (tovární
+  i vlastní), ai/ — Gemini klient, prompty, generátor plánu, kontext
+  o cvičení, typy) — vedle leží testy `*.test.ts`
+- `src/hooks/` — sdílené React hooky oddělené od `src/lib/` (`useHydrated`,
+  `useActiveTheme`, `useResolvedLayoutMode`, `useWakeLock`)
 - `src/stores/` — Zustand stores (settings, audio, metronome,
   metronomeSettings, lessonProgress, ytLoop, progress, recordings,
   gallopPlayer, riffPlayer, ai, chat, instrument, ampPresets, **amp** —

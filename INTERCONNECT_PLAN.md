@@ -176,29 +176,30 @@ o správné názvy tónů — žádná detekční logika.
 
 ---
 
-## Fáze D — Sjednocení časovacích enginů (největší, zvážit)
+## Fáze D — Sjednocení časovacích enginů ✅ HOTOVO (2026-06-03)
 
 ### D1 — Sdílený scheduler
 
-**Co:** `metronome.ts`, `gallopPlayer.ts`, `riffPlayer.ts` a `countIn.ts`
-mají každý vlastní lookahead scheduler s oscilátorovým klikáním — dělají
-v podstatě totéž.
+**Co:** `metronome.ts`, `gallopPlayer.ts`, `riffPlayer.ts` měly každý
+vlastní lookahead scheduler s rAF draw loop — dělaly v podstatě totéž
+a sdílely fragilní stop() kontrakt.
 
-**Soubory:** nový `src/audio/scheduler.ts`; postupný refaktor `metronome.ts`,
-`gallopPlayer.ts`, `riffPlayer.ts`, `countIn.ts`.
+**Soubory:** nový `src/audio/loopRunner.ts` (helper) + refaktor
+`metronome.ts`, `gallopPlayer.ts`, `riffPlayer.ts`. `countIn.ts` má
+vlastní jednorázový mechanismus a do refaktoru nepatřil.
 
-**Kroky:**
-1. Vytáhnout sdílené scheduler jádro (lookahead, dvojí hodiny).
-2.–5. Přepojit každý engine zvlášť, jeden krok = jeden engine, po každém
-   ruční test zvuku.
+**Co se reálně udělalo (FIX_PLAN kroky 1–3, 2026-06-03):**
+1. `LoopRunner` třída v `src/audio/loopRunner.ts` — `start(context)`
+   spustí setInterval scheduler + rAF draw loop, `stop()` flipne
+   running flag, cancelne oboje, čistí context. Žádný rAF re-arm
+   v draw callbacku jakmile není running. 15 lifecycle testů.
+2.–4. Tři přehrávače přepsané postupně; každý dostal vlastní
+   lifecycle test (4–5 testů per player). Veřejné API
+   (`start`/`stop`/`toggle`) zůstalo identické, žádná UI komponenta
+   se nemusela měnit.
 
-**⚠️ Riziko: vysoké.** Audio se ověřuje jen poslechem (ne automaticky). Riff
-trainer a metalové trenažéry už fungují (částečně neověřené) — refaktor jejich
-zvuku riskuje regresi v něčem těžko testovatelném.
-
-**Doporučení:** **fáze D je nejvíc sporná návratnost.** Je to vnitřní úklid,
-ne funkce pro uživatele. Zvážit, jestli vůbec — udělat jen, pokud ta
-duplicita začne reálně překážet při údržbě. Klidně odložit nebo vynechat.
+**Vedlejší přínos:** opravil 3 latentní rAF leaky, které původní
+implementace měla díky nekontrolovanému re-armu rAF v draw callbacku.
 
 ---
 
@@ -212,10 +213,9 @@ duplicita začne reálně překážet při údržbě. Klidně odložit nebo vyne
 | B | B2 — AI čte profil | S–M | nízké–stř. | ✅ hotovo |
 | C | C1 — knihovna a ladění | M | střední | ✅ hotovo |
 | C | C2 — trenažéry a ladění | M | střední | ✅ hotovo |
-| D | D1 — sdílený scheduler | L | vysoké | zvážit, zda vůbec |
+| D | D1 — sdílený scheduler | L | vysoké | ✅ hotovo (FIX_PLAN 1-3) |
 
-Fáze A, B i C hotové (2026-05-25). Zbývá jen fáze D — otevřená otázka
-(viz níže), sporná návratnost.
+Všechny fáze hotové.
 
 ## Otevřené otázky k probrání s Jendou
 
@@ -223,4 +223,6 @@ Fáze A, B i C hotové (2026-05-25). Zbývá jen fáze D — otevřená otázka
    Vyřešeno (2026-05-25): varianta (b) — `settingsStore.tuningId`.
 2. ~~**A1 —** počítat `/notation` a `/recorder` do odcvičených minut?~~
    Vyřešeno (2026-05-25): ne, zůstávají mimo.
-3. **Fáze D —** dělat ji vůbec? Vysoké riziko, žádný přínos pro uživatele.
+3. ~~**Fáze D —** dělat ji vůbec?~~ Vyřešeno (2026-06-03): hotovo přes
+   `LoopRunner` z FIX_PLANu, kroky 1–3 — opravdu se vyplatilo, vedlejším
+   přínosem se opravil rAF leak ve všech třech přehrávačích.

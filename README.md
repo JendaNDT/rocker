@@ -64,7 +64,9 @@ Lekce: 18 vestavěných lekcí (Stage 1–3) s „Try it" detekcí tónu.
 - **Audio**: Web Audio API + getUserMedia, detekce tónů přes Pitchy
 - **Notace**: @coderline/alphatab (SONiVOX soundfont)
 - **AI**: Google Gemini API (BYOK, bez proxy serveru)
-- **Testy**: Vitest (496 testů, čistá logika v `src/lib/`)
+- **Testy**: Vitest (561 testů; čistá logika v `src/lib/` + lifecycle
+  testy všech audio singletonů)
+- **Lint**: ESLint 9 (flat config) — zákaz `any` a `@ts-ignore`
 - **PWA**: ručně psaný service worker, manifest, instalovatelnost
 - **Nasazení**: Vercel, auto-deploy z `main`
 
@@ -89,14 +91,17 @@ npm run build      # next build + razítkování service workeru
 ## Architektura
 
 Sedm vrstev — vrstva zná jen tu pod sebou. Čistá logika v `src/lib/` je
-TypeScript bez Reactu a bez audia (aby šla testovat). Detaily a důvody
-najdeš v ostatních dokumentech repa:
+TypeScript bez Reactu a bez audia (aby šla testovat); React hooks žijí
+zvlášť v `src/hooks/`. Detaily a důvody najdeš v ostatních dokumentech
+repa:
 
 - `ARCHITECTURE.md` — vrstvy, audio graf, perzistence
 - `AGENTS.md` — pravidla projektu, konvence, lessons learned
 - `SKILL.md` — pravidla spolupráce s Claudem (vibecoding)
 - `ROADMAP.md` — číslované body roadmapy
 - `PROJECT_STATUS.md` — aktuální stav, klíčová rozhodnutí, mapa kódu
+- `AUDIT.md` + `FIX_PLAN.md` — komplexní audit kódu (2026-06-02)
+  a 28-krokový implementační plán; všechny kroky dokončené 2026-06-03
 
 ## Roadmap (zkráceně)
 
@@ -121,8 +126,15 @@ vlastní uživatelská ladění s inline editorem. **Balík oprav z reálné
 zpětné vazby** (2026-06-02): nahrávání do obou repráčků, aparát hrající
 přes obrazovky (sdílený engine + SW fix), spolehlivý export, audit
 validace vstupů/výstupů s opravami, zviditelněné nahrávání v Aparátu.
+**Komplexní audit + 28krokový FIX_PLAN** (2026-06-03): Live mód
+implementace, sdílený `LoopRunner` audio helper (zavřel 3 rAF leaky
++ duplicity), `src/hooks/`, kompletní backup pokrytí 11 stores,
+generation guard v `AudioEngine`, ESLint flat config, lifecycle testy
+audio singletonů, theme-token cleanup, a11y (tap targety 48 px,
+focus-visible ring, `prefers-reduced-motion`, `aria-live`). 65 nových
+testů (496 → 561).
 
-Detaily v `ROADMAP.md` a `PROJECT_STATUS.md`.
+Detaily v `ROADMAP.md`, `PROJECT_STATUS.md`, `AUDIT.md` a `FIX_PLAN.md`.
 
 ## Nasazení
 
