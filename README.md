@@ -82,6 +82,7 @@ Po každé větší změně:
 ```bash
 npx tsc --noEmit   # kontrola typů
 npm test           # vitest run
+npm run lint       # eslint — zákaz `any` a `@ts-ignore`
 npm run build      # next build + razítkování service workeru
 ```
 
