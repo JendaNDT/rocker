@@ -27,8 +27,10 @@ export function StatsRow() {
   const today = hydrated ? Math.round(dailyMinutes[todayKey()] ?? 0) : 0;
   const total = hydrated ? Math.round(totalMinutes(dailyMinutes)) : 0;
 
+  // On a 320 px iPhone the three columns squashed long labels onto two
+  // lines; stack to one column there and recover the row at sm+.
   return (
-    <div className="grid grid-cols-3 gap-3">
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
       <Stat value={String(streak)} label="dní v řadě" />
       <Stat value={String(today)} label="minut dnes" />
       <Stat value={String(total)} label="minut celkem" />

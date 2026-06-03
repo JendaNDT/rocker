@@ -7,7 +7,12 @@ import { useResolvedLayoutMode } from "@/hooks/useResolvedLayoutMode";
  * Two-column page layout that collapses to a single stacked column on mobile
  * or a narrow viewport. Follows the same Auto / Desktop / Mobile switch as the
  * navigation (useResolvedLayoutMode): "auto" splits into two columns at the lg
- * breakpoint, "desktop" always splits, "mobile" always stacks.
+ * breakpoint (≥1024 px), "desktop" always splits, "mobile" always stacks.
+ *
+ * Split is at lg, not md, on purpose: the typical consumer is a "playing
+ * surface" on the left (BeatIndicator, big BPM) with a settings panel on
+ * the right. On a 768 px tablet portrait both columns would be too narrow
+ * for the playing surface to read comfortably, so the stack stays.
  *
  * When stacked, the two slots simply follow each other — each slot's own
  * content carries its vertical spacing.

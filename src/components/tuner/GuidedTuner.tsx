@@ -175,7 +175,20 @@ export function GuidedTuner({
                 }
                 title="Přidrž pro přehrání referenčního tónu"
               >
-                <span aria-hidden="true">♪</span>
+                {/* SVG note instead of the U+266A ♪ glyph — some Android
+                    builds ship without a music-symbol font and render the
+                    character as a tofu box. SVG is identical everywhere. */}
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 14 14"
+                  aria-hidden="true"
+                  fill="currentColor"
+                >
+                  <ellipse cx="4" cy="11" rx="2.4" ry="1.6" />
+                  <rect x="6" y="2" width="1.2" height="9" />
+                  <path d="M6 2 L11 3 L11 5 L6 4 Z" />
+                </svg>
               </button>
             </div>
           );

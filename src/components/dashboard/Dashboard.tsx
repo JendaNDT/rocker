@@ -8,11 +8,15 @@ import { StatsRow } from "@/components/dashboard/StatsRow";
 import { useResolvedLayoutMode } from "@/hooks/useResolvedLayoutMode";
 import { useSettingsStore } from "@/stores/settingsStore";
 
-// Daily plan + achievements: side by side on desktop, stacked on mobile.
+// Daily plan + achievements: side by side from md+, stacked below.
+// AchievementsCard has its own internal sm:grid-cols-2 for the list of
+// achievements — that is a separate axis (inner list density inside the
+// card vs outer card layout on the page) and the two intentionally do
+// not share a breakpoint.
 const PLAN_GRID = {
   desktop: "grid grid-cols-2 items-start gap-4",
   mobile: "space-y-4",
-  auto: "space-y-4 lg:grid lg:grid-cols-2 lg:items-start lg:gap-4 lg:space-y-0",
+  auto: "space-y-4 md:grid md:grid-cols-2 md:items-start md:gap-4 md:space-y-0",
 };
 
 /**
