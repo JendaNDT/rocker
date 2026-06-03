@@ -149,7 +149,10 @@ export function LoopPedal() {
           "Nahraj krátkou smyčku — po zastavení se hned začne opakovat."}
         {state === "recordingBase" &&
           "Nahrávám smyčku… zahraj jeden cyklus a zastav."}
-        {state === "looping" && `Smyčka hraje. Vrstev: ${layers}.`}
+        {state === "looping" &&
+          (layers <= 1
+            ? "Smyčka hraje. Vrstvení připraveno."
+            : `Smyčka hraje. Vrstev: ${layers}.`)}
         {state === "recordingOverdub" &&
           "Nahrávám vrstvu přes hrající smyčku… zastav na konci cyklu."}
       </p>

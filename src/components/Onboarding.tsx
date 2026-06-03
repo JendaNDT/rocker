@@ -114,6 +114,13 @@ export function Onboarding() {
                 Až ti to půjde, mrkni na obrazovku Metal — power chordy, gallop
                 a palm mute.
               </p>
+              <div className="mt-5 rounded-lg border border-dashed border-line p-4 text-sm text-muted">
+                <strong className="font-semibold text-text">Tip:</strong>{" "}
+                Přidej si Rocker na plochu telefonu nebo počítače — v
+                prohlížeči vyber „Přidat na plochu" / „Install app". Pak ho
+                otevřeš jako běžnou appku, na celou obrazovku a i bez
+                připojení.
+              </div>
             </div>
           )}
         </div>

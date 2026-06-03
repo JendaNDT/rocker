@@ -48,16 +48,25 @@ export function DataBackup() {
       setError("Tohle není platná záloha Rockeru.");
       return;
     }
-    const confirmed = window.confirm(
-      "Obnova přepíše nastavení a pokrok v aplikaci tím, co je v záloze. " +
-        "Nahrávky zůstanou nedotčené. Pokračovat?",
-    );
-    if (!confirmed) return;
     // Restore overlays the backup onto current state: keys present in the
     // file get written, keys missing from the file keep whatever the user
     // has now. Older v1 backups (made before amp/amp-presets/metronome/
     // custom-tunings were included) therefore do not wipe those stores.
     const entries = knownBackupEntries(parsed.data);
+    // isValidBackup is happy with `data: {}` (every value-of-empty test is
+    // vacuously true). Tell the user explicitly so a silent reload doesn't
+    // feel like the restore broke.
+    if (Object.keys(entries).length === 0) {
+      setError(
+        "Záloha je prázdná — neobsahuje žádná známá nastavení. Nic se neobnovilo.",
+      );
+      return;
+    }
+    const confirmed = window.confirm(
+      "Obnova přepíše nastavení a pokrok v aplikaci tím, co je v záloze. " +
+        "Nahrávky zůstanou nedotčené. Pokračovat?",
+    );
+    if (!confirmed) return;
     for (const [key, value] of Object.entries(entries)) {
       localStorage.setItem(key, value);
     }

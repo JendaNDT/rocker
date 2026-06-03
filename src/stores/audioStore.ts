@@ -13,7 +13,10 @@ export const useAudioStore = create<AudioEngineState>(() =>
   audioEngine.getState(),
 );
 
-// Keep the store in sync with the engine.
-audioEngine.subscribe((state) => {
-  useAudioStore.setState(state, true);
-});
+// Keep the store in sync with the engine. The subscribe() call runs at
+// module import time, including during the static prerender. That's safe
+// here because audioEngine itself does NOT touch window / navigator
+// inside its subscribe machinery (it just registers a listener in a
+// Set). Anything that would need browser APIs sits behind a method call
+// triggered by a user gesture, never at module top level — so this
+// import does not break Next.js static export.
