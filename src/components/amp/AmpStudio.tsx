@@ -253,7 +253,7 @@ export function AmpStudio() {
 
   return (
     <div className="rounded-lg border border-line bg-surface p-4">
-      <div className="rounded-lg border border-accent/40 bg-accent/10 p-3 text-sm text-accent">
+      <div className="rounded-lg border border-accent/40 bg-accent-soft p-3 text-sm text-accent">
         Použij sluchátka nebo zvukovku (M-Track Solo). Při hraní přes
         reproduktory a mikrofon může vzniknout zpětná vazba — nepříjemné
         houkání.
@@ -362,7 +362,7 @@ export function AmpStudio() {
                     key={preset.id}
                     className={
                       presetId === preset.id
-                        ? "flex items-center gap-1 rounded-md border border-accent bg-accent/10 py-1 pr-1 pl-3 text-sm text-accent"
+                        ? "flex items-center gap-1 rounded-md border border-accent bg-accent-soft py-1 pr-1 pl-3 text-sm text-accent"
                         : "flex items-center gap-1 rounded-md border border-line bg-bg py-1 pr-1 pl-3 text-sm text-dim"
                     }
                   >

@@ -54,6 +54,12 @@ v `SKILL.md`. Stručně:
 - UI používá theme-aware Tailwind třídy (`bg-surface`, `text-accent`,
   `border-line`, `text-dim`…), **ne** `bg-neutral-*` ani pevné barvy —
   appka má 3 vzhledy a komponenta nesmí vědět, který je aktivní.
+- Pro jemné akcentní pozadí použij token `bg-accent-soft` (každé téma
+  má vlastní intenzitu v `theme-tokens.css`), ne `bg-accent/10`. Naopak
+  `hover:bg-accent/90` (sytější varianta při hoveru) je vědomá výjimka
+  — neexistuje token, který by ji nahradil. Jakákoli další opacity
+  hodnota (`/5`, `/15`, `/40`, `/60`) by měla mít konkrétní záměr;
+  pokud se opakuje, zvážit nový token.
 - Žádné emoji v kódu ani v UI textech.
 
 ## Testovací disciplína

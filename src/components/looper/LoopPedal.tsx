@@ -87,7 +87,7 @@ export function LoopPedal() {
 
   return (
     <div className="rounded-lg border border-line bg-surface p-4">
-      <div className="rounded-lg border border-accent/40 bg-accent/10 p-3 text-sm text-accent">
+      <div className="rounded-lg border border-accent/40 bg-accent-soft p-3 text-sm text-accent">
         Nahrávej do sluchátek. Při hraní přes reproduktory se hrající smyčka
         nahraje znovu do nové vrstvy.
       </div>

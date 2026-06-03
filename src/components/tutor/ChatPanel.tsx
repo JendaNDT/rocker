@@ -219,7 +219,7 @@ export function ChatPanel() {
                 className={
                   isModel
                     ? "rounded-lg border border-line bg-surface px-3 py-2 text-sm whitespace-pre-wrap"
-                    : "rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-sm whitespace-pre-wrap"
+                    : "rounded-lg border border-accent/40 bg-accent-soft px-3 py-2 text-sm whitespace-pre-wrap"
                 }
               >
                 {message.text}

@@ -408,7 +408,7 @@ function DrillView({
               ? "border-success bg-success/15 text-success"
               : "border-danger bg-danger/15 text-danger";
           } else if (isCurrent) {
-            cellClass = "border-accent bg-accent/10 text-accent";
+            cellClass = "border-accent bg-accent-soft text-accent";
           }
 
           return (
