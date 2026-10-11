@@ -102,6 +102,26 @@ for (var i = 0; i < 20; i++)
     try { audio.Start(); throw new Exception("Disposed handle reused"); }
     catch (ObjectDisposedException) { }
 }
+for(var attempt=0;attempt<20;attempt++)
+{
+    await using var audio=new NativeAudio();var starting=audio.StartAsync();var stopping=audio.StopAsync();await Task.WhenAll(starting,stopping);
+    Check(audio.GetSnapshot().State==AudioState.Stopped,"stop before worker scheduling invalidates reserved start");
+}
+// Slow vendor initialization stays on a retained managed worker. Stop and polling remain responsive.
+var delayedLibrary=NativeLibrary.Load(Path.GetFullPath(args[0]));
+var setDelay=Marshal.GetDelegateForFunctionPointer<SetDelay>(NativeLibrary.GetExport(delayedLibrary,"rocker_test_set_start_delay"));
+setDelay(1000);
+try
+{
+    await using var audio=new NativeAudio();var start=audio.StartAsync();
+    var deadline=System.Diagnostics.Stopwatch.StartNew();
+    while(audio.GetSnapshot().State!=AudioState.Starting && deadline.ElapsedMilliseconds<3000)await Task.Delay(1);
+    Check(audio.GetSnapshot().State==AudioState.Starting,"managed starting state");
+    var poll=System.Diagnostics.Stopwatch.StartNew();_ = audio.GetTransport();var stopping=audio.StopAsync();
+    Check(poll.ElapsedMilliseconds<200,"managed polling and stop submission do not wait for slow driver");
+    await Task.WhenAll(start,stopping);Check(audio.GetSnapshot().State==AudioState.Stopped,"slow start cancelled through P/Invoke");
+}
+finally{setDelay(0);NativeLibrary.Free(delayedLibrary);}
 // The failure switch is exported only by the separate test backend.
 var library = NativeLibrary.Load(Path.GetFullPath(args[0]));
 var setFailure = Marshal.GetDelegateForFunctionPointer<SetFailure>(NativeLibrary.GetExport(library, "rocker_test_set_failure"));
@@ -121,3 +141,6 @@ Console.WriteLine("PASS: real C# to C++ calls, layout, UTF-8 errors, start/stop,
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 delegate void SetFailure(int enabled);
+
+[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+delegate void SetDelay(uint milliseconds);

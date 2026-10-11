@@ -35,3 +35,8 @@ konflikty, sloučení a nahrazení, skutečný návrat předchozího nastavení,
 simulace přerušené výměny databázové složky a opakované startup recovery.
 Windows ověření skutečných nativních formulářů a systémových pickerů je
 součástí pozdější W37/W42 přejímky; CI nevydává ruční klikání za provedené.
+
+Windows [38156474475](https://github.com/JendaNDT/rocker/actions/runs/38156474475)
+prošel 20 scénáři záloh, datovými/DPAPI kontrolami a dvěma skutečnými WinUI
+starty. [Důkaz](windows-validation.json) uvádí přesný commit a rozsah; pozdější
+hardening reader gate a migrace jsou samostatný navazující build.

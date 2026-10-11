@@ -13,6 +13,8 @@ public:
         rate_ = rate; gain_ = 0; tone_.prepare(rate);
         frames_.store(0, std::memory_order_relaxed);
     }
+    void authority(const std::atomic<uint64_t>& intent) noexcept { authority_ = &intent; }
+    void authorize(uint64_t ticket) noexcept { ticket_.store(ticket); }
     void enable(bool value) noexcept { enabled_.store(value); tone_.enable(value); }
     void selectTone() noexcept { clipMode_ = false; }
     void selectClip() noexcept { clipMode_ = true; }
@@ -35,6 +37,13 @@ public:
     bool clipMode() const noexcept { return clipMode_; }
     uint64_t frames() const noexcept { return clipMode_ ? frames_.load() : tone_.frames(); }
     void render(float* const* outputs, int channels, int count) noexcept {
+        // A late driver start cannot resurrect a cancelled request, even if
+        // cancellation raced with enable(). The authority outlives joined callbacks.
+        if (authority_ && ticket_.load() != authority_->load()) {
+            if (outputs && count > 0) for (int c = 0; c < channels; ++c)
+                if (outputs[c]) std::fill_n(outputs[c], count, 0.0f);
+            return;
+        }
         if (!clipMode_) { tone_.render(outputs, channels, count); return; }
         if (!outputs || channels <= 0 || count <= 0) return;
         const auto target = enabled_.load() ? volume_.load() : 0.0;
@@ -66,6 +75,8 @@ public:
     }
 private:
     static_assert(std::atomic<double>::is_always_lock_free);
+    const std::atomic<uint64_t>* authority_ = nullptr;
+    std::atomic<uint64_t> ticket_{0};
     ToneProcessor tone_;
     media::Clip clip_;
     double rate_ = 48000, cursor_ = 0, gain_ = 0, speed_ = 1;

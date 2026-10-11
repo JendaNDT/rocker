@@ -5,7 +5,7 @@ using Microsoft.Win32.SafeHandles;
 
 namespace Rocker.Interop;
 
-public enum AudioState : uint { Stopped, Running, Faulted }
+public enum AudioState : uint { Stopped, Running, Faulted, Starting, Reconfiguring, Stopping, Closing }
 
 [StructLayout(LayoutKind.Sequential, Pack = 8)]
 public struct AudioSnapshot
@@ -40,7 +40,7 @@ internal sealed class AudioHandle : SafeHandleZeroOrMinusOneIsInvalid
 
 internal static class NativeMethods
 {
-    internal const uint AbiVersion = 2;
+    internal const uint AbiVersion = 3;
     private const string Library = "rocker_audio";
     [DllImport(Library, EntryPoint = "rocker_audio_get_abi_version", CallingConvention = CallingConvention.Cdecl)]
     internal static extern uint GetAbiVersion();
@@ -48,6 +48,18 @@ internal static class NativeMethods
     internal static extern uint Create(in AudioConfig config, out IntPtr handle);
     [DllImport(Library, EntryPoint = "rocker_audio_start", CallingConvention = CallingConvention.Cdecl)]
     internal static extern uint Start(AudioHandle handle);
+    [DllImport(Library,EntryPoint="rocker_audio_reserve_start",CallingConvention=CallingConvention.Cdecl)]
+    internal static extern uint ReserveStart(AudioHandle handle,out ulong ticket);
+    [DllImport(Library,EntryPoint="rocker_audio_start_reserved",CallingConvention=CallingConvention.Cdecl)]
+    internal static extern uint StartReserved(IntPtr handle,ulong ticket,uint media);
+    [DllImport(Library, EntryPoint="rocker_audio_start",CallingConvention=CallingConvention.Cdecl)]
+    internal static extern uint StartRaw(IntPtr handle);
+    [DllImport(Library, EntryPoint="rocker_audio_play",CallingConvention=CallingConvention.Cdecl)]
+    internal static extern uint PlayRaw(IntPtr handle);
+    [DllImport(Library, EntryPoint="rocker_audio_stop",CallingConvention=CallingConvention.Cdecl)]
+    internal static extern uint StopRaw(IntPtr handle);
+    [DllImport(Library, EntryPoint="rocker_audio_request_stop",CallingConvention=CallingConvention.Cdecl)]
+    internal static extern uint RequestStop(AudioHandle handle);
     [DllImport(Library, EntryPoint = "rocker_audio_stop", CallingConvention = CallingConvention.Cdecl)]
     internal static extern uint Stop(AudioHandle handle);
     [DllImport(Library, EntryPoint = "rocker_audio_get_snapshot", CallingConvention = CallingConvention.Cdecl)]
@@ -60,6 +72,8 @@ internal static class NativeMethods
     internal static extern uint Play(AudioHandle handle);
     [DllImport(Library, EntryPoint = "rocker_audio_seek", CallingConvention = CallingConvention.Cdecl)]
     internal static extern uint Seek(AudioHandle handle, double seconds);
+    [DllImport(Library, EntryPoint="rocker_audio_seek",CallingConvention=CallingConvention.Cdecl)]
+    internal static extern uint SeekRaw(IntPtr handle,double seconds);
     [DllImport(Library, EntryPoint = "rocker_audio_set_volume", CallingConvention = CallingConvention.Cdecl)]
     internal static extern uint Volume(AudioHandle handle, double volume);
     [DllImport(Library, EntryPoint = "rocker_audio_get_transport", CallingConvention = CallingConvention.Cdecl)]
@@ -72,12 +86,14 @@ internal static class NativeMethods
     internal static extern void Destroy(IntPtr handle);
 }
 
-public sealed class NativeAudio : IDisposable
+public sealed class NativeAudio : IDisposable, IAsyncDisposable
 {
     private readonly object control = new();
     private readonly AudioHandle handle;
     private bool disposed;
     private bool preparing;
+    private readonly List<Task> workers = new(64);
+    private Task? disposal;
 
     public NativeAudio()
     {
@@ -94,6 +110,33 @@ public sealed class NativeAudio : IDisposable
         handle = new AudioHandle(pointer);
     }
 
+    public Task StartAsync() => ReservedStartAsync(false);
+    private Task ReservedStartAsync(bool media)
+    {
+        lock(control) {CheckAlive();CheckResult(NativeMethods.ReserveStart(handle,out var ticket));return ControlAsync(pointer=>NativeMethods.StartReserved(pointer,ticket,media?1u:0u));}
+    }
+    public Task SeekAsync(double seconds) => ControlAsync(pointer=>NativeMethods.SeekRaw(pointer,seconds));
+    public Task PlayAsync() => ReservedStartAsync(true);
+    public Task StopAsync()
+    {
+        lock(control) { CheckAlive(); CheckResult(NativeMethods.RequestStop(handle)); return ControlAsync(NativeMethods.StopRaw); }
+    }
+    private Task ControlAsync(Func<IntPtr,uint> operation)
+    {
+        lock(control)
+        {
+            CheckAlive();workers.RemoveAll(task=>task.IsCompleted);
+            if(workers.Count>=64)throw new InvalidOperationException("Zvuk má příliš mnoho čekajících operací.");
+            bool retained=false;handle.DangerousAddRef(ref retained);
+            try
+            {
+                var pointer=handle.DangerousGetHandle();
+                var task=Task.Run(()=> {try {uint result=operation(pointer);if(result!=0)throw new InvalidOperationException($"Zvuková operace selhala (stav {result}). {ReadWorkerError(pointer)}");}finally{handle.DangerousRelease();}});
+                workers.Add(task);return task;
+            }
+            catch{if(retained)handle.DangerousRelease();throw;}
+        }
+    }
     public void Start() { lock (control) { CheckAlive(); CheckResult(NativeMethods.Start(handle)); } }
     public void Stop() { lock (control) { CheckAlive(); CheckResult(NativeMethods.Stop(handle)); } }
     public void Play() { lock (control) { CheckAlive(); CheckResult(NativeMethods.Play(handle)); } }
@@ -120,6 +163,8 @@ public sealed class NativeAudio : IDisposable
         lock (control)
         {
             CheckAlive();
+            workers.RemoveAll(task=>task.IsCompleted);
+            if(workers.Count>=64)throw new InvalidOperationException("Zvuk má příliš mnoho čekajících operací.");
             if (preparing) throw new InvalidOperationException("Zvuk se už načítá. Počkej na dokončení.");
             bool retained = false;
             handle.DangerousAddRef(ref retained);
@@ -127,7 +172,7 @@ public sealed class NativeAudio : IDisposable
             {
                 var pointer = handle.DangerousGetHandle();
                 preparing = true;
-                return Task.Run(() =>
+                var task = Task.Run(() =>
                 {
                     try
                     {
@@ -136,6 +181,7 @@ public sealed class NativeAudio : IDisposable
                     }
                     finally { lock (control) preparing = false; handle.DangerousRelease(); }
                 });
+                workers.Add(task);return task;
             }
             catch { preparing = false; if (retained) handle.DangerousRelease(); throw; }
         }
@@ -194,16 +240,25 @@ public sealed class NativeAudio : IDisposable
         if (result != 0) throw new InvalidOperationException($"Zvuková operace selhala (stav {result}). {ReadLastError()}");
     }
     private void CheckAlive() => ObjectDisposedException.ThrowIf(disposed, this);
-    public void Dispose()
+    public ValueTask DisposeAsync()
     {
-        lock (control)
+        lock(control)
         {
-            if (disposed) return;
-            // Stop is short even during worker decoding. The retained SafeHandle
-            // releases native ownership only after an outstanding worker returns.
-            NativeMethods.Stop(handle);
-            handle.Dispose();
-            disposed = true;
+            if(disposal is not null)return new(disposal);
+            disposed=true;NativeMethods.RequestStop(handle);
+            bool retained=false;handle.DangerousAddRef(ref retained);
+            var pointer=handle.DangerousGetHandle();var pending=workers.ToArray();handle.Dispose();
+            disposal=Task.Run(async ()=>
+            {
+                try
+                {
+                    NativeMethods.StopRaw(pointer);
+                    try{await Task.WhenAll(pending);}catch(Exception){ /* Worker errors are observed by their original callers. */ }
+                }
+                finally{handle.DangerousRelease();}
+            });
+            return new(disposal);
         }
     }
+    public void Dispose()=>DisposeAsync().GetAwaiter().GetResult();
 }

@@ -48,14 +48,15 @@ public sealed partial class MainWindow : Window
         }
         catch (Exception error) { StartButton.IsEnabled = false; ShowError(error); }
     }
-    private void Start_Click(object sender, RoutedEventArgs e)
+    private async void Start_Click(object sender, RoutedEventArgs e)
     {
-        try { ++playbackIntent; audio?.Start(); RefreshState(); }
+        try { ++playbackIntent; SetBusy(true); if(audio is not null)await audio.StartAsync(); if(!closingWindow && !closed)RefreshState(); }
         catch (Exception error) { ShowError(error); }
+        finally { if(!closed)SetBusy(false); }
     }
-    private void Stop_Click(object sender, RoutedEventArgs e)
+    private async void Stop_Click(object sender, RoutedEventArgs e)
     {
-        try { ++playbackIntent; audio?.Stop(); RefreshState(); }
+        try { ++playbackIntent; if(audio is not null)await audio.StopAsync(); if(!closingWindow && !closed)RefreshState(); }
         catch (Exception error) { ShowError(error); }
     }
     private void RefreshState()
@@ -82,6 +83,9 @@ public sealed partial class MainWindow : Window
             StatusText.Text = state.State switch
             {
                 AudioState.Running => transport.Playing != 0 ? "Přehrávání." : "Hraje testovací tón.",
+                AudioState.Starting => "Spouštím zvukové zařízení…",
+                AudioState.Reconfiguring => "Měním nastavení zvuku…",
+                AudioState.Stopping or AudioState.Closing => "Uvolňuji zvukové zařízení…",
                 AudioState.Faulted => "Zvuk se zastavil kvůli chybě zařízení. " + audio.GetLastError(),
                 _ => "Zastaveno. Zařízení je uvolněné."
             };
@@ -250,11 +254,12 @@ public sealed partial class MainWindow : Window
         catch (Exception error) { if (!closed) MediaStatus.Text = "Nahrávku nelze otevřít. " + error.Message; }
         finally { if (!closed) SetBusy(false); }
     }
-    private void PlayMedia_Click(object sender, RoutedEventArgs e)
+    private async void PlayMedia_Click(object sender, RoutedEventArgs e)
     {
         if (busy || audio is null) return;
-        try { ++playbackIntent; audio.Play(); RefreshState(); }
+        try { ++playbackIntent; SetBusy(true); await audio.PlayAsync(); if(!closingWindow && !closed)RefreshState(); }
         catch (Exception error) { ShowError(error); }
+        finally { if(!closed)SetBusy(false); }
     }
     private async void PlayScore_Click(object sender, RoutedEventArgs e)
     {
@@ -269,15 +274,15 @@ public sealed partial class MainWindow : Window
             if (closed) return;
             mediaMidi = current.Midi; mediaPath = null;
             MediaTitle.Text = "Noty · syntetický strunný zvuk";
-            if (intent == playbackIntent) audio.Play();
+            if (intent == playbackIntent) await audio.PlayAsync();
             MediaStatus.Text = "Noty jsou připravené ve společném přehrávači.";
         }
         catch (Exception error) { if (!closed) MediaStatus.Text = "Noty nelze přehrát. " + error.Message; }
         finally { if (!closed) SetBusy(false); }
     }
-    private void Rewind_Click(object sender, RoutedEventArgs e)
+    private async void Rewind_Click(object sender, RoutedEventArgs e)
     {
-        try { ++playbackIntent; audio?.Seek(0); RefreshState(); }
+        try { ++playbackIntent; if(audio is not null)await audio.SeekAsync(0); RefreshState(); }
         catch (Exception error) { ShowError(error); }
     }
     private async void Speed_Changed(object sender, SelectionChangedEventArgs e)
@@ -289,7 +294,7 @@ public sealed partial class MainWindow : Window
         try
         {
             ++playbackIntent;
-            audio.Stop();
+            await audio.StopAsync();
             SetBusy(true);
             MediaStatus.Text = "Připravuji novou rychlost; přehrávání je zastavené…";
             if (mediaPath is not null) await audio.PrepareFileAsync(mediaPath, speed);
@@ -330,10 +335,10 @@ public sealed partial class MainWindow : Window
         if (!IsSeekKey(e.Key)) return;
         positionDragging = false; SeekPosition();
     }
-    private void SeekPosition()
+    private async void SeekPosition()
     {
         if (updatingPosition || busy || audio is null || !PositionSlider.IsEnabled) return;
-        try { ++playbackIntent; audio.Seek(PositionSlider.Value); RefreshState(); }
+        try { ++playbackIntent; await audio.SeekAsync(PositionSlider.Value); RefreshState(); }
         catch (Exception error) { ShowError(error); }
     }
     private static string FormatTime(double seconds)

@@ -28,7 +28,7 @@ public sealed partial class MainWindow
                 var scroll=new ScrollViewer{Content=details,MaxHeight=420,VerticalScrollBarVisibility=ScrollBarVisibility.Auto};
                 var dialog=new ContentDialog{XamlRoot=ShellRoot.XamlRoot,Title="Převést webová data?",Content=scroll,PrimaryButtonText="Převést",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Close};
                 if(await dialog.ShowAsync()!=ContentDialogResult.Primary)return;
-                ShellInteractionRoot.IsEnabled=false;audio?.Stop();
+                ShellInteractionRoot.IsEnabled=false;if(audio is not null)await audio.StopAsync();
                 var result=await service.CommitAsync(migration,choice.SelectedIndex==0?RestoreStrategy.MergeKeepCurrent:RestoreStrategy.ReplaceIncluded,key.IsChecked==true);
                 lessonSessions.Clear();completedLessons.Clear();savedLessonPositions.Clear();persistenceReady=false;await InitializePersistenceAsync();
                 ShellNotice.IsOpen=true;ShellNotice.Title="Webová data převedena";ShellNotice.Severity=result.SecretFailed?InfoBarSeverity.Warning:InfoBarSeverity.Success;

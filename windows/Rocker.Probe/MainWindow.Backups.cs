@@ -44,7 +44,7 @@ public sealed partial class MainWindow
                 details.Children.Add(Text("Nahradí se jen typy zahrnuté v této záloze. Vratná kopie zachová původní databázi a soubory. AI klíč zůstává ve Windows.",true));details.Children.Add(choice);
                 var dialog=new ContentDialog {XamlRoot=ShellRoot.XamlRoot,Title="Obnovit zálohu?",Content=details,PrimaryButtonText="Obnovit",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Close};
                 if(await dialog.ShowAsync()!=ContentDialogResult.Primary)return;
-                ShellInteractionRoot.IsEnabled=false;audio?.Stop();
+                ShellInteractionRoot.IsEnabled=false;if(audio is not null)await audio.StopAsync();
                 var result=await service.RestoreAsync(file.Path,preview,choice.SelectedIndex==0 ? RestoreStrategy.MergeKeepCurrent:RestoreStrategy.ReplaceIncluded);
                 lessonSessions.Clear();completedLessons.Clear();savedLessonPositions.Clear();persistenceReady=false;
                 await InitializePersistenceAsync();
@@ -61,7 +61,7 @@ public sealed partial class MainWindow
             backupOperationRunning=true;ShellInteractionRoot.IsEnabled=false;
             try
             {
-                await autosave!.FlushAsync();audio?.Stop();await new BackupService(userFiles,database).UndoLastRestoreAsync();
+                await autosave!.FlushAsync();if(audio is not null)await audio.StopAsync();await new BackupService(userFiles,database).UndoLastRestoreAsync();
                 lessonSessions.Clear();completedLessons.Clear();savedLessonPositions.Clear();persistenceReady=false;await InitializePersistenceAsync();
                 ShellNotice.IsOpen=true;ShellNotice.Severity=InfoBarSeverity.Success;ShellNotice.Title="Obnova vrácena";ShellNotice.Message="Předchozí stav dat je obnovený.";
             }

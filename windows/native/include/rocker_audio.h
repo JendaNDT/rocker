@@ -18,9 +18,9 @@
 extern "C" {
 #endif
 
-/* Version 2 adds the media/MIDI transport exports. Reject a version 1 DLL
-   before creating a host instead of discovering missing exports mid-session. */
-#define ROCKER_AUDIO_ABI_VERSION 2u
+/* Version 3 adds nonblocking stop requests and cached lifecycle telemetry.
+   Reject earlier DLLs before creating a host. */
+#define ROCKER_AUDIO_ABI_VERSION 3u
 typedef struct rocker_audio_host* rocker_audio_handle;
 typedef uint32_t rocker_audio_result;
 enum {
@@ -28,7 +28,8 @@ enum {
     ROCKER_DEVICE_ERROR = 3, ROCKER_BUFFER_TOO_SMALL = 4, ROCKER_INTERNAL_ERROR = 5,
     ROCKER_MEDIA_ERROR = 6, ROCKER_NOT_READY = 7
 };
-enum { ROCKER_STOPPED = 0, ROCKER_RUNNING = 1, ROCKER_FAULTED = 2 };
+enum { ROCKER_STOPPED = 0, ROCKER_RUNNING = 1, ROCKER_FAULTED = 2,
+    ROCKER_STARTING = 3, ROCKER_RECONFIGURING = 4, ROCKER_STOPPING = 5, ROCKER_CLOSING = 6 };
 
 #pragma pack(push, 8)
 typedef struct rocker_audio_config {
@@ -54,14 +55,22 @@ typedef struct rocker_transport_snapshot {
 } rocker_transport_snapshot;
 #pragma pack(pop)
 
-/* Control-thread API only; never call from an audio callback. All pointers are
-   borrowed for the call. Only create transfers ownership of an opaque handle.
-   Calls on a live handle are serialized internally. The caller must exclude
+/* Never call from an audio callback. Device operations execute on the native
+   control worker; synchronous callers should themselves use a managed worker.
+   Cached telemetry, volume and stop requests do not wait for driver I/O. All
+   pointers are borrowed for the call. Only create transfers opaque ownership.
+   The caller must exclude
    destroy from all concurrent calls and must not reuse a destroyed handle.
    Structures require the exact ABI version and size. No exception crosses ABI. */
 ROCKER_API uint32_t ROCKER_CALL rocker_audio_get_abi_version(void);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_create(const rocker_audio_config*, rocker_audio_handle*);
+/* Reserve on the calling/UI thread, then start on a worker using the same ticket.
+   A later stop invalidates it even when that worker has not been scheduled yet. */
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_reserve_start(rocker_audio_handle, uint64_t* ticket);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_start_reserved(rocker_audio_handle, uint64_t ticket, uint32_t media);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_start(rocker_audio_handle);
+/* Immediately silence the graph and invalidate pending starts. Does not wait for vendor I/O. */
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_request_stop(rocker_audio_handle);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_stop(rocker_audio_handle);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_get_snapshot(rocker_audio_handle, rocker_audio_snapshot*);
 /* Preparation is synchronous worker work. Decoding does not hold the host's

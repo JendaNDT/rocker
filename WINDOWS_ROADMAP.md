@@ -266,7 +266,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w11"></a>
 #### W11 — Definovat a implementovat desktopové zálohy
 
-- [ ] Rozpracováno: [záloha, obnova a vratná kopie](docs/windows/w11/README.md), lokální kontroly prošly; Windows integrace navazuje. Závislosti: W09, W10.
+- [x] Hotovo v rozsahu záloh a obnovy: [verzovaný archiv, náhled, vratná kopie a recovery](docs/windows/w11/README.md), [Windows důkaz](docs/windows/w11/windows-validation.json). Ruční pickery navazují ve W37/W42. Závislosti: W09, W10.
 - Navrhnout verzovaný manifest archivu, metadata souborů, kontrolní součty a volbu přibalit nahrávky a projekty. Tajné klíče v exportu standardně nejsou; pouhá záloha databáze nesmí být vydávána za úplnou zálohu zvuku.
 - Obnova předem ukáže obsah, neznámou verzi, konflikty a strategii sloučení či nahrazení. Před přepsáním vytvoří vratnou zálohu; nedokončená obnova nesmí poškodit aktuální data.
 - Ošetřit neplatné cesty v archivu, velikost a počet souborů, volné místo, chybné kontrolní součty a přerušenou operaci. Externí soubory nekopírovat mimo zvolený prostor.
@@ -275,7 +275,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w12"></a>
 #### W12 — Připravit převod z PWA včetně nahrávek
 
-- [ ] Rozpracováno: [převod všech 11 skupin a původních nahrávek](docs/windows/w12/README.md), skutečný referenční archiv PWA, náhled a deduplikace. Windows integrace navazuje; produkční webový export zatím není nasazený. Závislosti: W04, W09–W11.
+- [ ] Rozpracováno: [převod všech 11 skupin a původních nahrávek](docs/windows/w12/README.md), skutečný referenční archiv PWA, náhled a deduplikace. [Windows integrace prošla](docs/windows/w12/windows-validation.json); produkční webový export zatím není nasazený. Závislosti: W04, W09–W11.
 - Implementovat import starých záloh nastavení podle 11 klíčů v kapitole o migraci. Zachovat ID, časové údaje a vlastní obsah; známé rozdíly mezi webovým a nativním nastavením přeložit, ostatní vysvětlit v reportu.
 - Připravit malý migrační export v PWA pro IndexedDB nahrávky s původními soubory, MIME typem, názvem, délkou a časem vytvoření. Změna exportu a případné nasazení jsou samostatný implementační úkol; tento dokument je neprovádí.
 - Native aplikace nemůže přímo převzít localStorage jiného prohlížeče. Nabídnout jasný postup exportu ze stávajícího profilu a importu souboru; původní data neodstraňovat.
@@ -286,7 +286,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w13"></a>
 #### W13 — Implementovat realtime host a řízení životního cyklu
 
-- [ ] Čeká. Závislosti: W03, W05.
+- [ ] Rozpracováno: [řízení hostu a realtime kontrakty](docs/windows/w13/README.md), předalokované SPSC fronty, souběžné kontroly a audit alokací společného rendereru. Windows build navazuje; analýza a disk se připojí ve funkčních krocích. Závislosti: W03, W05.
 - Vytvořit host s jasnými stavy zastaveno, spouštění, běží, změna konfigurace, chyba a ukončování. Jednoznačné vlastnictví zařízení a všech vláken; ochrana proti závodu start/stop a starým výsledkům požadavků.
 - Předalokované audio buffery, omezené fronty příkazů, oddělené pracovní fronty pro analýzu a disk. Při přeplnění analýzy lze zahodit starý snímek; při ztrátě nahrávaných dat se chyba musí přiznat.
 - Přidat headless režim, testovací generátor a offline zpracování stejným DSP grafem. Testovací signál je volitelný a viditelně označený.

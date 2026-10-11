@@ -1,0 +1,36 @@
+{
+  "scope": "W11 backup service, native controls and WinUI interaction container before later reader-gate hardening and PWA migration",
+  "sourceCommit": "7474dad504f090a4329a8961821314475ea581ed",
+  "windowsRun": "https://github.com/JendaNDT/rocker/actions/runs/38156474475",
+  "result": "passed",
+  "storage": {
+    "result": "passed",
+    "fileChecks": 11,
+    "storageChecks": 37,
+    "secretChecks": 8,
+    "backupChecks": 20,
+    "dpapiVerified": true,
+    "forcedTerminationVerified": true,
+    "manualHardwareVerified": false
+  },
+  "window": {
+    "audioHostsCreated": 1,
+    "windowTitle": "Rocker \u2014 P\u0159ehled",
+    "onlineVideoVerified": false,
+    "exitCode": 0,
+    "result": "passed",
+    "localVideoBridgeVerified": true,
+    "webViewRuntime": "153.0.4234.48",
+    "checkedAtUtc": "2026-10-11T16:47:35.8444364Z",
+    "audioCoexistenceVerified": false,
+    "nativeNotationVerified": true,
+    "midiPreparedInCommonEngine": true,
+    "nativeShellViewsVisited": 32,
+    "audioPlaybackVerified": false
+  },
+  "notPerformed": [
+    "Manual file pickers and restore clicks",
+    "Power interruption guarantee",
+    "Physical audio input and latency"
+  ]
+}

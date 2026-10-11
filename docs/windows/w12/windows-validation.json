@@ -1,0 +1,37 @@
+{
+  "scope": "W12 migration service, actual PWA-produced fixture and native import controls",
+  "sourceCommit": "5d8040cc9f6b2a83a762869bafec25d8acf72676",
+  "windowsRun": "https://github.com/JendaNDT/rocker/actions/runs/38157147391",
+  "result": "passed",
+  "storage": {
+    "result": "passed",
+    "fileChecks": 11,
+    "storageChecks": 38,
+    "secretChecks": 8,
+    "backupChecks": 20,
+    "migrationChecks": 29,
+    "dpapiVerified": true,
+    "forcedTerminationVerified": true,
+    "manualHardwareVerified": false
+  },
+  "window": {
+    "exitCode": 0,
+    "onlineVideoVerified": false,
+    "result": "passed",
+    "windowTitle": "Rocker — Přehled",
+    "midiPreparedInCommonEngine": true,
+    "audioPlaybackVerified": false,
+    "nativeShellViewsVisited": 32,
+    "checkedAtUtc": "2026-10-11T16:57:41.0667848Z",
+    "webViewRuntime": "153.0.4234.48",
+    "audioHostsCreated": 1,
+    "audioCoexistenceVerified": false,
+    "nativeNotationVerified": true,
+    "localVideoBridgeVerified": true
+  },
+  "notPerformed": [
+    "Export from the existing production PWA browser profile (exporter not deployed)",
+    "Manual file-picker/import dialog interaction",
+    "Physical guitar/driver/latency acceptance"
+  ]
+}

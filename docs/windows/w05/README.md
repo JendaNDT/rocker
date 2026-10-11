@@ -15,7 +15,7 @@ PWA ani větev `main` se tímto přepisem nemění.
 - `Rocker.Infrastructure`: uživatelské cesty, vlastnictví souborů a bezpečná
   výměna textového souboru. SQLite, projekty a migrace jsou W09–W12.
 - `Rocker.Interop`: verze a životnost C ABI, SafeHandle a worker příkazy.
-  ABI 2 nyní odmítá starší DLL ještě před vytvořením hostu; rozšíření o média
+  ABI 3 nyní odmítá starší DLL ještě před vytvořením hostu; rozšíření o média
   nebude zjišťováno až chybou chybějícího exportu při přehrávání.
 - `Rocker.Notation`: AlphaTab/AlphaSkia import, vykreslení, hit testing a MIDI.
 - `Rocker.Video`: typovaná komunikace s oficiálním YouTube, oddělená od WinUI.

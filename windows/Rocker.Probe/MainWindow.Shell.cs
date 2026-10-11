@@ -245,6 +245,8 @@ public sealed partial class MainWindow
             TrackWindowBounds();
             try { await windowStore!.SaveAsync(new(1,normalBounds,AppWindow.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Maximized },selectedTheme)); }
             catch (Exception error) { WriteShellDiagnostic("window-state-error.json",new { error = error.Message }); }
+            timer.Stop();
+            if(audio is not null) { await audio.DisposeAsync();audio=null; }
             closeApproved = true; Close();
         }
         catch (Exception error) { ShellNotice.IsOpen = true; ShellNotice.Severity = InfoBarSeverity.Error; ShellNotice.Message = "Okno nelze zavřít. " + error.Message; }
