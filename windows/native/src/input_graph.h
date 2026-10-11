@@ -2,6 +2,7 @@
 #pragma once
 #include "realtime_queue.h"
 #include "sample_clock.h"
+#include "amp_dsp.h"
 #include <algorithm>
 #include <cmath>
 namespace rocker {
@@ -14,18 +15,19 @@ struct BusMeters {
 // are lock-free scalar atomics; analysis storage is allocated with the graph.
 class InputGraph {
 public:
-    void prepare(double rate,uint32_t epoch) noexcept {rate_=rate;epoch_=epoch;clock_.prepare(rate,epoch);gain_=0;inputPresent_.store(false);frame_=0;peak_[0].store(0);peak_[1].store(0);peak_[2].store(0);rms_[0].store(0);rms_[1].store(0);rms_[2].store(0);}
+    void prepare(double rate,uint32_t epoch) {rate_=rate;epoch_=epoch;clock_.prepare(rate,epoch);amp_.prepare(rate);gain_=0;inputPresent_.store(false);frame_=0;peak_[0].store(0);peak_[1].store(0);peak_[2].store(0);rms_[0].store(0);rms_[1].store(0);rms_[2].store(0);}
     void monitoring(bool enabled,double gain) noexcept {gainTarget_.store(gain);monitor_.store(enabled);}
     bool monitoring() const noexcept{return monitor_.load();}
     bool hasInput() const noexcept{return inputPresent_.load();}
-    BusMeters meters() const noexcept {return {peak_[0].load(),rms_[0].load(),peak_[1].load(),rms_[1].load(),peak_[2].load(),rms_[2].load(),invalid_.load(),inputClips_.load(),outputClips_.load(),analysis_.dropped(),publishedFrame_.load(),publishedEpoch_.load()};}
+    BusMeters meters() const noexcept {return {peak_[0].load(),rms_[0].load(),peak_[1].load(),rms_[1].load(),peak_[2].load(),rms_[2].load(),invalid_.load()+amp_.faults(),inputClips_.load(),outputClips_.load(),analysis_.dropped(),publishedFrame_.load(),publishedEpoch_.load()};}
+    AmpProcessor& amp() noexcept{return amp_;}
     SampleClock& clock() noexcept{return clock_;}
     AnalysisQueue& analysis() noexcept{return analysis_;}
     void process(const float* input,float* const* outputs,int channels,int frames) noexcept {
         if(!outputs || channels<=0 || frames<=0)return;
         inputPresent_.store(input!=nullptr);
         double peaks[3]{},energy[3]{};uint64_t invalid=0,inputClips=0,outputClips=0;
-        clock_.beginBlock();
+        clock_.beginBlock();amp_.beginBlock();
         const double target=monitor_.load()?gainTarget_.load():0;
         AnalysisBlock block;block.epoch=epoch_;block.sampleRate=rate_;block.firstFrame=frame_;
         for(int i=0;i<frames;++i){
@@ -33,8 +35,7 @@ public:
             double raw=input?input[i]:0;
             if(!std::isfinite(raw)){raw=0;++invalid;}else if(std::abs(raw)>=1)++inputClips;
             raw=std::clamp(raw,-1.0,1.0);
-            // W17 replaces the explicit unity processed bus with the amplifier.
-            const double processed=raw;
+            const double processed=amp_.process(raw);
             gain_+=std::clamp(target-gain_,-1.0/(rate_*0.01),1.0/(rate_*0.01));
             peaks[0]=std::max(peaks[0],std::abs(raw));energy[0]+=raw*raw;
             peaks[1]=std::max(peaks[1],std::abs(processed));energy[1]+=processed*processed;
@@ -55,7 +56,7 @@ public:
         for(int b=0;b<3;++b){peak_[b].store(peaks[b]);rms_[b].store(std::sqrt(energy[b]/frames));}
     }
 private:
-    AnalysisQueue analysis_;SampleClock clock_;
+    AnalysisQueue analysis_;SampleClock clock_;AmpProcessor amp_;
     double rate_=48000,gain_=0;uint32_t epoch_=0;uint64_t frame_=0;
     std::atomic<bool> monitor_{false},inputPresent_{false};std::atomic<double> gainTarget_{0.15};
     std::atomic<double> peak_[3]{},rms_[3]{};

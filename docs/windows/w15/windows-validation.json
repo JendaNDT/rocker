@@ -1,0 +1,31 @@
+{
+  "scope": "W15 mono input graph, native Live controls, bus telemetry and ordered start/stop before W16 clocks",
+  "sourceCommit": "b8f1105d7a2087a8d184b2a86e012c909e25c00b",
+  "windowsRun": "https://github.com/JendaNDT/rocker/actions/runs/38160896192",
+  "result": "passed",
+  "nativeTests": {
+    "executed": 5,
+    "failures": 0,
+    "skipped": 0
+  },
+  "window": {
+    "audioCoexistenceVerified": false,
+    "exitCode": 0,
+    "windowTitle": "Rocker — Přehled",
+    "checkedAtUtc": "2026-10-11T17:52:56.0808746Z",
+    "localVideoBridgeVerified": true,
+    "result": "passed",
+    "onlineVideoVerified": false,
+    "nativeShellViewsVisited": 32,
+    "webViewRuntime": "153.0.4234.48",
+    "nativeNotationVerified": true,
+    "midiPreparedInCommonEngine": true,
+    "audioPlaybackVerified": false,
+    "audioHostsCreated": 1
+  },
+  "notPerformed": [
+    "Physical input/output routing, hardware monitoring and latency",
+    "Manual Live controls and M-Track selection",
+    "Amplifier processing (added in W17)"
+  ]
+}

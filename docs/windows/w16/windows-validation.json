@@ -1,0 +1,36 @@
+{
+  "scope": "W16 sample clock, tempo and A/B loop boundaries before W17 amplifier DSP",
+  "sourceCommit": "27685a1a394696e943df0ae772161bbf508005d1",
+  "windowsRun": "https://github.com/JendaNDT/rocker/actions/runs/38161618474",
+  "result": "passed",
+  "nativeTests": {
+    "executed": 6,
+    "failures": 0,
+    "skipped": 0
+  },
+  "transport": {
+    "result": "passed",
+    "checks": 46,
+    "physicalAudioVerified": false
+  },
+  "window": {
+    "exitCode": 0,
+    "nativeNotationVerified": true,
+    "onlineVideoVerified": false,
+    "midiPreparedInCommonEngine": true,
+    "checkedAtUtc": "2026-10-11T17:59:35.4918738Z",
+    "nativeShellViewsVisited": 32,
+    "localVideoBridgeVerified": true,
+    "windowTitle": "Rocker — Přehled",
+    "webViewRuntime": "153.0.4234.48",
+    "audioHostsCreated": 1,
+    "audioPlaybackVerified": false,
+    "audioCoexistenceVerified": false,
+    "result": "passed"
+  },
+  "notPerformed": [
+    "Physical latency and M-Track audio",
+    "Manual loop/tempo controls",
+    "Metronome sound/count-in and recording metadata (later integration)"
+  ]
+}

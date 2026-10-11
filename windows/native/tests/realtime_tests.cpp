@@ -51,6 +51,9 @@ int main(){
     processor.selectLive();processor.prepare(48000);processor.input().monitoring(true,0.5);
     audit=true;for(int i=0;i<20;++i)processor.process(inputs,1,outputs,2,512);audit=false;
     check(allocations.load()==0 && releases.load()==0,"input buses and analysis queue allocate/release no callback ownership");
+    rocker::AmpParameters amplifier;amplifier.enabled=true;amplifier.values={1,1,1,1,1,1,1,1,1};processor.input().amp().configure(amplifier,true);processor.prepare(48000);
+    audit=true;for(int i=0;i<20;++i)processor.process(inputs,1,outputs,2,512);audit=false;
+    check(allocations.load()==0 && releases.load()==0,"active amplifier/FIR/EQ/effect rings allocate or release no callback ownership");
     std::atomic<uint64_t> authority{1};processor.authority(authority);processor.authorize(1);authority.store(2);processor.enable(true);
     processor.render(outputs,2,512);
     check(std::all_of(left.begin(),left.end(),[](float v){return v==0;}) && std::all_of(right.begin(),right.end(),[](float v){return v==0;}),"late enable cannot resurrect a cancelled authority");

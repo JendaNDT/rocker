@@ -34,3 +34,7 @@ Skutečné nahrávání vybrané sběrnice naváže ve W22; tímto krokem se nev
 za dokončené. DSP aparát, analytický worker a kompletní Live transport se
 připojí samostatně. Fyzické kanály, poslech, odezva a chování M-Track nebyly
 v Linux/CI testech ručně ověřené. Windows build a nativní formulář navazují.
+
+Windows [38160896192](https://github.com/JendaNDT/rocker/actions/runs/38160896192)
+prošel všemi 5 CTest, C# kontrakty a dvěma WinUI starty včetně Live stránky.
+[Důkaz](windows-validation.json) odděluje tuto revizi od pozdějších hodin a DSP.

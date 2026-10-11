@@ -4,7 +4,8 @@ using System.Text.Json.Serialization;
 namespace Rocker.Domain;
 public sealed record AppSettings(string Theme = "system", string TuningId = "standard", string Handedness = "right", bool ZenMode = false,
     string Notation = "english", double NoiseGate = 0.06, double ReferenceToneVolume = 0.3, bool TunerConfirmSound = false, bool Onboarded = false,
-    [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)] DevicePreference? AudioDevice = null);
+    [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)] DevicePreference? AudioDevice = null,
+    [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingDefault)] bool AmpEnabled = false);
 public sealed record DevicePreference(string Backend, string Input, string Output, double SampleRate=0, uint BufferFrames=0, int InputChannel=-1, uint OutputFirst=0);
 public sealed record Pickup(string Position, string Type);
 public sealed record InstrumentProfile(string Name, string BodyType, IReadOnlyList<Pickup> Pickups, string ScaleLength, string StringGauge, string Notes)

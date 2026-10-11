@@ -131,9 +131,14 @@ await using(var deviceAudio=new NativeAudio())
     try{await deviceAudio.ConfigureDeviceAsync(choice with{InputChannel=64});throw new Exception("Invalid physical channel accepted");}
     catch(ArgumentException){ }
     await deviceAudio.ShowDeviceControlPanelAsync();
+    var ampSettings=new AmplifierConfiguration(true,2,1,0.4,0.7,0.2,-0.1,0.3,0.2,0.3,0.2,0.5);
+    await deviceAudio.SetAmplifierAsync(ampSettings);Check(deviceAudio.GetAmplifier()==ampSettings,"all amplifier parameters and enable state round-trip through C++");
+    try{await deviceAudio.SetAmplifierAsync(ampSettings with{Drive=double.NaN});throw new Exception("NaN amp parameter accepted");}catch(InvalidOperationException){}
+    Check(deviceAudio.GetAmplifier()==ampSettings,"invalid amplifier parameters preserve the previous configuration");
     deviceAudio.SetTempo(137);
     await deviceAudio.StartLiveAsync();Check(deviceAudio.GetSnapshot().Reserved==2 && !deviceAudio.GetMeters().Monitoring,"Live starts without monitoring");
     Check(deviceAudio.GetClock().Bpm==137 && deviceAudio.GetClock().Frame==128 && deviceAudio.GetClock().Running,"tempo and sample count cross the ABI independently of UI timing");
+    Check(deviceAudio.GetClock().DspLatencyFrames==15,"enabled amplifier publishes FIR group delay independently of driver estimates");
     deviceAudio.SetMonitoring(true,0.15);Check(deviceAudio.GetMeters().Monitoring,"explicit monitor control crosses the ABI");
     await deviceAudio.StopAsync();Check(!deviceAudio.GetMeters().Monitoring && deviceAudio.GetMeters().InputPeak==0,"stop clears monitoring and stale level");
     await deviceAudio.StartAsync();var active=deviceAudio.GetSnapshot();Check(active.SampleRate==44100 && active.BufferFrames==128,"confirmed format is actually used by the driver");await deviceAudio.StopAsync();

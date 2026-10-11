@@ -10,7 +10,7 @@ namespace rocker {
 class RenderProcessor {
 public:
     RenderProcessor(double frequency, double amplitude) : tone_(frequency, amplitude) {}
-    void prepare(double rate) noexcept {
+    void prepare(double rate) {
         rate_ = rate; gain_ = 0; tone_.prepare(rate);
         frames_.store(0, std::memory_order_relaxed);
         input_.prepare(rate,epoch_.fetch_add(1)+1);

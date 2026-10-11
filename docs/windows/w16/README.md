@@ -32,3 +32,7 @@ Odhad ovladače zůstává zvlášť v zařízení. Nynější unity graf nemá 
 konstantní DSP prodleva aparátu se doplní ve W17 a skutečné fyzické měření
 zůstává W44. Časování looperu a diskový záznam jsou další integrační kroky,
 ne hotové funkce tohoto řezu. Windows ověření navazuje samostatným buildem.
+
+Windows [38161618474](https://github.com/JendaNDT/rocker/actions/runs/38161618474)
+prošel všemi 6 CTest, 46 transportními kontrolami, skutečným C# voláním
+a dvěma WinUI starty. [Důkaz](windows-validation.json) vymezuje přesnou revizi.

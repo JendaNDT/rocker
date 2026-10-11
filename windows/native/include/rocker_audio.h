@@ -18,9 +18,9 @@
 extern "C" {
 #endif
 
-/* Version 6 adds sample-clock observation and tempo control.
+/* Version 7 adds bounded amplifier parameter updates and true bypass.
    Reject earlier DLLs before creating a host. */
-#define ROCKER_AUDIO_ABI_VERSION 6u
+#define ROCKER_AUDIO_ABI_VERSION 7u
 typedef struct rocker_audio_host* rocker_audio_handle;
 typedef uint32_t rocker_audio_result;
 enum {
@@ -73,6 +73,10 @@ typedef struct rocker_clock_snapshot {
     uint32_t dsp_latency_frames,reserved;
     uint64_t loop_cycles;
 } rocker_clock_snapshot;
+typedef struct rocker_amp_config {
+    uint32_t struct_size,abi_version,enabled,distortion,cabinet,reserved;
+    double compression,drive,bass,mid,treble,delay,reverb,chorus,level;
+} rocker_amp_config;
 #pragma pack(pop)
 
 /* Never call from an audio callback. Device operations execute on the native
@@ -97,6 +101,8 @@ ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_get_clock(rocker_audio_h
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_set_tempo(rocker_audio_handle,double bpm);
 /* A/B endpoints use prepared (stretched) seconds; changing them stops audio. */
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_set_loop(rocker_audio_handle,double start,double end,uint32_t enabled);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_set_amp(rocker_audio_handle,const rocker_amp_config*);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_get_amp(rocker_audio_handle,rocker_amp_config*);
 /* Immediately silence the graph and invalidate pending starts. Does not wait for vendor I/O. */
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_request_stop(rocker_audio_handle);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_reserve_stop(rocker_audio_handle,uint64_t* ticket);

@@ -853,3 +853,8 @@ Následné W15 vstupní změny a rezervovaný Stop mají vlastní nový build.
 W16: společné vzorkové hodiny, epochy, hudební fáze a A/B smyčky bez
 zaokrouhlování při jiném vzorkování. Linux 6/6 CTest a C# layout/tempo/loop
 kontrakty prošly. Předtakt, metronom, UI úseků a nahrávací metadata navazují.
+
+W15/W16 prošly Windows běhy 38160896192 a 38161618474. W17 přidává celý
+DSP řetězec, 2× FIR oversampling s 15vzorkovou skupinovou prodlevou, pravý
+bypass, native Vintage knobs, sdílené presety a jejich persistence. Linux
+7/7 CTest a nativní C# roundtrip prošly; Windows ověření aparátu navazuje.

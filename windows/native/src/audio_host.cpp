@@ -15,6 +15,7 @@ static_assert(sizeof(rocker_transport_snapshot) == 56);
 static_assert(sizeof(rocker_device_config)==32);
 static_assert(sizeof(rocker_meter_snapshot)==112);
 static_assert(sizeof(rocker_clock_snapshot)==72);
+static_assert(sizeof(rocker_amp_config)==96);
 struct rocker_audio_host;
 static void refreshHost(rocker_audio_host&);
 struct rocker_audio_host {
@@ -39,6 +40,7 @@ struct rocker_audio_host {
     rocker_transport_snapshot transportCache{};
     rocker_meter_snapshot meterCache{};
     rocker_clock_snapshot clockCache{};
+    rocker_amp_config ampCache{sizeof(ampCache),ROCKER_AUDIO_ABI_VERSION,0,1,0,0,0,0.1,0.1,0,0.15,0.1,0,0,0.6};
     std::string errorCache;
     std::unique_ptr<rocker::ControlExecutor> executor;
     void stopOnControl(){state=ROCKER_STOPPING;publish();tone.enable(false);driver->stop();state=ROCKER_STOPPED;}
@@ -50,7 +52,7 @@ struct rocker_audio_host {
         const rocker_meter_snapshot meter={sizeof(meter),ROCKER_AUDIO_ABI_VERSION,(tone.input().monitoring()?1u:0u)|(active && tone.input().hasInput()?2u:0u),levels.epoch,levels.frame,device.sampleRate,
             active?levels.inputPeak:0,active?levels.inputRms:0,active?levels.processedPeak:0,active?levels.processedRms:0,active?levels.mixPeak:0,active?levels.mixRms:0,levels.invalid,levels.inputClips,levels.outputClips,levels.dropped};
         const auto clock=tone.input().clock().observation();
-        const rocker_clock_snapshot observedClock={sizeof(observedClock),ROCKER_AUDIO_ABI_VERSION,(active?1u:0u)|(tone.loopEnabled()?2u:0u),clock.epoch,clock.frame,clock.beat,clock.rate,clock.phase,clock.bpm,0,0,tone.loopCycles()};
+        const rocker_clock_snapshot observedClock={sizeof(observedClock),ROCKER_AUDIO_ABI_VERSION,(active?1u:0u)|(tone.loopEnabled()?2u:0u),clock.epoch,clock.frame,clock.beat,clock.rate,clock.phase,clock.bpm,tone.input().amp().latency(),0,tone.loopCycles()};
         const std::lock_guard lock(telemetry);clockCache=observedClock;audioCache=audio;transportCache=transport;meterCache=meter;errorCache=error;
     }
 };
@@ -138,6 +140,24 @@ rocker_audio_result ROCKER_CALL rocker_audio_set_loop(rocker_audio_handle host,d
     rocker_audio_request_stop(host);
     return withHost(host,[=](auto& h)->rocker_audio_result{h.stopRequested.exchange(false);h.stopOnControl();
         return h.tone.loop(start,end,enabled!=0)?ROCKER_OK:ROCKER_INVALID_ARGUMENT;});
+}
+rocker_audio_result ROCKER_CALL rocker_audio_set_amp(rocker_audio_handle host,const rocker_amp_config* value){
+    if(!host || !value)return ROCKER_INVALID_ARGUMENT;
+    if(value->struct_size!=sizeof(*value) || value->abi_version!=ROCKER_AUDIO_ABI_VERSION)return ROCKER_ABI_MISMATCH;
+    if(value->enabled>1 || value->distortion>2 || value->cabinet>2 || value->reserved!=0)return ROCKER_INVALID_ARGUMENT;
+    const std::array<double,9> values{value->compression,value->drive,value->bass,value->mid,value->treble,value->delay,value->reverb,value->chorus,value->level};
+    for(size_t i=0;i<values.size();++i)if(!std::isfinite(values[i]) || values[i]>(1.0) || values[i]<(i>=2 && i<=4?-1.0:0.0))return ROCKER_INVALID_ARGUMENT;
+    const auto owned=*value;
+    return withHost(host,[owned,values](auto& h)->rocker_audio_result{
+        rocker::AmpParameters params{owned.enabled!=0,owned.distortion,owned.cabinet,values};
+        if(!h.tone.input().amp().configure(params,h.state!=ROCKER_RUNNING)){h.error="Amplifier parameter queue is full. Retry the latest setting.";return ROCKER_NOT_READY;}
+        const std::lock_guard lock(h.telemetry);h.ampCache=owned;return ROCKER_OK;
+    });
+}
+rocker_audio_result ROCKER_CALL rocker_audio_get_amp(rocker_audio_handle host,rocker_amp_config* value){
+    if(!host || !value)return ROCKER_INVALID_ARGUMENT;
+    if(value->struct_size!=sizeof(*value) || value->abi_version!=ROCKER_AUDIO_ABI_VERSION)return ROCKER_ABI_MISMATCH;
+    const std::lock_guard lock(host->telemetry);*value=host->ampCache;return ROCKER_OK;
 }
 rocker_audio_result ROCKER_CALL rocker_audio_play(rocker_audio_handle host){
     uint64_t ticket=0;const auto result=rocker_audio_reserve_start(host,&ticket);

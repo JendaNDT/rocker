@@ -304,7 +304,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w15"></a>
 #### W15 — Routing jednoho vstupu, mix a monitoring
 
-- [ ] Rozpracováno: [skutečný mono vstup, stereo monitoring a měřáky](docs/windows/w15/README.md), Linux routing a realtime kontrakty. Aparát a nahrávací writer navazují ve W17/W22; Windows ověření ještě probíhá. Závislosti: W14.
+- [ ] Rozpracováno: [skutečný mono vstup, stereo monitoring a měřáky](docs/windows/w15/README.md), [Windows W15 prošel](docs/windows/w15/windows-validation.json), Linux routing a realtime kontrakty. Aparát a nahrávací writer navazují ve W17/W22; Windows ověření ještě probíhá. Závislosti: W14.
 - Zavést volbu konkrétního mono vstupu, správné stereo výstupy a oddělené sběrnice pro suchou kytaru, efekty, podklad, metronom a výsledný mix. Jednotná pravidla úrovní a headroomu.
 - Zapnutí monitoringu musí být výslovné. Přidat dostupné ztlumení, měřiče před i po efektech a ochranu před náhlým skokem hlasitosti při přepnutí parametrů či zařízení.
 - Preferovat vstup i sluchátka na stejném interfejsu. Přímý hardwarový monitoring popsat jako samostatnou cestu bez softwarových efektů, nikoli jako výsledek optimalizace jádra.
@@ -313,7 +313,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w16"></a>
 #### W16 — Společný transport, hodiny a evidence latence
 
-- [ ] Rozpracováno: [vzorkové hodiny, tempo a A/B hranice](docs/windows/w16/README.md), test proměnlivých bloků a tisíců smyček bez ztráty frakčního přesahu. Předtakt/metronom a metadata navazují ve W18/W22. Závislosti: W13–W15.
+- [ ] Rozpracováno: [vzorkové hodiny, tempo a A/B hranice](docs/windows/w16/README.md), [Windows W16 prošel](docs/windows/w16/windows-validation.json), test proměnlivých bloků a tisíců smyček bez ztráty frakčního přesahu. Předtakt/metronom a metadata navazují ve W18/W22. Závislosti: W13–W15.
 - Zavést počítadlo vzorků, převody takty/doby/čas, přesné události uvnitř bloku a sjednocené příkazy play, stop, seek, count-in a loop. Při změně vzorkování bezpečně přepočítat stav nebo zastavit podle předem daného pravidla.
 - Oddělit hudební čas, čas nahrávky a okamžik prezentace UI. Metadata zaznamenají konfiguraci zařízení a známé DSP zpoždění pro pozdější kompenzaci stop.
 - Zobrazovat zvlášť odhad ovladače, buffer, zpoždění DSP a výsledky skutečného měření. Samotný součet webových baseLatency a outputLatency se nepřebírá jako celková latence.
@@ -324,7 +324,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w17"></a>
 #### W17 — Přenést celý aparát a jeho presety
 
-- [ ] Čeká. Závislosti: W06, W08, W15, W16.
+- [ ] Rozpracováno: [plný DSP řetězec, skutečný bypass a Vintage presety](docs/windows/w17/README.md), Linux 7/7 CTest a nativní parameter roundtrip. Windows formulář/persistence se nyní ověřují. Závislosti: W06, W08, W15, W16.
 - Implementovat kompresi, vstupní zesílení, overdrive/distortion/fuzz, třípásmový EQ, dosavadní charakteristiky kabinetu, delay, reverb, chorus a výstup. Zachovat smysl parametrů a převod továrních i uživatelských presetů; nový zvuk neslibovat jako bitově totožný s Web Audio.
 - Zajistit smoothing, správnou práci se stavem filtrů, ochranu před neplatnými vzorky, DC a denormály, stabilitu zpětné vazby efektů a přechody bez lupnutí. Zpoždění oversamplingu, lookaheadu a případné konvoluce patří do evidence.
 - Ověřit skutečný bypass. Vypnutý nebo nulový efekt nesmí nepozorovaně přidávat prodlevu; současná webová komprese v řetězci je konkrétní důvod pro toto ověření. Nastavit jasné chování doznívání efektů při vypnutí.
