@@ -21,6 +21,9 @@ internal static class SecretChecks
         Check(!Encoding.UTF8.GetString(encrypted).Contains(canary,StringComparison.Ordinal),"secret absent in plaintext file");
         var read=await new SecretStore(files).ReadAsync();
         Check(read.State==SecretState.Ready && read.Value==canary && read.ToString()=="Ready","current user DPAPI decrypts after reopening; diagnostic text has no key");
+        var openStore=new SecretStore(files,"openai");await openStore.SetAsync("OPENAI_DPAPI_TEST_CANARY");
+        Check(openStore.PathForKey!=store.PathForKey && (await openStore.ReadAsync()).Value=="OPENAI_DPAPI_TEST_CANARY" && (await store.ReadAsync()).Value==canary,"provider credentials stay in independent protected files");
+        await File.WriteAllBytesAsync(openStore.PathForKey,encrypted);Check((await openStore.ReadAsync()).State==SecretState.Unavailable,"a Gemini ciphertext cannot decrypt with the OpenAI provider entropy");await openStore.RemoveAsync();
         using (var cancellation=new CancellationTokenSource())
         {
             cancellation.Cancel();try { await store.SetAsync("replacement",cancellation.Token);throw new Exception("Cancelled secret changed"); }

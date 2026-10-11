@@ -1,0 +1,31 @@
+{
+  "checkedAtUtc": "2026-10-11T23:29:00Z",
+  "sources": [
+    {
+      "url": "https://ai.google.dev/gemini-api/terms",
+      "sha256": "a6093e1e471e00872f21bbcd1d9a3d414a1534ff45c78aa0d64177083758e1ee",
+      "finding": "Current use restrictions say professional/business purposes, not consumer use; paid services are required for API clients in the EEA/Switzerland/UK. This personal application does not rely on the historical free-Gemini assumption."
+    },
+    {
+      "url": "https://ai.google.dev/api/generate-content",
+      "finding": "streamGenerateContent with SSE; the historical adapter is covered only by mock tests."
+    },
+    {
+      "url": "https://ai.google.dev/api/models",
+      "finding": "Discover generating models through supportedGenerationMethods; no fixed free quota."
+    },
+    {
+      "url": "https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create",
+      "sha256": "dfa7c45790f5c142d5b6afcdc2246e7cffe8f8f843b9f3051594bb083b564af0",
+      "finding": "Chat Completions streaming, bearer authentication and structured response format."
+    },
+    {
+      "url": "https://platform.openai.com/docs/models/gpt-4.1-mini",
+      "finding": "Initial model is an available documented GPT model; account discovery remains authoritative."
+    },
+    {
+      "url": "https://openai.com/policies/services-agreement/",
+      "finding": "Effective January 1, 2026; API/developer service terms apply. No service subscription, API key or credit is acquired by this implementation."
+    }
+  ]
+}

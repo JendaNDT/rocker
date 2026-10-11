@@ -1,0 +1,51 @@
+{
+  "result": "passed",
+  "runId": 38183099284,
+  "url": "https://github.com/JendaNDT/rocker/actions/runs/38183099284",
+  "commit": "03254fbf62ed4e749dd89214d52fd8c5595b6939",
+  "nativeTests": 19,
+  "home": {
+    "result": "passed",
+    "nativeChordDiagrams": 26,
+    "nativeScales": 6,
+    "nativeRiffTabs": 14,
+    "legacyAliasResolved": true,
+    "selectedFret": 15,
+    "boardCells": 78,
+    "intervalChoices": 8,
+    "chordChoices": 4,
+    "scoreRulesVerified": true,
+    "physicalKeyboardVerified": false,
+    "physicalAudioVerified": false
+  },
+  "components": {
+    "result": "passed",
+    "nativeChordDiagrams": 26,
+    "nativeScales": 6,
+    "nativeRiffTabs": 14,
+    "legacyAliasResolved": true,
+    "selectedFret": 15,
+    "boardCells": 78,
+    "intervalChoices": 8,
+    "chordChoices": 4,
+    "scoreRulesVerified": true,
+    "physicalKeyboardVerified": false,
+    "physicalAudioVerified": false
+  },
+  "window": {
+    "localVideoBridgeVerified": true,
+    "webViewRuntime": "153.0.4234.48",
+    "windowTitle": "Rocker \u2014 P\u0159ehled",
+    "audioPlaybackVerified": false,
+    "result": "passed",
+    "onlineVideoVerified": false,
+    "audioHostsCreated": 1,
+    "checkedAtUtc": "2026-10-11T23:20:51.3772813Z",
+    "nativeNotationVerified": true,
+    "nativeShellViewsVisited": 32,
+    "exitCode": 0,
+    "audioCoexistenceVerified": false,
+    "midiPreparedInCommonEngine": true
+  },
+  "hardwareVerified": false
+}

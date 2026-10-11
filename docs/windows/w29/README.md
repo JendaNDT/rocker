@@ -39,3 +39,9 @@ MIDI/transport suites under ASAN/UBSAN passed. Actual MIDI synthesis via PInvoke
 passed. Windows build and native form smoke validation are pending. Physical
 listening, keyboard and screen-reader acceptance are deferred to the complete
 candidate; automated synthesis does not imply verified device output.
+
+Windows run [38183099284](https://github.com/JendaNDT/rocker/actions/runs/38183099284) passed locked restore, Release compilation,
+19 native suites, CLR checks and both actual WinUI smoke profiles.
+See [Windows evidence](windows-validation.json). No physical listening or
+keyboard/device acceptance is implied. Earlier failed form assertions remain
+recorded above; they are superseded by this passing run.

@@ -50,3 +50,9 @@ round-progress dictionary also gained the riff entry. Its assertion now checks
 the specific power/gallop progress controls and records keys/control success
 in the report. Both dictionaries are scoped by trainer identity. The failure
 occurred before library/game validation, so those Windows checks remain pending.
+
+Windows run [38183099284](https://github.com/JendaNDT/rocker/actions/runs/38183099284) passed locked restore, Release compilation,
+19 native suites, CLR checks and both actual WinUI smoke profiles.
+See [Windows evidence](windows-validation.json). No physical listening or
+keyboard/device acceptance is implied. Earlier failed form assertions remain
+recorded above; they are superseded by this passing run.

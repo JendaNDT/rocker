@@ -429,7 +429,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w28"></a>
 #### W28 — Akordy, stupnice, riffy a obě hry
 
-- [ ] Rozpracováno. Závislosti: W06, W08, W18, W21, W25. [Nativní knihovny a obě hry](docs/windows/w28/README.md) mají 26 akordů, šest stupnic, 14 riffů, propojený tónový drill a společný zvukový doprovod. Doména a syntaxe prošly; Windows ověření všech pěti pohledů navazuje.
+- [x] Implementováno a ověřeno automaticky na Windows. Závislosti: W06, W08, W18, W21, W25. [Nativní knihovny a obě hry](docs/windows/w28/README.md) mají 26 akordů, šest stupnic, 14 riffů, propojený tónový drill a společný zvukový doprovod. Doména, Windows build a oba WinUI profily prošly v běhu 38183099284; fyzický poslech a klávesnice zůstávají pro závěrečnou přejímku.
 - Vytvořit nativní diagramy a hmatník s prstokladem, barré, levým/pravým provedením, laděním, značením kořenových tónů, filtrováním a přístupnou textovou alternativou.
 - Přenést veškerý současný obsah a zvukové náhledy. Riff otevře konkrétní cvičení s odpovídajícím tempem; změna ladění nesmí nabízet neplatné polohy bez vysvětlení.
 - Přenést hmatníkovou hru a sluchové intervaly, zadávání myší i klávesnicí, nápovědu, skóre a opakovaný poslech. Sluchové cvičení vyžaduje výstup, ne povinné zapnutí mikrofonu.
@@ -440,7 +440,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w29"></a>
 #### W29 — Nativní noty a tabulatury
 
-- [ ] Implementováno; ověření Windows čeká. [W29](docs/windows/w29/README.md) obsahuje skutečnou matici sedmi formátů, stopy, zoom, hranou pozici, opakované smyčky a nativní syntézu. Závislosti: W04, W08, W16, W21.
+- [x] Implementováno; Windows build a oba skutečné WinUI profily prošly v běhu 38183099284. [W29](docs/windows/w29/README.md) obsahuje skutečnou matici sedmi formátů, stopy, zoom, hranou pozici, opakované smyčky a nativní syntézu. Závislosti: W04, W08, W16, W21.
 - Implementovat zvolený nativní renderer a podporované současné formáty Guitar Pro a MusicXML. Matice formátů obsahuje skutečné testovací soubory, nikoli jen přípony v dialogu.
 - Přidat stopy, zoom, pohyb ve skladbě, zvýraznění hrané pozice, změnu tempa a smyčku taktů. Řešit fonty a soundfonty pro offline instalaci a jejich licence.
 - Přehrávání not propojit s hlavním audio grafem přes události či vzorky podle ověřené architektury W04. Nevytvořit nezávislý výstupní engine, který se pere o ASIO zařízení a nerespektuje hlavní hlasitost.
@@ -458,7 +458,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w31"></a>
 #### W31 — Všechny tři části AI tutora
 
-- [ ] Čeká. Závislosti: W06, W09, W10, W25, W28.
+- [ ] Implementováno; ověření Windows čeká. [W31](docs/windows/w31/README.md) obsahuje tři nativní pohledy, rušitelný HTTP stream, validovaný upravitelný plán, historii a oddělené DPAPI klíče. Aktuální podmínky Gemini vyžadují změnu poskytovatele pro tuto osobní aplikaci; starý klíč se nepřenáší jinam. Závislosti: W06, W09, W10, W25, W28.
 - Přenést rozhovor, generátor plánu a zpětnou vazbu pomocí nativního HTTP klienta s rušením požadavků, streamováním, chybovými stavy a rozumným řízením opakování. Neposílat duplicitní požadavky bez vědomí uživatele.
 - Ověřit aktuálně dostupné modely, API, podmínky a limity poskytovatele. Historické údaje o bezplatných kvótách nebo názvech modelů nepřenášet jako zaručeně platné.
 - Kontext vychází z profilu, postupu a volitelných poznámek. Výstup plánu validovat proti schématu a existujícím úlohám; před přijetím jej uživatel může prohlédnout a upravit. Odpověď AI není příkaz k souborům či systému.

@@ -897,3 +897,14 @@ W30: YouTube má nativní hledání videa, A/B, posun, skutečné dostupné rych
 a uložené úseky s přejmenováním, smazáním a vrácením. Ověřeno 8 browserových
 testů a 41 stavových/protokolových kontrol; přidané Windows ověření formulářů
 a obnovení SQLite čeká na build. Online přehrávání a souběh ASIO nejsou ověřené.
+
+W28 i W29 prošly na Windows v běhu 38183099284: Release build, 19 nativních
+sad, CLR a oba skutečné WinUI profily. Knihovny, herní pravidla, volba notové
+stopy, zoom, opakované smyčky i zachování posledního souboru mají uložený důkaz.
+Ověření výstupu na skutečné kartě se netvrdí.
+
+W31: tři části AI jsou implementované, 28 kontrol mock HTTP a všechny kontroly
+úložiště/domény prošly. Nové osobní profily používají volitelný OpenAI API klíč;
+aktuální podmínky Gemini neumožňují původní předpoklad pro toto použití. Starý
+klíč a historie zůstávají oddělené a neposílají se jinému poskytovateli. Žádný
+reálný klíč, účet či API kredit nebyl použit. Windows formuláře se ověřují.

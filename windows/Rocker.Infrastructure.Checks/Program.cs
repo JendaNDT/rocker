@@ -35,12 +35,13 @@ try
     try { windowStore.Load(); throw new Exception("Corrupt window state accepted"); }
     catch (InvalidDataException) { Check(true, "future or incomplete geometry rejected"); }
     Console.WriteLine($"PASS: {checks} file ownership/replacement assertions.");
+    int aiChecks=await AiChecks.RunAsync();
     int storageChecks = await StorageChecks.RunAsync(files);
     int secretChecks = await SecretChecks.RunAsync(files);
     int backupChecks = await BackupChecks.RunAsync(directory);
     int migrationChecks = await MigrationChecks.RunAsync(directory);
     int diagnosticChecks = AudioDiagnosticChecks.Run();
     int recordingChecks = await RecordingChecks.RunAsync(directory);
-    if (args.Length == 1) await File.WriteAllTextAsync(args[0], System.Text.Json.JsonSerializer.Serialize(new { result="passed", fileChecks=checks, storageChecks, secretChecks, backupChecks, migrationChecks, diagnosticChecks, recordingChecks, dpapiVerified=OperatingSystem.IsWindows(), forcedTerminationVerified=true, manualHardwareVerified=false }));
+    if (args.Length == 1) await File.WriteAllTextAsync(args[0], System.Text.Json.JsonSerializer.Serialize(new { result="passed", fileChecks=checks, aiChecks, storageChecks, secretChecks, backupChecks, migrationChecks, diagnosticChecks, recordingChecks, dpapiVerified=OperatingSystem.IsWindows(), forcedTerminationVerified=true, manualHardwareVerified=false }));
 }
 finally { if (Directory.Exists(directory)) Directory.Delete(directory, true); }

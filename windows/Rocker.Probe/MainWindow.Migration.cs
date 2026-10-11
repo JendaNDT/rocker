@@ -19,7 +19,7 @@ public sealed partial class MainWindow
             backupOperationRunning=true;import.IsEnabled=false;
             try
             {
-                CancelPalm();await StopRhythmUiAsync();if(!await StopCaptureAsync())return;await autosave!.FlushAsync();var service=new LegacyImport(userFiles,database,catalog);
+                await CancelAiAsync();CancelPalm();await StopRhythmUiAsync();if(!await StopCaptureAsync())return;await autosave!.FlushAsync();var service=new LegacyImport(userFiles,database,catalog);
                 await using var migration=await service.PrepareAsync(file.Path);
                 var details=Stack();details.Children.Add(Text($"{migration.Preview.Documents} záznamů · {migration.Preview.Recordings} nahrávek · {migration.Preview.Conflicts} konfliktů"));
                 var choice=new ComboBox{Header="Řešení konfliktů",ItemsSource=new[]{"Sloučit · existující položky zachovat","Nahradit zahrnutá data"},SelectedIndex=0,HorizontalAlignment=HorizontalAlignment.Stretch};details.Children.Add(choice);

@@ -18,7 +18,9 @@ public sealed record LessonProgress(IReadOnlyList<string> CompletedIds, IReadOnl
 public sealed record TuningString(string Note, int Midi);
 public sealed record CustomTuning(string Id, string Label, IReadOnlyList<TuningString> Strings);
 public sealed record SavedVideoLoop(string Id, string VideoId, string Label, double Start, double End, double Rate);
-public sealed record AiSettings(string Model = "gemini-2.5-flash", bool IncludeProgress = true, bool IncludeInstrument = false);
+public sealed record AiSettings(string Model = "gemini-2.5-flash", bool IncludeProgress = true, bool IncludeInstrument = false,
+    [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)] AiPracticePlan? Plan = null,
+    [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)] string? Provider = null);
 public sealed record SavedChatMessage(string Role, string Text, DateTimeOffset? CreatedAt = null);
 public sealed record RecordingData(string Id, string Name, string MimeType, double DurationSec, DateTimeOffset CreatedAt,
     string RelativePath, long Bytes, string Sha256, IReadOnlyList<Marker> Markers,
@@ -89,7 +91,7 @@ public static class UserData
                 var loops = Read<SavedVideoLoop[]>(document.Value);
                 Require(loops.Length <= 10000 && loops.All(l => ValidId(l.Id) && l.VideoId is not null && l.VideoId.Length == 11 && l.VideoId.All(c => char.IsAsciiLetterOrDigit(c) || c is '_' or '-') && l.Label is not null && double.IsFinite(l.Start) && double.IsFinite(l.End) && l.Start >= 0 && l.End > l.Start && double.IsFinite(l.Rate) && l.Rate is > 0 and <= 16), "Neplatná video smyčka."); value = loops; break;
             case "ai-settings":
-                var ai = Read<AiSettings>(document.Value); Require(ValidId(ai.Model),"Neplatný model AI."); value = ai; break;
+                var ai = Read<AiSettings>(document.Value); Require(ValidId(ai.Model) && ai.Provider is null or "openai" or "gemini","Neplatný model nebo poskytovatel AI.");if(ai.Plan is not null)ai=ai with{Plan=AiPlanRules.Validate(ai.Plan)}; value = ai; break;
             case "chat":
                 var chat = Read<SavedChatMessage[]>(document.Value); Require(chat.Length <= 10000 && chat.All(m => m.Role is "user" or "model" && m.Text is not null && m.Text.Length <= 100000),"Neplatná historie AI."); value = chat; break;
             case "recording":

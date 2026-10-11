@@ -9,11 +9,12 @@ public sealed class SecretAccess(SecretState state,string? value = null)
     public string? Value { get; } = value;
     public override string ToString() => State.ToString();
 }
-public sealed class SecretStore(UserFiles files)
+public sealed class SecretStore(UserFiles files,string provider="gemini")
 {
     private static readonly byte[] Entropy = SHA256.HashData(Encoding.UTF8.GetBytes("JendaNDT.Rocker:AI-key:DPAPI:v1"));
+    private byte[] ProviderEntropy=>provider=="gemini"?Entropy:SHA256.HashData(Encoding.UTF8.GetBytes("JendaNDT.Rocker:AI-key:DPAPI:openai:v1"));
     private static ReadOnlySpan<byte> Magic => "RockerSecret1\0"u8;
-    public string PathForKey => Path.Combine(files.DirectoryFor("secrets"),"ai-key.dpapi");
+    public string PathForKey => Path.Combine(files.DirectoryFor("secrets"),(provider switch{"gemini"=>"ai-key.dpapi","openai"=>"openai-key.dpapi",_=>throw new ArgumentException("Neplatný poskytovatel klíče.")}));
     public async Task<SecretAccess> ReadAsync(CancellationToken cancellation = default)
     {
         if (!OperatingSystem.IsWindows()) return new(SecretState.Unsupported);
@@ -25,7 +26,7 @@ public sealed class SecretStore(UserFiles files)
             if (new FileInfo(path).Length is < 16 or > 65536) return new(SecretState.Unavailable);
             encrypted=await File.ReadAllBytesAsync(path,cancellation);
             if (!encrypted.AsSpan().StartsWith(Magic)) return new(SecretState.Unavailable);
-            plain=ProtectedData.Unprotect(encrypted.AsSpan(Magic.Length).ToArray(),Entropy,DataProtectionScope.CurrentUser);
+            plain=ProtectedData.Unprotect(encrypted.AsSpan(Magic.Length).ToArray(),ProviderEntropy,DataProtectionScope.CurrentUser);
             string value=new UTF8Encoding(false,true).GetString(plain);
             return string.IsNullOrWhiteSpace(value) || value.Length>4096 ? new(SecretState.Unavailable) : new(SecretState.Ready,value);
         }
@@ -41,7 +42,7 @@ public sealed class SecretStore(UserFiles files)
         string path=PathForKey, temporary=Path.Combine(Path.GetDirectoryName(path)!,".rocker-secret-"+Guid.NewGuid().ToString("N")+".tmp");
         try
         {
-            encrypted=ProtectedData.Protect(plain,Entropy,DataProtectionScope.CurrentUser);
+            encrypted=ProtectedData.Protect(plain,ProviderEntropy,DataProtectionScope.CurrentUser);
             await using (var stream=new FileStream(temporary,FileMode.CreateNew,FileAccess.Write,FileShare.None,4096,FileOptions.Asynchronous|FileOptions.WriteThrough))
             { await stream.WriteAsync(Magic.ToArray(),cancellation); await stream.WriteAsync(encrypted,cancellation); await stream.FlushAsync(cancellation); }
             cancellation.ThrowIfCancellationRequested(); File.Move(temporary,path,true);

@@ -42,6 +42,7 @@ public sealed partial class MainWindow
             InitializeTraining(snapshot.Documents);
             InitializeSongs(snapshot.Documents);
             InitializeVideoPractice(snapshot.Documents);
+            InitializeAi(snapshot.Documents);
             await RestoreDevicePreferenceAsync();
             workspaceCache.Clear(); ShowWorkspace();
             if (snapshot.Warnings.Count > 0) ShowPersistenceError($"Při obnovení dat bylo upraveno nebo vynecháno {snapshot.Warnings.Count} neplatných záznamů. Původní databáze je zachovaná.");

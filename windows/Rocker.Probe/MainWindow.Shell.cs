@@ -68,6 +68,7 @@ public sealed partial class MainWindow
         if (!shellReady || closed) return;
         var target = navigation.Current; var view = WorkspaceViews.Get(target.ViewId);
         foreach(var old in workspaceCache.Keys.Where(k=>k.ViewId==target.ViewId && k!=target).ToArray())workspaceCache.Remove(old);
+        if(aiActive is { } active && target.ViewId!=active.View)aiCancellation?.Cancel();
         if(target.ViewId!=rhythmView && (rhythmRunning || rhythmOperation))_ = StopRhythmUiAsync();
         if(target.ViewId!="12")CancelPalm();
         if(target.ViewId!="22" && (earHeard || earOperation))_ = PauseEarPreviewAsync();
@@ -87,6 +88,7 @@ public sealed partial class MainWindow
             if (!workspaceCache.TryGetValue(target, out var page)) { page = BuildWorkspace(target); workspaceCache.Add(target,page); }
             WorkspaceContent.Content = page;
         }
+        if(aiPages.TryGetValue(view.Id,out var aiPage) && !aiBusy)RefreshAiPage(aiPage);
         if (view.Id == "08" && !videoInitializationStarted) _ = EnsureVideoAsync();
     }
     private async Task EnsureVideoAsync()
@@ -124,6 +126,9 @@ public sealed partial class MainWindow
     private FrameworkElement BuildWorkspace(NavigationTarget target)
     {
         if (catalog is null) return Text("Výukový obsah není dostupný. Přehrávání souborů zůstává dostupné.");
+        if (target.ViewId == "23")return BuildAiChat();
+        if (target.ViewId == "24")return BuildAiPlan();
+        if (target.ViewId == "25")return BuildAiFeedback();
         if (target.ViewId == "17") return BuildChords(target.ItemId);
         if (target.ViewId == "18") return BuildScales(target.ItemId);
         if (target.ViewId == "19") return BuildRiffs(target.ItemId);
@@ -240,6 +245,7 @@ public sealed partial class MainWindow
                 if (choice == ContentDialogResult.Primary && !await guard.Save()) return;
                 if (choice == ContentDialogResult.Secondary) guard.Discard();
             }
+            await CancelAiAsync();
             SendVideo(new{op="pause"});
             CancelPalm();await StopRhythmUiAsync();
             if (autosave is not null) await autosave.FlushAsync();
@@ -277,6 +283,7 @@ public sealed partial class MainWindow
         VerifyLibraryGames();
         await VerifyNotationIntegratedAsync();
         await VerifyVideoPracticeAsync();
+        await VerifyAiViewsAsync();
         await VerifyDevicesAsync();
         VerifyComponents();
         if (Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTIC_VIEW") == "components") ShowComponents();
