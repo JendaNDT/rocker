@@ -17,3 +17,14 @@ SHA-256:
 Encoded binaries are retained to make CI independent of FFmpeg. Codec
 padding and lossy reconstruction are expected; tests inspect actual decoded
 frames, pitch, and channel isolation, not encoded-byte identity.
+
+`a4-streaming.webm` uses the authored mono W01 `a4-440.wav` and FFmpeg's
+live muxing mode: unknown Segment size (`01ffffffffffffff`) and no declared
+duration, instead of requiring a finalized seekable file. It is synthetic,
+not an actual browser capture; it checks the streaming container shape.
+
+```sh
+ffmpeg -i docs/windows/baseline/fixtures/audio/a4-440.wav -c:a libopus -b:a 96k -live 1 windows/fixtures/media/a4-streaming.webm
+```
+
+SHA-256: `df582eacf607a8d1e2b4c939dd63996649665a9062f45946ea601c27fc16e62f`.

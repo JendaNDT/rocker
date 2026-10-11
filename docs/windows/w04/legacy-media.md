@@ -52,7 +52,7 @@ použitelné. Podpora dalších kodeků MP4 se odvíjí od systému; důkaz se t
 
 ## Kontroly a stav
 
-Linux ověření aktuálně prošlo 135 kontrolami skutečných dekodérů/DSP a 2/2
+Linux ověření aktuálně prošlo 138 kontrolami skutečných dekodérů/DSP a 2/2
 CTest sadami. Windows běh musí navíc skutečně načíst mono/stereo AAC,
 zachovat aktivní kanál, projít šesti rychlostmi, načíst cestu s českými znaky
 a odmítnout poškozené MP4. Tyto případy nejsou nahrazené mockem.
@@ -63,8 +63,8 @@ Linuxu explicitním stavem `platformUnavailable`, na Windows má kladné
 kontroly. Původní ověřený report 103 kontrol se nepřepisuje; další běh má
 samostatný protokol a identifikaci sestavení.
 
-Zálohy W01 a jejich soubory zůstávají nezměněné. Přibyly pouze dvě umělé
-stereo reference v `windows/fixtures/media`, jejich původ, příkazy a hashe
+Zálohy W01 a jejich soubory zůstávají nezměněné. Přibyly pouze umělé
+stereo reference a WebM s neznámou délkou segmentu v `windows/fixtures/media`, jejich původ, příkazy a hashe
 jsou v tamním README. Poškozené varianty se vytvářejí v unikátní dočasné
 složce testu a po dokončení se odstraní. FFmpeg do aplikace nepatří.
 
@@ -73,3 +73,10 @@ logické PCM. Kapacity vektorů, parser a systémový dekodér mají další pra
 paměť; nejde o naměřený pevný limit procesu. Dlouhé klipy potřebují další
 blokové zpracování/cache. Subjektivní kvalita na kytaře a fyzický poslech
 zůstávají v ruční přejímce po W43.
+
+Rozšířená Linux sada také prošla AddressSanitizer, UndefinedBehaviorSanitizer
+a detekcí úniků (`halt_on_error=1`, 138 kontrol, 2/2 CTest). To zahrnuje
+poškozené WebM a kontejner s neznámou velikostí/délkou; nejde o univerzální
+fuzzing ani záruku bezchybnosti cizích kodeků. Windows původní sadu ověřil
+běh 38143961620, včetně skutečného AAC; streaming reference dostává navazující
+samostatné Windows sestavení.

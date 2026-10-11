@@ -146,6 +146,11 @@ int main(int argc, char** argv) {
         check(rms(stereo.channels[0]) < 0.005 && rms(stereo.channels[1]) > 0.05, "WebM selected channel isolation");
         check(std::abs(pitch(stereo, 1) - 220) < 2, "WebM stereo pitch");
         check(rms(stretch(stereo, 0.5).channels[0]) < 0.005, "WebM stretched channel isolation");
+        auto streaming = decode(additional / "a4-streaming.webm");
+        check(streaming.frames() == 48000 && streaming.channels.size() == 1, "unknown-size WebM segment");
+        check(std::abs(pitch(streaming) - 440) < 2, "streaming WebM pitch");
+        auto streamedSlow = stretch(streaming, 0.5);
+        check(streamedSlow.frames() == 96000 && std::abs(pitch(streamedSlow) - 440) < 3, "streaming WebM stretch");
 #ifdef _WIN32
         auto aacStereo = decode(additional / "input-2-only.m4a");
         check(aacStereo.channels.size() == 2 && aacStereo.sampleRate == 48000, "AAC stereo shape");
