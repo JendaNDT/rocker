@@ -13,9 +13,12 @@ obsahových skupin z původních dat a 69/69 referenčních doménových přípa
 W05 prošel čistým Windows buildem 38150968516 včetně symbolů a kontroly balíků.
 [W06](docs/windows/w06/README.md) dále převádí lekce, trenažéry, metronom,
 aparátové konfigurace, pokrok a validační pravidla: Linux porovnal 372 dalších
-případů a 350 stavů s původním TS. Úplný Windows build tohoto rozšíření navazuje.
-Plný shell, kompletní Vintage design, persistence a produktové funkce ještě
-hotové nejsou; ruční přejímka zůstává až po W43.
+případů a 350 stavů s původním TS. Windows build 38151654548 jej potvrdil.
+Navazuje [W07 shell](docs/windows/w07/README.md): 32 navigačních cílů, společný
+transport, zachování rozpracované lekce, systémové vzhledy a obnova okna. Dvě
+nové vlastní riffové náhrady jsou v distribučním katalogu s převodem starých ID.
+Windows ověření tohoto řezu navazuje. Kompletní Vintage design, persistence
+a produktové funkce ještě hotové nejsou; ruční přejímka zůstává až po W43.
 
 ## Aktuální směr: nativní Rocker pro Windows
 

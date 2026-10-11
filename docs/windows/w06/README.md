@@ -23,7 +23,7 @@ neslibuje rozpoznání celého akordu monofonním detektorem.
 - 37/37 zmrazených stavů přesného tónového trenažéru.
 - 372/372 dalších případů získaných spuštěním skutečných TS funkcí.
 - 350/350 stavů deseti rytmických, čtyř palm-mute a jedné přestávkové sekvence.
-- 66 dalších kontraktů celkem, včetně 37 Surgical stavů: poškozená data,
+- 73 dalších kontraktů celkem, včetně 37 Surgical stavů: poškozená data,
   neplatné vazby, nečíselné vstupy, nezměněný původní stav a lekční navigace.
 
 Zlatá data W06 jsou zvlášť v `domain-reference.json`; původní W01 se nepřepisuje.
@@ -39,8 +39,13 @@ neplatné datum nezhodí historii. Pro platné původní vstupy se chování zac
 
 Převod persistence všech 11 stores je W09–W12. Doménové části specifické pro
 Studio/Looper/AI a konkrétní pracovní UI navazují při příslušných funkcích;
-nevytvářejí se zde prázdné náhražky. Dva převzaté riffy zatím slouží jako
-reference, jejich zařazení do distribučního obsahu je stále bod W02/W43.
+nevytvářejí se zde prázdné náhražky. Dva převzaté riffy zůstávají pouze ve
+zmrazené referenci. `runtime-catalog.json`, který načítá a distribuuje WinUI,
+je nahrazuje dvěma novými vlastními cvičebními vzory (Chromatický puls,
+Kořen a tercie). `riff-replacements.json` je samostatný autorovaný vstup;
+export zkontroluje všech 14 riffů a nepřítomnost položek s převzatým interpretem.
+Staré ID mají explicitní mapování v `legacyRiffAliases`; `ResolveRiff`
+je převádí. Skutečný převod uložených nastavení/BPM záznamů navazuje ve W11.
 
 ```sh
 node scripts/export-windows-content.mjs --check
@@ -49,5 +54,7 @@ dotnet run --project windows/Rocker.Domain.Checks -c Release -- \
   docs/windows/baseline/fixtures/domain-cases.json windows/content/catalog.json
 ```
 
-Linux kontroly prošly. Windows ověření této celé navazující domény se provádí
-v následném běhu; předchozí Windows protokol W05 potvrzuje pouze tehdejší řez.
+Linux kontroly prošly. [Windows běh 38151654548](windows-validation.json)
+potvrdil všech 69 + 372 případů a 37 + 350 stavů. Runtime náhrady riffů a nová
+navigace W07 mají navazující Windows build; protokol je nevydává za dříve
+ověřenou implementaci.

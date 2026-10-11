@@ -1,0 +1,33 @@
+{
+  "scope": "W06 pure domain before runtime riff substitutions and shell navigation",
+  "sourceCommit": "c2a1dd4c8a1e4dadcf8d988b6046a9341d86a27b",
+  "windowsRun": "https://github.com/JendaNDT/rocker/actions/runs/38151654548",
+  "result": "passed",
+  "domain": {
+    "result": "passed",
+    "referenceCases": 69,
+    "boundaryChecks": 66,
+    "contentGroups": 15,
+    "surgicalStatesCompared": 37,
+    "extendedReferenceCases": 372,
+    "extendedStatesCompared": 350
+  },
+  "window": {
+    "nativeNotationVerified": true,
+    "checkedAtUtc": "2026-10-11T15:38:26.8019105Z",
+    "onlineVideoVerified": false,
+    "result": "passed",
+    "webViewRuntime": "153.0.4234.48",
+    "localVideoBridgeVerified": true,
+    "exitCode": 0,
+    "windowTitle": "Rocker — nativní zvuk a noty",
+    "audioCoexistenceVerified": false,
+    "audioPlaybackVerified": false,
+    "midiPreparedInCommonEngine": true
+  },
+  "remainingForNextBuild": [
+    "Runtime riff substitution and legacy aliases",
+    "Native shell navigation and window preferences",
+    "Complete feature UI, storage and physical audio"
+  ]
+}

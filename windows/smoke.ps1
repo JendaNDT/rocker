@@ -14,9 +14,12 @@ if (Get-ChildItem $PublishDirectory -Filter 'rocker_audio_test*' -Recurse) {
 $process = $null
 $started = Get-Date
 $previousDiagnostics = $env:ROCKER_DIAGNOSTICS_DIR
+$previousUserData = $env:ROCKER_USER_DATA_DIR
+$env:ROCKER_USER_DATA_DIR = Join-Path $reportDirectory "isolated-shell-data"
 $env:ROCKER_DIAGNOSTICS_DIR = $reportDirectory
 $notationReport = Join-Path $reportDirectory 'notation-view.json'
 $videoReport = Join-Path $reportDirectory 'video-bridge.json'
+$shellReport = Join-Path $reportDirectory 'shell-navigation.json'
 if (Test-Path $notationReport) { Remove-Item $notationReport }
 if (Test-Path $videoReport) { Remove-Item $videoReport }
 try {
@@ -51,6 +54,12 @@ try {
     if ($video.result -ne 'passed' -or -not $video.localBridgeVerified -or -not $video.runtimeVersion) {
         throw "Local WebView2 bridge failed: $(Get-Content $videoReport -Raw)"
     }
+    if (-not (Test-Path $shellReport)) { throw 'Native shell navigation report is missing.' }
+    $shell = Get-Content $shellReport -Raw | ConvertFrom-Json
+    if ($shell.result -ne 'passed' -or $shell.viewsVisited -ne 32 -or -not $shell.backRestoredTask -or $shell.audioHostsCreated -ne 1) {
+        throw "Native shell navigation failed: $(Get-Content $shellReport -Raw)"
+    }
+    & (Join-Path $PSScriptRoot 'capture-window.ps1') -WindowHandle $process.MainWindowHandle.ToInt64() -Path (Join-Path $reportDirectory 'native-shell.png')
     if (-not $process.CloseMainWindow()) { throw 'The application rejected a normal window close.' }
     if (-not $process.WaitForExit(15000)) { throw 'The application did not exit after closing its window.' }
     if ($process.ExitCode -ne 0) { throw "Application exited with code $($process.ExitCode)." }
@@ -60,6 +69,8 @@ try {
         exitCode = $process.ExitCode
         audioPlaybackVerified = $false
         nativeNotationVerified = $true
+        nativeShellViewsVisited = $shell.viewsVisited
+        audioHostsCreated = $shell.audioHostsCreated
         midiPreparedInCommonEngine = $true
         localVideoBridgeVerified = $true
         webViewRuntime = $video.runtimeVersion
@@ -79,6 +90,7 @@ catch {
 }
 finally {
     $env:ROCKER_DIAGNOSTICS_DIR = $previousDiagnostics
+    $env:ROCKER_USER_DATA_DIR = $previousUserData
     if ($null -ne $process) {
         if (-not $process.HasExited) { Stop-Process -Id $process.Id -Force }
         $process.Dispose()

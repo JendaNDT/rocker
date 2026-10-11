@@ -8,7 +8,7 @@ public sealed class UserFiles
     public UserFiles(string? root = null) => Root = Path.GetFullPath(root ?? DefaultRoot);
     public string DirectoryFor(string category)
     {
-        if (category is not ("recordings" or "projects" or "backups" or "logs" or "WebView2" or "database")) throw new ArgumentException("Neznámá složka dat.", nameof(category));
+        if (category is not ("recordings" or "projects" or "backups" or "logs" or "WebView2" or "database" or "settings")) throw new ArgumentException("Neznámá složka dat.", nameof(category));
         var path = Path.Combine(Root, category); Directory.CreateDirectory(path); return path;
     }
     public string RecordingPath(Guid id, string extension)

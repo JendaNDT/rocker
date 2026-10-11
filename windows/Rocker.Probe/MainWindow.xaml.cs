@@ -24,7 +24,8 @@ public sealed partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        AppWindow.Resize(new Windows.Graphics.SizeInt32(1080, 940));
+        AppWindow.Resize(new Windows.Graphics.SizeInt32(1280, 940));
+        InitializeShell();
         PositionSlider.AddHandler(UIElement.PointerPressedEvent, new PointerEventHandler((_, args) => { if (args.GetCurrentPoint(PositionSlider).Properties.IsLeftButtonPressed) positionDragging = true; }), true);
         PositionSlider.AddHandler(UIElement.PointerCaptureLostEvent, new PointerEventHandler(Position_Released), true);
         Closed += (_, _) => { closed = true; timer.Stop(); audio?.Dispose(); audio = null; VideoView.Close(); };
@@ -33,12 +34,13 @@ public sealed partial class MainWindow : Window
             if (initialNotationStarted) return;
             initialNotationStarted = true;
             await LoadScoreAsync(Path.Combine(AppContext.BaseDirectory, "fixtures", "notation-phrases.gp"));
-            if (!closed) await InitializeVideoAsync();
+            if (!closed && !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTICS_DIR"))) await VerifyShellAsync();
         };
         timer.Tick += (_, _) => RefreshState();
         try
         {
             audio = new NativeAudio();
+            ++audioHostsCreated;
             StatusText.Text = "Připraveno. Testovací tón je vypnutý.";
             timer.Start();
         }
@@ -106,7 +108,7 @@ public sealed partial class MainWindow : Window
             foreach (var extension in new[] { ".gp", ".gp3", ".gp4", ".gp5", ".gpx", ".musicxml", ".xml", ".mxl" })
                 picker.FileTypeFilter.Add(extension);
             var file = await picker.PickSingleFileAsync();
-            if (file is not null && !closed) await LoadScoreAsync(file.Path);
+            if (file is not null && !closed) { Navigate(new("20")); await LoadScoreAsync(file.Path); }
         }
         catch (Exception error) { if (!closed) NotationStatus.Text = "Soubor nelze otevřít. " + error.Message; }
     }
@@ -234,6 +236,7 @@ public sealed partial class MainWindow : Window
             foreach (var extension in new[] { ".wav", ".mp3", ".ogg", ".opus", ".webm", ".m4a", ".mp4" }) picker.FileTypeFilter.Add(extension);
             var file = await picker.PickSingleFileAsync();
             if (file is null || closed || busy) return;
+            Navigate(new("07"));
             SetBusy(true);
             MediaStatus.Text = "Načítám zvuk a připravuji rychlost…";
             await audio.PrepareFileAsync(file.Path, currentSpeed);

@@ -15,7 +15,7 @@ public sealed partial class MainWindow
     {
         try
         {
-            var profile = new UserFiles().DirectoryFor("WebView2");
+            var profile = userFiles.DirectoryFor("WebView2");
             var environment = await CoreWebView2Environment.CreateWithOptionsAsync(null, profile, null);
             if (closed) return;
             await VideoView.EnsureCoreWebView2Async(environment);

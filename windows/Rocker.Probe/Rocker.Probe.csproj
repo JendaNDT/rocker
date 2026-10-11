@@ -22,7 +22,9 @@
     <ProjectReference Include="../Rocker.Interop/Rocker.Interop.csproj" />
     <ProjectReference Include="../Rocker.Notation/Rocker.Notation.csproj" />
     <ProjectReference Include="../Rocker.Video/Rocker.Video.csproj" />
+    <ProjectReference Include="../Rocker.Domain/Rocker.Domain.csproj" />
     <ProjectReference Include="../Rocker.Infrastructure/Rocker.Infrastructure.csproj" />
+    <Content Include="../content/runtime-catalog.json" Link="content/catalog.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <Content Include="Video/*.html;Video/*.js" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <Content Include="../fixtures/*" Link="fixtures/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <Content Include="$(RockerNativeDll)" Link="rocker_audio.dll" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />

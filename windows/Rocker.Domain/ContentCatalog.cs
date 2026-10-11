@@ -8,6 +8,8 @@ public sealed class ContentCatalog
 {
     private readonly IReadOnlyDictionary<string, JsonElement> groups;
     public IReadOnlyList<Lesson> Lessons { get; }
+    public IReadOnlyDictionary<string, string> LegacyRiffAliases { get; private init; } = new ReadOnlyDictionary<string,string>(new Dictionary<string,string>());
+    public JsonElement? ResolveRiff(string id) => Find("riffs", LegacyRiffAliases.TryGetValue(id, out var replacement) ? replacement : id);
     private ContentCatalog(IReadOnlyDictionary<string, JsonElement> groups, IReadOnlyList<Lesson> lessons) { this.groups = groups; Lessons = lessons; }
     public IEnumerable<JsonElement> Items(string group) => groups.TryGetValue(group, out var items) ? items.EnumerateArray() : [];
     public JsonElement? Find(string group, string id) => Items(group).Cast<JsonElement?>().FirstOrDefault(item => item!.Value.GetProperty(group == "screens" ? "href" : "id").GetString() == id);
@@ -55,7 +57,14 @@ public sealed class ContentCatalog
                 }
                 lessons.Add(new Lesson(id, title, minutes, Array.AsReadOnly(steps)));
             }
-            return new ContentCatalog(new ReadOnlyDictionary<string, JsonElement>(dictionary), lessons.AsReadOnly());
+            var aliases = new Dictionary<string,string>(StringComparer.Ordinal);
+            if (root.TryGetProperty("legacyRiffAliases", out var mappings))
+                foreach (var alias in mappings.EnumerateObject())
+                {
+                    var target = alias.Value.GetString();
+                    if (string.IsNullOrEmpty(target) || !dictionary["riffs"].EnumerateArray().Any(riff => riff.GetProperty("id").GetString() == target) || !aliases.TryAdd(alias.Name, target)) throw new InvalidDataException("Neplatný převod identifikátoru riffu.");
+                }
+            return new ContentCatalog(new ReadOnlyDictionary<string, JsonElement>(dictionary), lessons.AsReadOnly()) { LegacyRiffAliases = new ReadOnlyDictionary<string,string>(aliases) };
         }
         catch (Exception error) when (error is JsonException or KeyNotFoundException or InvalidOperationException or FormatException or ArgumentException)
         { throw new InvalidDataException("Katalog obsahu je poškozený.", error); }

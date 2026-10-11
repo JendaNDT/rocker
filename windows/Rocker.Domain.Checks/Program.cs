@@ -98,6 +98,18 @@ Check(ProgressRules.LongestStreak(new Dictionary<string,double> { ["invalid-date
 Check(MusicShapes.GetPowerChord("e-01") is null && MusicShapes.GetPowerChord("e-13") is null, "invalid chord shape ID rejected");
 try { RhythmTrainers.Start(new PowerChordExercise("empty", "", "", [], 1, 70), true); throw new Exception("Empty sequence accepted"); }
 catch (ArgumentException) { Check(true, "invalid rhythm exercise rejected"); }
+var navigation = new NavigationSession();
+navigation.Navigate(new("06", content.Lessons[0].Id)); navigation.Navigate(new("09", "spider")); navigation.Back();
+Check(navigation.Current == new NavigationTarget("06", content.Lessons[0].Id), "back restores specific lesson task");
+navigation.Forward(); navigation.Back(); navigation.Navigate(new("20"));
+Check(!navigation.CanGoForward && navigation.Current.ViewId == "20", "new navigation clears forward history");
+Check(WorkspaceViews.All.Select(view => view.Id).SequenceEqual(Enumerable.Range(1,32).Select(value => value.ToString("D2"))), "all 32 designed workspaces have stable IDs");
+try { navigation.Navigate(new("unknown")); throw new Exception("Unknown view accepted"); }
+catch (ArgumentException) { Check(navigation.Current.ViewId == "20", "invalid navigation preserves current context"); }
+Check(new WorkState(true,false).RequiresConfirmation && new WorkState(false,true).RequiresConfirmation && !new WorkState(false,false).RequiresConfirmation, "close must confirm active recording or unsaved work");
+var runtimeContent = ContentCatalog.Load(File.ReadAllBytes(Path.Combine(Path.GetDirectoryName(args[1])!, "runtime-catalog.json")));
+Check(runtimeContent.Items("riffs").Count() == 14 && runtimeContent.Items("riffs").All(riff => !riff.TryGetProperty("artist", out _)), "runtime includes original drills and two new practice patterns");
+Check(runtimeContent.ResolveRiff("smoke-on-the-water")?.GetProperty("id").GetString() == "chromatic-pulse" && runtimeContent.ResolveRiff("seven-nation-army")?.GetProperty("id").GetString() == "root-and-third", "legacy riff selections resolve to replacement IDs");
 Console.WriteLine($"PASS: {extended.Cases} additional PWA cases and {extended.States} rhythm/palm-mute/break reference states.");
 Console.WriteLine($"PASS: {compared} frozen PWA cases and {checks - compared} additional assertions, including {surgicalStates} frozen surgical states; native input capture and trainer UI remain later roadmap work.");
 

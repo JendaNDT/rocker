@@ -21,6 +21,17 @@ try
     try { await UserFiles.WriteTextAsync(path, "cancelled", cancellation.Token); throw new Exception("Cancelled write completed"); }
     catch (OperationCanceledException) { Check(await File.ReadAllTextAsync(path) == "nový", "cancelled write retains original"); }
     Check(!Directory.EnumerateFiles(Path.GetDirectoryName(path)!).Any(file => file.EndsWith(".tmp", StringComparison.Ordinal)), "temporary files cleaned up");
+    var outside = new WindowRectangle(3000,-600,2000,1500).FitTo(new(0,0,1920,1040));
+    Check(outside == new WindowRectangle(0,0,1920,1040), "removed monitor and oversized window restored into remaining work area");
+    var tiny = new WindowRectangle(-500,500,100,100).FitTo(new(-1280,0,1280,720));
+    Check(tiny.X == -640 && tiny.Y == 240 && tiny.Width == 640 && tiny.Height == 480, "negative monitor coordinates and minimum visible size");
+    var windowStore = new WindowPreferencesStore(files);
+    var preferences = new WindowPreferences(1, new(10,20,1000,800), true, "dark");
+    await windowStore.SaveAsync(preferences);
+    Check(windowStore.Load() == preferences, "window geometry and theme survive reload");
+    await UserFiles.WriteTextAsync(Path.Combine(files.DirectoryFor("settings"),"window.json"), "{\"SchemaVersion\":99,\"Bounds\":null}");
+    try { windowStore.Load(); throw new Exception("Corrupt window state accepted"); }
+    catch (InvalidDataException) { Check(true, "future or incomplete geometry rejected"); }
     Console.WriteLine($"PASS: {checks} file ownership/replacement assertions; SQLite and data migration remain W09–W12.");
 }
 finally { if (Directory.Exists(directory)) Directory.Delete(directory, true); }
