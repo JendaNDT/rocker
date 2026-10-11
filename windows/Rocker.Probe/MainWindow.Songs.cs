@@ -9,6 +9,7 @@ using Rocker.Infrastructure;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using Windows.Storage.Pickers;
+using Path=System.IO.Path;
 namespace Rocker.Probe;
 public sealed partial class MainWindow
 {
