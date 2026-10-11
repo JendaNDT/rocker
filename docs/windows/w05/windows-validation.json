@@ -1,0 +1,107 @@
+{
+  "scope": "W05 locked solution and reproducible Windows foundation",
+  "sourceCommit": "edba3509035c10ed9bcf6956a5c450fe8c0f699c",
+  "windowsRun": "https://github.com/JendaNDT/rocker/actions/runs/38150968516",
+  "result": "passed",
+  "toolchain": {
+    "cmake": "cmake version 3.31.10",
+    "windowsSdk": "10.0.26100.0\\",
+    "msvcFileVersion": "19.51.36260.0",
+    "dotnet": "10.0.401",
+    "os": "Microsoft Windows NT 10.0.26100.0",
+    "productVersion": "0.1.0",
+    "visualStudio": "18.0",
+    "ninja": "1.13.2",
+    "cl": "C:\\Program Files\\Microsoft Visual Studio\\18\\Enterprise\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe",
+    "restoreMode": "locked",
+    "checkedAtUtc": "2026-10-11T15:24:02.9743666Z"
+  },
+  "domain": {
+    "result": "passed",
+    "referenceCases": 69,
+    "boundaryChecks": 56,
+    "contentGroups": 15,
+    "surgicalStatesCompared": 37,
+    "otherTrainerStateMachinesPorted": false
+  },
+  "window": {
+    "windowTitle": "Rocker — nativní zvuk a noty",
+    "localVideoBridgeVerified": true,
+    "exitCode": 0,
+    "audioCoexistenceVerified": false,
+    "midiPreparedInCommonEngine": true,
+    "nativeNotationVerified": true,
+    "checkedAtUtc": "2026-10-11T15:26:51.4483338Z",
+    "webViewRuntime": "153.0.4234.48",
+    "audioPlaybackVerified": false,
+    "result": "passed",
+    "onlineVideoVerified": false
+  },
+  "transport": {
+    "result": "passed",
+    "checks": 39,
+    "physicalAudioVerified": false
+  },
+  "nativeMediaChecks": 167,
+  "notationChecks": 22,
+  "artifacts": [
+    {
+      "name": "Rocker-Windows-sources.zip",
+      "bytes": 132071230,
+      "sha256": "01b8df9bafd88e636c01685496778064c1154041666d0cac326e28c46c65fa5e",
+      "verification": "SHA256, ZIP CRC, source commit, package contents verified"
+    },
+    {
+      "name": "Rocker-Windows-x64.zip",
+      "bytes": 101571400,
+      "sha256": "e1bea6dd7d3442b7f1ea6f6a97c7db641574afbe45534019a6d1a4aa7a1f8062",
+      "verification": "SHA256, ZIP CRC, source commit, package contents verified"
+    }
+  ],
+  "separateSymbols": [
+    {
+      "path": "probe/Rocker.Video.pdb",
+      "bytes": 15708,
+      "sha256": "77b57f4c934bb06859a015d6784a00bcfa04a2e1c3d24b82960bca4c44b49f1f"
+    },
+    {
+      "path": "probe/Rocker.Probe.pdb",
+      "bytes": 48104,
+      "sha256": "a2d24a9a31cbc6bf8cbd0fcffe7de4b8e17a99f29db373aca95d70998feff1b2"
+    },
+    {
+      "path": "probe/Rocker.Notation.pdb",
+      "bytes": 13908,
+      "sha256": "6e41908237c79890ff4569b6c0a3347e7d715fecf6a94bf22dd3eb5e7f66a4ce"
+    },
+    {
+      "path": "probe/Rocker.Interop.pdb",
+      "bytes": 13284,
+      "sha256": "e47724ae9c614267dc1170a64990b68e72b87918f97579f7587172b726db222c"
+    },
+    {
+      "path": "probe/Rocker.Infrastructure.pdb",
+      "bytes": 12176,
+      "sha256": "a4e3e6037fcff8190f832101b989e2ff53c88bd9f0efe2c106ab00c85f7fb5e2"
+    },
+    {
+      "path": "native/rocker_audio.pdb",
+      "bytes": 19722240,
+      "sha256": "8d2670ca9813c1f21e4e12fce088064343a852f5ed6d9e8af075c6f1e17b38b9"
+    }
+  ],
+  "firstAttempt": {
+    "run": "https://github.com/JendaNDT/rocker/actions/runs/38150103154",
+    "result": "failed",
+    "reason": "CRLF checkout changed raw source hashes; canonical LF checks preserve actual content validation."
+  },
+  "notPerformed": [
+    "Physical audio and M-Track Solo latency",
+    "Online video playback and audio coexistence",
+    "Complete product UI, storage and installer"
+  ],
+  "upstreamSourceCommitsVerified": {
+    "AlphaTab": "9d0142eee2b1175dfd36e839ddbd867aed9e454e",
+    "AlphaSkia": "c82e319faeba4155b45664766e9badf528c0fc49"
+  }
+}

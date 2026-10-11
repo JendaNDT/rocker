@@ -6,6 +6,8 @@ on:
     paths:
       - 'windows/**'
       - 'scripts/export-windows-content.mjs'
+      - 'scripts/export-windows-domain-reference.mjs'
+      - 'docs/windows/w06/domain-reference.json'
       - 'src/lib/**'
       - 'src/audio/tunings.ts'
       - '.github/workflows/windows-prototype.yml'

@@ -78,6 +78,27 @@ try { SurgicalEngine.Start(new SurgicalExercise("empty", "Empty", "", [])); thro
 catch (ArgumentException) { Check(true, "invalid exercise rejected before state creation"); }
 Check(LessonRules.Completion(content.Lessons, [content.Lessons[0].Id, content.Lessons[0].Id]).Done == 1, "duplicate completions counted once");
 Check(LessonRules.NextIncomplete(content.Lessons, content.Lessons.Select(item => item.Id).ToArray()) is null, "all lessons completed");
-Console.WriteLine($"PASS: {compared} frozen PWA cases and {checks - compared} additional assertions, including {surgicalStates} frozen surgical states; other trainer rules remain W06 work.");
+var noteLesson = content.Lessons.First(lesson => lesson.Steps.Any(step => step.GetProperty("kind").GetString() == "note"));
+var session = LessonSession.Start(noteLesson);
+while (session.CurrentStep.GetProperty("kind").GetString() != "note") session = session.Next();
+var target = session.CurrentStep.GetProperty("targetMidi").GetInt32();
+Check(session.ObserveNote(target + 12).NotePassed && !session.ObserveNote(target + 1).NotePassed, "lesson octave confirmation matches original NoteCheck");
+Check(session.Next().StepIndex == Math.Min(session.StepIndex + 1, session.Lesson.Steps.Count - 1), "next lesson step does not require pitch confirmation");
+Check(LessonSession.Start(noteLesson, 999).IsLast && LessonSession.Start(noteLesson, -1).IsFirst, "restored lesson position is bounded");
+Check(LessonSession.Start(noteLesson).Finish().Completed == (noteLesson.Steps.Count == 1), "only final step can finish lesson");
+var brokenLink = File.ReadAllText(args[1]).Replace("\"chordId\": \"Em\"", "\"chordId\": \"missing-chord\"");
+try { ContentCatalog.Load(System.Text.Encoding.UTF8.GetBytes(brokenLink)); throw new Exception("Missing chord accepted"); }
+catch (InvalidDataException) { Check(true, "lesson chord reference validated"); }
+var brokenRhythm = File.ReadAllText(args[1]).Replace("\"e-0\"", "\"e-99\"");
+try { ContentCatalog.Load(System.Text.Encoding.UTF8.GetBytes(brokenRhythm)); throw new Exception("Invalid chord shape accepted"); }
+catch (InvalidDataException) { Check(true, "rhythm chord reference validated"); }
+var extended = DomainReference.Run(Path.GetFullPath(Path.Combine(Path.GetDirectoryName(args[0])!, "../../w06/domain-reference.json")), content);
+Check(PalmMuteRules.Calibrate([double.NaN,2000,2400], [400,600,800]) is null, "nonfinite calibration rejected");
+Check(ProgressRules.LongestStreak(new Dictionary<string,double> { ["invalid-date"] = 1 }) == 0, "invalid stored date cannot break history");
+Check(MusicShapes.GetPowerChord("e-01") is null && MusicShapes.GetPowerChord("e-13") is null, "invalid chord shape ID rejected");
+try { RhythmTrainers.Start(new PowerChordExercise("empty", "", "", [], 1, 70), true); throw new Exception("Empty sequence accepted"); }
+catch (ArgumentException) { Check(true, "invalid rhythm exercise rejected"); }
+Console.WriteLine($"PASS: {extended.Cases} additional PWA cases and {extended.States} rhythm/palm-mute/break reference states.");
+Console.WriteLine($"PASS: {compared} frozen PWA cases and {checks - compared} additional assertions, including {surgicalStates} frozen surgical states; native input capture and trainer UI remain later roadmap work.");
 
-if (args.Length == 3) File.WriteAllText(args[2], JsonSerializer.Serialize(new { result = "passed", referenceCases = compared, boundaryChecks = checks - compared, contentGroups = 15, surgicalStatesCompared = surgicalStates, otherTrainerStateMachinesPorted = false }));
+if (args.Length == 3) File.WriteAllText(args[2], JsonSerializer.Serialize(new { result = "passed", referenceCases = compared, boundaryChecks = checks - compared, contentGroups = 15, surgicalStatesCompared = surgicalStates, extendedReferenceCases = extended.Cases, extendedStatesCompared = extended.States }));

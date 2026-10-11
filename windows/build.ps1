@@ -28,6 +28,7 @@ try {
     # global.json verifies the selected SDK; Ninja avoids generator/version coupling to VS.
     Invoke-Checked 'dotnet' @('--info')
     Invoke-Checked 'node' @('../scripts/export-windows-content.mjs', '--check-frozen')
+    Invoke-Checked 'node' @('../scripts/export-windows-domain-reference.mjs', '--check-source')
     Invoke-Checked 'node' @('--test', 'Rocker.Probe/Video/player.contracts.cjs')
     Invoke-Checked 'dotnet' @('run', '--project', 'Rocker.Video.Checks', '-c', 'Release', '--no-restore')
     Invoke-Checked 'dotnet' @('run', '--project', 'Rocker.Domain.Checks', '-c', 'Release', '--no-restore', '--',

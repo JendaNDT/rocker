@@ -10,8 +10,12 @@ a přípravy skutečného MIDI v produkční DLL. Podrobnosti: [společné přeh
 Navazuje [základ řešení W05](docs/windows/w05/README.md): uzamčené NuGet
 závislosti, společná verze, symboly a vrstvy. První část W06 má všech 15
 obsahových skupin z původních dat a 69/69 referenčních doménových případů.
-Stavové automaty trenažérů, plný shell, kompletní Vintage design a produktové
-funkce ještě dokončené nejsou. Konkrétní Windows build tohoto základu se nyní ověřuje.
+W05 prošel čistým Windows buildem 38150968516 včetně symbolů a kontroly balíků.
+[W06](docs/windows/w06/README.md) dále převádí lekce, trenažéry, metronom,
+aparátové konfigurace, pokrok a validační pravidla: Linux porovnal 372 dalších
+případů a 350 stavů s původním TS. Úplný Windows build tohoto rozšíření navazuje.
+Plný shell, kompletní Vintage design, persistence a produktové funkce ještě
+hotové nejsou; ruční přejímka zůstává až po W43.
 
 ## Aktuální směr: nativní Rocker pro Windows
 

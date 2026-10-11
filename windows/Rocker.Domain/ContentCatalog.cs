@@ -23,7 +23,7 @@ public sealed class ContentCatalog
             foreach (var group in root.GetProperty("groups").EnumerateObject())
             {
                 var items = group.Value.GetProperty("items");
-                if (items.ValueKind != JsonValueKind.Array || items.GetArrayLength() > 10000) throw new InvalidDataException("Neplatná skupina obsahu.");
+                if (items.ValueKind != JsonValueKind.Array || items.GetArrayLength() is 0 or > 10000) throw new InvalidDataException("Neplatná skupina obsahu.");
                 var ids = new HashSet<string>(StringComparer.Ordinal);
                 foreach (var item in items.EnumerateArray())
                 {
@@ -34,6 +34,7 @@ public sealed class ContentCatalog
             }
             string[] required = ["stages", "chords", "scales", "riffs", "achievements", "tunings", "ampPresets", "metronomePresets", "timeSignatures", "clickSounds", "surgicalExercises", "powerChordExercises", "gallopExercises", "palmMuteDrills", "screens"];
             if (required.Any(group => !dictionary.ContainsKey(group))) throw new InvalidDataException("Katalog neobsahuje všechny požadované skupiny.");
+            ContentValidation.Check(dictionary);
             var chords = dictionary["chords"].EnumerateArray().Select(item => item.GetProperty("id").GetString()).ToHashSet(StringComparer.Ordinal);
             var lessons = new List<Lesson>();
             var lessonIds = new HashSet<string>(StringComparer.Ordinal);
@@ -56,7 +57,7 @@ public sealed class ContentCatalog
             }
             return new ContentCatalog(new ReadOnlyDictionary<string, JsonElement>(dictionary), lessons.AsReadOnly());
         }
-        catch (Exception error) when (error is JsonException or KeyNotFoundException or InvalidOperationException or FormatException)
+        catch (Exception error) when (error is JsonException or KeyNotFoundException or InvalidOperationException or FormatException or ArgumentException)
         { throw new InvalidDataException("Katalog obsahu je poškozený.", error); }
     }
 }

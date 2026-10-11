@@ -209,7 +209,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w05"></a>
 #### W05 — Založit řešení, sestavení a Windows CI
 
-- [ ] Rozpracováno: [řešení, zámky a vrstvy](docs/windows/w05/README.md); Linux kontroly prošly, Windows uzamčený build se ověřuje. Závislosti: W02–W04.
+- [x] Dokončeno: [řešení, zámky a vrstvy](docs/windows/w05/README.md); čisté uzamčené Windows sestavení, testy, běžící okno, balení a samostatné symboly prošly v běhu 38150968516. Závislosti: W02–W04.
 - Na výslovný požadavek uživatele z 11. 10. 2026 je jednoduchý Windows runner a balení prototypu předřazeno do W03, aby dostával hotové EXE. Neznamená to dokončení zbytku W05; výsledek konkrétního sestavení se musí doložit před předáním.
 - Založit vrstvy podle architektury, CMake pro C++, správu balíčků a jejich zámků pro .NET, jednotné verze produktu a sestavení. Nativní testy spouštět přes CTest, doménu například přes xUnit.
 - Připravit Windows runner pro sestavení WinUI a DLL, unit testy a později UI testy a balení. CI uchová protokoly, symboly a artefakty. Linux cloud může kontrolovat obsah a část čisté logiky, nenahrazuje Windows ověření.
@@ -219,7 +219,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w06"></a>
 #### W06 — Přenést obsah a čistou doménovou logiku
 
-- [ ] Rozpracováno: verzovaný export všech 15 skupin a všech 69 referenčních případů W01 je přenesený. Přenesený Surgical automat odpovídá všem 37 referenčním stavům; lekční pokrok je portovaný. Další automaty a zbytek validace navazují. Závislosti: W01, W05.
+- [ ] Rozpracováno: verzovaný export všech 15 skupin a všech 69 referenčních případů W01 je přenesený. [Doménový přenos](docs/windows/w06/README.md) dále porovnává 372 případů a 350 rytmických/palm-mute/přestávkových stavů. Linux prošel; úplný Windows přenos se nyní ověřuje. Závislosti: W01, W05.
 - Zavést verzovaný společný formát obsahu, stabilní ID a validační schéma. Exportovat lekce, akordy, stupnice, riffy, cvičení, ladění a presety z existujících dat bez ručního přepisování stovek hodnot.
 - Portovat hudební výpočty, lekční automaty, tempo, pravidla pokroku a validaci do čistých C# modulů. Algoritmy DSP zůstávají v C++; nesmí vzniknout druhá nesynchronizovaná kopie pravidel.
 - Přenést relevantní scénáře existujících testů a porovnávat shodné vstupy a výstupy přes referenční JSON. Počet testů není cílem; zachování chování ano.

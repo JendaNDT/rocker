@@ -71,7 +71,10 @@ dotnet run --project windows/Rocker.Infrastructure.Checks -c Release
 node scripts/export-windows-content.mjs --check-frozen
 ```
 
-Linux prošel 69 referenčními a 56 dalšími doménovými kontrolami (včetně 37 stavů Surgical),
-7 souborovými kontrolami a obnovou uzamčeného grafu. Windows uzamčené sestavení
-všech vrstev a symbolů se ověřuje navazujícím CI; dokud protokol není uložený,
-nelze tento konkrétní build označit za potvrzený.
+[Windows protokol](windows-validation.json) potvrzuje čistý build
+38150968516: uzamčenou obnovu všech projektů, 69 referenčních případů a 37
+Surgical stavů, 7 souborových kontraktů, 167 médií, 39 transportních kontrol,
+22 notových kontrol, skutečné otevření/zavření WinUI a lokální WebView2 bridge.
+Stažený runtime a samostatné zdroje mají ověřené SHA256, CRC všech sedmi vnitřních
+archivů a přesné revize; samostatné nativní a managed PDB mají ověřený formát.
+Další rozšíření domény má vlastní [W06 podklady](../w06/README.md).
