@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>AlphaTab</id>
+    <version>1.8.3</version>
+    <authors>Danielku15</authors>
+    <license type="expression">MPL-2.0</license>
+    <licenseUrl>https://licenses.nuget.org/MPL-2.0</licenseUrl>
+    <readme>README.md</readme>
+    <projectUrl>https://www.alphatab.net/</projectUrl>
+    <description>alphaTab is a cross platform music notation and guitar tablature rendering library.</description>
+    <copyright>Copyright © 2025, Daniel Kuschny and Contributors</copyright>
+    <tags>music,notation,engraver,renderer</tags>
+    <repository type="git" url="https://github.com/CoderLine/alphaTab" commit="9d0142eee2b1175dfd36e839ddbd867aed9e454e" />
+    <dependencies>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="AlphaSkia" version="3.4.135" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.CSharp" version="4.7.0" exclude="Build,Analyzers" />
+        <dependency id="System.Drawing.Common" version="9.0.8" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

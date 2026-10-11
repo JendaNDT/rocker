@@ -44,6 +44,8 @@ try {
         (Join-Path $nativeBuild 'rocker_audio_test.dll'))
     Invoke-Checked 'dotnet' @('run', '--project', 'Rocker.Interop.Checks', '-c', 'Release', '--no-build', '--',
         (Join-Path $nativeBuild 'rocker_audio_test_incompatible.dll'), '--mismatched-abi')
+    Invoke-Checked 'dotnet' @('run', '--project', 'Rocker.Notation.Checks', '-c', 'Release', '--',
+        (Join-Path $PSScriptRoot 'fixtures'), $reportDirectory)
     Invoke-Checked 'dotnet' @('publish', 'Rocker.Probe', '-c', 'Release', '-r', 'win-x64',
         '-o', $probeOutput, "-p:RockerNativeDll=$(Join-Path $nativeBuild 'rocker_audio.dll')")
     Write-Output "Prototyp byl sestaven do $probeOutput. Ruční přejímka W03 zůstává samostatná."

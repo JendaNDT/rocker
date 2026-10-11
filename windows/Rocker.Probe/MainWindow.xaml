@@ -2,13 +2,13 @@
     x:Class="Rocker.Probe.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="Rocker — ověření zvukového jádra">
+    Title="Rocker — ověření zvuku a not">
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <ScrollViewer HorizontalScrollBarVisibility="Disabled">
             <StackPanel Padding="32" Spacing="20" MaxWidth="760" HorizontalAlignment="Stretch">
                 <TextBlock Text="Rocker" Style="{ThemeResource TitleTextBlockStyle}" />
-                <TextBlock Text="Ověření nativního zvuku" Style="{ThemeResource SubtitleTextBlockStyle}" />
-                <TextBlock Text="Tento technický prototyp ověřuje propojení Windows rozhraní a C++ knihovny. Nejde ještě o hotovou aplikaci."
+                <TextBlock Text="Ověření nativního zvuku a not" Style="{ThemeResource SubtitleTextBlockStyle}" />
+                <TextBlock Text="Technický prototyp ověřuje zvuk a nativní vykreslení not. Nejde ještě o hotovou aplikaci ani její finální design."
                            TextWrapping="Wrap" />
                 <Border Background="{ThemeResource CardBackgroundFillColorDefaultBrush}" Padding="20" CornerRadius="6">
                     <StackPanel Spacing="12">
@@ -26,6 +26,26 @@
                 <TextBlock x:Name="DeviceText" Text="Zařízení zatím není otevřené." TextWrapping="Wrap" />
                 <TextBlock Text="Velikost bufferu zde není měření celkové odezvy. Zavření okna zastaví tón a uvolní zařízení."
                            TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                <TextBlock Text="Noty — první část W04" Style="{ThemeResource SubtitleTextBlockStyle}" />
+                <TextBlock Text="MusicXML a Guitar Pro se vykreslují nativně. Kliknutím vyber takt. Náhled ukazuje první stopu a nejvýše 12 taktů. MIDI data zatím nejsou přehrávána zvukovým jádrem."
+                           TextWrapping="Wrap" />
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <Button x:Name="XmlButton" Content="Ukázka MusicXML" Click="Xml_Click" />
+                    <Button x:Name="GpButton" Content="Ukázka Guitar Pro" Click="Gp_Click" />
+                    <Button x:Name="OpenScoreButton" Content="Otevřít noty…" Click="OpenScore_Click" />
+                </StackPanel>
+                <TextBlock x:Name="NotationStatus" Text="Připravuji notový náhled…" TextWrapping="Wrap"
+                           AutomationProperties.LiveSetting="Polite" />
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                    <Canvas x:Name="ScoreCanvas" Width="700" Height="1" Background="White" PointerPressed="Score_PointerPressed"
+                            AutomationProperties.Name="Notový náhled; výběr taktu kliknutím">
+                        <Image x:Name="ScoreImage" Width="700" Stretch="Fill" />
+                        <Border x:Name="SelectionBox" BorderBrush="DarkOrange" BorderThickness="2" Visibility="Collapsed"
+                                IsHitTestVisible="False" />
+                    </Canvas>
+                </ScrollViewer>
+                <TextBlock x:Name="SelectionStatus" Text="Takt zatím není vybraný." TextWrapping="Wrap" />
+                <Button x:Name="ExportMidiButton" Content="Uložit MIDI…" Click="ExportMidi_Click" IsEnabled="False" />
             </StackPanel>
         </ScrollViewer>
     </Grid>

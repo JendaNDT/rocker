@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="AlphaTab" Version="1.8.3" />
+    <EmbeddedResource Include="fonts/NotoSans-Regular.otf" />
+  </ItemGroup>
+</Project>

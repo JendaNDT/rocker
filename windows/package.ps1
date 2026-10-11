@@ -19,11 +19,15 @@ function Invoke-Git([string[]]$Arguments) {
 }
 $commit = Invoke-Git @('-C', $repository, 'rev-parse', 'HEAD')
 $juceCommit = Invoke-Git @('-C', $juce, 'rev-parse', 'HEAD')
+$notationSources = @(
+    @{ Name = 'AlphaTab'; Repository = 'https://github.com/CoderLine/alphaTab.git'; Tag = 'v1.8.3'; Commit = '9d0142eee2b1175dfd36e839ddbd867aed9e454e' },
+    @{ Name = 'AlphaSkia'; Repository = 'https://github.com/CoderLine/alphaSkia.git'; Tag = 'v3.4.135'; Commit = 'c82e319faeba4155b45664766e9badf528c0fc49' }
+)
 $expectedJuce = [regex]::Match((Get-Content (Join-Path $PSScriptRoot 'CMakeLists.txt') -Raw), 'GIT_TAG ([a-f0-9]{40})').Groups[1].Value
 if ($juceCommit -ne $expectedJuce) { throw 'JUCE sources do not match the configured revision.' }
 $smoke = Get-Content (Join-Path $reports 'window-smoke.json') -Raw | ConvertFrom-Json
 if ($smoke.result -ne 'passed') { throw 'Window smoke test has not passed.' }
-foreach ($required in @('Rocker.Probe.exe', 'rocker_audio.dll', 'Rocker.Probe.runtimeconfig.json')) {
+foreach ($required in @('Rocker.Probe.exe', 'rocker_audio.dll', 'Rocker.Probe.runtimeconfig.json', 'libalphaskia.dll')) {
     if (-not (Test-Path (Join-Path $publish $required))) { throw "Missing application file: $required" }
 }
 if (Get-ChildItem $publish -Filter 'rocker_audio_test*' -Recurse) { throw 'Test backend found in publish output.' }
@@ -36,6 +40,19 @@ foreach ($name in @('AGPL-3.0-only.txt', 'GPL-3.0-only.txt', 'juce-license.txt',
     'asio-license.txt', 'windowsapp-license.txt', 'webview-sdk-license.txt')) {
     Copy-Item (Join-Path $evidence $name) $licenses
 }
+$notationEvidence = Join-Path $repository 'docs/windows/w04/evidence'
+foreach ($name in @('alphatab-license.txt', 'alphaskia-license.txt', 'bravura-license.txt')) {
+    Copy-Item (Join-Path $notationEvidence $name) $licenses
+}
+Copy-Item (Join-Path $PSScriptRoot 'Rocker.Notation/fonts/OFL.txt') (Join-Path $licenses 'noto-sans-license.txt')
+@"
+AlphaTab 1.8.3: MPL-2.0, unmodified NuGet package.
+Corresponding source: AlphaTab-source.zip in the separate sources package.
+https://github.com/CoderLine/alphaTab/tree/9d0142eee2b1175dfd36e839ddbd867aed9e454e
+AlphaSkia 3.4.135: BSD-3-Clause with Skia and HarfBuzz notices in alphaskia-license.txt.
+https://github.com/CoderLine/alphaSkia/tree/c82e319faeba4155b45664766e9badf528c0fc49
+Embedded Bravura and Noto Sans fonts: SIL Open Font License, see included notices.
+"@ | Set-Content (Join-Path $licenses 'notation-sources.txt')
 
 # Preserve package license notices from the packages actually restored for this app.
 $assets = Get-Content (Join-Path $PSScriptRoot 'Rocker.Probe/obj/project.assets.json') -Raw | ConvertFrom-Json -AsHashtable
@@ -70,19 +87,25 @@ ROCKER - TESTOVACÍ PROTOTYP PRO WINDOWS
 3. Začni s nízkou hlasitostí a tlačítkem Spustit tón; Zastavit tón ukončí.
 
 Vyžaduje Windows 11 x64 od 24H2. Vývojové nástroje nejsou potřeba.
-Toto je první technický prototyp s testovacím tónem, ne kompletní Rocker.
+Toto je technický prototyp s testovacím tónem a notovým náhledem, ne kompletní Rocker.
+Noty se vykreslují nativně; lze otevřít MusicXML/Guitar Pro, vybrat takt a uložit MIDI.
+Přehrávání not, starých nahrávek, zpomalování a YouTube zatím nejsou implementované.
 Zvuk, skutečná odezva a chování na tvém zařízení vyžadují ruční ověření.
-Balík není podepsaný certifikátem. Není potřeba vypínat ochrany Windows.
+Balík není podepsaný certifikátem. Zapnutý Smart App Control může blokovat jeho DLL.
+Tato verze není ověřená se zapnutým Smart App Control; podepisování zatím není připravené.
 
 Verze zdrojů: $commit
 Zdrojový repozitář: $sourceUrl
 Vedle tohoto balíku je samostatný Rocker-Windows-sources.zip s odpovídajícími
-zdroji Rockeru, JUCE a postupem sestavení. Pro spuštění jej nepotřebuješ.
+zdroji Rockeru, JUCE, AlphaTab, AlphaSkia a postupem sestavení. Pro spuštění jej nepotřebuješ.
 Licence a oznámení jsou ve složce licenses; vlastní Windows kód je pod AGPLv3.
 "@ | Set-Content (Join-Path $app 'CTI-ME.txt') -Encoding utf8BOM
 @{
     commit = $commit
     juceCommit = $juceCommit
+    alphaTabCommit = $notationSources[0].Commit
+    alphaSkiaCommit = $notationSources[1].Commit
+    checkedNotation = (Get-Content (Join-Path $reports 'notation-checks.json') -Raw | ConvertFrom-Json)
     runUrl = "https://github.com/$env:GITHUB_REPOSITORY/actions/runs/$env:GITHUB_RUN_ID"
     minimumOs = 'Windows 11 24H2 x64'
     checkedWindow = $smoke
@@ -92,6 +115,13 @@ Licence a oznámení jsou ve složce licenses; vlastní Windows kód je pod AGPL
 # Sources are offered separately; Git archives exclude credentials and build caches.
 Invoke-Git @('-C', $repository, 'archive', '--format=zip', "--output=$(Join-Path $sources 'rocker-source.zip')", 'HEAD')
 Invoke-Git @('-C', $juce, 'archive', '--format=zip', "--output=$(Join-Path $sources 'JUCE-source.zip')", 'HEAD')
+foreach ($dependency in $notationSources) {
+    $checkout = Join-Path $stage ($dependency.Name + '-checkout')
+    Invoke-Git @('clone', '--depth', '1', '--branch', $dependency.Tag, $dependency.Repository, $checkout) | Out-Null
+    $revision = Invoke-Git @('-C', $checkout, 'rev-parse', 'HEAD')
+    if ($revision -ne $dependency.Commit) { throw "$($dependency.Name) source revision mismatch." }
+    Invoke-Git @('-C', $checkout, 'archive', '--format=zip', "--output=$(Join-Path $sources ($dependency.Name + '-source.zip'))", 'HEAD')
+}
 @"
 Corresponding sources for Rocker commit $commit and JUCE $juceCommit.
 Unpack rocker-source.zip into rocker and JUCE-source.zip into JUCE next to it.
@@ -99,6 +129,9 @@ Use x64 Developer PowerShell with the tools listed in rocker/windows/README.md.
 Run from rocker/windows: ./build.ps1 -JuceSource ../../JUCE
 NuGet restores the .NET/Windows SDK packages; exact observed tools are in build-info.json.
 The complete JUCE source includes its third-party sources and original notices.
+AlphaTab-source.zip and AlphaSkia-source.zip contain the unmodified upstream revisions
+recorded in build-info.json. Their upstream build instructions are in each archive.
+Rocker uses the exact NuGet packages 1.8.3 and 3.4.135; it does not rebuild those packages.
 "@ | Set-Content (Join-Path $sources 'BUILD-SOURCES.txt')
 Copy-Item (Join-Path $app 'build-info.json') $sources
 foreach ($item in @(@{ Name = 'Rocker-Windows-x64.zip'; Directory = $app },

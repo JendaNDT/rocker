@@ -7,6 +7,11 @@ Původní PWA a její kořenová MIT licence se nemění.
 - ASIO hlavičky přibalené k JUCE: vybrána GPLv3; nepřebírá se licence zvukového ovladače M-Audio.
 - JUCE obsahuje další komponenty s vlastními oznámeními; referencí je SPDX soupis tohoto vydání.
 - .NET a Windows App SDK mají vlastní licence a podmínky distribuovaných součástí.
+- AlphaTab .NET 1.8.3 (MPL-2.0), AlphaSkia 3.4.135 a jeho Windows knihovna
+  (BSD-3-Clause, oznámení Skia a HarfBuzz); používají se nezměněné NuGet balíčky.
+  Přesné zdroje AlphaTab a AlphaSkia jsou v samostatném zdrojovém balíku.
+- Bravura zabudovaná do AlphaTab a Noto Sans zabudované do Rocker.Notation
+  mají SIL Open Font License; úplné texty jsou přibalené v `licenses`.
 
 Přesné podklady jsou v rozhodnutí W02 v repozitáři. Toto je interní prototyp,
 nikoli hotový distribuční balík pro bratra. Předběžný spustitelný ZIP uchovává

@@ -1,6 +1,6 @@
 # W03 — Nativní okno a zvukový technický řez
 
-První implementace pro ověření C# / WinUI a C++ / JUCE. Není to ještě hlavní
+Technický prototyp pro ověření C# / WinUI, C++ / JUCE a nativního notového pohledu. Není to ještě hlavní
 obrazovka Rockeru, hotové zvukové jádro ani verze určená bratrovi.
 Platí [rozhodnutí W02](../docs/windows/decisions/0001-platform-and-distribution.md).
 

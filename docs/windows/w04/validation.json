@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "step": "W04",
+  "scope": "Native notation proof only",
+  "status": "linux-checks-passed-awaiting-windows-build",
+  "checkedDate": "2026-10-11",
+  "linuxNotation": {
+    "result": "passed",
+    "checks": 22,
+    "os": "Debian GNU/Linux 13 (trixie)",
+    "alphaTab": "1.8.3",
+    "alphaSkia": "3.4.135",
+    "samples": [
+      {
+        "Name": "notation-scale.musicxml",
+        "TrackCount": 1,
+        "BarCount": 1,
+        "NoteOnCount": 4,
+        "Width": 700,
+        "Height": 201,
+        "selectedBars": [
+          1
+        ]
+      },
+      {
+        "Name": "notation-phrases.gp",
+        "TrackCount": 1,
+        "BarCount": 2,
+        "NoteOnCount": 8,
+        "Width": 700,
+        "Height": 379,
+        "selectedBars": [
+          1,
+          2
+        ]
+      }
+    ],
+    "audioPlaybackVerified": false
+  },
+  "pwaRegression": {
+    "testsPassed": 561,
+    "testsFailed": 0,
+    "typeScript": "passed",
+    "lint": "passed"
+  },
+  "fixtureHashes": {
+    "notation-scale.musicxml": "1bed9d642bd4d9581a4b1abfa9ead772d36f61bfbaa6591aad89e92fa4dc4b90",
+    "notation-phrases.gp": "7e41b811059bfc10405b2e33affa498bd0ff879606484140f0ff3da7ea7b9bf8"
+  },
+  "notPerformed": [
+    "Published Windows notation view",
+    "User mouse and file-dialog acceptance",
+    "Notation synthesis in shared audio engine",
+    "Media decoding",
+    "Pitch-preserving stretch",
+    "YouTube/WebView2 coexistence",
+    "ASIO and M-Track Solo"
+  ]
+}

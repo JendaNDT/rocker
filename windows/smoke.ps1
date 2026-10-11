@@ -15,6 +15,8 @@ $process = $null
 $started = Get-Date
 $previousDiagnostics = $env:ROCKER_DIAGNOSTICS_DIR
 $env:ROCKER_DIAGNOSTICS_DIR = $reportDirectory
+$notationReport = Join-Path $reportDirectory 'notation-view.json'
+if (Test-Path $notationReport) { Remove-Item $notationReport }
 try {
     $process = Start-Process -FilePath $executable -WorkingDirectory $PublishDirectory -PassThru
     $deadline = $started.AddSeconds(45)
@@ -26,6 +28,16 @@ try {
     if ($process.MainWindowHandle -eq 0) { throw 'Application did not show a window within 45 seconds.' }
     $title = $process.MainWindowTitle
     if ($title -notlike 'Rocker*') { throw "Unexpected application window: $title" }
+    do {
+        Start-Sleep -Milliseconds 250
+        $process.Refresh()
+        if ($process.HasExited) { throw 'Application exited before native notation appeared.' }
+    } while (-not (Test-Path $notationReport) -and (Get-Date) -lt $deadline)
+    if (-not (Test-Path $notationReport)) { throw 'Native notation did not finish within 45 seconds.' }
+    $notation = Get-Content $notationReport -Raw | ConvertFrom-Json
+    if ($notation.result -ne 'passed' -or -not $notation.bitmapDecoded -or $notation.BarCount -ne 2) {
+        throw "Published native notation failed: $(Get-Content $notationReport -Raw)"
+    }
     if (-not $process.CloseMainWindow()) { throw 'The application rejected a normal window close.' }
     if (-not $process.WaitForExit(15000)) { throw 'The application did not exit after closing its window.' }
     if ($process.ExitCode -ne 0) { throw "Application exited with code $($process.ExitCode)." }
@@ -34,6 +46,7 @@ try {
         windowTitle = $title
         exitCode = $process.ExitCode
         audioPlaybackVerified = $false
+        nativeNotationVerified = $true
         checkedAtUtc = [DateTime]::UtcNow.ToString('o')
     } | ConvertTo-Json | Set-Content (Join-Path $reportDirectory 'window-smoke.json')
     Write-Output 'PASS: published WinUI application opened a window and exited normally; audio playback not tested.'

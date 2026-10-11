@@ -40,7 +40,11 @@ výslovně odmítl testovat; ruční kontrola chybějící DLL a další scéná
 v [protokolu](docs/windows/w03-manual-acceptance.md) zůstávají neověřené.
 Nepodepsanou zvukovou DLL na Jendově počítači blokoval Smart App Control
 (0x800711C7); přehrávání fungovalo po jeho vypnutí. Podepsaný balík se zapnutou
-ochranou není ověřený. Následuje W04 — noty, média a souběh zvuku.
+ochranou není ověřený. W04 je rozpracovaný: první technický řez přidává nativní notový pohled
+(AlphaTab .NET / AlphaSkia), import GP7 a MusicXML, výběr taktu a export MIDI.
+[Podklady W04](docs/windows/w04/README.md) oddělují implementaci od výsledků
+Windows sestavení a ruční přejímky. Přehrávání not, média, zpomalování a YouTube
+zatím implementované nejsou.
 [Původní Linux protokol](docs/windows/w03-validation.json) zůstává historickým záznamem.
 Opraven byl pád při načtení XAML po publikování: projekt nyní zapíná `EnableMsixTooling`.
 Vývoj a průběžné
