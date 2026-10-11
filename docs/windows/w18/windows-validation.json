@@ -1,0 +1,40 @@
+{
+  "scope": "W18 metronome, advanced patterns and native preset controls before W19 analysis",
+  "sourceCommit": "7acb346365c88d8e821d44c8c70e64f32e81255d",
+  "windowsRun": "https://github.com/JendaNDT/rocker/actions/runs/38164401968",
+  "result": "passed",
+  "nativeTests": {
+    "executed": 8,
+    "failures": 0,
+    "skipped": 0
+  },
+  "metronome": {
+    "result": "passed",
+    "nativeParametersVerified": true,
+    "persistenceReopened": true,
+    "controlCount": 23,
+    "factoryPresetCount": 6,
+    "audioPlaybackVerified": false,
+    "manualDialogsVerified": false
+  },
+  "window": {
+    "audioHostsCreated": 1,
+    "audioCoexistenceVerified": false,
+    "nativeNotationVerified": true,
+    "nativeShellViewsVisited": 32,
+    "midiPreparedInCommonEngine": true,
+    "localVideoBridgeVerified": true,
+    "checkedAtUtc": "2026-10-11T18:42:47.0086446Z",
+    "onlineVideoVerified": false,
+    "audioPlaybackVerified": false,
+    "exitCode": 0,
+    "webViewRuntime": "153.0.4234.48",
+    "result": "passed",
+    "windowTitle": "Rocker \u2014 P\u0159ehled"
+  },
+  "notPerformed": [
+    "Physical click listening and M-Track audio",
+    "Manual preset dialogs",
+    "Count-in integration with recordings and Looper (W22/W23)"
+  ]
+}

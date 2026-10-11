@@ -57,6 +57,9 @@ int main(){
     rocker::MetronomeParameters metro;metro.enabled=true;metro.bpm=240;metro.subdivision=4;metro.poly=true;metro.polyTicks=7;processor.input().metronome().configure(metro,true);processor.prepare(48000);processor.input().clock().tempo(240);
     audit=true;for(int i=0;i<200;++i)processor.process(inputs,1,outputs,2,512);audit=false;
     check(allocations.load()==0 && releases.load()==0,"active metronome voices with amplifier allocate/release no callback ownership");
+    processor.input().reference().command({1,440,.3},true);processor.input().reference().command({2,1320,.6},true);processor.prepare(48000);
+    audit=true;for(int i=0;i<20;++i)processor.process(inputs,1,outputs,2,512);audit=false;
+    check(allocations.load()==0 && releases.load()==0,"reference and confirmation voices allocate/release no callback ownership");
     std::atomic<uint64_t> authority{1};processor.authority(authority);processor.authorize(1);authority.store(2);processor.enable(true);
     processor.render(outputs,2,512);
     check(std::all_of(left.begin(),left.end(),[](float v){return v==0;}) && std::all_of(right.begin(),right.end(),[](float v){return v==0;}),"late enable cannot resurrect a cancelled authority");

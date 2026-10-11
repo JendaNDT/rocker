@@ -40,7 +40,7 @@ internal sealed class AudioHandle : SafeHandleZeroOrMinusOneIsInvalid
 
 internal static class NativeMethods
 {
-    internal const uint AbiVersion = 8;
+    internal const uint AbiVersion = 9;
     private const string Library = "rocker_audio";
     [DllImport(Library, EntryPoint = "rocker_audio_get_abi_version", CallingConvention = CallingConvention.Cdecl)]
     internal static extern uint GetAbiVersion();

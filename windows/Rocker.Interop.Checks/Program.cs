@@ -24,6 +24,7 @@ Check(Marshal.SizeOf<TransportSnapshot>() == 56, "C# transport layout");
 Check(Marshal.SizeOf<MeterSnapshot>()==112,"C# meter layout");
 Check(Marshal.SizeOf<ClockSnapshot>()==72,"C# clock layout");
 Check(Marshal.SizeOf<MetronomeSnapshot>()==80,"C# metronome observation layout");
+Check(Marshal.SizeOf<AnalysisSnapshot>()==144,"C# analysis snapshot layout");
 if (mode == "--media")
 {
     if (args.Length != 3) throw new ArgumentException("Media checks need the repository root.");
@@ -149,6 +150,9 @@ await using(var deviceAudio=new NativeAudio())
 }
 await using(var metroAudio=new NativeAudio())
 {
+    metroAudio.SetNoiseGate(.08);var initialAnalysis=metroAudio.GetAnalysis();Check(!initialAnalysis.ActiveInput && initialAnalysis.Frequency==0,"no device does not invent a measured note");
+    try{metroAudio.SetNoiseGate(double.NaN);throw new Exception("NaN gate accepted");}catch(ArgumentException){}
+    try{metroAudio.CalibrateNoise();throw new Exception("Calibration without input accepted");}catch(InvalidOperationException){}
     var metro=new MetronomeConfiguration(Enabled:true,Bpm:123,Beats:7,Subdivision:4,Sound:1,SubSound:3,CountIn:2,Ramp:true,RampEvery:3,RampStep:7,RampTarget:201,Gap:true,AudibleBars:2,SilentBars:3,Poly:true,PolyTicks:5,PolySound:2,Volume:.7,AccentVolume:.9,Swing:.65,PolyVolume:.4,Accents:[2,1,0,1,2,1,1],Sounds:[1,5,2,3,4,5,0]);
     await metroAudio.SetMetronomeAsync(metro);var roundtrip=metroAudio.GetMetronome();
     Check(roundtrip with{Accents=null,Sounds=null}==metro with{Accents=null,Sounds=null} && roundtrip.Accents!.Take(7).SequenceEqual(metro.Accents!) && roundtrip.Sounds!.Take(7).SequenceEqual(metro.Sounds!),"all 240 bytes of metronome configuration cross the ABI");
@@ -161,7 +165,14 @@ await using(var metroAudio=new NativeAudio())
     var before=metroAudio.GetClock();await metroAudio.SetMetronomeAsync(metro with{CountIn=0});await metroAudio.StartMetronomeAsync();var after=metroAudio.GetClock();
     Check(before.Epoch==after.Epoch && before.Frame==after.Frame && metroAudio.GetSnapshot().Reserved==0,"metronome joins an active source without opening or resetting the device");
     await metroAudio.SetMetronomeAsync(metro with{Enabled=false});Check(metroAudio.GetSnapshot().State==AudioState.Running,"disabling metronome preserves other sources");
-    await metroAudio.StopAsync();
+    await metroAudio.StopAsync();await metroAudio.PlayReferenceAsync(440,.3);Check(metroAudio.GetSnapshot().Reserved==4 && metroAudio.GetAnalysis().ReferencePlaying && metroAudio.GetAnalysis().Frequency==0,"reference uses common graph and cannot pretend to be measured guitar");
+    await metroAudio.StopAsync();Check(!metroAudio.GetAnalysis().ReferencePlaying,"global stop clears reference");
+    await metroAudio.StartAsync();var beforeReference=metroAudio.GetClock();await metroAudio.PlayReferenceAsync(329.627,.2);Check(metroAudio.GetClock().Epoch==beforeReference.Epoch && metroAudio.GetSnapshot().Reserved==0,"reference joins an existing graph without a device restart");await metroAudio.StopAsync();
+}
+for(int i=0;i<20;++i)
+{
+    await using var referenceAudio=new NativeAudio();var playingReference=referenceAudio.PlayReferenceAsync(440,.3);var stoppingReference=referenceAudio.StopAsync();await Task.WhenAll(playingReference,stoppingReference);
+    Check(referenceAudio.GetSnapshot().State==AudioState.Stopped && !referenceAudio.GetAnalysis().ReferencePlaying,"release/full stop cannot be resurrected by a late reference worker");
 }
 // Slow vendor initialization stays on a retained managed worker. Stop and polling remain responsive.
 var delayedLibrary=NativeLibrary.Load(Path.GetFullPath(args[0]));

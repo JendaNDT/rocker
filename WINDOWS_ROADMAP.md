@@ -334,7 +334,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w18"></a>
 #### W18 — Metronom a všechny doprovodné zvuky
 
-- [ ] Rozpracováno: [nativní kliky, celý formulář a presety](docs/windows/w18/README.md). Vzorkové a P/Invoke testy prošly; Windows sestavení se ověřuje. Společný start nahrávání/Looperu naváže ve W22/W23. Závislosti: W06, W08, W16.
+- [ ] Rozpracováno: [nativní kliky, celý formulář a presety](docs/windows/w18/README.md). Vzorkové/PInvoke testy i [Windows sestavení/formulář/persistence prošly](docs/windows/w18/windows-validation.json). Společný start nahrávání/Looperu naváže ve W22/W23. Závislosti: W06, W08, W16.
 - Přenést všechny současné takty, subdivize, per-beat akcenty a zvuky, tap tempo, swing, předtakt, zrychlování, cvičné ticho, drum mode, polyrytmus, presety a vizualizaci kyvadla.
 - Clicky, bicí i pozdější hudební náhledy běží ve společném audio grafu. Hudební události plánovat na konkrétní vzorek; UI kyvadlo a zvýraznění doby odvozovat od transportu.
 - Zachovat ovládání tempa číslem, klávesami i velkým tlačítkem v Live. Změny během hraní mají určený okamžik použití a neduplikují dobu.
@@ -343,7 +343,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w19"></a>
 #### W19 — Ladička, detekce tónu a analýza palm mute
 
-- [ ] Čeká. Závislosti: W06, W08, W15, W16.
+- [ ] Rozpracováno: [ladička, worker, kalibrace a společné referenční tóny](docs/windows/w19/README.md). Linux detektor/FFT/worker/RT/PInvoke testy prošly, Windows formulář se ověřuje. Ruční poslech a technika budou v přejímce. Závislosti: W06, W08, W15, W16.
 - Zvolit a ověřit detektor mono tónu s odpovídající licencí, přenést výpočty centů, stabilizaci a confidence gate. Zachovat vedený i chromatický režim, referenční A, značení H/B, tovární a vlastní ladění, referenční tón a volitelný potvrzovací zvuk.
 - Kalibraci šumu, měřič vstupu a algoritmus palm mute odvodit ze skutečných vstupních dat. Ticho, slabý či zkreslený signál mají vlastní stav; bez signálu se nezobrazuje poslední tón jako aktuálně měřený.
 - Vyhodnocovat mimo audio callback, omezit počet aktualizací UI a měřit stáří výsledku. Vysvětlit, že analýza nízkých tónů potřebuje delší okno než samotný monitoring.

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 #include "rocker_audio.h"
+#include <limits>
 #include "tone_processor.h"
 #include <array>
 #include <chrono>
@@ -95,6 +96,8 @@ int main() {
         chosen.buffer_frames=512;check(rocker_audio_configure_device(host,&chosen,"Test ASIO","Test interface","Test interface")==ROCKER_DEVICE_ERROR,"unsupported format rejected");
         check(rocker_audio_copy_device_details(host,deviceJson.data(),deviceJson.size(),&jsonSize)==ROCKER_OK && std::strstr(deviceJson.data(),"128"),"failed selection preserves last configuration");
         chosen.abi_version=ROCKER_AUDIO_ABI_VERSION-1;check(rocker_audio_configure_device(host,&chosen,"Test ASIO","Test interface","Test interface")==ROCKER_ABI_MISMATCH,"device config ABI version validated");
+        check(rocker_audio_set_noise_gate(host,0.08)==ROCKER_OK,"native noise gate accepts supported scale");
+        check(rocker_audio_set_noise_gate(host,std::numeric_limits<double>::quiet_NaN())==ROCKER_INVALID_ARGUMENT,"native noise gate rejects NaN independently of managed validation");
         rocker_audio_destroy(host);
         rocker_audio_destroy(nullptr);
         check(rocker_audio_stop(nullptr) == ROCKER_INVALID_ARGUMENT, "null handle rejected");

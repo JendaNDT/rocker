@@ -18,9 +18,9 @@
 extern "C" {
 #endif
 
-/* Version 8 adds sample-clock metronome synthesis and bounded configuration.
+/* Version 9 adds off-callback pitch/brightness analysis and noise calibration.
    Reject earlier DLLs before creating a host. */
-#define ROCKER_AUDIO_ABI_VERSION 8u
+#define ROCKER_AUDIO_ABI_VERSION 9u
 typedef struct rocker_audio_host* rocker_audio_handle;
 typedef uint32_t rocker_audio_result;
 enum {
@@ -89,6 +89,11 @@ typedef struct rocker_metronome_snapshot {
     uint32_t subdivision_tick,poly_tick;
     uint64_t voice_overloads,primary_events,secondary_events;
 } rocker_metronome_snapshot;
+typedef struct rocker_analysis_snapshot {
+    uint32_t struct_size,abi_version,flags,epoch;
+    uint64_t frame,sequence,hit_count,onset_frame,calibration_token;
+    double sample_rate,rms,peak,frequency,clarity,centroid,hit_centroid,window_seconds,age_seconds,calibration_progress,recommended_gate;
+} rocker_analysis_snapshot;
 #pragma pack(pop)
 
 /* Never call from an audio callback. Device operations execute on the native
@@ -121,6 +126,17 @@ ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_set_metronome(rocker_aud
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_get_metronome(rocker_audio_handle,rocker_metronome_config*);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_get_metronome_snapshot(rocker_audio_handle,rocker_metronome_snapshot*);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_reserve_metronome_start(rocker_audio_handle,uint64_t*);
+/* Cached, age-labelled readings from the separate analysis worker. Bit flags:
+   1 pitch, 2 ready window, 4 active input, 8 calibration, 16 complete,
+   32 interrupted calibration, 64 stale. No input/stale => frequency zero. */
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_get_analysis(rocker_audio_handle,rocker_analysis_snapshot*);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_set_noise_gate(rocker_audio_handle,double level);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_calibrate_noise(rocker_audio_handle,uint64_t* token);
+/* Reference/chime commands use a reserved additive-start ticket. A stale
+   ticket cannot arm audio after Stop. enabled=0, confirmation=0 only releases
+   the reference tone and does not stop other sources. */
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_reserve_reference(rocker_audio_handle,uint32_t kind,uint64_t* graph_ticket,uint64_t* reference_ticket);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_reference(rocker_audio_handle,uint64_t ticket,uint64_t reference_ticket,uint32_t enabled,double frequency,double volume,uint32_t confirmation);
 /* Immediately silence the graph and invalidate pending starts. Does not wait for vendor I/O. */
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_request_stop(rocker_audio_handle);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_reserve_stop(rocker_audio_handle,uint64_t* ticket);

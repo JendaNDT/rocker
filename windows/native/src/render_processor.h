@@ -18,14 +18,15 @@ public:
     void authority(const std::atomic<uint64_t>& intent) noexcept { authority_ = &intent; }
     void authorize(uint64_t ticket) noexcept { ticket_.store(ticket); }
     void enable(bool value) noexcept { enabled_.store(value); tone_.enable(value); }
-    void selectTone() noexcept { clipMode_ = false;liveMode_=false;metroMode_=false; }
-    void selectClip() noexcept { clipMode_ = true;liveMode_=false;metroMode_=false; }
-    void selectLive() noexcept { clipMode_=false;liveMode_=true;metroMode_=false; }
-    void selectMetronome() noexcept {clipMode_=false;liveMode_=false;metroMode_=true;}
-    uint32_t mode() const noexcept{return metroMode_?3u:liveMode_?2u:clipMode_?1u:0u;}
+    void selectTone() noexcept { clipMode_ = false;liveMode_=false;idleMode_=0; }
+    void selectClip() noexcept { clipMode_ = true;liveMode_=false;idleMode_=0; }
+    void selectLive() noexcept { clipMode_=false;liveMode_=true;idleMode_=0; }
+    void selectReference() noexcept {clipMode_=false;liveMode_=false;idleMode_=4;}
+    void selectMetronome() noexcept {clipMode_=false;liveMode_=false;idleMode_=3;}
+    uint32_t mode() const noexcept{return idleMode_?idleMode_:liveMode_?2u:clipMode_?1u:0u;}
     InputGraph& input() noexcept{return input_;}
     void install(media::Clip clip, double speed) {
-        clip_ = std::move(clip); speed_ = speed; clipMode_ = true;liveMode_=false;metroMode_=false;loop_.store(0);loopCycles_.store(0);seek(0);
+        clip_ = std::move(clip); speed_ = speed; clipMode_ = true;liveMode_=false;idleMode_=0;loop_.store(0);loopCycles_.store(0);seek(0);
     }
     bool loopEnabled() const noexcept{return loop_.load()!=0;}
     uint64_t loopCycles() const noexcept{return loopCycles_.load();}
@@ -51,7 +52,7 @@ public:
     void volume(double value) noexcept { volume_.store(value); }
     bool ended() const noexcept { return ended_.load(); }
     bool clipMode() const noexcept { return clipMode_; }
-    uint64_t frames() const noexcept { return (clipMode_ || liveMode_ || metroMode_) ? frames_.load() : tone_.frames(); }
+    uint64_t frames() const noexcept { return (clipMode_ || liveMode_ || idleMode_) ? frames_.load() : tone_.frames(); }
     void render(float* const* outputs, int channels, int count) noexcept {
         // A late driver start cannot resurrect a cancelled request, even if
         // cancellation raced with enable(). The authority outlives joined callbacks.
@@ -60,7 +61,7 @@ public:
                 if (outputs[c]) std::fill_n(outputs[c], count, 0.0f);
             return;
         }
-        if(liveMode_ || metroMode_){if(outputs && count>0)for(int c=0;c<channels;++c)if(outputs[c])std::fill_n(outputs[c],count,0.0f);frames_.fetch_add(count>0?static_cast<uint64_t>(count):0);return;}
+        if(liveMode_ || idleMode_){if(outputs && count>0)for(int c=0;c<channels;++c)if(outputs[c])std::fill_n(outputs[c],count,0.0f);frames_.fetch_add(count>0?static_cast<uint64_t>(count):0);return;}
         if (!clipMode_) { tone_.render(outputs, channels, count); return; }
         if (!outputs || channels <= 0 || count <= 0) return;
         const auto target = enabled_.load() ? volume_.load() : 0.0;
@@ -108,7 +109,7 @@ private:
     ToneProcessor tone_;
     media::Clip clip_;
     double rate_ = 48000, cursor_ = 0, gain_ = 0, speed_ = 1;
-    bool clipMode_ = false,liveMode_=false,metroMode_=false;
+    bool clipMode_ = false,liveMode_=false;uint32_t idleMode_=0;
     std::atomic<double> position_{0}, volume_{0.15};
     std::atomic<bool> enabled_{false}, ended_{false};
     std::atomic<uint64_t> frames_{0},loop_{0},loopCycles_{0};

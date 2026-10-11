@@ -31,5 +31,7 @@ Vizualizace čte native snapshot každých 50 ms a nijak neplánuje zvuk.
 Linux CTest 8/8 včetně metronomu, RT alokačního auditu a proměnlivých bloků.
 Managed test skutečně volá 240b konfiguraci a 80b snapshot C++ přes P/Invoke,
 kontroluje chybný vstup, start bez kytary, odzbrojení, epochu/kurzor a zachování
-ostatních zdrojů. Windows UI build/persistence probíhá. Fyzický poslech,
+ostatních zdrojů. [Windows sestavení prošlo](windows-validation.json): 8/8 CTest,
+oba publikované WinUI pohledy, 23 společných ovladačů a nativní/persistentní
+roundtrip jednoho ze šesti továrních presetů. Fyzický poslech,
 subjektivní přechody, ruční preset dialogy a karta M-Track nejsou otestované.

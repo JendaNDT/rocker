@@ -62,6 +62,6 @@ public sealed partial class MainWindow
         liveUpdating=true;liveMonitor!.IsChecked=meters.Monitoring;liveUpdating=false;
         liveState!.Text=running?(meters.HasInput?(meters.Monitoring?"Vstup běží a monitoring je zapnutý.":"Vstup běží. Monitoring je ztlumený."):"Zvuk běží bez vstupu kytary."):"Živý vstup je zastavený. Zařízení je uvolněné.";
         var clock=audio.GetClock();
-        liveDiagnostic!.Text=$"Společné hodiny: {clock.Frame:N0} vzorků · {clock.ElapsedSeconds:0.000} s · epocha {clock.Epoch} · DSP FIR {clock.DspLatencyFrames} vzorků\n"+$"Přebuzení vstupu: {meters.InputClips} · přebuzení výstupu: {meters.OutputClips} · neplatné vzorky: {meters.InvalidSamples}\nAnalytická fronta: {meters.DroppedAnalysisBlocks} zahozených bloků. Analýza tónu se připojí v dalším kroku.";
+        liveDiagnostic!.Text=$"Společné hodiny: {clock.Frame:N0} vzorků · {clock.ElapsedSeconds:0.000} s · epocha {clock.Epoch} · DSP FIR {clock.DspLatencyFrames} vzorků\n"+$"Přebuzení vstupu: {meters.InputClips} · přebuzení výstupu: {meters.OutputClips} · neplatné vzorky: {meters.InvalidSamples}\nAnalytická fronta: {meters.DroppedAnalysisBlocks} zahozených bloků. Tón a kalibrace jsou v Ladičce.";
     }
 }

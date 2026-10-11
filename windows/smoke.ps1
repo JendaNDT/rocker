@@ -85,6 +85,10 @@ try {
             throw "Native audio form/persistence failed: $audioView"
         }
     }
+    $tunerPath = Join-Path $reportDirectory 'tuner-view.json'
+    if (-not (Test-Path $tunerPath)) { throw 'Missing native tuner report.' }
+    $tuner = Get-Content $tunerPath -Raw | ConvertFrom-Json
+    if ($tuner.result -ne 'passed' -or $tuner.sixStringControls -ne 6 -or -not $tuner.persistenceReopened -or -not $tuner.noInputInventsNoNote) { throw 'Native tuner/persistence failed.' }
     if (-not (Test-Path (Join-Path $reportDirectory 'native-content.png'))) { throw 'Native content capture is missing.' }
     try { & (Join-Path $PSScriptRoot 'capture-window.ps1') -WindowHandle $process.MainWindowHandle.ToInt64() -Path (Join-Path $reportDirectory 'native-shell.png') }
     catch { $_ | Out-String | Set-Content (Join-Path $reportDirectory 'desktop-capture-unavailable.txt') }

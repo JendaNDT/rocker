@@ -118,6 +118,7 @@ public sealed partial class MainWindow
     private FrameworkElement BuildWorkspace(NavigationTarget target)
     {
         if (catalog is null) return Text("Výukový obsah není dostupný. Přehrávání souborů zůstává dostupné.");
+        if (target.ViewId == "03") return BuildTuner();
         if (target.ViewId == "04") return BuildMetronome();
         if (target.ViewId == "13") return BuildAmplifier();
         if (target.ViewId == "02") return BuildLive();
@@ -268,6 +269,7 @@ public sealed partial class MainWindow
         await VerifyPersistenceAsync();
         await VerifyAmplifierAsync();
         await VerifyMetronomeAsync();
+        await VerifyTunerAsync();
         await VerifyDevicesAsync();
         VerifyComponents();
         if (Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTIC_VIEW") == "components") ShowComponents();

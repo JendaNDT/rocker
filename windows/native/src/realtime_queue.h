@@ -25,6 +25,7 @@ public:
         if(read==write_.load(std::memory_order_acquire))return false;
         value=data_[read & (Capacity-1)];read_.store(read+1,std::memory_order_release);return true;
     }
+    bool pending() const noexcept {const auto read=read_.load(std::memory_order_acquire);return write_.load(std::memory_order_acquire)!=read;}
     uint64_t dropped() const noexcept {return dropped_.load(std::memory_order_relaxed);}
     // Reset requires producer and consumer to be joined, e.g. while changing device.
     void reset() noexcept {read_.store(0);write_.store(0);dropped_.store(0);}
