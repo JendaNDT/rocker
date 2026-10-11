@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "step": "W04",
   "scope": "Native notation proof only",
-  "status": "linux-checks-passed-awaiting-windows-build",
+  "status": "native-notation-windows-build-and-view-passed-awaiting-user-acceptance",
   "checkedDate": "2026-10-11",
   "linuxNotation": {
     "result": "passed",
@@ -48,12 +48,108 @@
     "notation-phrases.gp": "7e41b811059bfc10405b2e33affa498bd0ff879606484140f0ff3da7ea7b9bf8"
   },
   "notPerformed": [
-    "Published Windows notation view",
     "User mouse and file-dialog acceptance",
     "Notation synthesis in shared audio engine",
     "Media decoding",
     "Pitch-preserving stretch",
     "YouTube/WebView2 coexistence",
-    "ASIO and M-Track Solo"
-  ]
+    "ASIO and M-Track Solo",
+    "Playback on the new package with physical audio device",
+    "Smart App Control with signed binaries",
+    "Clean consumer Windows 11 installation"
+  ],
+  "builtCommit": "975a760329eaaa65cf2f69d453e72d4d572ee15e",
+  "buildRun": "https://github.com/JendaNDT/rocker/actions/runs/38135049339",
+  "windows": {
+    "runner": {
+      "os": "Microsoft Windows Server 2025 Datacenter 10.0.26100",
+      "label": "windows-2025",
+      "image": "windows-2025-vs2026",
+      "imageVersion": "20260925.250.1"
+    },
+    "toolchain": {
+      "os": "Microsoft Windows NT 10.0.26100.0",
+      "ninja": "1.13.2",
+      "dotnet": "10.0.401",
+      "checkedAtUtc": "2026-10-11T11:18:48.3627351Z",
+      "msvcFileVersion": "19.51.36260.0",
+      "cl": "C:\\Program Files\\Microsoft Visual Studio\\18\\Enterprise\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe",
+      "visualStudio": "18.0",
+      "cmake": "cmake version 3.31.10",
+      "windowsSdk": "10.0.26100.0\\"
+    },
+    "notation": {
+      "result": "passed",
+      "checks": 22,
+      "os": "Microsoft Windows 10.0.26100",
+      "alphaTab": "1.8.3",
+      "alphaSkia": "3.4.135",
+      "samples": [
+        {
+          "Name": "notation-scale.musicxml",
+          "TrackCount": 1,
+          "BarCount": 1,
+          "NoteOnCount": 4,
+          "Width": 700,
+          "Height": 201,
+          "selectedBars": [
+            1
+          ]
+        },
+        {
+          "Name": "notation-phrases.gp",
+          "TrackCount": 1,
+          "BarCount": 2,
+          "NoteOnCount": 8,
+          "Width": 700,
+          "Height": 379,
+          "selectedBars": [
+            1,
+            2
+          ]
+        }
+      ],
+      "audioPlaybackVerified": false
+    },
+    "publishedView": {
+      "result": "passed",
+      "bitmapDecoded": true,
+      "Width": 700,
+      "Height": 379,
+      "BarCount": 2,
+      "NoteOnCount": 8,
+      "audioPlaybackVerified": false
+    },
+    "windowSmoke": {
+      "checkedAtUtc": "2026-10-11T11:22:56.3868959Z",
+      "nativeNotationVerified": true,
+      "exitCode": 0,
+      "windowTitle": "Rocker — ověření zvuku a not",
+      "audioPlaybackVerified": false,
+      "result": "passed"
+    }
+  },
+  "package": {
+    "binaryFiles": 602,
+    "checksums": "passed",
+    "zipIntegrity": "passed",
+    "sourceRevisions": "four archives matched",
+    "assets": [
+      {
+        "name": "SHA256SUMS.txt",
+        "size": 184,
+        "sha256": "ee49aeaad868464e7199df4630ef11c670b1277b360fc5d310c1c4e3b9f8400f"
+      },
+      {
+        "name": "Rocker-Windows-x64.zip",
+        "size": 100994057,
+        "sha256": "42a6acbb223d197deb4aaccb97539509a372501b225f2f995292fa41e6ccfd72"
+      },
+      {
+        "name": "Rocker-Windows-sources.zip",
+        "size": 130729624,
+        "sha256": "a04483683be58d21fa37db64f17f1c65439e2d7714a66319684051c58c0caa22"
+      }
+    ]
+  }
 }

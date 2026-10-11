@@ -1,6 +1,6 @@
 # W04 — první technický řez: nativní noty
 
-Stav: implementace importu, vykreslení, hit testingu a MIDI dat. W04 jako
+Stav: import, vykreslení, hit testing a MIDI data prošly Linux i Windows kontrolami; publikované WinUI okno načetlo notový obraz. [Protokol](validation.json). W04 jako
 celek není dokončený; dekódování médií, zpomalování, syntéza not a WebView2 /
 YouTube zatím nejsou součástí tohoto prototypu.
 

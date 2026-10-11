@@ -13,10 +13,9 @@ je zatím současná PWA. [První krok — inventura a reference](docs/windows/b
 je dokončený, stejně jako [výběr platformy, licencí a distribuce](docs/windows/decisions/0001-platform-and-distribution.md).
 Bratr dostane instalátor, zdroje budou dostupné samostatně. [Technický prototyp W03](windows/README.md)
 má už úspěšné Windows sestavení, integrační testy a automatickou kontrolu otevření/zavření okna.
-[Stáhnout sestavený Windows prototyp](https://github.com/JendaNDT/rocker/releases/tag/windows-w03-preview-20261011)
+[Stáhnout sestavený Windows prototyp](https://github.com/JendaNDT/rocker/releases/tag/windows-w04-notation-preview-20261011)
 — ZIP rozbalit a spustit `Rocker.Probe.exe`; vývojové nástroje nejsou potřeba.
-Jde o testovací tón, kompletní funkce a Vintage UI teprve následují. Zvuk a ruční
-ovládání ještě vyžadují přejímku; [výsledky kontrol](docs/windows/w03-windows-validation.json).
+Testovací tón už Jenda ověřil; první část W04 přidává [nativní notový náhled](docs/windows/w04/README.md), výběr taktu a export MIDI. Kompletní funkce a Vintage UI teprve následují. [Kontroly W03](docs/windows/w03-windows-validation.json) a [Windows výsledky W04](docs/windows/w04/validation.json) odlišují ověřené chování od zbývajících částí.
 
 ## Co to je
 

@@ -43,7 +43,10 @@ Nepodepsanou zvukovou DLL na Jendově počítači blokoval Smart App Control
 ochranou není ověřený. W04 je rozpracovaný: první technický řez přidává nativní notový pohled
 (AlphaTab .NET / AlphaSkia), import GP7 a MusicXML, výběr taktu a export MIDI.
 [Podklady W04](docs/windows/w04/README.md) oddělují implementaci od výsledků
-Windows sestavení a ruční přejímky. Přehrávání not, média, zpomalování a YouTube
+Windows sestavení a ruční přejímky. Windows build, 22 notových kontrol a
+import/vykreslení v publikovaném WinUI okně prošly v běhu 38135049339.
+Klikání a systémové dialogy na Jendově počítači zatím potvrzené nejsou.
+Přehrávání not, média, zpomalování a YouTube
 zatím implementované nejsou.
 [Původní Linux protokol](docs/windows/w03-validation.json) zůstává historickým záznamem.
 Opraven byl pád při načtení XAML po publikování: projekt nyní zapíná `EnableMsixTooling`.

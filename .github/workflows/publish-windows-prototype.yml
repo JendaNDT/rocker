@@ -49,23 +49,30 @@ jobs:
               assert info['runUrl'].endswith('/' + str(selection['runId']))
               assert info['checkedWindow']['result'] == 'passed'
               assert info['checkedWindow']['exitCode'] == 0
+              assert info['checkedWindow']['nativeNotationVerified'] is True
+              assert info['checkedNotation']['result'] == 'passed'
               names = {n.lower() for n in package.namelist()}
               assert not any('rocker_audio_test' in n for n in names)
               for name in ['Rocker.Probe.exe', 'rocker_audio.dll', 'Microsoft.UI.Xaml.dll', 'coreclr.dll',
-                           'hostfxr.dll', 'hostpolicy.dll', 'Rocker.Probe.pri', 'CTI-ME.txt']:
+                           'hostfxr.dll', 'hostpolicy.dll', 'Rocker.Probe.pri', 'CTI-ME.txt',
+                           'AlphaTab.dll', 'AlphaSkia.dll', 'libalphaskia.dll', 'Rocker.Notation.dll',
+                           'fixtures/notation-scale.musicxml', 'fixtures/notation-phrases.gp',
+                           'licenses/alphatab-license.txt', 'licenses/alphaskia-license.txt',
+                           'licenses/bravura-license.txt', 'licenses/noto-sans-license.txt']:
                   assert name.lower() in names, name
-              for name in ['Rocker.Probe.exe', 'rocker_audio.dll']:
+              for name in ['Rocker.Probe.exe', 'rocker_audio.dll', 'libalphaskia.dll']:
                   data = package.read(name)
                   offset = struct.unpack_from('<I', data, 0x3c)[0]
                   assert data[:2] == b'MZ' and data[offset:offset+4] == b'PE\0\0'
                   assert struct.unpack_from('<H', data, offset+4)[0] == 0x8664
           with zipfile.ZipFile(root / 'Rocker-Windows-sources.zip') as sources:
               assert sources.testzip() is None
-              for name, revision in [('rocker-source.zip', info['commit']), ('JUCE-source.zip', info['juceCommit'])]:
+              for name, revision in [('rocker-source.zip', info['commit']), ('JUCE-source.zip', info['juceCommit']),
+                                     ('AlphaTab-source.zip', info['alphaTabCommit']), ('AlphaSkia-source.zip', info['alphaSkiaCommit'])]:
                   with zipfile.ZipFile(io.BytesIO(sources.read(name))) as archive:
                       assert archive.testzip() is None
                       assert archive.comment.decode() == revision
-          print('PASS: successful Windows build, x64 app, smoke test, ZIP integrity and matching sources.')
+          print('PASS: Windows build, native notation checks/view, x64 binaries, ZIP integrity and all corresponding sources.')
           PY
       - name: Publish private repository prerelease
         env:
