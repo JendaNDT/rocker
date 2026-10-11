@@ -94,11 +94,11 @@ internal static class StorageChecks
         try { await projects.SaveAsync(project); throw new Exception("Future project overwritten"); }
         catch (NotSupportedException) { Check(await File.ReadAllTextAsync(manifest)==future,"future project preserved"); }
         var futureFiles = new UserFiles(Path.Combine(files.Root,"future")); string futureDb=Path.Combine(futureFiles.DirectoryFor("database"),"rocker.db");
-        using (var connection = new SqliteConnection("Data Source="+futureDb)) { connection.Open(); using var cmd=connection.CreateCommand();cmd.CommandText="PRAGMA user_version=99;CREATE TABLE future(data TEXT);INSERT INTO future VALUES('keep')";cmd.ExecuteNonQuery(); }
+        using (var connection = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource=futureDb,Pooling=false }.ToString())) { connection.Open(); using var cmd=connection.CreateCommand();cmd.CommandText="PRAGMA user_version=99;CREATE TABLE future(data TEXT);INSERT INTO future VALUES('keep')";cmd.ExecuteNonQuery(); }
         byte[] before=await File.ReadAllBytesAsync(futureDb);
         try { await DataRepository.OpenAsync(futureFiles); throw new Exception("Future database accepted"); }
         catch (InvalidDataException) { byte[] after = await File.ReadAllBytesAsync(futureDb); Check(before.SequenceEqual(after),"future SQLite schema refused without changing bytes"); }
-        using (var connection = new SqliteConnection("Data Source="+database.DatabasePath)) { connection.Open();using var cmd=connection.CreateCommand();cmd.CommandText="INSERT INTO documents VALUES('settings','broken',1,'null','test')";cmd.ExecuteNonQuery(); }
+        using (var connection = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource=database.DatabasePath,Pooling=false }.ToString())) { connection.Open();using var cmd=connection.CreateCommand();cmd.CommandText="INSERT INTO documents VALUES('settings','broken',1,'null','test')";cmd.ExecuteNonQuery(); }
         snapshot = await database.SnapshotAsync();
         Check(snapshot.Documents.Count==14 && snapshot.Warnings.Count==1,"invalid row isolated and valid rows retained");
         Console.WriteLine($"PASS: {checks} SQLite, crash recovery, media, project and autosave assertions.");

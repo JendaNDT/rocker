@@ -216,6 +216,11 @@
         "resolved": "9.0.0",
         "contentHash": "hyJB4UlpAi19Xr9AXzu2NuagKC4lPfHObNMEAA0HmqFz2rX7wKgzeYzO/jM/eBHDhnUGFFEjk5cOoJaxqg5J4A=="
       },
+      "System.Security.Cryptography.ProtectedData": {
+        "type": "Transitive",
+        "resolved": "10.0.12",
+        "contentHash": "wO0W8VDMeRJZakRySOmemAnrBZMwEFRlbfBtATxUiLf2I3IhSRnCp1Vt157NWptdE4IJ7eftd5n8q9LtaKHFTQ=="
+      },
       "rocker.domain": {
         "type": "Project"
       },
@@ -223,7 +228,8 @@
         "type": "Project",
         "dependencies": {
           "Microsoft.Data.Sqlite": "[10.0.12, )",
-          "Rocker.Domain": "[0.1.0, )"
+          "Rocker.Domain": "[0.1.0, )",
+          "System.Security.Cryptography.ProtectedData": "[10.0.12, )"
         }
       },
       "rocker.interop": {

@@ -209,7 +209,8 @@ public sealed partial class MainWindow
             try { Directory.CreateDirectory(userFiles.Root); await Windows.System.Launcher.LaunchFolderAsync(await Windows.Storage.StorageFolder.GetFolderFromPathAsync(userFiles.Root)); }
             catch (Exception error) { ShellNotice.IsOpen = true; ShellNotice.Message = "Složku nelze otevřít. " + error.Message; }
         };
-        panel.Children.Add(open); return Card(panel);
+        panel.Children.Add(open);
+        panel.Children.Add(BuildSecretSettings()); return Card(panel);
     }
     private async void About_Click(object sender, RoutedEventArgs args)
     {
@@ -226,6 +227,7 @@ public sealed partial class MainWindow
         if (closeApproved) return;
         args.Cancel = true;
         if (closingWindow) return;
+        if (secretOperationRunning) { ShowPersistenceError("Počkej na dokončení uložení nebo odstranění klíče."); return; }
         closingWindow = true;
         try
         {
