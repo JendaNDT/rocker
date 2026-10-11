@@ -198,7 +198,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w04"></a>
 #### W04 — Ověřit noty, média a souběh zvuku
 
-- [ ] Rozpracováno. Závislosti: W02, W03. První technický řez: [nativní noty](docs/windows/w04/README.md); Windows ověření a ruční přejímka mají vlastní protokol. Navázal [offline mediální modul](docs/windows/w04/media.md): WAV/MP3/Ogg/Opus a zpomalení. WebM/AAC, společné přehrávání a YouTube zůstávají dalšími částmi W04.
+- [ ] Rozpracováno. Závislosti: W02, W03. První technický řez: [nativní noty](docs/windows/w04/README.md); Windows ověření a ruční přejímka mají vlastní protokol. Navázal [offline mediální modul](docs/windows/w04/media.md) a [původní nahrávky](docs/windows/w04/legacy-media.md): WAV/MP3/Ogg/Opus/WebM/Opus, Windows MP4/AAC a zpomalení. Windows prošel 167/167 mediálními kontrolami, Linux 138/138 s ASan/UBSan. Společné přehrávání, syntéza not a YouTube zůstávají dalšími částmi W04.
 - Prokázat načtení reprezentativního Guitar Pro a MusicXML do .NET AlphaTab, vykreslení v nativním okně, hit testing, výběr taktů a dostupnost dat pro společné přehrávání. Samostatně rozhodnout, jak renderer a syntéza zapadnou do jádra.
 - Zvolit dekódování MP3/WAV a starých nahrávek WebM/Opus, Ogg/Opus a podporovaných MP4. Ověřit algoritmus zpomalení bez změny výšky, kvalitu, paměť a licenci; JUCE samotné automaticky neřeší všechny tyto požadavky.
 - Ověřit oficiální YouTube embed ve WebView2, povolenou komunikaci a souběh jeho výstupu s audio hostem. Na dostupném Windows zařízení ověřit WASAPI; specifický souběh M-Track Solo zůstává v matici W44.

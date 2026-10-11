@@ -1,0 +1,526 @@
+{
+  "schemaVersion": 1,
+  "step": "W04",
+  "scope": "Legacy native WebM/Opus and system Windows MP4/AAC; offline proof, not connected to the application transport",
+  "checkedDate": "2026-10-11",
+  "builtCommit": "c64e5ede5ade525d9f1bc2cb52a70957d24e313d",
+  "buildRun": "https://github.com/JendaNDT/rocker/actions/runs/38144366038",
+  "linux": {
+    "result": "passed",
+    "media": {
+      "result": "passed",
+      "checks": 138,
+      "measurements": [
+        {
+          "file": "a4-440.wav",
+          "speed": 0.25,
+          "pitchHz": 440.004,
+          "frames": 192000
+        },
+        {
+          "file": "a4-440.wav",
+          "speed": 0.5,
+          "pitchHz": 440,
+          "frames": 96000
+        },
+        {
+          "file": "a4-440.wav",
+          "speed": 0.75,
+          "pitchHz": 440,
+          "frames": 64000
+        },
+        {
+          "file": "a4-440.wav",
+          "speed": 1,
+          "pitchHz": 440,
+          "frames": 48000
+        },
+        {
+          "file": "a4-440.wav",
+          "speed": 1.5,
+          "pitchHz": 440,
+          "frames": 32000
+        },
+        {
+          "file": "a4-440.wav",
+          "speed": 2,
+          "pitchHz": 440,
+          "frames": 24000
+        },
+        {
+          "file": "a4-440.mp3",
+          "speed": 0.25,
+          "pitchHz": 440.477,
+          "frames": 198144
+        },
+        {
+          "file": "a4-440.mp3",
+          "speed": 0.5,
+          "pitchHz": 439.999,
+          "frames": 99072
+        },
+        {
+          "file": "a4-440.mp3",
+          "speed": 0.75,
+          "pitchHz": 440,
+          "frames": 66048
+        },
+        {
+          "file": "a4-440.mp3",
+          "speed": 1,
+          "pitchHz": 440,
+          "frames": 49536
+        },
+        {
+          "file": "a4-440.mp3",
+          "speed": 1.5,
+          "pitchHz": 440,
+          "frames": 33024
+        },
+        {
+          "file": "a4-440.mp3",
+          "speed": 2,
+          "pitchHz": 439.999,
+          "frames": 24768
+        },
+        {
+          "file": "a4-440.ogg",
+          "speed": 0.25,
+          "pitchHz": 440.191,
+          "frames": 192000
+        },
+        {
+          "file": "a4-440.ogg",
+          "speed": 0.5,
+          "pitchHz": 440.002,
+          "frames": 96000
+        },
+        {
+          "file": "a4-440.ogg",
+          "speed": 0.75,
+          "pitchHz": 439.999,
+          "frames": 64000
+        },
+        {
+          "file": "a4-440.ogg",
+          "speed": 1,
+          "pitchHz": 439.999,
+          "frames": 48000
+        },
+        {
+          "file": "a4-440.ogg",
+          "speed": 1.5,
+          "pitchHz": 440,
+          "frames": 32000
+        },
+        {
+          "file": "a4-440.ogg",
+          "speed": 2,
+          "pitchHz": 440,
+          "frames": 24000
+        },
+        {
+          "file": "a4-440.webm",
+          "speed": 0.25,
+          "pitchHz": 440.191,
+          "frames": 192000
+        },
+        {
+          "file": "a4-440.webm",
+          "speed": 0.5,
+          "pitchHz": 440.002,
+          "frames": 96000
+        },
+        {
+          "file": "a4-440.webm",
+          "speed": 0.75,
+          "pitchHz": 439.999,
+          "frames": 64000
+        },
+        {
+          "file": "a4-440.webm",
+          "speed": 1,
+          "pitchHz": 439.999,
+          "frames": 48000
+        },
+        {
+          "file": "a4-440.webm",
+          "speed": 1.5,
+          "pitchHz": 440,
+          "frames": 32000
+        },
+        {
+          "file": "a4-440.webm",
+          "speed": 2,
+          "pitchHz": 440,
+          "frames": 24000
+        }
+      ],
+      "failures": 0,
+      "decodedFormats": [
+        "WAV",
+        "MP3",
+        "Ogg/Opus",
+        "WebM/Opus"
+      ],
+      "speedRange": [
+        0.25,
+        2
+      ],
+      "realGuitarListening": "deferred"
+    },
+    "ctestPassed": 2,
+    "ctestFailed": 0,
+    "addressSanitizer": "passed",
+    "undefinedBehaviorSanitizer": "passed",
+    "leakDetection": "passed",
+    "sanitizerOptions": {
+      "ASAN_OPTIONS": "detect_leaks=1:halt_on_error=1",
+      "UBSAN_OPTIONS": "halt_on_error=1"
+    },
+    "toolchain": {
+      "compiler": "GCC 14.2.0",
+      "cmake": "3.31.10",
+      "ninja": "1.13.2"
+    }
+  },
+  "previousWindowsRun": {
+    "result": "passed",
+    "url": "https://github.com/JendaNDT/rocker/actions/runs/38143961620",
+    "builtCommit": "eebf50133c7e44edab2ac1ec5fbe275176238e2b",
+    "checks": 164,
+    "streamingWebmCovered": false
+  },
+  "windows": {
+    "result": "passed",
+    "media": {
+      "result": "passed",
+      "checks": 167,
+      "measurements": [
+        {
+          "file": "a4-440.wav",
+          "speed": 0.25,
+          "pitchHz": 440.003,
+          "frames": 192000
+        },
+        {
+          "file": "a4-440.wav",
+          "speed": 0.5,
+          "pitchHz": 440,
+          "frames": 96000
+        },
+        {
+          "file": "a4-440.wav",
+          "speed": 0.75,
+          "pitchHz": 440,
+          "frames": 64000
+        },
+        {
+          "file": "a4-440.wav",
+          "speed": 1,
+          "pitchHz": 440,
+          "frames": 48000
+        },
+        {
+          "file": "a4-440.wav",
+          "speed": 1.5,
+          "pitchHz": 440,
+          "frames": 32000
+        },
+        {
+          "file": "a4-440.wav",
+          "speed": 2,
+          "pitchHz": 440,
+          "frames": 24000
+        },
+        {
+          "file": "a4-440.mp3",
+          "speed": 0.25,
+          "pitchHz": 440.478,
+          "frames": 198144
+        },
+        {
+          "file": "a4-440.mp3",
+          "speed": 0.5,
+          "pitchHz": 439.999,
+          "frames": 99072
+        },
+        {
+          "file": "a4-440.mp3",
+          "speed": 0.75,
+          "pitchHz": 440,
+          "frames": 66048
+        },
+        {
+          "file": "a4-440.mp3",
+          "speed": 1,
+          "pitchHz": 440,
+          "frames": 49536
+        },
+        {
+          "file": "a4-440.mp3",
+          "speed": 1.5,
+          "pitchHz": 440,
+          "frames": 33024
+        },
+        {
+          "file": "a4-440.mp3",
+          "speed": 2,
+          "pitchHz": 439.999,
+          "frames": 24768
+        },
+        {
+          "file": "a4-440.ogg",
+          "speed": 0.25,
+          "pitchHz": 440.191,
+          "frames": 192000
+        },
+        {
+          "file": "a4-440.ogg",
+          "speed": 0.5,
+          "pitchHz": 440.002,
+          "frames": 96000
+        },
+        {
+          "file": "a4-440.ogg",
+          "speed": 0.75,
+          "pitchHz": 439.999,
+          "frames": 64000
+        },
+        {
+          "file": "a4-440.ogg",
+          "speed": 1,
+          "pitchHz": 439.999,
+          "frames": 48000
+        },
+        {
+          "file": "a4-440.ogg",
+          "speed": 1.5,
+          "pitchHz": 440,
+          "frames": 32000
+        },
+        {
+          "file": "a4-440.ogg",
+          "speed": 2,
+          "pitchHz": 440,
+          "frames": 24000
+        },
+        {
+          "file": "a4-440.webm",
+          "speed": 0.25,
+          "pitchHz": 440.191,
+          "frames": 192000
+        },
+        {
+          "file": "a4-440.webm",
+          "speed": 0.5,
+          "pitchHz": 440.002,
+          "frames": 96000
+        },
+        {
+          "file": "a4-440.webm",
+          "speed": 0.75,
+          "pitchHz": 439.999,
+          "frames": 64000
+        },
+        {
+          "file": "a4-440.webm",
+          "speed": 1,
+          "pitchHz": 439.999,
+          "frames": 48000
+        },
+        {
+          "file": "a4-440.webm",
+          "speed": 1.5,
+          "pitchHz": 440,
+          "frames": 32000
+        },
+        {
+          "file": "a4-440.webm",
+          "speed": 2,
+          "pitchHz": 440,
+          "frames": 24000
+        },
+        {
+          "file": "a4-440.m4a",
+          "speed": 0.25,
+          "pitchHz": 439.806,
+          "frames": 196608
+        },
+        {
+          "file": "a4-440.m4a",
+          "speed": 0.5,
+          "pitchHz": 439.994,
+          "frames": 98304
+        },
+        {
+          "file": "a4-440.m4a",
+          "speed": 0.75,
+          "pitchHz": 440.003,
+          "frames": 65536
+        },
+        {
+          "file": "a4-440.m4a",
+          "speed": 1,
+          "pitchHz": 440,
+          "frames": 49152
+        },
+        {
+          "file": "a4-440.m4a",
+          "speed": 1.5,
+          "pitchHz": 439.985,
+          "frames": 32768
+        },
+        {
+          "file": "a4-440.m4a",
+          "speed": 2,
+          "pitchHz": 440.015,
+          "frames": 24576
+        }
+      ],
+      "failures": 0,
+      "decodedFormats": [
+        "WAV",
+        "MP3",
+        "Ogg/Opus",
+        "WebM/Opus",
+        "MP4/AAC"
+      ],
+      "speedRange": [
+        0.25,
+        2
+      ],
+      "realGuitarListening": "deferred"
+    },
+    "notation": {
+      "result": "passed",
+      "checks": 22,
+      "os": "Microsoft Windows 10.0.26100",
+      "alphaTab": "1.8.3",
+      "alphaSkia": "3.4.135",
+      "samples": [
+        {
+          "Name": "notation-scale.musicxml",
+          "TrackCount": 1,
+          "BarCount": 1,
+          "NoteOnCount": 4,
+          "Width": 700,
+          "Height": 201,
+          "selectedBars": [
+            1
+          ]
+        },
+        {
+          "Name": "notation-phrases.gp",
+          "TrackCount": 1,
+          "BarCount": 2,
+          "NoteOnCount": 8,
+          "Width": 700,
+          "Height": 379,
+          "selectedBars": [
+            1,
+            2
+          ]
+        }
+      ],
+      "audioPlaybackVerified": false
+    },
+    "window": {
+      "windowTitle": "Rocker — ověření zvuku a not",
+      "exitCode": 0,
+      "audioPlaybackVerified": false,
+      "checkedAtUtc": "2026-10-11T13:48:52.5916347Z",
+      "result": "passed",
+      "nativeNotationVerified": true
+    },
+    "toolchain": {
+      "dotnet": "10.0.401",
+      "windowsSdk": "10.0.26100.0\\",
+      "cmake": "cmake version 3.31.10",
+      "cl": "C:\\Program Files\\Microsoft Visual Studio\\18\\Enterprise\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe",
+      "checkedAtUtc": "2026-10-11T13:44:56.6865755Z",
+      "msvcFileVersion": "19.51.36260.0",
+      "visualStudio": "18.0",
+      "os": "Microsoft Windows NT 10.0.26100.0",
+      "ninja": "1.13.2"
+    },
+    "ctestPassed": 2,
+    "ctestFailed": 0,
+    "optionalMfImports": "absent",
+    "mediaExecutableDependencies": [
+      "ole32.dll",
+      "KERNEL32.dll",
+      "WINMM.dll"
+    ],
+    "managedInterop": "passed with fake device; incompatible ABI rejected",
+    "physicalAudioVerified": false
+  },
+  "fixtureHashes": {
+    "windows/fixtures/media/input-2-only.webm": "91b6997e3815a80642a6e7f4cb5ebd5f73c973633356b0ecb5450d9403ed67e0",
+    "windows/fixtures/media/input-2-only.m4a": "0bc94befbac41c83ec2a16ea74152a4d254ddb914f6d9979197004b3d9b7c9a7",
+    "windows/fixtures/media/a4-streaming.webm": "df582eacf607a8d1e2b4c939dd63996649665a9062f45946ea601c27fc16e62f"
+  },
+  "dependencies": {
+    "juce": "be29c81492b6151c8ea8d14c840e1311963b3a83",
+    "libwebm": "6745fd29e0245fc584b0bb9f65018ea2366fe7fb",
+    "signalsmithStretch": "a670068d9aeb64913331d5cc29337b19a457a7df",
+    "signalsmithLinear": "de55e6a50ffcf6f8f43f649692d94691c7025151",
+    "aacRuntime": "Windows system Media Foundation; dynamically loaded, not bundled"
+  },
+  "pwaRegression": {
+    "passed": 561,
+    "failed": 0,
+    "files": 54,
+    "typeScript": "passed",
+    "lint": "passed"
+  },
+  "notPerformed": [
+    "Media PInvoke and WinUI player integration",
+    "Playback through shared native host",
+    "Actual browser MediaRecorder capture (streaming fixture is synthetic)",
+    "Clean Windows N without Media Feature Pack",
+    "Complex MP4 edit-list and marker alignment",
+    "Encrypted, multitrack or discontinuous WebM",
+    "Subjective real guitar listening",
+    "Long recordings and total process memory profiling",
+    "ASIO/M-Track Solo physical latency",
+    "Vintage application UI"
+  ],
+  "manualAcceptance": {
+    "status": "deferred-not-performed",
+    "after": "W43",
+    "blocksFurtherImplementation": false
+  },
+  "userReleaseCreated": false,
+  "status": "legacy-native-media-automatically-validated-development-continues",
+  "packaging": {
+    "result": "passed",
+    "downloadedFromActions": true,
+    "sha256": "passed",
+    "zipCrc": "passed",
+    "x64Pe": "passed",
+    "sourceArchives": {
+      "rocker-source.zip": "c64e5ede5ade525d9f1bc2cb52a70957d24e313d",
+      "JUCE-source.zip": "be29c81492b6151c8ea8d14c840e1311963b3a83",
+      "AlphaTab-source.zip": "9d0142eee2b1175dfd36e839ddbd867aed9e454e",
+      "AlphaSkia-source.zip": "c82e319faeba4155b45664766e9badf528c0fc49",
+      "Signalsmith-Stretch-source.zip": "a670068d9aeb64913331d5cc29337b19a457a7df",
+      "Signalsmith-Linear-source.zip": "de55e6a50ffcf6f8f43f649692d94691c7025151",
+      "libwebm-source.zip": "6745fd29e0245fc584b0bb9f65018ea2366fe7fb"
+    },
+    "assets": [
+      {
+        "name": "Rocker-Windows-sources.zip",
+        "bytes": 132001236,
+        "sha256": "fab8b5aa32e1264b2a232ec5e4ebf3d8e46ff4c7bfee4f09e9f91d3a1547653b"
+      },
+      {
+        "name": "Rocker-Windows-x64.zip",
+        "bytes": 100998241,
+        "sha256": "cc7b94383c51d4e850919ecec98b22d78fd6309d33c91bb9f04ba9e6f54bdec5"
+      }
+    ],
+    "offeredForManualTest": false,
+    "publishedAsRelease": false
+  }
+}

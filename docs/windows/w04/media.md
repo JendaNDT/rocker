@@ -1,5 +1,10 @@
 # W04 — offline dekódování a zpomalování
 
+Tento dokument zachycuje první mediální řez na revizi `6df3fd0`.
+Aktuální rozšíření pro WebM/Opus a Windows MP4/AAC je v
+[navazujícím podkladu](legacy-media.md); původní výsledky níže zůstávají
+historickým důkazem svého sestavení.
+
 Implementace: `windows/native/include/media_clip.h`, `native/src/media_clip.cpp`
 a `native/tests/media_tests.cpp`. Jde o C++ základ pro společný transport,
 zatím nikoli o přehrávač nahrávek v okně. Původní testovací tón a notový pohled
@@ -78,6 +83,7 @@ Pro lokální odpovídající zdroje lze při konfiguraci přidat
 `-DFETCHCONTENT_SOURCE_DIR_JUCE=/path/JUCE`,
 `-DFETCHCONTENT_SOURCE_DIR_SIGNALSMITH-STRETCH=/path/Signalsmith-Stretch`
 a `-DFETCHCONTENT_SOURCE_DIR_SIGNALSMITH-LINEAR=/path/Signalsmith-Linear`.
+Aktuální rozšíření má také `-DFETCHCONTENT_SOURCE_DIR_LIBWEBM=/path/libwebm`.
 Bez voleb CMake stáhne připnuté revize. Samotné kontraktové testy bez
 JUCE/Signalsmith vyžadují i `-DROCKER_WITH_MEDIA=OFF`.
 

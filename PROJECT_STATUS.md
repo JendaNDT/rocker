@@ -57,14 +57,21 @@ import/vykreslení v publikovaném WinUI okně prošly v běhu 38135049339.
 [Sestavené vydání W04](https://github.com/JendaNDT/rocker/releases/tag/windows-w04-notation-preview-20261011)
 je zveřejněné v soukromém repozitáři; publikovaný ZIP byl znovu stažen a ověřen.
 Klikání a systémové dialogy na Jendově počítači zatím potvrzené nejsou.
-Nový [offline C++ mediální modul](docs/windows/w04/media.md) dekóduje
-WAV/MP3/Ogg/Opus a mění rychlost se zachováním tónu pomocí Signalsmith.
-Linux ověření prošlo 103/103 kontrolami. Ještě není připojený k oknu ani
-společnému transportu; WebM/AAC, přehrávání not a YouTube zbývají.
-Windows běh 38142313330 prošel: 103/103 mediálních kontrol, původní
-kontrakty a noty, WinUI smoke i balení. Stažené interní ZIPy a všech šest
-zdrojových archivů prošly kontrolou. [Protokol médií](docs/windows/w04/media-validation.json)
-obsahuje skutečná měření; ruční poslech je odložený po W43.
+[Offline C++ mediální modul](docs/windows/w04/media.md) a jeho
+[rozšíření](docs/windows/w04/legacy-media.md) dekódují WAV/MP3/Ogg/Opus,
+WebM/Opus a na Windows systémové MP4/AAC. Zpomalení používá Signalsmith.
+Windows běh 38144366038 prošel 167/167 mediálními kontrolami, 22/22 notovými
+kontrolami, C++/C# kontrakty, WinUI smoke a balením. Linux prošel 138/138
+mediálními kontrolami s AddressSanitizer, UndefinedBehaviorSanitizer a detekcí
+úniků. Ověřený je i WebM s neznámou délkou segmentu, poškozené soubory,
+stereo a AAC cesta s českými znaky. Volitelné MF DLL nejsou eager importem.
+Stažené interní ZIPy a všech sedm zdrojových archivů prošly kontrolou.
+[Protokol původních nahrávek](docs/windows/w04/legacy-media-validation.json)
+obsahuje skutečná měření a verze. Modul ještě není připojený k oknu ani
+společnému transportu; přehrávání not a YouTube zbývají. Windows N bez
+Media Feature Packu a fyzický zvuk nebyly tímto během ověřené. Ruční poslech
+je odložený po W43. Původní [103 kontrol](docs/windows/w04/media-validation.json)
+zůstává historickým výsledkem prvního mediálního řezu.
 [Původní Linux protokol](docs/windows/w03-validation.json) zůstává historickým záznamem.
 Opraven byl pád při načtení XAML po publikování: projekt nyní zapíná `EnableMsixTooling`.
 Vývoj a průběžné

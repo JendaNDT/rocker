@@ -55,9 +55,10 @@ build, notové kontroly, UI smoke a balení před nabídnutím ke stažení.
 
 1. Zpřístupnit MIDI události společnému C++ časování a zvolit syntézu.
    Nezávislý AlphaTab/NAudio player se nyní nezavádí.
-2. [Offline mediální modul](media.md) už dekóduje WAV/MP3/Ogg/Opus a ověřuje
-   Signalsmith Stretch na referencích. Zbývá WebM/Opus a MP4/AAC, připojení
-   ke společnému transportu a přehrávači.
+2. [Offline mediální modul](media.md) a [rozšíření původních nahrávek](legacy-media.md)
+   dekódují WAV/MP3/Ogg/Opus/WebM/Opus a na Windows MP4/AAC. Zbývá
+   připojení ke společnému transportu a přehrávači. Windows prošel 167/167
+   mediálními kontrolami, Linux 138/138 s ASan/UBSan a detekcí úniků.
 3. Zachování výšky, délky a PCM limitů zpomalení prochází automatickými
    kontrolami; skutečná kvalita na kytaře a dlouhé nahrávky zůstávají neověřené.
 4. Integrovat oficiální YouTube embed jako vymezený WebView2 pohled; ověřit

@@ -80,3 +80,25 @@ poškozené WebM a kontejner s neznámou velikostí/délkou; nejde o univerzáln
 fuzzing ani záruku bezchybnosti cizích kodeků. Windows původní sadu ověřil
 běh 38143961620, včetně skutečného AAC; streaming reference dostává navazující
 samostatné Windows sestavení.
+
+## Dokončené Windows ověření
+
+[Windows běh 38144366038](https://github.com/JendaNDT/rocker/actions/runs/38144366038)
+na `c64e5ede5ade525d9f1bc2cb52a70957d24e313d` prošel: 167/167 mediálních
+kontrol, 2/2 CTest, C# kontrakty včetně odmítnutí chybné ABI, 22/22 notových
+kontrol a otevření/zavření WinUI okna s kódem 0. Rozdílný počet proti Linuxu
+je záměrný: Windows skutečně dekóduje a ověřuje AAC, Linux kontroluje
+rozlišitelnou nedostupnost systému.
+
+AAC reference se v Media Foundation dekóduje na 49 152 snímků při 48 kHz,
+oproti 48 000 snímkům WAV/WebM/Opus; 24 ms navíc je uvnitř původní 50ms
+tolerance W01. Modul padding nezakrývá. Přesné zarovnání edit-listů a značek
+v obecných MP4 zůstává neověřené; importer musí tento případ dál řešit.
+Zpomalování zachovává délku skutečného PCM, ne předpokládanou délku kontejneru.
+
+Kontrolní EXE má importy pouze ole32/KERNEL32/WINMM, bez mfplat/mfreadwrite/mf.
+Stažené interní balíky prošly SHA-256 a ZIP CRC; všech sedm přiložených
+zdrojových archivů prošlo CRC a shodou revizí. Licenční text a patentový grant
+libwebm jsou přibalené. Nové uživatelské vydání se nevytvářelo.
+[Úplný protokol](legacy-media-validation.json) odděluje automatické výsledky
+od neprovedeného fyzického poslechu a zbývající integrace přehrávače.
