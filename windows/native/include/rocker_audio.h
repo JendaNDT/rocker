@@ -18,9 +18,9 @@
 extern "C" {
 #endif
 
-/* Version 5 adds live input routing, monitor controls and bus meters.
+/* Version 6 adds sample-clock observation and tempo control.
    Reject earlier DLLs before creating a host. */
-#define ROCKER_AUDIO_ABI_VERSION 5u
+#define ROCKER_AUDIO_ABI_VERSION 6u
 typedef struct rocker_audio_host* rocker_audio_handle;
 typedef uint32_t rocker_audio_result;
 enum {
@@ -66,6 +66,13 @@ typedef struct rocker_meter_snapshot {
     double sample_rate,input_peak,input_rms,processed_peak,processed_rms,mix_peak,mix_rms;
     uint64_t invalid_samples,input_clips,output_clips,dropped_analysis_blocks;
 } rocker_meter_snapshot;
+typedef struct rocker_clock_snapshot {
+    uint32_t struct_size,abi_version,flags,epoch;
+    uint64_t frame,beat;
+    double sample_rate,beat_phase,bpm;
+    uint32_t dsp_latency_frames,reserved;
+    uint64_t loop_cycles;
+} rocker_clock_snapshot;
 #pragma pack(pop)
 
 /* Never call from an audio callback. Device operations execute on the native
@@ -86,6 +93,10 @@ ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_start(rocker_audio_handl
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_start_live(rocker_audio_handle);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_set_monitoring(rocker_audio_handle,uint32_t enabled,double gain);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_get_meters(rocker_audio_handle,rocker_meter_snapshot*);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_get_clock(rocker_audio_handle,rocker_clock_snapshot*);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_set_tempo(rocker_audio_handle,double bpm);
+/* A/B endpoints use prepared (stretched) seconds; changing them stops audio. */
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_set_loop(rocker_audio_handle,double start,double end,uint32_t enabled);
 /* Immediately silence the graph and invalidate pending starts. Does not wait for vendor I/O. */
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_request_stop(rocker_audio_handle);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_reserve_stop(rocker_audio_handle,uint64_t* ticket);

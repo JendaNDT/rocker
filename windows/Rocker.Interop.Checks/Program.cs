@@ -22,6 +22,7 @@ static void AbandonAudioHandle()
 Check(Marshal.SizeOf<AudioSnapshot>() == 40, "C# snapshot layout");
 Check(Marshal.SizeOf<TransportSnapshot>() == 56, "C# transport layout");
 Check(Marshal.SizeOf<MeterSnapshot>()==112,"C# meter layout");
+Check(Marshal.SizeOf<ClockSnapshot>()==72,"C# clock layout");
 if (mode == "--media")
 {
     if (args.Length != 3) throw new ArgumentException("Media checks need the repository root.");
@@ -31,6 +32,7 @@ if (mode == "--media")
     {
         await audio.PrepareMidiAsync(midi);
         var transport = audio.GetTransport();
+        await audio.SetLoopAsync(0.1,0.3,true);Check(audio.GetClock().Flags==2,"loop configuration never starts audio");await audio.SetLoopAsync(0,0,false);
         Check(transport.Ready == 1 && transport.Playing == 0 && transport.DurationSeconds > 0.57, "MIDI preparation through real P/Invoke");
         audio.Play(); audio.Play();
         Check(audio.GetTransport().Playing == 1, "Common media playback");
@@ -98,6 +100,7 @@ for (var i = 0; i < 20; i++)
         && state.RenderedFrames == 1024, "Native snapshot through P/Invoke");
     audio.Stop(); audio.Stop();
     Check(audio.GetSnapshot().State == AudioState.Stopped, "Repeated stop");
+    var clock=audio.GetClock();Check(clock.Frame==1024 && clock.Epoch>0 && !clock.Running && clock.SampleRate==48000,"common sample clock includes output-only callbacks");
     audio.Start();
     audio.Dispose(); audio.Dispose();
     try { audio.Start(); throw new Exception("Disposed handle reused"); }
@@ -128,7 +131,9 @@ await using(var deviceAudio=new NativeAudio())
     try{await deviceAudio.ConfigureDeviceAsync(choice with{InputChannel=64});throw new Exception("Invalid physical channel accepted");}
     catch(ArgumentException){ }
     await deviceAudio.ShowDeviceControlPanelAsync();
+    deviceAudio.SetTempo(137);
     await deviceAudio.StartLiveAsync();Check(deviceAudio.GetSnapshot().Reserved==2 && !deviceAudio.GetMeters().Monitoring,"Live starts without monitoring");
+    Check(deviceAudio.GetClock().Bpm==137 && deviceAudio.GetClock().Frame==128 && deviceAudio.GetClock().Running,"tempo and sample count cross the ABI independently of UI timing");
     deviceAudio.SetMonitoring(true,0.15);Check(deviceAudio.GetMeters().Monitoring,"explicit monitor control crosses the ABI");
     await deviceAudio.StopAsync();Check(!deviceAudio.GetMeters().Monitoring && deviceAudio.GetMeters().InputPeak==0,"stop clears monitoring and stale level");
     await deviceAudio.StartAsync();var active=deviceAudio.GetSnapshot();Check(active.SampleRate==44100 && active.BufferFrames==128,"confirmed format is actually used by the driver");await deviceAudio.StopAsync();

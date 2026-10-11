@@ -849,3 +849,7 @@ bypass a nahrávací writer/analytický consumer přijdou ve vlastních krocích
 Windows 38160079061 nyní potvrdil W13/W14: 4/4 CTest, C# kontrakty,
 dva WinUI starty a skutečnou enumeraci všech tří WASAPI režimů a ASIO.
 Následné W15 vstupní změny a rezervovaný Stop mají vlastní nový build.
+
+W16: společné vzorkové hodiny, epochy, hudební fáze a A/B smyčky bez
+zaokrouhlování při jiném vzorkování. Linux 6/6 CTest a C# layout/tempo/loop
+kontrakty prošly. Předtakt, metronom, UI úseků a nahrávací metadata navazují.

@@ -57,6 +57,19 @@ int main(int argc, char** argv) {
         processor.render(outputs, 3, 4800);
         check(left[1000] == 0 && right[1000] > 0.1f && extra[1000] == 0, "stereo isolation and inactive extra outputs");
 
+        rocker::media::Clip loopClip{48000,{std::vector<float>(1000,0.2f)}};processor.install(std::move(loopClip),1);processor.prepare(44100);processor.enable(true);processor.volume(1);
+        check(processor.loop(100.0/48000,900.0/48000,true),"sample-bounded A/B loop");
+        std::array<float,511> loopLeft{},loopRight{};float* loopOutput[]{loopLeft.data(),loopRight.data()};
+        uint64_t loopFrames=0;for(int i=0;i<4000;++i){int frames=(i%3==0?511:i%3==1?127:64);processor.process(nullptr,0,loopOutput,2,frames);loopFrames+=frames;}
+        const double sourcePosition=100+std::fmod(loopFrames*(48000.0/44100),800);
+        check(!processor.ended() && processor.loopCycles()>1000 && std::abs(processor.position()*48000-sourcePosition)<1e-5,"resampled loop preserves fractional overshoot without drift");
+        check(loopLeft==loopRight,"loop source remains mono in both headphones");
+        processor.seek(0);check(std::abs(processor.position()-100.0/48000)<1e-9,"seek outside active loop stays within its selected range");
+        check(!processor.loop(0,100,true),"out-of-range loop rejected without replacing valid endpoints");processor.loop(0,0,false);
+        check(!processor.loopEnabled(),"loop explicitly disabled");
+        processor.loop(0,1000.0/48000,true);processor.seek(0);processor.process(nullptr,0,loopOutput,2,511);
+        processor.process(nullptr,0,loopOutput,2,511);processor.process(nullptr,0,loopOutput,2,511);
+        check(std::abs(processor.position()*48000-std::fmod(1533*(48000.0/44100),1000))<1e-6,"whole-file loop also retains resampling overshoot at EOF");
         rocker_audio_config config{sizeof(config), ROCKER_AUDIO_ABI_VERSION, 440, 0.02};
         rocker_audio_handle host{};
         check(rocker_audio_create(&config, &host) == ROCKER_OK, "create common host");

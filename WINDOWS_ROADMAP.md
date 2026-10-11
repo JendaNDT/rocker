@@ -313,7 +313,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w16"></a>
 #### W16 — Společný transport, hodiny a evidence latence
 
-- [ ] Čeká. Závislosti: W13–W15.
+- [ ] Rozpracováno: [vzorkové hodiny, tempo a A/B hranice](docs/windows/w16/README.md), test proměnlivých bloků a tisíců smyček bez ztráty frakčního přesahu. Předtakt/metronom a metadata navazují ve W18/W22. Závislosti: W13–W15.
 - Zavést počítadlo vzorků, převody takty/doby/čas, přesné události uvnitř bloku a sjednocené příkazy play, stop, seek, count-in a loop. Při změně vzorkování bezpečně přepočítat stav nebo zastavit podle předem daného pravidla.
 - Oddělit hudební čas, čas nahrávky a okamžik prezentace UI. Metadata zaznamenají konfiguraci zařízení a známé DSP zpoždění pro pozdější kompenzaci stop.
 - Zobrazovat zvlášť odhad ovladače, buffer, zpoždění DSP a výsledky skutečného měření. Samotný součet webových baseLatency a outputLatency se nepřebírá jako celková latence.

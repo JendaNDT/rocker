@@ -26,7 +26,7 @@ public:
         starts.fetch_add(1);
         std::array<float, 16384> left{}, right{};
         float* channels[]{left.data(), right.data()};
-        tone.render(channels, 2, static_cast<int>(choice_.frames?choice_.frames:testFrames.load()));
+        tone.process(nullptr,0,channels, 2, static_cast<int>(choice_.frames?choice_.frames:testFrames.load()));
         double peak=0;for(size_t i=0;i<(choice_.frames?choice_.frames:testFrames.load());++i)peak=std::max(peak,std::abs(static_cast<double>(left[i])));lastPeak.store(peak);
         running_ = true;
         return true;
