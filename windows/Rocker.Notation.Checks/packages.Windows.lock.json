@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net10.0": {
+      "AlphaSkia.Native.Windows": {
+        "type": "Direct",
+        "requested": "[3.4.135, )",
+        "resolved": "3.4.135",
+        "contentHash": "vztGVtW4impRjDQ0tEu71iwiP+8GiWQgQGPULr9x1z6SVl7jHAWcxLBxzTEF0MI/lpyuwwKnq427lWj4B8lv5A=="
+      },
+      "AlphaSkia": {
+        "type": "Transitive",
+        "resolved": "3.4.135",
+        "contentHash": "fc2/epiLLLlPsxXQD4f564oEBrwf0ZZgLJOupH1pd2PtyPcgCp5RwHS7j5iGTN28vteFXblQWTz4WmglT6Wf0w=="
+      },
+      "AlphaTab": {
+        "type": "Transitive",
+        "resolved": "1.8.3",
+        "contentHash": "wdlHLMr06k4GEBq6hpH+gtF3yETX7g9GVGUlGEcKpJCowWejKOy/9dToDMXCdQtd9wLoaw0DJnEpnzgfg3DAbQ==",
+        "dependencies": {
+          "AlphaSkia": "3.4.135",
+          "System.Drawing.Common": "9.0.8"
+        }
+      },
+      "Microsoft.Win32.SystemEvents": {
+        "type": "Transitive",
+        "resolved": "9.0.8",
+        "contentHash": "64oQBN8I8EOcyHGNt6+rlcqm4tlcKfqOpswtBCJZnpzBQ15L6IFKqjnbjbOWBpG9wKq9A/aC2LFSmSqplbwTYA=="
+      },
+      "System.Drawing.Common": {
+        "type": "Transitive",
+        "resolved": "9.0.8",
+        "contentHash": "ineIJmF+yuBEHGft9R153J9kmBFaeEfFL5Put5nzENneRcGGPUb3MvM8zrZ5pERQ0jPPSE3Wqw/clXvOq2F/Kw==",
+        "dependencies": {
+          "Microsoft.Win32.SystemEvents": "9.0.8"
+        }
+      },
+      "rocker.notation": {
+        "type": "Project",
+        "dependencies": {
+          "AlphaTab": "[1.8.3, )"
+        }
+      }
+    },
+    "net10.0/linux-x64": {
+      "AlphaSkia.Native.Windows": {
+        "type": "Direct",
+        "requested": "[3.4.135, )",
+        "resolved": "3.4.135",
+        "contentHash": "vztGVtW4impRjDQ0tEu71iwiP+8GiWQgQGPULr9x1z6SVl7jHAWcxLBxzTEF0MI/lpyuwwKnq427lWj4B8lv5A=="
+      },
+      "Microsoft.Win32.SystemEvents": {
+        "type": "Transitive",
+        "resolved": "9.0.8",
+        "contentHash": "64oQBN8I8EOcyHGNt6+rlcqm4tlcKfqOpswtBCJZnpzBQ15L6IFKqjnbjbOWBpG9wKq9A/aC2LFSmSqplbwTYA=="
+      }
+    },
+    "net10.0/win-x64": {
+      "AlphaSkia.Native.Windows": {
+        "type": "Direct",
+        "requested": "[3.4.135, )",
+        "resolved": "3.4.135",
+        "contentHash": "vztGVtW4impRjDQ0tEu71iwiP+8GiWQgQGPULr9x1z6SVl7jHAWcxLBxzTEF0MI/lpyuwwKnq427lWj4B8lv5A=="
+      },
+      "Microsoft.Win32.SystemEvents": {
+        "type": "Transitive",
+        "resolved": "9.0.8",
+        "contentHash": "64oQBN8I8EOcyHGNt6+rlcqm4tlcKfqOpswtBCJZnpzBQ15L6IFKqjnbjbOWBpG9wKq9A/aC2LFSmSqplbwTYA=="
+      }
+    }
+  }
+}

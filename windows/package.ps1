@@ -133,6 +133,7 @@ Licence a oznámení jsou ve složce licenses; vlastní Windows kód je pod AGPL
     alphaSkiaCommit = $notationSources[1].Commit
     checkedNotation = (Get-Content (Join-Path $reports 'notation-checks.json') -Raw | ConvertFrom-Json)
     checkedMedia = (Get-Content (Join-Path $reports 'media-checks.json') -Raw | ConvertFrom-Json)
+    checkedDomain = (Get-Content (Join-Path $reports 'domain-checks.json') -Raw | ConvertFrom-Json)
     checkedTransport = (Get-Content (Join-Path $reports 'transport-checks.json') -Raw | ConvertFrom-Json)
     checkedVideoBridge = (Get-Content (Join-Path $reports 'video-bridge.json') -Raw | ConvertFrom-Json)
     signalsmithStretchCommit = $mediaSources[0].Commit

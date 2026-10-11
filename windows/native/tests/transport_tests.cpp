@@ -6,6 +6,8 @@
 #include <fstream>
 #include <limits>
 #include <thread>
+extern "C" void ROCKER_CALL rocker_test_set_frames(uint32_t frames);
+extern "C" uint64_t ROCKER_CALL rocker_test_start_count();
 
 namespace {
 int checks = 0;
@@ -85,6 +87,16 @@ int main(int argc, char** argv) {
         std::thread worker([&] { for (int i = 0; i < 4; ++i) if (rocker_audio_prepare_midi(host, midi.data(), static_cast<uint32_t>(midi.size()), 0.5) != ROCKER_OK) okay = false; });
         for (int i = 0; i < 100; ++i) if (rocker_audio_stop(host) != ROCKER_OK) okay = false;
         worker.join(); check(okay, "stop remains safe during worker preparation");
+        // Finish during the first callback, then replay before a state poll has
+        // cleaned up EOF. Idempotence must not swallow this explicit restart.
+        auto shortMidi = midi; shortMidi[33] = 128; shortMidi[34] = 1;
+        rocker_test_set_frames(4096);
+        check(rocker_audio_prepare_midi(host, shortMidi.data(), static_cast<uint32_t>(shortMidi.size()), 1) == ROCKER_OK, "short MIDI preparation");
+        const auto starts = rocker_test_start_count();
+        check(rocker_audio_play(host) == ROCKER_OK && rocker_audio_play(host) == ROCKER_OK
+            && rocker_test_start_count() == starts + 2, "immediate EOF replay before polling");
+        check(rocker_audio_get_transport(host, &transport) == ROCKER_OK && transport.ended && !transport.playing, "EOF poll releases fake device");
+        rocker_test_set_frames(1024);
         std::ofstream report("transport-checks.json");
         report << "{\"result\":\"passed\",\"checks\":" << checks << ",\"physicalAudioVerified\":false}";
         std::cout << "PASS: " << checks << " transport/MIDI assertions (fake device and offline rendering)\n";

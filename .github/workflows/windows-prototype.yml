@@ -5,6 +5,9 @@ on:
     branches: [windows-native-prototype]
     paths:
       - 'windows/**'
+      - 'scripts/export-windows-content.mjs'
+      - 'src/lib/**'
+      - 'src/audio/tunings.ts'
       - '.github/workflows/windows-prototype.yml'
   workflow_dispatch:
 
@@ -63,4 +66,13 @@ jobs:
           name: Windows-build-reports
           path: windows/out/reports/
           if-no-files-found: warn
+          retention-days: 30
+      - name: Upload debug symbols separately
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: Windows-debug-symbols
+          path: |
+            windows/out/native/rocker_audio.pdb
+            windows/out/probe/*.pdb
+          if-no-files-found: error
           retention-days: 30

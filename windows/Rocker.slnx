@@ -1,0 +1,13 @@
+<Solution>
+  <Project Path="Rocker.Domain.Checks/Rocker.Domain.Checks.csproj" />
+  <Project Path="Rocker.Domain/Rocker.Domain.csproj" />
+  <Project Path="Rocker.Infrastructure.Checks/Rocker.Infrastructure.Checks.csproj" />
+  <Project Path="Rocker.Infrastructure/Rocker.Infrastructure.csproj" />
+  <Project Path="Rocker.Interop.Checks/Rocker.Interop.Checks.csproj" />
+  <Project Path="Rocker.Interop/Rocker.Interop.csproj" />
+  <Project Path="Rocker.Notation.Checks/Rocker.Notation.Checks.csproj" />
+  <Project Path="Rocker.Notation/Rocker.Notation.csproj" />
+  <Project Path="Rocker.Probe/Rocker.Probe.csproj" />
+  <Project Path="Rocker.Video.Checks/Rocker.Video.Checks.csproj" />
+  <Project Path="Rocker.Video/Rocker.Video.csproj" />
+</Solution>

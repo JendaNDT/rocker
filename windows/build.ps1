@@ -20,10 +20,20 @@ $reportDirectory = Join-Path $PSScriptRoot 'out/reports'
 New-Item -ItemType Directory -Force -Path $reportDirectory | Out-Null
 Push-Location $PSScriptRoot
 try {
+    $properties = [xml](Get-Content (Join-Path $PSScriptRoot 'Directory.Build.props') -Raw)
+    $version = $properties.Project.PropertyGroup.VersionPrefix
+    $manifest = [xml](Get-Content (Join-Path $PSScriptRoot 'Rocker.Probe/app.manifest') -Raw)
+    if ($manifest.assembly.assemblyIdentity.version -ne "$version.0") { throw 'The application manifest and product version differ.' }
+    Invoke-Checked 'dotnet' @('restore', 'Rocker.slnx', '--locked-mode')
     # global.json verifies the selected SDK; Ninja avoids generator/version coupling to VS.
     Invoke-Checked 'dotnet' @('--info')
+    Invoke-Checked 'node' @('../scripts/export-windows-content.mjs', '--check-frozen')
     Invoke-Checked 'node' @('--test', 'Rocker.Probe/Video/player.contracts.cjs')
-    Invoke-Checked 'dotnet' @('run', '--project', 'Rocker.Video.Checks', '-c', 'Release')
+    Invoke-Checked 'dotnet' @('run', '--project', 'Rocker.Video.Checks', '-c', 'Release', '--no-restore')
+    Invoke-Checked 'dotnet' @('run', '--project', 'Rocker.Domain.Checks', '-c', 'Release', '--no-restore', '--',
+        (Join-Path $PSScriptRoot '../docs/windows/baseline/fixtures/domain-cases.json'),
+        (Join-Path $PSScriptRoot 'content/catalog.json'), (Join-Path $reportDirectory 'domain-checks.json'))
+    Invoke-Checked 'dotnet' @('run', '--project', 'Rocker.Infrastructure.Checks', '-c', 'Release', '--no-restore')
     @{
         os = [Environment]::OSVersion.VersionString
         cl = (Get-Command cl.exe).Source
@@ -33,6 +43,8 @@ try {
         ninja = (& ninja --version)
         dotnet = (& dotnet --version)
         visualStudio = $env:VisualStudioVersion
+        productVersion = $version
+        restoreMode = 'locked'
         checkedAtUtc = [DateTime]::UtcNow.ToString('o')
     } | ConvertTo-Json | Set-Content (Join-Path $reportDirectory 'toolchain.json')
     $configure = @('-S', '.', '-B', $nativeBuild, '-G', 'Ninja',
@@ -60,15 +72,15 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Cannot inspect delivered native audio imports.' }
     if ($audioDependencies -match '^\s*(mfplat|mfreadwrite|mf)\.dll\s*$') { throw 'Optional media runtime is eagerly imported by the device DLL.' }
     $audioDependencies | Set-Content (Join-Path $reportDirectory 'audio-dependencies.txt')
-    Invoke-Checked 'dotnet' @('run', '--project', 'Rocker.Interop.Checks', '-c', 'Release', '--',
+    Invoke-Checked 'dotnet' @('run', '--project', 'Rocker.Interop.Checks', '-c', 'Release', '--no-restore', '--',
         (Join-Path $nativeBuild 'rocker_audio_test.dll'))
     Invoke-Checked 'dotnet' @('run', '--project', 'Rocker.Interop.Checks', '-c', 'Release', '--no-build', '--',
         (Join-Path $nativeBuild 'rocker_audio_test_incompatible.dll'), '--mismatched-abi')
-    Invoke-Checked 'dotnet' @('run', '--project', 'Rocker.Notation.Checks', '-c', 'Release', '--',
+    Invoke-Checked 'dotnet' @('run', '--project', 'Rocker.Notation.Checks', '-c', 'Release', '--no-restore', '--',
         (Join-Path $PSScriptRoot 'fixtures'), $reportDirectory)
     Invoke-Checked 'dotnet' @('run', '--project', 'Rocker.Interop.Checks', '-c', 'Release', '--no-build', '--',
         (Join-Path $nativeBuild 'rocker_audio_test.dll'), '--media', (Split-Path $PSScriptRoot -Parent))
-    Invoke-Checked 'dotnet' @('publish', 'Rocker.Probe', '-c', 'Release', '-r', 'win-x64',
+    Invoke-Checked 'dotnet' @('publish', 'Rocker.Probe', '-c', 'Release', '-r', 'win-x64', '--no-restore',
         '-o', $probeOutput, "-p:RockerNativeDll=$(Join-Path $nativeBuild 'rocker_audio.dll')")
     Write-Output "Prototyp byl sestaven do $probeOutput. Ruční přejímka W03 zůstává samostatná."
     if ($Run) { & (Join-Path $probeOutput 'Rocker.Probe.exe') }

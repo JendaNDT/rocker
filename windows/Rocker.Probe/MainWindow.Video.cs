@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
 using Rocker.Video;
+using Rocker.Infrastructure;
 using System.Text.Json;
 
 namespace Rocker.Probe;
@@ -14,7 +15,7 @@ public sealed partial class MainWindow
     {
         try
         {
-            var profile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Rocker", "WebView2");
+            var profile = new UserFiles().DirectoryFor("WebView2");
             var environment = await CoreWebView2Environment.CreateWithOptionsAsync(null, profile, null);
             if (closed) return;
             await VideoView.EnsureCoreWebView2Async(environment);

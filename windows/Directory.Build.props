@@ -1,0 +1,12 @@
+<Project>
+  <PropertyGroup>
+    <VersionPrefix>0.1.0</VersionPrefix>
+    <Product>Rocker</Product>
+    <Company>JendaNDT</Company>
+    <Deterministic>true</Deterministic>
+    <DebugType>portable</DebugType>
+    <RuntimeIdentifiers Condition="'$(MSBuildProjectName)' != 'Rocker.Probe'">win-x64;linux-x64</RuntimeIdentifiers>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+</Project>

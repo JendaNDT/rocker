@@ -33,8 +33,10 @@ zůstávají zapnuté. Profil WebView2 je v uživatelském LocalAppData.
 - 6 Node testů skutečného wrapperu ověřilo nulové síťové požadavky při startu,
   oficiální API, chybové stavy, volbu skutečných rychlostí a opětovné načítání.
   API v těchto kontraktech nahrazuje testovací objekt, nikoli běžící YouTube.
-- Windows smoke musí otevřít skutečný WebView2, provést místní bridge a
-  zaznamenat skutečnou verzi runtime. Žádné online video nespouští.
+- Windows build [38148531570](https://github.com/JendaNDT/rocker/actions/runs/38148531570)
+  otevřel skutečný WebView2 153.0.4234.48, provedl místní bridge a zavřel
+  publikovanou aplikaci s kódem 0. Žádné online video nespouštěl.
+  Podrobnosti a první opravený neúspěšný pokus jsou v [protokolu](video-validation.json).
 - CI při chybějícím runtime používá oficiální Microsoft bootstrapper a
   před spuštěním ověří jeho Authenticode podpis. Neobchází zabezpečení.
 - Skutečné online video, dostupnost konkrétního videa a současný poslech

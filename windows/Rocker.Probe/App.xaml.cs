@@ -2,6 +2,7 @@
 using Microsoft.UI.Xaml;
 using System.Runtime.InteropServices;
 using Rocker.Video;
+using Rocker.Infrastructure;
 
 namespace Rocker.Probe;
 public partial class App : Application
@@ -31,7 +32,7 @@ public partial class App : Application
         try
         {
             var directory = Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTICS_DIR")
-                ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Rocker", "logs");
+                ?? new UserFiles().DirectoryFor("logs");
             Directory.CreateDirectory(directory);
             File.AppendAllText(Path.Combine(directory, "startup-error.txt"), $"{DateTime.UtcNow:O}\n{context}\n{error}\n");
         }

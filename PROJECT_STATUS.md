@@ -7,6 +7,12 @@ Linux prošel 3/3 CTest, 36 transportními kontrolami a skutečným C# P/Invoke,
 včetně zavření handle během načítání. Windows build 38147210735 prošel včetně publikovaného WinUI okna
 a přípravy skutečného MIDI v produkční DLL. Podrobnosti: [společné přehrávání](docs/windows/w04/common-playback.md).
 
+Navazuje [základ řešení W05](docs/windows/w05/README.md): uzamčené NuGet
+závislosti, společná verze, symboly a vrstvy. První část W06 má všech 15
+obsahových skupin z původních dat a 69/69 referenčních doménových případů.
+Stavové automaty trenažérů, plný shell, kompletní Vintage design a produktové
+funkce ještě dokončené nejsou. Konkrétní Windows build tohoto základu se nyní ověřuje.
+
 ## Aktuální směr: nativní Rocker pro Windows
 
 **Aktuální způsob spolupráce (11. 10. 2026):** Jenda chce nejprve postupně
@@ -74,7 +80,8 @@ stereo a AAC cesta s českými znaky. Volitelné MF DLL nejsou eager importem.
 Stažené interní ZIPy a všech sedm zdrojových archivů prošly kontrolou.
 [Protokol původních nahrávek](docs/windows/w04/legacy-media-validation.json)
 obsahuje skutečná měření a verze. Následující řez jej připojil k WinUI a společnému transportu, včetně
-základního přehrávání MIDI. Integrace WebView2 se nyní ověřuje. Windows N bez
+základního přehrávání MIDI. Integrace WebView2 prošla v běhu 38148531570 (runtime 153.0.4234.48);
+online video a souběh hardwarového zvuku se tímto nepotvrdily. Windows N bez
 Media Feature Packu a fyzický zvuk nebyly tímto během ověřené. Ruční poslech
 je odložený po W43. Původní [103 kontrol](docs/windows/w04/media-validation.json)
 zůstává historickým výsledkem prvního mediálního řezu.

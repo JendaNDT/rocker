@@ -46,7 +46,7 @@ rocker_audio_result ROCKER_CALL rocker_audio_create(const rocker_audio_config* c
 }
 static rocker_audio_result startHost(rocker_audio_host& h, bool media) {
     if (media && !h.tone.hasClip()) { h.error = "No prepared media is available."; return ROCKER_NOT_READY; }
-    if (h.state == ROCKER_RUNNING && !h.driver->snapshot().failed && h.tone.clipMode() == media) return ROCKER_OK;
+    if (h.state == ROCKER_RUNNING && !h.driver->snapshot().failed && h.tone.clipMode() == media && (!media || !h.tone.ended())) return ROCKER_OK;
     h.driver->stop();
     h.error.clear();
     if (media) { h.tone.selectClip(); if (h.tone.ended()) h.tone.seek(0); }

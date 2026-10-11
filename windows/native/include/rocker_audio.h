@@ -18,7 +18,9 @@
 extern "C" {
 #endif
 
-#define ROCKER_AUDIO_ABI_VERSION 1u
+/* Version 2 adds the media/MIDI transport exports. Reject a version 1 DLL
+   before creating a host instead of discovering missing exports mid-session. */
+#define ROCKER_AUDIO_ABI_VERSION 2u
 typedef struct rocker_audio_host* rocker_audio_handle;
 typedef uint32_t rocker_audio_result;
 enum {

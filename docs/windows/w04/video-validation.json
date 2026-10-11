@@ -1,0 +1,55 @@
+{
+  "scope": "W04 official YouTube WebView2 local bridge",
+  "sourceCommit": "0b5f3b51ec114f2c1cff075b97bf215ef2a61a26",
+  "windowsRun": "https://github.com/JendaNDT/rocker/actions/runs/38148531570",
+  "result": "passed",
+  "videoBridge": {
+    "result": "passed",
+    "localBridgeVerified": true,
+    "runtimeVersion": "153.0.4234.48",
+    "appId": "JendaNDT.Rocker",
+    "onlineVideoVerified": false,
+    "audioCoexistenceVerified": false
+  },
+  "window": {
+    "midiPreparedInCommonEngine": true,
+    "checkedAtUtc": "2026-10-11T14:52:29.8686566Z",
+    "result": "passed",
+    "audioCoexistenceVerified": false,
+    "nativeNotationVerified": true,
+    "audioPlaybackVerified": false,
+    "exitCode": 0,
+    "webViewRuntime": "153.0.4234.48",
+    "onlineVideoVerified": false,
+    "windowTitle": "Rocker — nativní zvuk a noty",
+    "localVideoBridgeVerified": true
+  },
+  "managedVideoAssertions": 30,
+  "wrapperContracts": 6,
+  "firstAttempt": {
+    "run": "https://github.com/JendaNDT/rocker/actions/runs/38148093116",
+    "result": "failed",
+    "reason": "WinUI projects use the WinRT CreateWithOptionsAsync factory, not the desktop .NET CreateAsync overload.",
+    "resolvedIn": "0b5f3b5"
+  },
+  "notPerformed": [
+    "Online video playback",
+    "Physical WASAPI/ASIO/YouTube coexistence",
+    "M-Track Solo latency",
+    "Completed installer registration of AppUserModelID"
+  ],
+  "artifacts": [
+    {
+      "name": "Rocker-Windows-sources.zip",
+      "bytes": 132035168,
+      "sha256": "4329bb4366a7ca38c7cf83cbe8d0a8dd95ddecff7d28c0ad66c7f07eaa999b5d",
+      "verification": "SHA256, ZIP CRC, exact source commit, package content verified"
+    },
+    {
+      "name": "Rocker-Windows-x64.zip",
+      "bytes": 101559895,
+      "sha256": "f07822e4f383ef38d2c9e8ec27431d536a1afef298c1e1e2451d5442b3ed9f36",
+      "verification": "SHA256, ZIP CRC, exact source commit, package content verified"
+    }
+  ]
+}

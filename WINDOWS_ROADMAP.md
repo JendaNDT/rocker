@@ -84,7 +84,7 @@ Původní nedokončený Bod 22 (songbook a sdílení riffů), separace nástroj�
 | Lokální úložiště | SQLite metadata a verze schématu, zvukové soubory, projekty, zálohy | Tajné klíče v běžném JSON nebo databázovém exportu |
 | Windows služby | Systémové dialogy, bezpečné úložiště klíče, instalace, asociace souborů | Nutnost účtu nebo serveru pro běžné cvičení |
 
-Návrh struktury pro budoucí implementaci: desktop/Rocker.sln, desktop/src/Rocker.App, desktop/src/Rocker.Domain, desktop/src/Rocker.Infrastructure, desktop/src/Rocker.Audio.Interop, desktop/native/RockerAudio, desktop/tests, desktop/packaging, shared/content a shared/fixtures. Návrhové a rozhodovací dokumenty patří do docs/windows. Tyto adresáře s kódem zatím nejsou tímto plánem vytvořeny. PWA zůstává po dobu přepisu referencí; sdílený obsah má jeden určený zdroj pravdy.
+Původní orientační návrh struktury: desktop/Rocker.sln, desktop/src/Rocker.App, desktop/src/Rocker.Domain, desktop/src/Rocker.Infrastructure, desktop/src/Rocker.Audio.Interop, desktop/native/RockerAudio, desktop/tests, desktop/packaging, shared/content a shared/fixtures. Návrhové a rozhodovací dokumenty patří do docs/windows. Implementace používá kořen `windows/` a řešení `Rocker.slnx` podle W05, aby zachovala zavedené buildy W03/W04. PWA zůstává po dobu přepisu referencí; sdílený obsah má jeden určený zdroj pravdy.
 
 ### Živá zvuková cesta
 
@@ -198,7 +198,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w04"></a>
 #### W04 — Ověřit noty, média a souběh zvuku
 
-- [ ] Rozpracováno. Závislosti: W02, W03. První technický řez: [nativní noty](docs/windows/w04/README.md); Windows ověření a ruční přejímka mají vlastní protokol. Navázal [offline mediální modul](docs/windows/w04/media.md) a [původní nahrávky](docs/windows/w04/legacy-media.md): WAV/MP3/Ogg/Opus/WebM/Opus, Windows MP4/AAC a zpomalení. Windows prošel 167/167 mediálními kontrolami, Linux 138/138 s ASan/UBSan. Navazuje [společné přehrávání a základní syntéza not](docs/windows/w04/common-playback.md); Windows build 38147210735 prošel včetně přípravy MIDI v produkční DLL a nativního ovládání. Navazuje [oficiální YouTube/WebView2](docs/windows/w04/video.md); online a hardwarová přejímka zůstává odložená po W43.
+- [ ] Rozpracováno. Závislosti: W02, W03. První technický řez: [nativní noty](docs/windows/w04/README.md); Windows ověření a ruční přejímka mají vlastní protokol. Navázal [offline mediální modul](docs/windows/w04/media.md) a [původní nahrávky](docs/windows/w04/legacy-media.md): WAV/MP3/Ogg/Opus/WebM/Opus, Windows MP4/AAC a zpomalení. Windows prošel 167/167 mediálními kontrolami, Linux 138/138 s ASan/UBSan. Navazuje [společné přehrávání a základní syntéza not](docs/windows/w04/common-playback.md); Windows build 38147210735 prošel včetně přípravy MIDI v produkční DLL a nativního ovládání. Navazuje [oficiální YouTube/WebView2](docs/windows/w04/video.md); Windows lokální bridge prošel v běhu 38148531570; online a hardwarová přejímka zůstává odložená po W43.
 - Prokázat načtení reprezentativního Guitar Pro a MusicXML do .NET AlphaTab, vykreslení v nativním okně, hit testing, výběr taktů a dostupnost dat pro společné přehrávání. Samostatně rozhodnout, jak renderer a syntéza zapadnou do jádra.
 - Zvolit dekódování MP3/WAV a starých nahrávek WebM/Opus, Ogg/Opus a podporovaných MP4. Ověřit algoritmus zpomalení bez změny výšky, kvalitu, paměť a licenci; JUCE samotné automaticky neřeší všechny tyto požadavky.
 - Ověřit oficiální YouTube embed ve WebView2, povolenou komunikaci a souběh jeho výstupu s audio hostem. Na dostupném Windows zařízení ověřit WASAPI; specifický souběh M-Track Solo zůstává v matici W44.
@@ -209,7 +209,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w05"></a>
 #### W05 — Založit řešení, sestavení a Windows CI
 
-- [ ] Čeká. Závislosti: W02–W04.
+- [ ] Rozpracováno: [řešení, zámky a vrstvy](docs/windows/w05/README.md); Linux kontroly prošly, Windows uzamčený build se ověřuje. Závislosti: W02–W04.
 - Na výslovný požadavek uživatele z 11. 10. 2026 je jednoduchý Windows runner a balení prototypu předřazeno do W03, aby dostával hotové EXE. Neznamená to dokončení zbytku W05; výsledek konkrétního sestavení se musí doložit před předáním.
 - Založit vrstvy podle architektury, CMake pro C++, správu balíčků a jejich zámků pro .NET, jednotné verze produktu a sestavení. Nativní testy spouštět přes CTest, doménu například přes xUnit.
 - Připravit Windows runner pro sestavení WinUI a DLL, unit testy a později UI testy a balení. CI uchová protokoly, symboly a artefakty. Linux cloud může kontrolovat obsah a část čisté logiky, nenahrazuje Windows ověření.
@@ -219,7 +219,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w06"></a>
 #### W06 — Přenést obsah a čistou doménovou logiku
 
-- [ ] Čeká. Závislosti: W01, W05.
+- [ ] Rozpracováno: verzovaný export všech 15 skupin a všech 69 referenčních případů W01 je přenesený. Stavové automaty a zbytek validace ještě čekají. Závislosti: W01, W05.
 - Zavést verzovaný společný formát obsahu, stabilní ID a validační schéma. Exportovat lekce, akordy, stupnice, riffy, cvičení, ladění a presety z existujících dat bez ručního přepisování stovek hodnot.
 - Portovat hudební výpočty, lekční automaty, tempo, pravidla pokroku a validaci do čistých C# modulů. Algoritmy DSP zůstávají v C++; nesmí vzniknout druhá nesynchronizovaná kopie pravidel.
 - Přenést relevantní scénáře existujících testů a porovnávat shodné vstupy a výstupy přes referenční JSON. Počet testů není cílem; zachování chování ano.
