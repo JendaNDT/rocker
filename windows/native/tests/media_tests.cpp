@@ -68,6 +68,7 @@ int main(int argc, char** argv) {
             check(stretch(clip, 1).channels == clip.channels, std::string(file) + " identity");
         }
         auto low = decode(fixtures / "low-e2.wav");
+        check(stretch(low, 0.25).channels == stretch(low, 0.25).channels, "repeatable quarter-speed render");
         for (double speed : {0.25, 0.5, 0.75, 1.5, 2.0})
             check(std::abs(pitch(stretch(low, speed)) - 82.406889) < 1.5, "low E pitch preserved");
         for (int active : {0, 1}) {

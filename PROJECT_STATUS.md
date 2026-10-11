@@ -59,7 +59,7 @@ je zveřejněné v soukromém repozitáři; publikovaný ZIP byl znovu stažen a
 Klikání a systémové dialogy na Jendově počítači zatím potvrzené nejsou.
 Nový [offline C++ mediální modul](docs/windows/w04/media.md) dekóduje
 WAV/MP3/Ogg/Opus a mění rychlost se zachováním tónu pomocí Signalsmith.
-Linux ověření prošlo 102/102 kontrolami. Ještě není připojený k oknu ani
+Linux ověření prošlo 103/103 kontrolami. Ještě není připojený k oknu ani
 společnému transportu; WebM/AAC, přehrávání not a YouTube zbývají.
 Průběžný Windows build ověří nový modul; ruční poslech je odložený po W43.
 [Původní Linux protokol](docs/windows/w03-validation.json) zůstává historickým záznamem.

@@ -67,7 +67,9 @@ Clip stretch(const Clip& input, double speed, Limits limits) {
     if (frames + input.frames() > limits.combinedPcmBytes / bytesPerFrame)
         throw Failure(Error::limitExceeded, "Source and stretched PCM exceed memory budget");
     if (speed == 1) return input;
-    signalsmith::stretch::SignalsmithStretch<float> processor;
+    // Large time changes randomize spectral phases. Use an explicit engine/seed
+    // so repeated offline renders can be cached and compared reproducibly.
+    signalsmith::stretch::SignalsmithStretch<float, std::mt19937> processor(0);
     processor.presetDefault(static_cast<int>(input.channels.size()), static_cast<float>(input.sampleRate));
     processor.setTransposeFactor(1);
     if (input.frames() < static_cast<std::size_t>(std::ceil(processor.outputSeekLength(speed))))

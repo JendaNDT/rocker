@@ -34,7 +34,9 @@ v samostatném zdrojovém ZIPu.
 
 API `stretch` používá výchozí kvalitnější preset a `exact`, který řeší
 počáteční vyrovnání i flush konce. Rychlost 0,25–2x mění počet snímků na
-`round(inputFrames / speed)` při nezměněné výšce. Při 1x jde o přesnou kopii.
+`round(inputFrames / speed)` při nezměněné výšce. Při 1x jde o přesnou kopii. Spektrální randomizace při velkých změnách má
+pevný seed a explicitní MT19937, takže opakovaný offline render je
+reprodukovatelný na stejném sestavení; bitovou shodu napříč platformami neslibuje.
 Příliš krátké klipy se odmítají; žádná tichá náhrada prázdným zvukem.
 
 Výpočty a alokace patří na pracovní vlákno, nikdy do zvukového callbacku.
@@ -54,11 +56,11 @@ Pro delší nahrávky bude potřeba blokové zpracování/cache v rámci transpo
 
 ## Automatické kontroly
 
-102 kontrol skutečných dekodérů a DSP: formát, délka a 440 Hz, šest rychlostí
+103 kontrol skutečných dekodérů a DSP: formát, délka a 440 Hz, šest rychlostí
 na WAV/MP3/Opus, přesná 1x kopie, nízké E, stereo izolace, ticho, poslední
 impuls po flush, opakované náběhy a chybové/paměťové hranice. JSON report
 obsahuje naměřené výšky a délky; nevyvozuje z nich subjektivní kvalitu hry.
-Quarter-speed na syntetickém WAV dosáhl v Linuxu 442,227 Hz při vstupních
+Quarter-speed na syntetickém WAV dosáhl v Linuxu 440,004 Hz při vstupních
 440 Hz (tolerance tohoto testu je 3 Hz). Výrobce doporučuje nejkvalitnější
 časové změny přibližně 0,75–1,5x; extrémní zpomalení vyžaduje poslech.
 Reálná kytara, výkon při dlouhé nahrávce a hardwarová odezva nejsou tímto
