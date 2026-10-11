@@ -30,6 +30,9 @@ jobs:
           set -euo pipefail
           run_id=$(jq -r '.runId' docs/windows/releases/current.json)
           commit=$(jq -r '.commit' docs/windows/releases/current.json)
+          tag=$(jq -r '.tag' docs/windows/releases/current.json)
+          gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$tag" > /tmp/release-ref.json
+          jq -e --arg commit "$commit" '.object.type == "commit" and .object.sha == $commit' /tmp/release-ref.json
           gh api "repos/$GITHUB_REPOSITORY/actions/runs/$run_id" > /tmp/build-run.json
           jq -e --arg commit "$commit" '.conclusion == "success" and .head_sha == $commit and .path == ".github/workflows/windows-prototype.yml" and .head_branch == "windows-native-prototype"' /tmp/build-run.json
           gh run download "$run_id" --repo "$GITHUB_REPOSITORY" -n Rocker-Windows-downloads -D /tmp/rocker-downloads
@@ -82,5 +85,12 @@ jobs:
           tag=$(jq -r '.tag' docs/windows/releases/current.json)
           commit=$(jq -r '.commit' docs/windows/releases/current.json)
           title=$(jq -r '.title' docs/windows/releases/current.json)
-          gh release create "$tag" /tmp/rocker-downloads/Rocker-Windows-x64.zip /tmp/rocker-downloads/Rocker-Windows-sources.zip /tmp/rocker-downloads/SHA256SUMS.txt \
-            --repo "$GITHUB_REPOSITORY" --target "$commit" --title "$title" --notes-file docs/windows/releases/notes.md --prerelease
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" --json isDraft > /tmp/existing-release.json; then
+            jq -e '.isDraft == true' /tmp/existing-release.json
+            gh release upload "$tag" /tmp/rocker-downloads/Rocker-Windows-x64.zip /tmp/rocker-downloads/Rocker-Windows-sources.zip /tmp/rocker-downloads/SHA256SUMS.txt \
+              --repo "$GITHUB_REPOSITORY"
+            gh release edit "$tag" --repo "$GITHUB_REPOSITORY" --draft=false
+          else
+            gh release create "$tag" /tmp/rocker-downloads/Rocker-Windows-x64.zip /tmp/rocker-downloads/Rocker-Windows-sources.zip /tmp/rocker-downloads/SHA256SUMS.txt \
+              --repo "$GITHUB_REPOSITORY" --verify-tag --title "$title" --notes-file docs/windows/releases/notes.md --prerelease
+          fi

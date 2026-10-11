@@ -13,7 +13,9 @@ přihlášení účtem s přístupem.
    obsah ZIPů, x64 EXE/DLL a shodu commitu v `build-info.json` se zdroji.
    Zaznamenat i dosud neprovedené ruční kontroly. Prototyp nepředávat po neúspěšném testu.
 3. Aktualizovat `current.json`: ID úspěšného běhu, sestavený commit, nový jedinečný
-   tag a název vydání. Přepsat `notes.md` podle skutečného výsledku. Commitnout a pushnout
+   tag a název vydání. Přes běžné oprávnění Git vytvořit a pushnout nový lightweight
+   tag přesně na sestavený commit; staré tagy nepřepisovat. Workflow jeho SHA ověří.
+   Přepsat `notes.md` podle skutečného výsledku. Commitnout a pushnout
    tyto dva soubory; spustí se `Publish verified Windows prototype`.
 4. Publikační workflow zkontroluje úspěch vybraného Windows běhu, příslušnost
    k tomuto repozitáři/větvi/workflow, revize zdrojů, SHA-256 a obsah ZIPu.
@@ -24,10 +26,18 @@ přihlášení účtem s přístupem.
 
 Publikace nic nesestavuje znovu a původní přílohy nepřepisuje. Pro další balík
 použít nový tag. Vydání odkazuje na skutečně sestavený commit, který může být starší
-než následná dokumentace výsledků. Zdrojový ZIP obsahuje celý Rocker a připnuté JUCE;
+než následná dokumentace výsledků. Zdrojový ZIP obsahuje celý Rocker a připnuté JUCE,
+od notového řezu W04 také AlphaTab a AlphaSkia;
 archiv vytvořený Gitem na Windows může mít textové soubory převedené na CRLF.
 Při porovnávání obsahu zohlednit jen tuto změnu konců řádků; binární soubory porovnávat přesně.
 
 První úspěšné vydání:
 [W03 z 11. 10. 2026](https://github.com/JendaNDT/rocker/releases/tag/windows-w03-preview-20261011).
 Podklady a meze ověření: [protokol](../w03-windows-validation.json).
+
+Při publikaci W04 odmítl GitHub Actions vytvoření vydání s HTTP 403 navzdory
+deklarovanému `contents: write`. Předem vytvořený tag sám o sobě chybu neodstranil.
+Draft vydání se podařilo vytvořit přes stávající připojený GitHub účet. Workflow
+umí do existujícího draftu nahrát ověřené soubory bez přepisování příloh; tato
+publikační oprávnění je nutné ověřit na skutečném běhu. Tokeny se nevytahují
+z runneru a v repozitáři se neukládají.
