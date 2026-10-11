@@ -875,6 +875,11 @@ Windows W22 prošel v běhu 38173877273 (důkaz `docs/windows/w22/windows-valida
 W23 přidává nativní Looper: 8 mono vrstev/64 MiB, vzorkový předtakt a
 taktové hranice, kompenzovaný overdub, undo a explicitně uložené projekty.
 ABI je 13; Linux 15/15 CTest, C# ukládání/obnovení vrstev a 22 kontrol
-nahrávek/projektů prošly. Windows sestavení/formulář/persistence navazuje.
-Funkčně kompletní kandidát
-ani fyzická přejímka zatím nejsou hotové; pokračuje W23 a zbývající roadmapa.
+nahrávek/projektů prošly. Windows W23 prošel v běhu 38175507317.
+W24–W26 mají automaticky ověřené Studio, lekce a přesný trénink; Windows
+38178598242 a 38179590084 prošly i skutečnými WinUI formuláři.
+W27 přidává power chord, gallop a palm mute, hudební kola v jediném jádru,
+5% zrychlování a profil kalibrace. ABI je 15. Linux 18/18 CTest, sanitizery,
+CLR a připravené PCM prošly; Windows formuláře se ověřují.
+Funkčně kompletní kandidát ani fyzická přejímka zatím nejsou hotové;
+pokračuje W28 a zbývající roadmapa.

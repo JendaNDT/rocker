@@ -67,6 +67,8 @@ public sealed partial class MainWindow
     {
         if (!shellReady || closed) return;
         var target = navigation.Current; var view = WorkspaceViews.Get(target.ViewId);
+        if(target.ViewId!=rhythmView && (rhythmRunning || rhythmOperation))_ = StopRhythmUiAsync();
+        if(target.ViewId!="12")CancelPalm();
         if(target.ViewId!="09" && surgicalListening){surgicalListening=false;UpdateSurgical();}
         visitedViews.Add(view.Id); Title = "Rocker — " + view.Title;
         WorkspaceTitle.Text = view.Title; WorkspaceTrail.Text = "Rocker / " + view.Group + (target.ItemId is null ? "" : " / " + target.ItemId);
@@ -119,6 +121,8 @@ public sealed partial class MainWindow
     private FrameworkElement BuildWorkspace(NavigationTarget target)
     {
         if (catalog is null) return Text("Výukový obsah není dostupný. Přehrávání souborů zůstává dostupné.");
+        if (target.ViewId is "10" or "11") return BuildRhythmTrainer(target.ViewId,target.ItemId);
+        if (target.ViewId == "12") return BuildPalmMute();
         if (target.ViewId == "09") return BuildSurgical(target.ItemId);
         if (target.ViewId == "15") return BuildStudio();
         if (target.ViewId == "16") return BuildLooper();
@@ -228,6 +232,7 @@ public sealed partial class MainWindow
                 if (choice == ContentDialogResult.Primary && !await guard.Save()) return;
                 if (choice == ContentDialogResult.Secondary) guard.Discard();
             }
+            CancelPalm();await StopRhythmUiAsync();
             if (autosave is not null) await autosave.FlushAsync();
             TrackWindowBounds();
             try { await windowStore!.SaveAsync(new(1,normalBounds,AppWindow.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Maximized },selectedTheme)); }
@@ -259,6 +264,7 @@ public sealed partial class MainWindow
         await VerifyStudioAsync();
         await VerifyLessonsAsync();
         VerifySurgical();
+        await VerifyRhythmAndPalmAsync();
         await VerifyDevicesAsync();
         VerifyComponents();
         if (Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTIC_VIEW") == "components") ShowComponents();

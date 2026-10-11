@@ -1,0 +1,54 @@
+{
+  "result": "passed",
+  "runId": 38178598242,
+  "url": "https://github.com/JendaNDT/rocker/actions/runs/38178598242",
+  "commit": "b64556a43af46bb8e3232380fb277833d7a60579",
+  "nativeTests": 17,
+  "home": {
+    "result": "passed",
+    "nativeStepKinds": 3,
+    "totalLessons": 18,
+    "persistenceReopened": true,
+    "completionSavedOnce": true,
+    "physicalPitchCheckVerified": false,
+    "keyboardManualVerified": false
+  },
+  "components": {
+    "result": "passed",
+    "nativeStepKinds": 3,
+    "totalLessons": 18,
+    "persistenceReopened": true,
+    "completionSavedOnce": true,
+    "physicalPitchCheckVerified": false,
+    "keyboardManualVerified": false
+  },
+  "storage": {
+    "result": "passed",
+    "fileChecks": 11,
+    "storageChecks": 39,
+    "secretChecks": 8,
+    "backupChecks": 20,
+    "migrationChecks": 29,
+    "diagnosticChecks": 10,
+    "recordingChecks": 25,
+    "dpapiVerified": true,
+    "forcedTerminationVerified": true,
+    "manualHardwareVerified": false
+  },
+  "window": {
+    "webViewRuntime": "153.0.4234.48",
+    "onlineVideoVerified": false,
+    "checkedAtUtc": "2026-10-11T22:09:44.0832323Z",
+    "result": "passed",
+    "nativeNotationVerified": true,
+    "audioHostsCreated": 1,
+    "exitCode": 0,
+    "audioCoexistenceVerified": false,
+    "audioPlaybackVerified": false,
+    "windowTitle": "Rocker \u2014 P\u0159ehled",
+    "nativeShellViewsVisited": 32,
+    "localVideoBridgeVerified": true,
+    "midiPreparedInCommonEngine": true
+  },
+  "physicalAudioVerified": false
+}

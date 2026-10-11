@@ -6,7 +6,8 @@ public sealed record AppSettings(string Theme = "system", string TuningId = "sta
     string Notation = "english", double NoiseGate = 0.06, double ReferenceToneVolume = 0.3, bool TunerConfirmSound = false, bool Onboarded = false,
     [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)] DevicePreference? AudioDevice = null,
     [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingDefault)] bool AmpEnabled = false,
-    [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)] double? ReferenceA = null);
+    [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)] double? ReferenceA = null,
+    [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)] PalmProfile? PalmMute = null);
 public sealed record DevicePreference(string Backend, string Input, string Output, double SampleRate=0, uint BufferFrames=0, int InputChannel=-1, uint OutputFirst=0);
 public sealed record Pickup(string Position, string Type);
 public sealed record InstrumentProfile(string Name, string BodyType, IReadOnlyList<Pickup> Pickups, string ScaleLength, string StringGauge, string Notes)
@@ -65,6 +66,7 @@ public static class UserData
                 Require(settings.Theme is "system" or "dark" or "light" && settings.Handedness is "right" or "left" && settings.Notation is "english" or "german" && ValidId(settings.TuningId) && Unit(settings.NoiseGate) && Unit(settings.ReferenceToneVolume), "Neplatné nastavení.");
                 if(settings.ReferenceA is double referenceA)Require(double.IsFinite(referenceA) && referenceA is >=430 and <=450,"Neplatná referenční frekvence A.");
                 if(settings.AudioDevice is { } device) Require(ValidId(device.Backend) && device.Input is not null && device.Input.Length<=512 && !device.Input.Any(char.IsControl) && ValidId(device.Output) && double.IsFinite(device.SampleRate) && (device.SampleRate==0 || device.SampleRate is >=8000 and <=192000) && (device.BufferFrames==0 || device.BufferFrames is >=16 and <=8192) && device.InputChannel is >=-1 and <=63 && (device.InputChannel==-1 || device.Input.Length>0) && device.OutputFirst<=62,"Neplatné zvukové zařízení.");
+                if(settings.PalmMute is { } palm)Require(palm.Calibration is not null && ValidHash(palm.Device) && ValidId(palm.Tuning) && ValidHash(palm.Instrument) && !string.IsNullOrWhiteSpace(palm.Pickup) && palm.Pickup.Length<=64 && double.IsFinite(palm.Sensitivity) && palm.Sensitivity is >=.5 and <=1.5 && double.IsFinite(palm.Calibration.OpenMean) && double.IsFinite(palm.Calibration.MutedMean) && palm.Calibration.MutedMean>=0 && palm.Calibration.OpenMean>palm.Calibration.MutedMean && palm.Calibration.OpenMean<=100000 && Math.Abs(palm.Calibration.Threshold-(palm.Calibration.OpenMean+palm.Calibration.MutedMean)/2)<1e-6,"Neplatný profil palm mute.");
                 value = settings; break;
             case "instrument":
                 var profile = Read<InstrumentProfile>(document.Value);

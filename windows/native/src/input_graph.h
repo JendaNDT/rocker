@@ -7,6 +7,7 @@
 #include "reference_dsp.h"
 #include "recording_tap.h"
 #include "preview_processor.h"
+#include "rhythm_processor.h"
 #include "looper_processor.h"
 #include <algorithm>
 #include <cmath>
@@ -20,13 +21,14 @@ struct BusMeters {
 // are lock-free scalar atomics; analysis storage is allocated with the graph.
 class InputGraph {
 public:
-    void prepare(double rate,uint32_t epoch) {rate_=rate;epoch_=epoch;clock_.prepare(rate,epoch);looper_.prepare(rate,epoch);amp_.prepare(rate);metronome_.prepare(rate);reference_.prepare(rate);preview_.prepare(rate);gain_=0;inputPresent_.store(false);frame_=0;peak_[0].store(0);peak_[1].store(0);peak_[2].store(0);rms_[0].store(0);rms_[1].store(0);rms_[2].store(0);}
+    void prepare(double rate,uint32_t epoch) {rate_=rate;epoch_=epoch;clock_.prepare(rate,epoch);looper_.prepare(rate,epoch);amp_.prepare(rate);metronome_.prepare(rate);reference_.prepare(rate);preview_.prepare(rate);rhythm_.prepare(epoch);gain_=0;inputPresent_.store(false);frame_=0;peak_[0].store(0);peak_[1].store(0);peak_[2].store(0);rms_[0].store(0);rms_[1].store(0);rms_[2].store(0);}
     void monitoring(bool enabled,double gain) noexcept {gainTarget_.store(gain);monitor_.store(enabled);}
     bool monitoring() const noexcept{return monitor_.load();}
     bool hasInput() const noexcept{return inputPresent_.load();}
     BusMeters meters() const noexcept {return {peak_[0].load(),rms_[0].load(),peak_[1].load(),rms_[1].load(),peak_[2].load(),rms_[2].load(),invalid_.load()+amp_.faults(),inputClips_.load(),outputClips_.load(),analysis_.dropped(),publishedFrame_.load(),publishedEpoch_.load()};}
     LooperProcessor& looper() noexcept{return looper_;}
     RecordingTap& recording() noexcept{return recording_;}
+    RhythmProcessor& rhythm() noexcept{return rhythm_;}
     PreviewProcessor& preview() noexcept{return preview_;}
     ReferenceProcessor& reference() noexcept{return reference_;}
     MetronomeProcessor& metronome() noexcept{return metronome_;}
@@ -37,12 +39,12 @@ public:
         if(!outputs || channels<=0 || frames<=0)return;
         inputPresent_.store(input!=nullptr);
         double peaks[3]{},energy[3]{};uint64_t invalid=0,inputClips=0,outputClips=0;
-        recording_.beginBlock(rate_,epoch_);looper_.beginBlock();clock_.beginBlock();amp_.beginBlock();metronome_.beginBlock();reference_.beginBlock();preview_.beginBlock();
+        recording_.beginBlock(rate_,epoch_);looper_.beginBlock();rhythm_.beginBlock(clock_,preview_);clock_.beginBlock();amp_.beginBlock();metronome_.beginBlock();reference_.beginBlock();preview_.beginBlock();
         const auto dspFrames=amp_.latency();
         const double target=monitor_.load()?gainTarget_.load():0;
         AnalysisBlock block;block.epoch=epoch_;block.sampleRate=rate_;block.firstFrame=frame_;
         for(int i=0;i<frames;++i){
-            const auto tick=clock_.tick();const double click=metronome_.process(tick,clock_)+reference_.process()+preview_.process(tick);
+            const auto tick=clock_.tick();rhythm_.process(tick,clock_);preview_.tempo(clock_.currentBpm());const double click=metronome_.process(tick,clock_)+reference_.process()+preview_.process(tick);
             double raw=input?input[i]:0;
             if(!std::isfinite(raw)){raw=0;++invalid;recording_.invalidSample();looper_.invalidSample();}else if(std::abs(raw)>=1)++inputClips;
             raw=std::clamp(raw,-1.0,1.0);
@@ -63,13 +65,13 @@ public:
             if(input){block.mono[block.count++]=static_cast<float>(raw);if(block.count==block.mono.size()){analysis_.push(block);block.count=0;block.firstFrame=frame_+static_cast<uint64_t>(i)+1;}}
         }
         if(block.count)analysis_.push(block);
-        recording_.endBlock();looper_.endBlock();metronome_.publish();clock_.publish();
+        recording_.endBlock();looper_.endBlock();rhythm_.endBlock();metronome_.publish();clock_.publish();
         frame_+=static_cast<uint64_t>(frames);publishedFrame_.store(frame_);publishedEpoch_.store(epoch_);
         invalid_.fetch_add(invalid);inputClips_.fetch_add(inputClips);outputClips_.fetch_add(outputClips);
         for(int b=0;b<3;++b){peak_[b].store(peaks[b]);rms_[b].store(std::sqrt(energy[b]/frames));}
     }
 private:
-    LooperProcessor looper_;RecordingTap recording_;AnalysisQueue analysis_;SampleClock clock_;AmpProcessor amp_;MetronomeProcessor metronome_;ReferenceProcessor reference_;PreviewProcessor preview_;
+    LooperProcessor looper_;RecordingTap recording_;AnalysisQueue analysis_;SampleClock clock_;AmpProcessor amp_;MetronomeProcessor metronome_;ReferenceProcessor reference_;PreviewProcessor preview_;RhythmProcessor rhythm_;
     double rate_=48000,gain_=0;uint32_t epoch_=0;uint64_t frame_=0;
     std::atomic<bool> monitor_{false},inputPresent_{false};std::atomic<double> gainTarget_{0.15};
     std::atomic<double> peak_[3]{},rms_[3]{};

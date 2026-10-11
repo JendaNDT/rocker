@@ -41,9 +41,13 @@ actual C# ↔ C++ mixer/export/alignment calls, 16 native tests, portable transf
 another data root and rejection of tampered media. Windows run 38177955339 passed all 16 native tests and CLR calls, then
 found an invalid StackPanel.IsEnabled use in the Studio UI. It has been replaced
 with Control.IsEnabled on child controls; the corrected Windows build/form check
-is pending. The WinUI smoke check requires two native track rows,
+passed in run 38178598242. The WinUI smoke check requires two native track rows,
 two timeline regions, reopened SQLite/manifest data and an exact 560-frame source.
 Physical M-Track Solo overdub, delay accuracy, dialogs and listening remain
 **unperformed**, deferred to the complete candidate. Capture crash recovery keeps
 unfinished audio in the recording library; an uncommitted Studio attachment may
 need to be attached manually after a crash.
+
+Corrected Windows validation: [run 38178598242](windows-validation.json) passed
+17 native suites, CLR checks and both actual WinUI instances. Hardware and manual
+checks remain explicitly unperformed.

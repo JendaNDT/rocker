@@ -391,7 +391,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w24"></a>
 #### W24 — Studio a trvalé vícestopé projekty
 
-- [ ] Rozpracováno. Závislosti: W09, W16, W21–W23. [Implementace Studia a zarovnaného nahrávání](docs/windows/w24/README.md) prošla 16 nativními testy, kontrolami CLR a přenosu projektu; skutečný Windows build a formulářová kontrola čekají. Fyzická zvukovka a poslech zůstávají odložené.
+- [x] Dokončeno v automaticky ověřitelném rozsahu. Závislosti: W09, W16, W21–W23. [Implementace Studia a zarovnaného nahrávání](docs/windows/w24/README.md) prošla 16 nativními testy, kontrolami CLR a přenosu projektu; [Windows 38178598242](docs/windows/w24/windows-validation.json) prošel opraveným formulářem, CLR a 17 nativními testy. Fyzická zvukovka a poslech zůstávají odložené.
 - Přenést současné vrstvení stop, hlasitost, mute a WAV mixdown. Doplnit projekt na disku, relativní média, panorama, solo, časovou osu, zoom, přesný posun a návrat podporovaných editací.
 - Zavést jednotné pravidlo overdubu a kompenzace: známé vstupní a výstupní zpoždění i latence DSP se započítají jednou. Pokud nejsou změřené, rozhraní rozlišuje odhad a umožní pozdější kalibraci.
 - Offline mixdown používá stejný mix a DSP jako poslech, zohlední délku a dozvuky podle zvoleného rozsahu. Výpadek zvukovky nepoškodí projekt ani nezablokuje offline export.
@@ -402,7 +402,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w25"></a>
 #### W25 — Lekce a postup výukou
 
-- [ ] Rozpracováno. Závislosti: W06, W08, W09, W18, W19. [Nativní lekce a zvukové ukázky](docs/windows/w25/README.md) mají všech 18 lekcí, tři typy kroků, tónovou kontrolu, trvalý postup a přehrávání v jediném grafu. Prošlo 17 nativních testů a kontroly CLR/domény; skutečný Windows formulář se ověřuje.
+- [x] Dokončeno v automaticky ověřitelném rozsahu. Závislosti: W06, W08, W09, W18, W19. [Nativní lekce a zvukové ukázky](docs/windows/w25/README.md) mají všech 18 lekcí, tři typy kroků, tónovou kontrolu, trvalý postup a přehrávání v jediném grafu. Prošlo 17 nativních testů a kontroly CLR/domény; [Windows 38178598242](docs/windows/w25/windows-validation.json) ověřil oba skutečné WinUI formuláře.
 - Implementovat výběr všech lekcí, jednotlivé kroky, přehrání ukázek, tónovou kontrolu, navigaci klávesnicí, dokončení a pokračování po restartu.
 - Zachovat rozdíl mezi kontrolou jednotlivého tónu a akordovým režimem „hraj se mnou“. Monofonní detektor nesmí bez dalšího slibovat vyhodnocení celého akordu.
 - Chybějící vstupní zařízení blokuje pouze úlohy, které je potřebují. Čtení, poslech a manuální potvrzení vhodného kroku musí mít jasná pravidla, nikoli fingovaně úspěšnou detekci.
@@ -411,7 +411,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w26"></a>
 #### W26 — Přesný trénink bez ztráty původní logiky
 
-- [ ] Rozpracováno. Závislosti: W06, W19, W21, W25. [Přesný trénink](docs/windows/w26/README.md) má nativní průchod, drill, přehled chyb a oddělené A/B cvičení. Skutečné umělé PCM prošlo C++ analýzou do doménového hodnocení a rozlišilo opakovaný stejný tón od držení; kontrola Windows pohledu čeká.
+- [x] Dokončeno v automaticky ověřitelném rozsahu. Závislosti: W06, W19, W21, W25. [Přesný trénink](docs/windows/w26/README.md) má nativní průchod, drill, přehled chyb a oddělené A/B cvičení. Skutečné umělé PCM prošlo C++ analýzou do doménového hodnocení a rozlišilo opakovaný stejný tón od držení; [Windows 38179590084](docs/windows/w26/windows-validation.json) prošel sestavením, 17 nativními testy a oběma skutečnými WinUI instancemi. Fyzická kytara zůstává neověřená.
 - Přenést stavy průchod → výběr chybového místa → drill → dokončení ze současného surgicalEngine. Zachovat evidenci chyb na pozicích, výběr problémového okna a tři čistá opakování; parametry odpovídají referenčnímu obsahu a testům.
 - Určit rozpoznání nového úhozu a opakovaného stejného tónu. Jeden držený tón nesmí posouvat úlohu každý snímek; dva samostatné úhozy stejné výšky musí jít odlišit.
 - V návrhu s waveformou nabídnout vedle tónového drillu režim úseku skladby nad W21. Nezaměnit práci s A/B úsekem za celé dosavadní hodnocení jednotlivých tónů.
@@ -420,7 +420,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w27"></a>
 #### W27 — Power chord, Gallop a Palm mute
 
-- [ ] Čeká. Závislosti: W06, W08, W18, W19, W25.
+- [ ] Rozpracováno. Závislosti: W06, W08, W18, W19, W25. [Tři nativní trenažéry](docs/windows/w27/README.md) mají hudební doprovod ve společném jádru, předtakt, 5% zrychlování, rekordy a profil kalibrace palm mute. Linux prošel 18 nativními testy, CLR a kalibrací ze skutečných umělých PCM; Windows formuláře čekají na sestavení.
 - Přenést výběr cvičení, polohy a zobrazení power chordů, gallop vzory, doprovod, předtakt, změny tempa a záznam rekordů. Hudební náhledy používají společný engine.
 - Palm mute má kalibraci, citlivost, skutečnou analýzu vstupu a čitelnou míru jistoty. Nastavení může vyžadovat úpravu pro jinou kytaru, snímač či úroveň; ukládat relevantní profil.
 - Nahrávání a kompaktní aparát jsou dostupné přes společné služby, bez druhého spuštěného řetězce. Výsledky se propisují do jednotného pokroku.

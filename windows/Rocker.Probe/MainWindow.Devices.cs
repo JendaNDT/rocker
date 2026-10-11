@@ -16,7 +16,7 @@ public sealed partial class MainWindow
     {
         if(deviceOperationRunning || closingWindow || audio is null)return;
         DeviceBusy(true);
-        try{++playbackIntent;await audio.StopAsync();if(!await StopCaptureAsync())return;await operation();}
+        try{CancelPalm();await StopRhythmUiAsync();++playbackIntent;await audio.StopAsync();if(!await StopCaptureAsync())return;await operation();}
         catch(Exception error){if(!closed)DeviceSelectionStatus.Text="Zařízení nelze změnit. "+error.Message;}
         finally{if(!closed)DeviceBusy(false);}
     }

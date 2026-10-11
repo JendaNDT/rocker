@@ -39,6 +39,7 @@ public sealed partial class MainWindow
             await InitializeAmplifierAsync(snapshot.Documents);
             await InitializeMetronomeAsync(snapshot.Documents);
             InitializeTuner(snapshot.Documents);
+            InitializeTraining(snapshot.Documents);
             InitializeSongs(snapshot.Documents);
             await RestoreDevicePreferenceAsync();
             workspaceCache.Clear(); ShowWorkspace();

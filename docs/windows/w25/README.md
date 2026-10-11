@@ -23,7 +23,10 @@ Validation: [Linux checks](linux-validation.json), 17 native tests, four relevan
 ASan/UBSan suites, frozen PWA domain references plus traversal of every lesson,
 actual C# ↔ C++ polyphonic preview calls, and unchanged PWA type/test checks.
 The WinUI smoke check constructs all three step kinds, reopens lesson progress and
-requires completion stored exactly once. Windows build/form verification is
-pending. Physical pitch checks, listening, keyboard and screen-reader acceptance
+requires completion stored exactly once. Windows build/form verification passed in run 38178598242. Physical pitch checks, listening, keyboard and screen-reader acceptance
 remain unperformed and deferred to the complete candidate. Later W32 integrates
 the lesson results with full progress, achievements and practice time.
+
+Corrected Windows validation: [run 38178598242](windows-validation.json) passed
+17 native suites, CLR checks and both actual WinUI instances. Hardware and manual
+checks remain explicitly unperformed.

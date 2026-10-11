@@ -26,5 +26,5 @@ callback, native off-thread analyzer, CLR gate and SurgicalEngine. The prepared
 sequence accepts exactly E2, E2, F#2 and completes; the held sections do not
 repeatedly advance. The native test PCM injection symbol exists only in the test
 DLL, never the production audio library. WinUI smoke exercises native run, drill
-and completed feedback; Windows verification is pending. Physical guitar,
+and completed feedback; [Windows run 38179590084](windows-validation.json) passed the build, all 17 native suites and both actual WinUI instances. Physical guitar,
 keyboard/dialog and listening checks remain unperformed until the full candidate.

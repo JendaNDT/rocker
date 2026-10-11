@@ -1,0 +1,31 @@
+{
+  "result": "passed",
+  "platform": "Linux",
+  "nativeTests": 18,
+  "sanitizerSuites": [
+    "rhythm_trainers",
+    "teaching_preview",
+    "recording_writer",
+    "pitch_analysis"
+  ],
+  "domain": {
+    "result": "passed",
+    "referenceCases": 69,
+    "boundaryChecks": 105,
+    "contentGroups": 15,
+    "surgicalStatesCompared": 37,
+    "extendedReferenceCases": 372,
+    "extendedStatesCompared": 350
+  },
+  "interopRhythmVerified": true,
+  "actualPcmPalmCalibrationVerified": true,
+  "preparedPalmSignalsHz": [
+    2400,
+    600
+  ],
+  "pwaTests": 567,
+  "pwaTypes": "passed",
+  "juceDriverSyntax": "passed",
+  "windowsBuild": "pending",
+  "physicalHardwareVerified": false
+}

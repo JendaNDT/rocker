@@ -110,6 +110,10 @@ Check(noteGate.Observe(new(1,16000,48000,40,true,false,1,0,.171)) is null && not
 Check(noteGate.Observe(new(1,21000,48000,40,true,false,2,20000,.171)) is null && noteGate.Observe(new(1,29000,48000,40,true,false,2,20000,.171))==40,"later same-pitch onset waits for a fresh analysis window and feeds exactly once");
 noteGate.Observe(new(1,30000,48000,null,true,true,2,20000,.171));noteGate.Observe(new(1,33000,48000,null,true,true,2,20000,.171));noteGate.Observe(new(1,34000,48000,40,true,false,2,20000,.171));Check(noteGate.Observe(new(1,43000,48000,40,true,false,2,20000,.171))==40,"a genuine silent release also permits a repeated same-pitch note");
 Check(noteGate.Observe(new(2,44000,48000,40,true,false,0,0,.171)) is null,"device epoch change never fabricates another attack");
+var rhythmTuning=new[]{40,45,50,55,59,64};var power=UserData.Read<PowerChordExercise>(content.Items("powerChordExercises").First());var powerNotes=RhythmPreview.Power(power,rhythmTuning);Check(powerNotes.Count==power.Sequence.Count*3 && powerNotes.Last().Start==(power.Sequence.Count-1)*power.BeatsPerChord,"rhythm preview uses actual exercise positions in musical beats");
+Check(RhythmPreview.Shape(MusicShapes.PowerChordAt(0,0),rhythmTuning) is not null && RhythmPreview.Shape(MusicShapes.PowerChordAt(0,0,new[]{38,45,50,55,59,64}),new[]{38,45,50,55,59,64}) is not null,"power chord fingering adapts to standard and Drop D");
+var palmProfile=new PalmProfile(new string('a',64),"standard",new string('b',64),new(2400,600,1500));UserData.Document("settings","default",new AppSettings(PalmMute:palmProfile));Check(true,"palm calibration persists as a validated device/tuning/instrument/pickup profile");
+try{UserData.Document("settings","default",new AppSettings(PalmMute:palmProfile with{Calibration=new(600,2400,1500)}));throw new Exception("Invalid palm profile accepted");}catch(InvalidDataException){Check(true,"reversed centroid calibration cannot be restored");}
 var navigation = new NavigationSession();
 navigation.Navigate(new("06", content.Lessons[0].Id)); navigation.Navigate(new("09", "spider")); navigation.Back();
 Check(navigation.Current == new NavigationTarget("06", content.Lessons[0].Id), "back restores specific lesson task");
@@ -123,6 +127,6 @@ var runtimeContent = ContentCatalog.Load(File.ReadAllBytes(Path.Combine(Path.Get
 Check(runtimeContent.Items("riffs").Count() == 14 && runtimeContent.Items("riffs").All(riff => !riff.TryGetProperty("artist", out _)), "runtime includes original drills and two new practice patterns");
 Check(runtimeContent.ResolveRiff("smoke-on-the-water")?.GetProperty("id").GetString() == "chromatic-pulse" && runtimeContent.ResolveRiff("seven-nation-army")?.GetProperty("id").GetString() == "root-and-third", "legacy riff selections resolve to replacement IDs");
 Console.WriteLine($"PASS: {extended.Cases} additional PWA cases and {extended.States} rhythm/palm-mute/break reference states.");
-Console.WriteLine($"PASS: {compared} frozen PWA cases and {checks - compared} additional assertions, including {surgicalStates} frozen surgical states; native input capture and trainer UI remain later roadmap work.");
+Console.WriteLine($"PASS: {compared} frozen PWA cases and {checks - compared} additional assertions, including {surgicalStates} frozen surgical states; hardware and manual acceptance remain unperformed.");
 
 if (args.Length == 3) File.WriteAllText(args[2], JsonSerializer.Serialize(new { result = "passed", referenceCases = compared, boundaryChecks = checks - compared, contentGroups = 15, surgicalStatesCompared = surgicalStates, extendedReferenceCases = extended.Cases, extendedStatesCompared = extended.States }));

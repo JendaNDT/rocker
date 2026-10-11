@@ -20,7 +20,7 @@ extern "C" {
 
 /* Version 14 adds the shared multitrack project mixer.
    Reject earlier DLLs before creating a host. */
-#define ROCKER_AUDIO_ABI_VERSION 14u
+#define ROCKER_AUDIO_ABI_VERSION 15u
 typedef struct rocker_audio_host* rocker_audio_handle;
 typedef uint32_t rocker_audio_result;
 enum {
@@ -192,6 +192,12 @@ ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_play_count_in_reserved(r
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_cancel_media(rocker_audio_handle);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_clear_media_reserved(rocker_audio_handle,uint64_t ticket);
 typedef struct rocker_preview_note {double start_seconds,duration_seconds,frequency_hz,volume;} rocker_preview_note;
+typedef struct rocker_rhythm_snapshot {uint32_t struct_size,abi_version,state,epoch,bpm,flags,last_completed_bpm,reserved;uint64_t token,start_frame,rounds;double elapsed_beats,round_beats;} rocker_rhythm_snapshot;
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_reserve_rhythm(rocker_audio_handle,uint64_t* graph,uint64_t* trainer,uint64_t* phrase);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_start_rhythm_reserved(rocker_audio_handle,uint64_t graph,uint64_t trainer,uint64_t phrase,const rocker_preview_note*,uint32_t count,double pattern_beats,double round_beats,uint32_t bpm,uint32_t speed_up,uint32_t count_in_beats);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_reserve_rhythm_stop(rocker_audio_handle,uint64_t* ticket);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_finish_rhythm_stop(rocker_audio_handle,uint64_t ticket);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_get_rhythm(rocker_audio_handle,rocker_rhythm_snapshot*);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_reserve_preview(rocker_audio_handle,uint64_t* graph,uint64_t* phrase);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_preview_reserved(rocker_audio_handle,uint64_t graph,uint64_t phrase,const rocker_preview_note*,uint32_t count,uint32_t repeat,uint32_t count_in_beats);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_stop_preview(rocker_audio_handle);
