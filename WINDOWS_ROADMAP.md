@@ -200,6 +200,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 #### W05 — Založit řešení, sestavení a Windows CI
 
 - [ ] Čeká. Závislosti: W02–W04.
+- Na výslovný požadavek uživatele z 11. 10. 2026 je jednoduchý Windows runner a balení prototypu předřazeno do W03, aby dostával hotové EXE. Neznamená to dokončení zbytku W05; výsledek konkrétního sestavení se musí doložit před předáním.
 - Založit vrstvy podle architektury, CMake pro C++, správu balíčků a jejich zámků pro .NET, jednotné verze produktu a sestavení. Nativní testy spouštět přes CTest, doménu například přes xUnit.
 - Připravit Windows runner pro sestavení WinUI a DLL, unit testy a později UI testy a balení. CI uchová protokoly, symboly a artefakty. Linux cloud může kontrolovat obsah a část čisté logiky, nenahrazuje Windows ověření.
 - Zachovat oddělené kontroly PWA, dokud slouží jako reference a zdroj migračního exportu. Build artefakty a uživatelská data nepřidávat do Gitu.

@@ -3,6 +3,12 @@
 
 ## Aktuální směr: nativní Rocker pro Windows
 
+**Předávání testovacích verzí od 11. 10. 2026:** Jenda požaduje už sestavenou
+aplikaci. Před každým předáním nejdřív Windows build, automatické kontroly a
+ověření balíku; potom odkaz na ZIP s EXE. Zdroje zůstávají dostupné zvlášť.
+Uživatel nemá ručně připravovat vývojové prostředí. Postup je v
+[návodu Windows](windows/README.md) a [CI workflow](.github/workflows/windows-prototype.yml).
+
 Uživatel zvolil skutečné nativní ovládání Windows a vzhled Vintage. Zvuková
 cesta má používat samostatné nativní jádro; ve W02 bylo vybráno WinUI 3 / C#
 a C++ / JUCE s bezplatnou AGPL/GPL cestou. Integrace ještě není ověřená. Cílové zařízení pro závěrečný

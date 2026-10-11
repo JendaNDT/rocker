@@ -4,6 +4,39 @@ První implementace pro ověření C# / WinUI a C++ / JUCE. Není to ještě hla
 obrazovka Rockeru, hotové zvukové jádro ani verze určená bratrovi.
 Platí [rozhodnutí W02](../docs/windows/decisions/0001-platform-and-distribution.md).
 
+## Spuštění předaného balíku
+
+Jenda dostává už sestavenou aplikaci; vývojové nástroje nejsou potřeba.
+Z příslušného ověřeného vydání stáhne `Rocker-Windows-x64.zip`, použije
+**Extrahovat vše** a spustí `Rocker.Probe.exe` z rozbalené složky. Ostatní
+soubory musí zůstat vedle EXE. Vyžaduje Windows 11 x64 od 24H2.
+Zdrojový ZIP z tlačítka GitHub **Code → Download ZIP** spustitelnou aplikaci
+neobsahuje. `Rocker-Windows-sources.zip` je samostatná volitelná nabídka zdrojů.
+
+Balík zůstává technickým prototypem s testovacím tónem. Plná aplikace a Vintage
+obrazovky ještě nejsou implementované. Automatická kontrola otevření a zavření
+okna nenahrazuje ruční přejímku ani poslech skutečného zařízení.
+
+## Automatické sestavení před předáním
+
+[Windows workflow](../.github/workflows/windows-prototype.yml) na změny Windows
+části ve větvi `windows-native-prototype` spustí sestavení na `windows-2025`,
+nativní a C# integrační testy, publikování WinUI a kontrolu spuštění přes
+`smoke.ps1`. Teprve po úspěchu `package.ps1` připraví samostatný spustitelný ZIP,
+odpovídající zdroje (včetně připnutého JUCE) a SHA-256 součty.
+
+CI používá dostupný MSVC x64 z obrazu runneru, CMake 3.31.10 a přesné .NET SDK
+z `global.json`. Skutečná verze MSVC, Windows SDK, operačního systému a nástrojů
+se zapisuje do `out/reports/toolchain.json` a `build-info.json` v balíku.
+Volba dostupného MSVC pro CI není tvrzení, že runner obsahuje dříve zvažované
+Visual Studio 18.10.0. Obraz runneru a výsledek se evidují pro konkrétní běh.
+
+Artefakt `Rocker-Windows-downloads` obsahuje oba ZIPy a součty. Před odkazem
+uživateli musí agent stáhnout artefakt z úspěšného běhu, ověřit jeho obsah a
+součty a zveřejnit soubory jako soukromé GitHub předběžné vydání stejného commitu.
+Zdrojový archiv musí zůstat dostupný vedle binárního balíku; do něj se nepřibaluje.
+Veřejné vydání ani předání bratrovi tento postup nezavádí.
+
 ## Co kód obsahuje
 
 - Skutečné WinUI okno, standardní tlačítka s přístupovými klávesami, stav a systémový titulek.
@@ -22,8 +55,8 @@ zařízení se zatím hlásí obecná chyba; finální zotavení patří do W14.
 
 ## Ověření na Windows
 
-Windows 11 x64 od 24H2, .NET SDK podle `global.json`, Visual Studio podle W02
-s C++ build nástroji a Windows SDK, CMake 3.31.10, Ninja a Git. Použít x64
+Windows 11 x64 od 24H2, .NET SDK podle `global.json`, Visual Studio
+s C++20 build nástroji a Windows SDK 26100, CMake 3.31.10, Ninja a Git. Použít x64
 Developer PowerShell. První sestavení potřebuje internet pro JUCE a NuGet.
 Kompilátor a skutečné verze se uloží do protokolu; tento skript nebyl na Linuxu
 vydáván za provedený Windows build.
@@ -32,6 +65,10 @@ vydáván za provedený Windows build.
 cd windows
 .\build.ps1 -Run
 ```
+
+Při sestavování ze samostatně nabídnutých zdrojů lze předat cestu k rozbalenému
+JUCE: `.\build.ps1 -JuceSource ..\..\JUCE`. Tím se použijí odpovídající místní
+zdroje místo nového stažení JUCE.
 
 Vznikne adresář `out/probe` s interním spustitelným prototypem. Skript provede
 nativní testy a skutečné P/Invoke kontroly proti testovacímu zařízení; ty samy

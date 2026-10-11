@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 # Run in the x64 Developer PowerShell for Visual Studio selected in W02.
 [CmdletBinding()]
-param([switch]$Run)
+param([switch]$Run, [string]$JuceSource = '')
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 if ([Environment]::OSVersion.Platform -ne [PlatformID]::Win32NT) {
@@ -33,8 +33,10 @@ try {
         visualStudio = $env:VisualStudioVersion
         checkedAtUtc = [DateTime]::UtcNow.ToString('o')
     } | ConvertTo-Json | Set-Content (Join-Path $reportDirectory 'toolchain.json')
-    Invoke-Checked 'cmake' @('-S', '.', '-B', $nativeBuild, '-G', 'Ninja',
+    $configure = @('-S', '.', '-B', $nativeBuild, '-G', 'Ninja',
         '-DCMAKE_BUILD_TYPE=Release', '-DCMAKE_C_COMPILER=cl', '-DCMAKE_CXX_COMPILER=cl', '-DROCKER_WITH_JUCE=ON')
+    if ($JuceSource) { $configure += "-DFETCHCONTENT_SOURCE_DIR_JUCE=$((Resolve-Path $JuceSource).Path)" }
+    Invoke-Checked 'cmake' $configure
     Invoke-Checked 'cmake' @('--build', $nativeBuild, '--parallel', '2')
     Invoke-Checked 'ctest' @('--test-dir', $nativeBuild, '--output-on-failure',
         '--output-junit', (Join-Path $reportDirectory 'native-tests.xml'))

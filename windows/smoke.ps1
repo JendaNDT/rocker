@@ -13,6 +13,8 @@ if (Get-ChildItem $PublishDirectory -Filter 'rocker_audio_test*' -Recurse) {
 }
 $process = $null
 $started = Get-Date
+$previousDiagnostics = $env:ROCKER_DIAGNOSTICS_DIR
+$env:ROCKER_DIAGNOSTICS_DIR = $reportDirectory
 try {
     $process = Start-Process -FilePath $executable -WorkingDirectory $PublishDirectory -PassThru
     $deadline = $started.AddSeconds(45)
@@ -45,6 +47,7 @@ catch {
     throw
 }
 finally {
+    $env:ROCKER_DIAGNOSTICS_DIR = $previousDiagnostics
     if ($null -ne $process) {
         if (-not $process.HasExited) { Stop-Process -Id $process.Id -Force }
         $process.Dispose()

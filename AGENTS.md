@@ -16,6 +16,11 @@ v `SKILL.md`. Stručně:
 - **Ověřuj fakta.** Konkrétní fakta (verze knihoven, API, čísla) musí mít
   zdroj. Když si nejsi jistý, řekni to.
 - **Komunikace česky**, oslovení „Jendo", tykání.
+- **Windows verze předávat sestavené.** Podle požadavku z 11. 10. 2026 nejdřív
+  sestavit na Windows runneru, provést automatické kontroly a až pak nabídnout
+  ZIP se spustitelnou aplikací. Jenda nemá instalovat vývojové nástroje ani
+  kompilovat projekt. Zdroje nabídnout zvlášť. Neúspěšný nebo neprovedený build
+  nelze označit jako připravený ke spuštění; skutečný poslech zůstává ručním testem.
 
 ## Stack
 
