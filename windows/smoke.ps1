@@ -16,7 +16,9 @@ $started = Get-Date
 $previousDiagnostics = $env:ROCKER_DIAGNOSTICS_DIR
 $env:ROCKER_DIAGNOSTICS_DIR = $reportDirectory
 $notationReport = Join-Path $reportDirectory 'notation-view.json'
+$videoReport = Join-Path $reportDirectory 'video-bridge.json'
 if (Test-Path $notationReport) { Remove-Item $notationReport }
+if (Test-Path $videoReport) { Remove-Item $videoReport }
 try {
     $process = Start-Process -FilePath $executable -WorkingDirectory $PublishDirectory -PassThru
     $deadline = $started.AddSeconds(45)
@@ -39,6 +41,16 @@ try {
         -not $notation.midiPreparedInCommonEngine) {
         throw "Published native notation failed: $(Get-Content $notationReport -Raw)"
     }
+    do {
+        Start-Sleep -Milliseconds 250
+        $process.Refresh()
+        if ($process.HasExited) { throw 'Application exited before the local video bridge appeared.' }
+    } while (-not (Test-Path $videoReport) -and (Get-Date) -lt $deadline)
+    if (-not (Test-Path $videoReport)) { throw 'Local WebView2 bridge did not initialize within 45 seconds.' }
+    $video = Get-Content $videoReport -Raw | ConvertFrom-Json
+    if ($video.result -ne 'passed' -or -not $video.localBridgeVerified -or -not $video.runtimeVersion) {
+        throw "Local WebView2 bridge failed: $(Get-Content $videoReport -Raw)"
+    }
     if (-not $process.CloseMainWindow()) { throw 'The application rejected a normal window close.' }
     if (-not $process.WaitForExit(15000)) { throw 'The application did not exit after closing its window.' }
     if ($process.ExitCode -ne 0) { throw "Application exited with code $($process.ExitCode)." }
@@ -49,6 +61,10 @@ try {
         audioPlaybackVerified = $false
         nativeNotationVerified = $true
         midiPreparedInCommonEngine = $true
+        localVideoBridgeVerified = $true
+        webViewRuntime = $video.runtimeVersion
+        onlineVideoVerified = $false
+        audioCoexistenceVerified = $false
         checkedAtUtc = [DateTime]::UtcNow.ToString('o')
     } | ConvertTo-Json | Set-Content (Join-Path $reportDirectory 'window-smoke.json')
     Write-Output 'PASS: published WinUI application opened a window and exited normally; audio playback not tested.'

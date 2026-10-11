@@ -43,6 +43,8 @@ jobs:
           Import-Module "$vs\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
           Enter-VsDevShell -VsInstallPath $vs -SkipAutomaticLocation -DevCmdArguments '-arch=amd64 -host_arch=amd64'
           ./windows/build.ps1
+      - name: Ensure the official WebView2 runtime for the UI check
+        run: ./windows/ensure-webview-runtime.ps1
       - name: Check the published application opens and closes
         run: ./windows/smoke.ps1
       - name: Package application and corresponding sources separately

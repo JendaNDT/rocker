@@ -4,8 +4,8 @@
 Aktuální navazující změna W04: média a MIDI jsou připojené ke společnému C++
 přehrávači a WinUI ovládání (přehrát/zastavit, seek, hlasitost, rychlost).
 Linux prošel 3/3 CTest, 36 transportními kontrolami a skutečným C# P/Invoke,
-včetně zavření handle během načítání. Windows sestavení této změny teprve
-ověří CI. Podrobnosti: [společné přehrávání](docs/windows/w04/common-playback.md).
+včetně zavření handle během načítání. Windows build 38147210735 prošel včetně publikovaného WinUI okna
+a přípravy skutečného MIDI v produkční DLL. Podrobnosti: [společné přehrávání](docs/windows/w04/common-playback.md).
 
 ## Aktuální směr: nativní Rocker pro Windows
 
@@ -73,8 +73,8 @@ mediálními kontrolami s AddressSanitizer, UndefinedBehaviorSanitizer a detekc�
 stereo a AAC cesta s českými znaky. Volitelné MF DLL nejsou eager importem.
 Stažené interní ZIPy a všech sedm zdrojových archivů prošly kontrolou.
 [Protokol původních nahrávek](docs/windows/w04/legacy-media-validation.json)
-obsahuje skutečná měření a verze. Modul ještě není připojený k oknu ani
-společnému transportu; přehrávání not a YouTube zbývají. Windows N bez
+obsahuje skutečná měření a verze. Následující řez jej připojil k WinUI a společnému transportu, včetně
+základního přehrávání MIDI. Integrace WebView2 se nyní ověřuje. Windows N bez
 Media Feature Packu a fyzický zvuk nebyly tímto během ověřené. Ruční poslech
 je odložený po W43. Původní [103 kontrol](docs/windows/w04/media-validation.json)
 zůstává historickým výsledkem prvního mediálního řezu.

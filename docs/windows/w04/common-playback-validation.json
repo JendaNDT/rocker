@@ -1,0 +1,75 @@
+{
+  "scope": "W04 common media/MIDI transport",
+  "sourceCommit": "2b95fbc5fe27b9e6edef793611494fbf9a1dd461",
+  "windowsRun": "https://github.com/JendaNDT/rocker/actions/runs/38147210735",
+  "windowsResult": "passed",
+  "media": 167,
+  "transport": {
+    "result": "passed",
+    "checks": 36,
+    "physicalAudioVerified": false
+  },
+  "window": {
+    "result": "passed",
+    "midiPreparedInCommonEngine": true,
+    "checkedAtUtc": "2026-10-11T14:32:44.0043384Z",
+    "windowTitle": "Rocker — nativní zvuk a noty",
+    "audioPlaybackVerified": false,
+    "exitCode": 0,
+    "nativeNotationVerified": true
+  },
+  "toolchain": {
+    "msvcFileVersion": "19.51.36260.0",
+    "cmake": "cmake version 3.31.10",
+    "checkedAtUtc": "2026-10-11T14:27:40.8136443Z",
+    "dotnet": "10.0.401",
+    "cl": "C:\\Program Files\\Microsoft Visual Studio\\18\\Enterprise\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe",
+    "windowsSdk": "10.0.26100.0\\",
+    "os": "Microsoft Windows NT 10.0.26100.0",
+    "ninja": "1.13.2",
+    "visualStudio": "18.0"
+  },
+  "managedInterop": {
+    "fakeDeviceLifecycle": "passed",
+    "mismatchedAbi": "passed",
+    "mediaAndAlphaTabMidi": "passed",
+    "disposeDuringPreparation": "passed, 10 cycles"
+  },
+  "pwa": {
+    "testsPassed": 561,
+    "typecheck": "passed",
+    "lint": "passed"
+  },
+  "artifacts": [
+    {
+      "name": "Rocker-Windows-sources.zip",
+      "bytes": 132020761,
+      "sha256": "79e54b6ed116f104c3a483d5a47fee09178b85ac2d4dd2b60d6297deb9777068",
+      "crc": "verified",
+      "x64AndExports": "seven corresponding source archives verified"
+    },
+    {
+      "name": "Rocker-Windows-x64.zip",
+      "bytes": 101531358,
+      "sha256": "eff555258b6426678b2bd45960f9e2d0c993ca8120fe3cffb208b4342197eb1f",
+      "crc": "verified",
+      "x64AndExports": "verified"
+    }
+  ],
+  "physicalAudio": "not performed; deferred after W43",
+  "youtubeCoexistence": "not performed",
+  "remaining": [
+    "Online YouTube and device coexistence",
+    "Full notation instruments, articulations and bar looping",
+    "Full product implementation W05–W43"
+  ],
+  "linuxSanitizers": {
+    "result": "passed",
+    "ctestPassed": 3,
+    "mediaAssertions": 138,
+    "transportAssertions": 36,
+    "addressSanitizer": true,
+    "undefinedBehaviorSanitizer": true,
+    "leakDetection": true
+  }
+}

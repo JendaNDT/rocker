@@ -25,14 +25,15 @@ public sealed partial class MainWindow : Window
     {
         InitializeComponent();
         AppWindow.Resize(new Windows.Graphics.SizeInt32(1080, 940));
-        PositionSlider.AddHandler(UIElement.PointerPressedEvent, new PointerEventHandler((_, _) => positionDragging = true), true);
+        PositionSlider.AddHandler(UIElement.PointerPressedEvent, new PointerEventHandler((_, args) => { if (args.GetCurrentPoint(PositionSlider).Properties.IsLeftButtonPressed) positionDragging = true; }), true);
         PositionSlider.AddHandler(UIElement.PointerCaptureLostEvent, new PointerEventHandler(Position_Released), true);
-        Closed += (_, _) => { closed = true; timer.Stop(); audio?.Dispose(); audio = null; };
+        Closed += (_, _) => { closed = true; timer.Stop(); audio?.Dispose(); audio = null; VideoView.Close(); };
         Activated += async (_, _) =>
         {
             if (initialNotationStarted) return;
             initialNotationStarted = true;
             await LoadScoreAsync(Path.Combine(AppContext.BaseDirectory, "fixtures", "notation-phrases.gp"));
+            if (!closed) await InitializeVideoAsync();
         };
         timer.Tick += (_, _) => RefreshState();
         try
@@ -330,7 +331,11 @@ public sealed partial class MainWindow : Window
         try { ++playbackIntent; audio.Seek(PositionSlider.Value); RefreshState(); }
         catch (Exception error) { ShowError(error); }
     }
-    private static string FormatTime(double seconds) => TimeSpan.FromSeconds(Math.Max(0, seconds)).ToString(@"m\:ss");
+    private static string FormatTime(double seconds)
+    {
+        var time = TimeSpan.FromSeconds(Math.Max(0, seconds));
+        return time.ToString(time.TotalHours >= 1 ? @"h\:mm\:ss" : @"m\:ss");
+    }
     private void Close_Click(object sender, RoutedEventArgs e) => Close();
 
     private static void WriteNotationReport(object report)

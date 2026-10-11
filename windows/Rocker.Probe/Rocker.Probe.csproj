@@ -21,6 +21,8 @@
     <PackageReference Include="AlphaSkia.Native.Windows" Version="3.4.135" />
     <ProjectReference Include="../Rocker.Interop/Rocker.Interop.csproj" />
     <ProjectReference Include="../Rocker.Notation/Rocker.Notation.csproj" />
+    <ProjectReference Include="../Rocker.Video/Rocker.Video.csproj" />
+    <Content Include="Video/*.html;Video/*.js" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <Content Include="../fixtures/*" Link="fixtures/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <Content Include="$(RockerNativeDll)" Link="rocker_audio.dll" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <Content Include="../LICENSE" Link="LICENSE.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />

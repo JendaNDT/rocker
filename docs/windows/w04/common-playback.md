@@ -39,10 +39,13 @@ přípravy. C# přes skutečné P/Invoke ověřilo vlastní MIDI a MIDI obou Alp
 ukázek, parametry a deset zavření handle během workeru. Nativní testovací
 zařízení je samostatná knihovna, která není v produkčním balíku.
 
-Windows sestavení, publikovaný WinUI náhled a příprava MIDI přes skutečnou
-produkční DLL se ověřují v navazujícím CI běhu. Dokud výsledek není zapsaný
-v protokolu, nejde o potvrzený Windows build. Fyzický poslech a měření odezvy
-se v CI neprovádějí; ruční přejímka je podle pokynu uživatele odložená po W43.
+Windows build [38147210735](https://github.com/JendaNDT/rocker/actions/runs/38147210735)
+commitu `2b95fbc5fe27b9e6edef793611494fbf9a1dd461` prošel: 167 mediálních,
+36 transportních kontrol, 3/3 CTest, C# interop a 22 notových kontrol.
+Publikované skutečné WinUI okno vykreslilo dva takty, připravilo jejich MIDI
+přes produkční `rocker_audio.dll` a po normálním zavření skončilo kódem 0.
+Podrobnosti jsou v `common-playback-validation.json`. Fyzický poslech a měření
+odezvy se v CI neprovádějí; ruční přejímka je odložená po W43.
 
 PWA reference: 561/561 testů, TypeScript a lint prošly 11. 10. 2026.
 Souběh YouTube a zařízení, finální notové nástroje a další produktové pohledy

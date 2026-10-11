@@ -113,7 +113,9 @@ Toto je technický prototyp s testovacím tónem a notovým náhledem, ne komple
 Noty se vykreslují nativně; lze otevřít MusicXML/Guitar Pro, vybrat takt a uložit MIDI.
 Nahrávky a jednoduchý syntetický strunný zvuk not používají společný C++ přehrávač.
 Lze přehrávat, zastavit, změnit pozici, hlasitost a rychlost bez změny výšky tónů.
-Bicí, ohýbání tónů, pokročilé notové nástroje a YouTube zatím nejsou dokončené.
+Bicí, ohýbání tónů a pokročilé notové nástroje zatím nejsou dokončené.
+YouTube používá oficiální přehrávač přes systémový WebView2; vyžaduje internet.
+CI ověřuje místní propojení; online video a souběh zvuku vyžadují závěrečnou přejímku.
 Zvuk, skutečná odezva a chování na tvém zařízení vyžadují ruční ověření.
 Balík není podepsaný certifikátem. Zapnutý Smart App Control může blokovat jeho DLL.
 Tato verze není ověřená se zapnutým Smart App Control; podepisování zatím není připravené.
@@ -132,6 +134,7 @@ Licence a oznámení jsou ve složce licenses; vlastní Windows kód je pod AGPL
     checkedNotation = (Get-Content (Join-Path $reports 'notation-checks.json') -Raw | ConvertFrom-Json)
     checkedMedia = (Get-Content (Join-Path $reports 'media-checks.json') -Raw | ConvertFrom-Json)
     checkedTransport = (Get-Content (Join-Path $reports 'transport-checks.json') -Raw | ConvertFrom-Json)
+    checkedVideoBridge = (Get-Content (Join-Path $reports 'video-bridge.json') -Raw | ConvertFrom-Json)
     signalsmithStretchCommit = $mediaSources[0].Commit
     signalsmithLinearCommit = $mediaSources[1].Commit
     libwebmCommit = $mediaSources[2].Commit

@@ -1,9 +1,13 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 using Microsoft.UI.Xaml;
+using System.Runtime.InteropServices;
+using Rocker.Video;
 
 namespace Rocker.Probe;
 public partial class App : Application
 {
+    [DllImport("shell32.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
+    private static extern int SetCurrentProcessExplicitAppUserModelID(string appId);
     private Window? window;
     public App()
     {
@@ -15,6 +19,7 @@ public partial class App : Application
     {
         try
         {
+            Marshal.ThrowExceptionForHR(SetCurrentProcessExplicitAppUserModelID(VideoProtocol.AppId));
             window = new MainWindow();
             window.Activate();
         }

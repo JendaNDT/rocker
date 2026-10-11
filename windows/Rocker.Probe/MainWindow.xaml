@@ -85,6 +85,23 @@
                 </ScrollViewer>
                 <TextBlock x:Name="SelectionStatus" Text="Takt zatím není vybraný." TextWrapping="Wrap" />
                 <Button x:Name="ExportMidiButton" Content="Uložit MIDI…" Click="ExportMidi_Click" IsEnabled="False" />
+                <Expander Header="YouTube" IsExpanded="True" HorizontalAlignment="Stretch">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="Oficiální YouTube přehrávač. Video a jeho zvuk zůstávají součástí YouTube; žádný zvuk se nestahuje ani nepřevádí." TextWrapping="Wrap" />
+                        <TextBox x:Name="VideoUrl" Header="Odkaz na video" PlaceholderText="https://www.youtube.com/watch?v=…" MaxLength="2048" />
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <Button x:Name="VideoLoadButton" Content="Načíst video" Click="VideoLoad_Click" IsEnabled="False" />
+                            <Button x:Name="VideoPlayButton" Content="Přehrát video" Click="VideoPlay_Click" IsEnabled="False" />
+                            <Button x:Name="VideoPauseButton" Content="Pozastavit" Click="VideoPause_Click" IsEnabled="False" />
+                            <Button x:Name="VideoStopButton" Content="Zastavit video" Click="VideoStop_Click" IsEnabled="False" />
+                            <Button Content="V prohlížeči" Click="VideoExternal_Click" />
+                        </StackPanel>
+                        <ComboBox x:Name="VideoRates" Header="Dostupné rychlosti videa" Width="200" SelectionChanged="VideoRate_Changed" IsEnabled="False" />
+                        <TextBlock x:Name="VideoPosition" Text="0:00 / 0:00" />
+                        <WebView2 x:Name="VideoView" Width="640" Height="360" HorizontalAlignment="Left" AutomationProperties.Name="Oficiální YouTube přehrávač" />
+                        <TextBlock x:Name="VideoStatus" Text="Připravuji přehrávač…" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />
+                    </StackPanel>
+                </Expander>
                 <Expander Header="Zařízení a testovací tón" HorizontalAlignment="Stretch">
                     <StackPanel Spacing="12">
                         <TextBlock Text="Test A · 440 Hz. Použije se výchozí výstup Windows; kytaru tato verze nenahrává."

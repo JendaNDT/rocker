@@ -7,7 +7,7 @@ Set-StrictMode -Version Latest
 if ([Environment]::OSVersion.Platform -ne [PlatformID]::Win32NT) {
     throw 'Tento skript sestavuje Windows aplikaci a vyžaduje Windows.'
 }
-foreach ($tool in @('cl.exe', 'cmake', 'ninja', 'dotnet', 'git')) {
+foreach ($tool in @('cl.exe', 'cmake', 'ninja', 'dotnet', 'git', 'node')) {
     if (-not (Get-Command $tool -ErrorAction SilentlyContinue)) { throw "Chybí nástroj: $tool" }
 }
 function Invoke-Checked([string]$Tool, [string[]]$Arguments) {
@@ -22,6 +22,8 @@ Push-Location $PSScriptRoot
 try {
     # global.json verifies the selected SDK; Ninja avoids generator/version coupling to VS.
     Invoke-Checked 'dotnet' @('--info')
+    Invoke-Checked 'node' @('--test', 'Rocker.Probe/Video/player.contracts.cjs')
+    Invoke-Checked 'dotnet' @('run', '--project', 'Rocker.Video.Checks', '-c', 'Release')
     @{
         os = [Environment]::OSVersion.VersionString
         cl = (Get-Command cl.exe).Source
