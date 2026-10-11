@@ -57,8 +57,11 @@ import/vykreslení v publikovaném WinUI okně prošly v běhu 38135049339.
 [Sestavené vydání W04](https://github.com/JendaNDT/rocker/releases/tag/windows-w04-notation-preview-20261011)
 je zveřejněné v soukromém repozitáři; publikovaný ZIP byl znovu stažen a ověřen.
 Klikání a systémové dialogy na Jendově počítači zatím potvrzené nejsou.
-Přehrávání not, média, zpomalování a YouTube
-zatím implementované nejsou.
+Nový [offline C++ mediální modul](docs/windows/w04/media.md) dekóduje
+WAV/MP3/Ogg/Opus a mění rychlost se zachováním tónu pomocí Signalsmith.
+Linux ověření prošlo 102/102 kontrolami. Ještě není připojený k oknu ani
+společnému transportu; WebM/AAC, přehrávání not a YouTube zbývají.
+Průběžný Windows build ověří nový modul; ruční poslech je odložený po W43.
 [Původní Linux protokol](docs/windows/w03-validation.json) zůstává historickým záznamem.
 Opraven byl pád při načtení XAML po publikování: projekt nyní zapíná `EnableMsixTooling`.
 Vývoj a průběžné

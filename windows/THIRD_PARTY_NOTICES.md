@@ -12,6 +12,9 @@ Původní PWA a její kořenová MIT licence se nemění.
   Přesné zdroje AlphaTab a AlphaSkia jsou v samostatném zdrojovém balíku.
 - Bravura zabudovaná do AlphaTab a Noto Sans zabudované do Rocker.Notation
   mají SIL Open Font License; úplné texty jsou přibalené v `licenses`.
+- Offline mediální modul používá Signalsmith Stretch 1.4.0 a Linear 0.6.4
+  pod MIT; přesné revize a úplná oznámení jsou ve zdrojovém balíku a `licenses`.
+  Sestavuje se a automaticky ověřuje, přehrávač v okně jej zatím nepoužívá.
 
 Přesné podklady jsou v rozhodnutí W02 v repozitáři. Toto je interní prototyp,
 nikoli hotový distribuční balík pro bratra. Předběžný spustitelný ZIP uchovává

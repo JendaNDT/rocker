@@ -55,10 +55,11 @@ build, notové kontroly, UI smoke a balení před nabídnutím ke stažení.
 
 1. Zpřístupnit MIDI události společnému C++ časování a zvolit syntézu.
    Nezávislý AlphaTab/NAudio player se nyní nezavádí.
-2. Ověřit WAV/MP3 i staré WebM/Opus, Ogg/Opus a MP4/AAC podklady z W01.
-   Zkoumat JUCE formáty, libwebm a systémový Media Foundation; žádný z těchto
-   dekodérů není tímto notovým testem potvrzený.
-3. Ověřit Signalsmith Stretch včetně výšky, délky, kvality a paměti.
+2. [Offline mediální modul](media.md) už dekóduje WAV/MP3/Ogg/Opus a ověřuje
+   Signalsmith Stretch na referencích. Zbývá WebM/Opus a MP4/AAC, připojení
+   ke společnému transportu a přehrávači.
+3. Zachování výšky, délky a PCM limitů zpomalení prochází automatickými
+   kontrolami; skutečná kvalita na kytaře a dlouhé nahrávky zůstávají neověřené.
 4. Integrovat oficiální YouTube embed jako vymezený WebView2 pohled; ověřit
    skutečné přehrávání a WASAPI souběh. Runtime a výrobní ovladač mají vlastní
    kontrolu. ASIO/M-Track Solo a skutečná odezva patří do hardwarové matice.

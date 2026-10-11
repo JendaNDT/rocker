@@ -40,6 +40,11 @@ try {
     Invoke-Checked 'cmake' @('--build', $nativeBuild, '--parallel', '2')
     Invoke-Checked 'ctest' @('--test-dir', $nativeBuild, '--output-on-failure',
         '--output-junit', (Join-Path $reportDirectory 'native-tests.xml'))
+    $mediaReport = Join-Path $nativeBuild 'media-checks.json'
+    if (-not (Test-Path $mediaReport)) { throw 'Native media checks did not produce evidence.' }
+    $mediaResult = Get-Content $mediaReport -Raw | ConvertFrom-Json
+    if ($mediaResult.result -ne 'passed' -or $mediaResult.checks -le 0) { throw 'Native media checks failed.' }
+    Copy-Item $mediaReport (Join-Path $reportDirectory 'media-checks.json')
     Invoke-Checked 'dotnet' @('run', '--project', 'Rocker.Interop.Checks', '-c', 'Release', '--',
         (Join-Path $nativeBuild 'rocker_audio_test.dll'))
     Invoke-Checked 'dotnet' @('run', '--project', 'Rocker.Interop.Checks', '-c', 'Release', '--no-build', '--',

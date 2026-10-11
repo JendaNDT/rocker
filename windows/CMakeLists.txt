@@ -9,6 +9,7 @@ if(MSVC)
 endif()
 include(CTest)
 option(ROCKER_WITH_JUCE "Build the real device DLL (requires JUCE dependencies)" ON)
+option(ROCKER_WITH_MEDIA "Build offline decoding and pitch-preserving stretching" ON)
 
 function(rocker_audio_target target driver)
     add_library(${target} SHARED native/src/audio_host.cpp ${driver})
@@ -22,7 +23,7 @@ function(rocker_audio_target target driver)
     endif()
 endfunction()
 
-if(ROCKER_WITH_JUCE)
+if(ROCKER_WITH_JUCE OR ROCKER_WITH_MEDIA)
     include(FetchContent)
     # WinUI owns the UI and packaging; no JUCE app/plugin helper executable is needed.
     set(JUCE_MODULES_ONLY ON CACHE BOOL "Configure JUCE modules for the standalone DLL" FORCE)
@@ -30,6 +31,27 @@ if(ROCKER_WITH_JUCE)
         GIT_REPOSITORY https://github.com/juce-framework/JUCE.git
         GIT_TAG be29c81492b6151c8ea8d14c840e1311963b3a83)
     FetchContent_MakeAvailable(JUCE)
+endif()
+
+if(ROCKER_WITH_MEDIA)
+    # Declare Linear first so Stretch cannot fetch a moving version tag itself.
+    FetchContent_Declare(signalsmith-linear
+        GIT_REPOSITORY https://github.com/Signalsmith-Audio/linear.git
+        GIT_TAG de55e6a50ffcf6f8f43f649692d94691c7025151)
+    FetchContent_Declare(signalsmith-stretch
+        GIT_REPOSITORY https://github.com/Signalsmith-Audio/signalsmith-stretch.git
+        GIT_TAG a670068d9aeb64913331d5cc29337b19a457a7df)
+    FetchContent_MakeAvailable(signalsmith-linear signalsmith-stretch)
+    add_library(rocker_media STATIC native/src/media_clip.cpp)
+    set_target_properties(rocker_media PROPERTIES POSITION_INDEPENDENT_CODE ON)
+    target_include_directories(rocker_media PUBLIC native/include)
+    target_compile_definitions(rocker_media PUBLIC
+        JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED=1 JUCE_USE_CURL=0
+        JUCE_USE_WINDOWS_MEDIA_FORMAT=0 JUCE_USE_FLAC=0 JUCE_USE_OGGVORBIS=0)
+    target_link_libraries(rocker_media PRIVATE juce::juce_audio_formats signalsmith-stretch)
+endif()
+
+if(ROCKER_WITH_JUCE)
     rocker_audio_target(rocker_audio native/src/juce_driver.cpp)
     target_compile_definitions(rocker_audio PRIVATE
         JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED=1 JUCE_STANDALONE_APPLICATION=1
@@ -39,6 +61,12 @@ if(ROCKER_WITH_JUCE)
 endif()
 
 if(BUILD_TESTING)
+    if(ROCKER_WITH_MEDIA)
+        add_executable(rocker_media_tests native/tests/media_tests.cpp)
+        target_link_libraries(rocker_media_tests PRIVATE rocker_media)
+        add_test(NAME media_processing COMMAND rocker_media_tests
+            "${CMAKE_CURRENT_SOURCE_DIR}/../docs/windows/baseline/fixtures/audio")
+    endif()
     # This different library name prevents a fake backend from shipping as the device DLL.
     rocker_audio_target(rocker_audio_test native/tests/fake_driver.cpp)
     add_executable(rocker_audio_contract_tests native/tests/audio_contract_tests.cpp)

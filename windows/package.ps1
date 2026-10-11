@@ -19,6 +19,10 @@ function Invoke-Git([string[]]$Arguments) {
 }
 $commit = Invoke-Git @('-C', $repository, 'rev-parse', 'HEAD')
 $juceCommit = Invoke-Git @('-C', $juce, 'rev-parse', 'HEAD')
+$mediaSources = @(
+    @{ Name = 'Signalsmith-Stretch'; Directory = 'signalsmith-stretch-src'; Commit = 'a670068d9aeb64913331d5cc29337b19a457a7df' },
+    @{ Name = 'Signalsmith-Linear'; Directory = 'signalsmith-linear-src'; Commit = 'de55e6a50ffcf6f8f43f649692d94691c7025151' }
+)
 $notationSources = @(
     @{ Name = 'AlphaTab'; Repository = 'https://github.com/CoderLine/alphaTab.git'; Tag = 'v1.8.3'; Commit = '9d0142eee2b1175dfd36e839ddbd867aed9e454e' },
     @{ Name = 'AlphaSkia'; Repository = 'https://github.com/CoderLine/alphaSkia.git'; Tag = 'v3.4.135'; Commit = 'c82e319faeba4155b45664766e9badf528c0fc49' }
@@ -35,6 +39,13 @@ New-Item -ItemType Directory -Force -Path $app, $sources, $packages | Out-Null
 Copy-Item (Join-Path $publish '*') $app -Recurse
 $licenses = Join-Path $app 'licenses'
 New-Item -ItemType Directory -Force -Path $licenses | Out-Null
+foreach ($dependency in $mediaSources) {
+    $checkout = Join-Path $PSScriptRoot ('out/native/_deps/' + $dependency.Directory)
+    $revision = Invoke-Git @('-C', $checkout, 'rev-parse', 'HEAD')
+    if ($revision -ne $dependency.Commit) { throw "$($dependency.Name) revision mismatch." }
+    Copy-Item (Join-Path $checkout 'LICENSE.txt') (Join-Path $licenses ($dependency.Name + '-license.txt'))
+    Invoke-Git @('-C', $checkout, 'archive', '--format=zip', "--output=$(Join-Path $sources ($dependency.Name + '-source.zip'))", 'HEAD')
+}
 $evidence = Join-Path $repository 'docs/windows/decisions/evidence'
 foreach ($name in @('AGPL-3.0-only.txt', 'GPL-3.0-only.txt', 'juce-license.txt', 'juce.spdx.json',
     'asio-license.txt', 'windowsapp-license.txt', 'webview-sdk-license.txt')) {
@@ -106,6 +117,9 @@ Licence a oznámení jsou ve složce licenses; vlastní Windows kód je pod AGPL
     alphaTabCommit = $notationSources[0].Commit
     alphaSkiaCommit = $notationSources[1].Commit
     checkedNotation = (Get-Content (Join-Path $reports 'notation-checks.json') -Raw | ConvertFrom-Json)
+    checkedMedia = (Get-Content (Join-Path $reports 'media-checks.json') -Raw | ConvertFrom-Json)
+    signalsmithStretchCommit = $mediaSources[0].Commit
+    signalsmithLinearCommit = $mediaSources[1].Commit
     runUrl = "https://github.com/$env:GITHUB_REPOSITORY/actions/runs/$env:GITHUB_RUN_ID"
     minimumOs = 'Windows 11 24H2 x64'
     checkedWindow = $smoke
@@ -132,6 +146,9 @@ The complete JUCE source includes its third-party sources and original notices.
 AlphaTab-source.zip and AlphaSkia-source.zip contain the unmodified upstream revisions
 recorded in build-info.json. Their upstream build instructions are in each archive.
 Rocker uses the exact NuGet packages 1.8.3 and 3.4.135; it does not rebuild those packages.
+Signalsmith-Stretch-source.zip and Signalsmith-Linear-source.zip contain the pinned
+MIT sources used by the offline media module checks. CMake fetches these exact
+commits automatically; local source overrides are documented in docs/windows/w04/media.md.
 "@ | Set-Content (Join-Path $sources 'BUILD-SOURCES.txt')
 Copy-Item (Join-Path $app 'build-info.json') $sources
 foreach ($item in @(@{ Name = 'Rocker-Windows-x64.zip'; Directory = $app },

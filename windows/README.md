@@ -98,7 +98,7 @@ tohle je interní přejímka, nikoli bratrův test.
 Testovací backend nevyžaduje JUCE ani skutečné zvukové zařízení:
 
 ```sh
-cmake -S windows -B /tmp/rocker-native-test -DROCKER_WITH_JUCE=OFF -DCMAKE_BUILD_TYPE=Debug
+cmake -S windows -B /tmp/rocker-native-test -DROCKER_WITH_JUCE=OFF -DROCKER_WITH_MEDIA=OFF -DCMAKE_BUILD_TYPE=Debug
 cmake --build /tmp/rocker-native-test
 ctest --test-dir /tmp/rocker-native-test --output-on-failure
 cd windows
