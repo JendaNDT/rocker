@@ -6,5 +6,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
-  <ItemGroup><ProjectReference Include="../Rocker.Interop/Rocker.Interop.csproj" /></ItemGroup>
+  <ItemGroup><ProjectReference Include="../Rocker.Interop/Rocker.Interop.csproj" />
+    <ProjectReference Include="../Rocker.Domain/Rocker.Domain.csproj" /></ItemGroup>
 </Project>

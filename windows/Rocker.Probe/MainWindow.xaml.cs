@@ -91,7 +91,7 @@ public sealed partial class MainWindow : Window
             };
             RefreshLive(state);
             RefreshMetronome(state);
-            var analysis=audio.GetAnalysis();RefreshTuner(analysis);RefreshLesson(analysis);
+            var analysis=audio.GetAnalysis();RefreshTuner(analysis);RefreshLesson(analysis);RefreshSurgical(analysis);
             RefreshAudioDiagnostics();
             RefreshSong(transport);
             RefreshRecording();

@@ -89,6 +89,10 @@ try {
     if (-not (Test-Path $tunerPath)) { throw 'Missing native tuner report.' }
     $tuner = Get-Content $tunerPath -Raw | ConvertFrom-Json
     if ($tuner.result -ne 'passed' -or $tuner.sixStringControls -ne 6 -or -not $tuner.persistenceReopened -or -not $tuner.noInputInventsNoNote) { throw 'Native tuner/persistence failed.' }
+    $surgicalPath = Join-Path $reportDirectory 'surgical-view.json'
+    if (-not (Test-Path $surgicalPath)) { throw 'Native surgical trainer report is missing.' }
+    $surgical = Get-Content $surgicalPath -Raw | ConvertFrom-Json
+    if ($surgical.result -ne 'passed' -or $surgical.cleanRepeats -ne 3 -or -not $surgical.nativeNoteList) { throw "Native surgical trainer failed: $(Get-Content $surgicalPath -Raw)" }
     $lessonsPath = Join-Path $reportDirectory 'lessons-view.json'
     if (-not (Test-Path $lessonsPath)) { throw 'Native lesson verification report is missing.' }
     $lessons = Get-Content $lessonsPath -Raw | ConvertFrom-Json

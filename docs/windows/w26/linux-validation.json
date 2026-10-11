@@ -1,0 +1,31 @@
+{
+  "domain": {
+    "result": "passed",
+    "referenceCases": 69,
+    "boundaryChecks": 101,
+    "contentGroups": 15,
+    "surgicalStatesCompared": 37,
+    "extendedReferenceCases": 372,
+    "extendedStatesCompared": 350
+  },
+  "interop": {
+    "result": "passed",
+    "preparedInput": "synthetic PCM",
+    "acceptedMidi": [
+      40,
+      40,
+      42
+    ],
+    "heldNoteAdvancesOnce": true,
+    "physicalGuitarVerified": false
+  },
+  "pwa": {
+    "result": "passed",
+    "tests": 567,
+    "types": "passed"
+  },
+  "windows": {
+    "result": "pending",
+    "manualKeyboardVerified": false
+  }
+}

@@ -55,7 +55,7 @@ public sealed partial class MainWindow
     }
     private async Task PlayTeachingAsync(IReadOnlyList<TeachingNote> notes,bool repeat=false,uint countIn=0)
     {
-        if(audio is null || closingWindow || deviceSelectionUnavailable || deviceOperationRunning)return;
+        if(audio is null || closingWindow || deviceOperationRunning)return;if(deviceSelectionUnavailable){ShowPersistenceError("Vyber dostupné výstupní zařízení v nastavení zvuku.");return;}
         try{await audio.PlayPreviewAsync(notes.Select(n=>new PreviewNote(n.Start,n.Duration,TunerFrequency(n.Midi),n.Volume)).ToArray(),repeat,countIn);RefreshState();}catch(Exception error){ShowError(error);}
     }
     private void RefreshLesson(AnalysisSnapshot reading)

@@ -67,6 +67,7 @@ public sealed partial class MainWindow
     {
         if (!shellReady || closed) return;
         var target = navigation.Current; var view = WorkspaceViews.Get(target.ViewId);
+        if(target.ViewId!="09" && surgicalListening){surgicalListening=false;UpdateSurgical();}
         visitedViews.Add(view.Id); Title = "Rocker — " + view.Title;
         WorkspaceTitle.Text = view.Title; WorkspaceTrail.Text = "Rocker / " + view.Group + (target.ItemId is null ? "" : " / " + target.ItemId);
         selectingNavigation = true; Navigation.SelectedItem = navigationItems[view.Id]; selectingNavigation = false;
@@ -118,6 +119,7 @@ public sealed partial class MainWindow
     private FrameworkElement BuildWorkspace(NavigationTarget target)
     {
         if (catalog is null) return Text("Výukový obsah není dostupný. Přehrávání souborů zůstává dostupné.");
+        if (target.ViewId == "09") return BuildSurgical(target.ItemId);
         if (target.ViewId == "15") return BuildStudio();
         if (target.ViewId == "16") return BuildLooper();
         if (target.ViewId == "14") return BuildRecordings();
@@ -256,6 +258,7 @@ public sealed partial class MainWindow
         await VerifyLooperAsync();
         await VerifyStudioAsync();
         await VerifyLessonsAsync();
+        VerifySurgical();
         await VerifyDevicesAsync();
         VerifyComponents();
         if (Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTIC_VIEW") == "components") ShowComponents();

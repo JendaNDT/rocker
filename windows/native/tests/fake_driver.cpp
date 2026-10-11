@@ -52,6 +52,7 @@ public:
     bool controlPanel(std::string&) override { return true; }
     void stop() noexcept override {const std::lock_guard lock(callbackMutex_);running_=false;processor_=nullptr;}
     void processTest(uint32_t frames,float value){const std::lock_guard lock(callbackMutex_);if(!running_ || !processor_)return;std::array<float,16384> input{},left{},right{};input.fill(value);frames=std::clamp(frames,1u,16384u);const float* sources[]{input.data()};float* outputs[]{left.data(),right.data()};processor_->process(choice_.inputChannel>=0?sources:nullptr,choice_.inputChannel>=0?1:0,outputs,2,static_cast<int>(frames));}
+    void processPcm(uint32_t frames,const float* input){const std::lock_guard lock(callbackMutex_);if(!running_ || !processor_ || !input || frames<1 || frames>16384)return;std::array<float,16384> left{},right{};const float* sources[]{input};float* outputs[]{left.data(),right.data()};processor_->process(choice_.inputChannel>=0?sources:nullptr,choice_.inputChannel>=0?1:0,outputs,2,static_cast<int>(frames));}
     DriverSnapshot snapshot() const noexcept override {
         return running_ ? DriverSnapshot{choice_.rate?choice_.rate:48000, choice_.frames?choice_.frames:testFrames.load(), 2, false} : DriverSnapshot{};
     }
@@ -64,3 +65,5 @@ std::unique_ptr<AudioDriver> makeAudioDriver() { return std::make_unique<FakeDri
 }
 
 extern "C" ROCKER_API void ROCKER_CALL rocker_test_process(uint32_t frames,float value){if(auto* driver=rocker::activeDriver.load())driver->processTest(frames,value);}
+
+extern "C" ROCKER_API void ROCKER_CALL rocker_test_process_pcm(uint32_t frames,const float* input){if(auto* driver=rocker::activeDriver.load())driver->processPcm(frames,input);}

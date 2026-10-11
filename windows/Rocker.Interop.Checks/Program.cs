@@ -124,6 +124,13 @@ await using(var captureAudio=new NativeAudio())
             await captureAudio.StopAsync();await captureAudio.ClearMediaAsync();Check(captureAudio.GetTransport().Ready==0,"project switch clears the old playable source");
         }finally{if(File.Exists(studioFile))File.Delete(studioFile);}
         await captureAudio.StartLiveAsync();var beforePhrase=captureAudio.GetClock();await captureAudio.PlayPreviewAsync([new(0,.2,110),new(.018,.2,165),new(.036,.2,220)]);process(128,.125f);var afterPhrase=captureAudio.GetClock();Check(beforePhrase.Epoch==afterPhrase.Epoch && afterPhrase.Frame>=beforePhrase.Frame,"polyphonic teaching phrase joins the existing live graph without another device epoch");await captureAudio.StopPreviewAsync();process(1024,0);await captureAudio.StopAsync();
+        var pcmProcess=Marshal.GetDelegateForFunctionPointer<ProcessPcmSamples>(NativeLibrary.GetExport(native,"rocker_test_process_pcm"));
+        await captureAudio.StartLiveAsync();var gate=new Rocker.Domain.SurgicalNoteGate();gate.Reset(new(captureAudio.GetClock().Epoch,0,48000,null,true,true,0,0,.171));var phrase=Rocker.Domain.SurgicalEngine.Start(new("repeat-note","Repeat note","",[40,40,42]));var accepted=new List<int>();ulong expectedFrame=captureAudio.GetClock().Frame;uint expectedEpoch=captureAudio.GetClock().Epoch;
+        foreach(var tone in new[]{(Midi:40,Seconds:.8),(Midi:0,Seconds:.03),(Midi:40,Seconds:.8),(Midi:0,Seconds:.18),(Midi:42,Seconds:.8)})
+        {
+            int length=(int)Math.Round(tone.Seconds*48000);for(int offset=0;offset<length;offset+=256){int count=Math.Min(256,length-offset);var pcm=new float[count];for(int i=0;i<count;++i)pcm[i]=tone.Midi==0?0:(float)(.2*Math.Sin(2*Math.PI*Rocker.Domain.Music.MidiToFrequency(tone.Midi)*(offset+i)/48000));pcmProcess((uint)count,pcm);expectedFrame+=(uint)count;AnalysisSnapshot observed=default;for(int retry=0;retry<200;++retry){observed=captureAudio.GetAnalysis();if(observed.Epoch==expectedEpoch && observed.Frame>=expectedFrame)break;await Task.Delay(2);}Check(observed.Epoch==expectedEpoch && observed.Frame>=expectedFrame,"prepared guitar signal reaches the real off-thread analyzer without dropped callback data");int? midi=observed.PitchDetected?Rocker.Domain.Music.FrequencyToNote(observed.Frequency)?.Midi:null;var played=gate.Observe(new(observed.Epoch,observed.Frame,observed.SampleRate,midi,observed.ActiveInput&&!observed.Stale,!observed.PitchDetected&&observed.Rms*3<.06,observed.HitCount,observed.OnsetFrame,observed.WindowSeconds));if(played is int value){accepted.Add(value);phrase=Rocker.Domain.SurgicalEngine.FeedNote(phrase,value);}}
+        }
+        Check(accepted.SequenceEqual(new[]{40,40,42}) && phrase.Phase==Rocker.Domain.SurgicalPhase.Complete,"actual PCM analysis distinguishes two attacks of the same note without advancing repeatedly on a held note");await captureAudio.StopAsync();
         var failed=captureAudio.SetAmplifierAsync(new(Drive:double.NaN));var valid=captureAudio.SetAmplifierAsync(new());try{await failed;throw new Exception("invalid amp accepted");}catch(InvalidOperationException){}await valid;Check(captureAudio.GetAmplifier()==new AmplifierConfiguration(),"a failed queued control does not poison its successor");
     }finally{NativeLibrary.Free(native);}
 }
@@ -248,3 +255,6 @@ delegate void SetDelay(uint milliseconds);
 public delegate void SetXruns(long value);
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]delegate void ProcessSamples(uint frames,float sample);
+
+[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+internal delegate void ProcessPcmSamples(uint frames,[In]float[] samples);

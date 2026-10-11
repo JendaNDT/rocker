@@ -411,7 +411,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w26"></a>
 #### W26 — Přesný trénink bez ztráty původní logiky
 
-- [ ] Čeká. Závislosti: W06, W19, W21, W25.
+- [ ] Rozpracováno. Závislosti: W06, W19, W21, W25. [Přesný trénink](docs/windows/w26/README.md) má nativní průchod, drill, přehled chyb a oddělené A/B cvičení. Skutečné umělé PCM prošlo C++ analýzou do doménového hodnocení a rozlišilo opakovaný stejný tón od držení; kontrola Windows pohledu čeká.
 - Přenést stavy průchod → výběr chybového místa → drill → dokončení ze současného surgicalEngine. Zachovat evidenci chyb na pozicích, výběr problémového okna a tři čistá opakování; parametry odpovídají referenčnímu obsahu a testům.
 - Určit rozpoznání nového úhozu a opakovaného stejného tónu. Jeden držený tón nesmí posouvat úlohu každý snímek; dva samostatné úhozy stejné výšky musí jít odlišit.
 - V návrhu s waveformou nabídnout vedle tónového drillu režim úseku skladby nad W21. Nezaměnit práci s A/B úsekem za celé dosavadní hodnocení jednotlivých tónů.

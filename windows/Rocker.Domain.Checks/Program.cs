@@ -104,6 +104,12 @@ Check(StudioRules.Place(new(100,null,96,15,0,true),48000,48000,10000)==new Track
 var emPreview=TeachingPreview.Chord(content.Find("chords","Em")!.Value);Check(emPreview.Select(n=>n.Midi).SequenceEqual(new[]{40,47,52,55,59,64}),"lesson chord preview uses the actual played frets on six standard strings");
 Check(Math.Abs(TeachingPreview.Chord(content.Find("chords","Em")!.Value,arpeggio:true).Last().Start-.9)<1e-9,"arpeggio previews schedule individual strings without UI timers");
 foreach(var lesson in content.Lessons){var traversal=LessonSession.Start(lesson);for(int step=0;step<lesson.Steps.Count-1;++step)traversal=traversal.Next();Check(traversal.Finish().Completed,"every lesson can complete its original manual progression");}
+var noteGate=new SurgicalNoteGate();noteGate.Reset(new(1,0,48000,null,true,true,0,0,.171));
+Check(noteGate.Observe(new(1,1000,48000,40,true,false,0,0,.171)) is null && noteGate.Observe(new(1,3000,48000,40,true,false,0,0,.171))==40,"stable first note feeds the self-paced trainer once");
+Check(noteGate.Observe(new(1,16000,48000,40,true,false,1,0,.171)) is null && noteGate.Observe(new(1,18000,48000,40,true,false,1,0,.171)) is null,"held note and late report of its original onset cannot advance twice");
+Check(noteGate.Observe(new(1,21000,48000,40,true,false,2,20000,.171)) is null && noteGate.Observe(new(1,29000,48000,40,true,false,2,20000,.171))==40,"later same-pitch onset waits for a fresh analysis window and feeds exactly once");
+noteGate.Observe(new(1,30000,48000,null,true,true,2,20000,.171));noteGate.Observe(new(1,33000,48000,null,true,true,2,20000,.171));noteGate.Observe(new(1,34000,48000,40,true,false,2,20000,.171));Check(noteGate.Observe(new(1,43000,48000,40,true,false,2,20000,.171))==40,"a genuine silent release also permits a repeated same-pitch note");
+Check(noteGate.Observe(new(2,44000,48000,40,true,false,0,0,.171)) is null,"device epoch change never fabricates another attack");
 var navigation = new NavigationSession();
 navigation.Navigate(new("06", content.Lessons[0].Id)); navigation.Navigate(new("09", "spider")); navigation.Back();
 Check(navigation.Current == new NavigationTarget("06", content.Lessons[0].Id), "back restores specific lesson task");
