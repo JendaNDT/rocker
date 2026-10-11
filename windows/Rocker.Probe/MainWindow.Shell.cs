@@ -118,6 +118,7 @@ public sealed partial class MainWindow
     private FrameworkElement BuildWorkspace(NavigationTarget target)
     {
         if (catalog is null) return Text("Výukový obsah není dostupný. Přehrávání souborů zůstává dostupné.");
+        if (target.ViewId == "02") return BuildLive();
         if (target.ViewId == "01") return BuildOverview();
         if (target.ViewId == "05") return BuildLessonList();
         if (target.ViewId == "06") return BuildLesson(target.ItemId);

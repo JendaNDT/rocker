@@ -2,6 +2,7 @@
 #pragma once
 #include "media_clip.h"
 #include "tone_processor.h"
+#include "input_graph.h"
 
 namespace rocker {
 // Clip ownership and cursor changes require the driver to have joined callbacks.
@@ -12,14 +13,18 @@ public:
     void prepare(double rate) noexcept {
         rate_ = rate; gain_ = 0; tone_.prepare(rate);
         frames_.store(0, std::memory_order_relaxed);
+        input_.prepare(rate,epoch_.fetch_add(1)+1);
     }
     void authority(const std::atomic<uint64_t>& intent) noexcept { authority_ = &intent; }
     void authorize(uint64_t ticket) noexcept { ticket_.store(ticket); }
     void enable(bool value) noexcept { enabled_.store(value); tone_.enable(value); }
-    void selectTone() noexcept { clipMode_ = false; }
-    void selectClip() noexcept { clipMode_ = true; }
+    void selectTone() noexcept { clipMode_ = false;liveMode_=false; }
+    void selectClip() noexcept { clipMode_ = true;liveMode_=false; }
+    void selectLive() noexcept { clipMode_=false;liveMode_=true; }
+    uint32_t mode() const noexcept{return liveMode_?2u:clipMode_?1u:0u;}
+    InputGraph& input() noexcept{return input_;}
     void install(media::Clip clip, double speed) {
-        clip_ = std::move(clip); speed_ = speed; clipMode_ = true; seek(0);
+        clip_ = std::move(clip); speed_ = speed; clipMode_ = true;liveMode_=false; seek(0);
     }
     bool hasClip() const noexcept { return clip_.frames() != 0; }
     void seek(double seconds) noexcept {
@@ -35,7 +40,7 @@ public:
     void volume(double value) noexcept { volume_.store(value); }
     bool ended() const noexcept { return ended_.load(); }
     bool clipMode() const noexcept { return clipMode_; }
-    uint64_t frames() const noexcept { return clipMode_ ? frames_.load() : tone_.frames(); }
+    uint64_t frames() const noexcept { return (clipMode_ || liveMode_) ? frames_.load() : tone_.frames(); }
     void render(float* const* outputs, int channels, int count) noexcept {
         // A late driver start cannot resurrect a cancelled request, even if
         // cancellation raced with enable(). The authority outlives joined callbacks.
@@ -44,6 +49,7 @@ public:
                 if (outputs[c]) std::fill_n(outputs[c], count, 0.0f);
             return;
         }
+        if(liveMode_){if(outputs && count>0)for(int c=0;c<channels;++c)if(outputs[c])std::fill_n(outputs[c],count,0.0f);frames_.fetch_add(count>0?static_cast<uint64_t>(count):0);return;}
         if (!clipMode_) { tone_.render(outputs, channels, count); return; }
         if (!outputs || channels <= 0 || count <= 0) return;
         const auto target = enabled_.load() ? volume_.load() : 0.0;
@@ -73,14 +79,21 @@ public:
         ended_.store(hasClip() && cursor_ >= static_cast<double>(clip_.frames()));
         frames_.fetch_add(static_cast<uint64_t>(count));
     }
+    void process(const float* const* inputs,int inputChannels,float* const* outputs,int channels,int count) noexcept {
+        render(outputs,channels,count);
+        if(authority_ && ticket_.load()!=authority_->load())return;
+        input_.process(inputs && inputChannels>0?inputs[0]:nullptr,outputs,channels,count);
+    }
 private:
     static_assert(std::atomic<double>::is_always_lock_free);
     const std::atomic<uint64_t>* authority_ = nullptr;
     std::atomic<uint64_t> ticket_{0};
+    InputGraph input_;
+    std::atomic<uint32_t> epoch_{0};
     ToneProcessor tone_;
     media::Clip clip_;
     double rate_ = 48000, cursor_ = 0, gain_ = 0, speed_ = 1;
-    bool clipMode_ = false;
+    bool clipMode_ = false,liveMode_=false;
     std::atomic<double> position_{0}, volume_{0.15};
     std::atomic<bool> enabled_{false}, ended_{false};
     std::atomic<uint64_t> frames_{0};

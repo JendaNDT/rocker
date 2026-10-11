@@ -92,6 +92,7 @@ public:
                 }
                 if(!selected_){error="No output audio device is available.";return false;}
             }
+            if(renderer.mode()==2 && selection_.inputChannel<0){error="Select a physical guitar input before starting Live.";return false;}
             auto candidate=create(selection_); if(!open(*candidate,selection_,error)){candidate->close();return false;}
             lastDetails_=describe(*candidate,selection_);device_=std::move(candidate);tone_=&renderer;stopping_.store(false);device_->start(this);
             if(!device_->isPlaying()){error="The audio driver did not start callbacks.";stopOnControl();return false;}
@@ -126,6 +127,7 @@ private:
         const auto message=device.open(inputs,outputs,choice.rate,static_cast<int>(choice.frames));
         if(message.isNotEmpty()){error=message.toStdString();return false;}
         if((choice.rate!=0 && std::abs(device.getCurrentSampleRate()-choice.rate)>0.5) || (choice.frames!=0 && device.getCurrentBufferSizeSamples()!=static_cast<int>(choice.frames))){error="The driver changed the requested format. Choose its default values or a supported format.";return false;}
+        if(device.getActiveInputChannels()!=inputs || device.getActiveOutputChannels()!=outputs){error="The driver changed the selected physical channel routing.";return false;}
         if(device.getActiveOutputChannels().isZero()){error="The driver opened without an output.";return false;}
         return true;
     }
@@ -150,7 +152,7 @@ private:
         const auto rate=device->getCurrentSampleRate();sampleRate_.store(rate);bufferFrames_.store(static_cast<uint32_t>(device->getCurrentBufferSizeSamples()));channels_.store(static_cast<uint32_t>(device->getActiveOutputChannels().countNumberOfSetBits()));
         if(rate<=0 || !std::isfinite(rate)){failed_.store(true);tone_->enable(false);}tone_->prepare(rate>0 && std::isfinite(rate)?rate:48000);
     }
-    void audioDeviceIOCallbackWithContext(const float* const*,int,float* const* outputs,int channels,int frames,const juce::AudioIODeviceCallbackContext&) override { tone_->render(outputs,channels,frames); }
+    void audioDeviceIOCallbackWithContext(const float* const* inputs,int inputChannels,float* const* outputs,int channels,int frames,const juce::AudioIODeviceCallbackContext&) override { tone_->process(inputs,inputChannels,outputs,channels,frames); }
     void audioDeviceStopped() override {if(!stopping_.load()){tone_->enable(false);failed_.store(true);}}
     void audioDeviceError(const juce::String&) override {if(tone_)tone_->enable(false);failed_.store(true);}
     RuntimeLease lease_;std::thread worker_;juce::AudioDeviceManager* manager_=nullptr;std::unique_ptr<juce::AudioIODevice> device_;

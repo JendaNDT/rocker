@@ -40,7 +40,7 @@ internal sealed class AudioHandle : SafeHandleZeroOrMinusOneIsInvalid
 
 internal static class NativeMethods
 {
-    internal const uint AbiVersion = 4;
+    internal const uint AbiVersion = 5;
     private const string Library = "rocker_audio";
     [DllImport(Library, EntryPoint = "rocker_audio_get_abi_version", CallingConvention = CallingConvention.Cdecl)]
     internal static extern uint GetAbiVersion();
@@ -58,6 +58,10 @@ internal static class NativeMethods
     internal static extern uint PlayRaw(IntPtr handle);
     [DllImport(Library, EntryPoint="rocker_audio_stop",CallingConvention=CallingConvention.Cdecl)]
     internal static extern uint StopRaw(IntPtr handle);
+    [DllImport(Library,EntryPoint="rocker_audio_reserve_stop",CallingConvention=CallingConvention.Cdecl)]
+    internal static extern uint ReserveStop(AudioHandle handle,out ulong ticket);
+    [DllImport(Library,EntryPoint="rocker_audio_stop_reserved",CallingConvention=CallingConvention.Cdecl)]
+    internal static extern uint StopReserved(IntPtr handle,ulong ticket);
     [DllImport(Library, EntryPoint="rocker_audio_request_stop",CallingConvention=CallingConvention.Cdecl)]
     internal static extern uint RequestStop(AudioHandle handle);
     [DllImport(Library, EntryPoint = "rocker_audio_stop", CallingConvention = CallingConvention.Cdecl)]
@@ -110,16 +114,17 @@ public sealed partial class NativeAudio : IDisposable, IAsyncDisposable
         handle = new AudioHandle(pointer);
     }
 
-    public Task StartAsync() => ReservedStartAsync(false);
-    private Task ReservedStartAsync(bool media)
+    public Task StartAsync() => ReservedStartAsync(0);
+    public Task StartLiveAsync()=>ReservedStartAsync(2);
+    private Task ReservedStartAsync(uint mode)
     {
-        lock(control) {CheckAlive();CheckResult(NativeMethods.ReserveStart(handle,out var ticket));return ControlAsync(pointer=>NativeMethods.StartReserved(pointer,ticket,media?1u:0u));}
+        lock(control) {CheckAlive();CheckResult(NativeMethods.ReserveStart(handle,out var ticket));return ControlAsync(pointer=>NativeMethods.StartReserved(pointer,ticket,mode));}
     }
     public Task SeekAsync(double seconds) => ControlAsync(pointer=>NativeMethods.SeekRaw(pointer,seconds));
-    public Task PlayAsync() => ReservedStartAsync(true);
+    public Task PlayAsync() => ReservedStartAsync(1);
     public Task StopAsync()
     {
-        lock(control) { CheckAlive(); CheckResult(NativeMethods.RequestStop(handle)); return ControlAsync(NativeMethods.StopRaw); }
+        lock(control) { CheckAlive(); CheckResult(NativeMethods.ReserveStop(handle,out var ticket)); return ControlAsync(pointer=>NativeMethods.StopReserved(pointer,ticket)); }
     }
     private Task ControlAsync(Func<IntPtr,uint> operation)
     {

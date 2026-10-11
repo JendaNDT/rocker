@@ -28,7 +28,9 @@ volá C++ pro běžný životní cyklus, 20 okamžitých start/stop, pomalý sta
 chybné ABI, média, MIDI a dispose během přípravy.
 
 Audit pokrývá vlastní renderer a SPSC, nikoli všechny interní alokace JUCE
-nebo skutečného ovladače. Ověření Windows sestavení navazuje samostatně.
+nebo skutečného ovladače. Windows [38160079061](https://github.com/JendaNDT/rocker/actions/runs/38160079061)
+prošel všemi 4 CTest, C# kontrakty a dvěma skutečnými WinUI starty;
+[důkaz](windows-validation.json) vymezuje revizi před následnými input změnami.
 První Windows build 38159239630 odhalil opakované zpracování stop-requestu
 po dokončeném Stop: následný čtenář mohl vidět přechodný stav. Oprava spotřebuje
 požadavek před sériovou operací; další Windows build ověří tento kontrakt znovu.

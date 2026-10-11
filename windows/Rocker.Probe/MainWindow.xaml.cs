@@ -82,13 +82,14 @@ public sealed partial class MainWindow : Window
             StopButton.IsEnabled = state.State != AudioState.Stopped;
             StatusText.Text = state.State switch
             {
-                AudioState.Running => transport.Playing != 0 ? "Přehrávání." : "Hraje testovací tón.",
+                AudioState.Running => state.Reserved==2 ? "Živý vstup. Monitoring se ovládá samostatně." : transport.Playing != 0 ? "Přehrávání." : "Hraje testovací tón.",
                 AudioState.Starting => "Spouštím zvukové zařízení…",
                 AudioState.Reconfiguring => "Měním nastavení zvuku…",
                 AudioState.Stopping or AudioState.Closing => "Uvolňuji zvukové zařízení…",
                 AudioState.Faulted => "Zvuk se zastavil kvůli chybě zařízení. " + audio.GetLastError(),
                 _ => "Zastaveno. Zařízení je uvolněné."
             };
+            RefreshLive(state);
             DeviceText.Text = state.State == AudioState.Running
                 ? $"Vzorkování {state.SampleRate:N0} Hz · buffer {state.BufferFrames} vzorků · výstupy {state.OutputChannels}\nZpracováno {state.RenderedFrames:N0} vzorků."
                 : "Zařízení zatím není otevřené.";

@@ -18,12 +18,13 @@ public:
                 {
                     std::unique_lock lock(control_);
                     changed_.wait_for(lock,std::chrono::milliseconds(10),[&]{return !jobs_.empty() || stop.stop_requested();});
-                    if(!jobs_.empty()){operation=std::move(jobs_.front());jobs_.pop_front();}
+                    if(!jobs_.empty()){operation=std::move(jobs_.front().run);jobs_.pop_front();}
                 }
                 if(operation)operation();
                 maintenance();
             }
             } catch(...) { /* Shutdown still silences and joins the driver. */ }
+            {const std::lock_guard lock(control_);accepting_=false;for(auto& job:jobs_)job.cancel();jobs_.clear();}
             try { shutdown(); } catch(...) { }
         }) {}
     ~ControlExecutor(){worker_.request_stop();changed_.notify_one();worker_.join();}
@@ -31,16 +32,19 @@ public:
         using Result=decltype(operation());auto promise=std::make_shared<std::promise<Result>>();auto result=promise->get_future();
         {
             const std::lock_guard lock(control_);
+            if(!accepting_)throw std::runtime_error("Audio control worker is unavailable.");
             if(jobs_.size()>=64)throw std::runtime_error("Audio control queue is full.");
-            jobs_.push_back([promise,operation=std::move(operation)]() mutable{
+            jobs_.push_back({[promise,operation=std::move(operation)]() mutable{
                 try{if constexpr(std::is_void_v<Result>){operation();promise->set_value();}else promise->set_value(operation());}
                 catch(...){promise->set_exception(std::current_exception());}
-            });
+            },[promise]{try{promise->set_exception(std::make_exception_ptr(std::runtime_error("Audio control worker stopped.")));}catch(...){}}});
         }
         changed_.notify_one();return result.get();
     }
 private:
-    std::mutex control_;std::condition_variable changed_;std::deque<std::function<void()>> jobs_;
+    struct Job{std::function<void()> run,cancel;};
+    std::mutex control_;std::condition_variable changed_;std::deque<Job> jobs_;
+    bool accepting_=true;
     std::jthread worker_;
 };
 }

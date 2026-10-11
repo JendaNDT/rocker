@@ -1,0 +1,46 @@
+{
+  "sourceCommit": "d3edc81ade5ebc5fcba7ba5081a5c51975210221",
+  "windowsRun": "https://github.com/JendaNDT/rocker/actions/runs/38160079061",
+  "result": "passed",
+  "nativeTests": {
+    "executed": 4,
+    "failures": 0,
+    "skipped": 0
+  },
+  "window": {
+    "windowTitle": "Rocker — Přehled",
+    "localVideoBridgeVerified": true,
+    "exitCode": 0,
+    "audioHostsCreated": 1,
+    "onlineVideoVerified": false,
+    "audioCoexistenceVerified": false,
+    "webViewRuntime": "153.0.4234.48",
+    "midiPreparedInCommonEngine": true,
+    "result": "passed",
+    "checkedAtUtc": "2026-10-11T17:39:31.4847523Z",
+    "audioPlaybackVerified": false,
+    "nativeShellViewsVisited": 32,
+    "nativeNotationVerified": true
+  },
+  "devices": {
+    "result": "passed",
+    "backends": [
+      "Windows Audio",
+      "Windows Audio (Exclusive Mode)",
+      "Windows Audio (Low Latency Mode)",
+      "DirectSound",
+      "ASIO"
+    ],
+    "listedInputs": 1,
+    "listedOutputs": 1,
+    "deviceOpened": false,
+    "physicalDriverVerified": false,
+    "manualSelectionVerified": false
+  },
+  "notPerformed": [
+    "Physical ASIO/WASAPI playback, M-Track and latency",
+    "Manual device selection/control panel/hotplug/sleep",
+    "Input routing (added in subsequent W15 changes)"
+  ],
+  "scope": "W13 lifecycle/telemetry/stop-request correction before subsequent reserved-stop and input changes"
+}

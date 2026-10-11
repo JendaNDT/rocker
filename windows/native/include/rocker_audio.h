@@ -18,9 +18,9 @@
 extern "C" {
 #endif
 
-/* Version 4 adds explicit device selection, enumeration and capabilities.
+/* Version 5 adds live input routing, monitor controls and bus meters.
    Reject earlier DLLs before creating a host. */
-#define ROCKER_AUDIO_ABI_VERSION 4u
+#define ROCKER_AUDIO_ABI_VERSION 5u
 typedef struct rocker_audio_host* rocker_audio_handle;
 typedef uint32_t rocker_audio_result;
 enum {
@@ -60,6 +60,12 @@ typedef struct rocker_device_config {
     int32_t input_channel; /* -1: output only, otherwise physical mono channel */
     uint32_t output_first, reserved; /* physical stereo pair: first, first+1 */
 } rocker_device_config;
+typedef struct rocker_meter_snapshot {
+    uint32_t struct_size,abi_version,flags,epoch;
+    uint64_t frame;
+    double sample_rate,input_peak,input_rms,processed_peak,processed_rms,mix_peak,mix_rms;
+    uint64_t invalid_samples,input_clips,output_clips,dropped_analysis_blocks;
+} rocker_meter_snapshot;
 #pragma pack(pop)
 
 /* Never call from an audio callback. Device operations execute on the native
@@ -74,10 +80,16 @@ ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_create(const rocker_audi
 /* Reserve on the calling/UI thread, then start on a worker using the same ticket.
    A later stop invalidates it even when that worker has not been scheduled yet. */
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_reserve_start(rocker_audio_handle, uint64_t* ticket);
-ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_start_reserved(rocker_audio_handle, uint64_t ticket, uint32_t media);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_start_reserved(rocker_audio_handle, uint64_t ticket, uint32_t mode);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_start(rocker_audio_handle);
+/* Live starts input processing without automatically enabling monitoring. */
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_start_live(rocker_audio_handle);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_set_monitoring(rocker_audio_handle,uint32_t enabled,double gain);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_get_meters(rocker_audio_handle,rocker_meter_snapshot*);
 /* Immediately silence the graph and invalidate pending starts. Does not wait for vendor I/O. */
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_request_stop(rocker_audio_handle);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_reserve_stop(rocker_audio_handle,uint64_t* ticket);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_stop_reserved(rocker_audio_handle,uint64_t ticket);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_stop(rocker_audio_handle);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_get_snapshot(rocker_audio_handle, rocker_audio_snapshot*);
 /* Preparation is synchronous worker work. Decoding does not hold the host's

@@ -21,6 +21,7 @@ public:
             error = "Test device unavailable: zařízení";
             return false;
         }
+        if(tone.mode()==2 && choice_.inputChannel<0){error="No test guitar input was selected";return false;}
         tone.prepare(choice_.rate?choice_.rate:48000);
         starts.fetch_add(1);
         std::array<float, 16384> left{}, right{};

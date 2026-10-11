@@ -21,6 +21,7 @@ static void AbandonAudioHandle()
 }
 Check(Marshal.SizeOf<AudioSnapshot>() == 40, "C# snapshot layout");
 Check(Marshal.SizeOf<TransportSnapshot>() == 56, "C# transport layout");
+Check(Marshal.SizeOf<MeterSnapshot>()==112,"C# meter layout");
 if (mode == "--media")
 {
     if (args.Length != 3) throw new ArgumentException("Media checks need the repository root.");
@@ -107,6 +108,11 @@ for(var attempt=0;attempt<20;attempt++)
     await using var audio=new NativeAudio();var starting=audio.StartAsync();var stopping=audio.StopAsync();await Task.WhenAll(starting,stopping);
     Check(audio.GetSnapshot().State==AudioState.Stopped,"stop before worker scheduling invalidates reserved start");
 }
+for(var attempt=0;attempt<20;attempt++)
+{
+    await using var audio=new NativeAudio();var stopping=audio.StopAsync();var starting=audio.StartAsync();await Task.WhenAll(stopping,starting);
+    Check(audio.GetSnapshot().State==AudioState.Running,"an older unscheduled stop never cancels the newer reserved start");
+}
 await using(var deviceAudio=new NativeAudio())
 {
     var devices=await deviceAudio.GetDevicesAsync();Check(devices.Backends.Length==1 && devices.Backends[0].Name=="Test ASIO","device catalog uses the real native query");
@@ -122,6 +128,9 @@ await using(var deviceAudio=new NativeAudio())
     try{await deviceAudio.ConfigureDeviceAsync(choice with{InputChannel=64});throw new Exception("Invalid physical channel accepted");}
     catch(ArgumentException){ }
     await deviceAudio.ShowDeviceControlPanelAsync();
+    await deviceAudio.StartLiveAsync();Check(deviceAudio.GetSnapshot().Reserved==2 && !deviceAudio.GetMeters().Monitoring,"Live starts without monitoring");
+    deviceAudio.SetMonitoring(true,0.15);Check(deviceAudio.GetMeters().Monitoring,"explicit monitor control crosses the ABI");
+    await deviceAudio.StopAsync();Check(!deviceAudio.GetMeters().Monitoring && deviceAudio.GetMeters().InputPeak==0,"stop clears monitoring and stale level");
     await deviceAudio.StartAsync();var active=deviceAudio.GetSnapshot();Check(active.SampleRate==44100 && active.BufferFrames==128,"confirmed format is actually used by the driver");await deviceAudio.StopAsync();
 }
 // Slow vendor initialization stays on a retained managed worker. Stop and polling remain responsive.

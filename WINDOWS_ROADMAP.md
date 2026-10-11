@@ -286,7 +286,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w13"></a>
 #### W13 — Implementovat realtime host a řízení životního cyklu
 
-- [ ] Rozpracováno: [řízení hostu a realtime kontrakty](docs/windows/w13/README.md), předalokované SPSC fronty, souběžné kontroly a audit alokací společného rendereru. Windows build navazuje; analýza a disk se připojí ve funkčních krocích. Závislosti: W03, W05.
+- [ ] Rozpracováno: [řízení hostu a realtime kontrakty](docs/windows/w13/README.md), předalokované SPSC fronty, souběžné kontroly a audit alokací společného rendereru. [Windows W13/W14 prošel](docs/windows/w13/windows-validation.json); analýza a disk se připojí ve funkčních krocích. Závislosti: W03, W05.
 - Vytvořit host s jasnými stavy zastaveno, spouštění, běží, změna konfigurace, chyba a ukončování. Jednoznačné vlastnictví zařízení a všech vláken; ochrana proti závodu start/stop a starým výsledkům požadavků.
 - Předalokované audio buffery, omezené fronty příkazů, oddělené pracovní fronty pro analýzu a disk. Při přeplnění analýzy lze zahodit starý snímek; při ztrátě nahrávaných dat se chyba musí přiznat.
 - Přidat headless režim, testovací generátor a offline zpracování stejným DSP grafem. Testovací signál je volitelný a viditelně označený.
@@ -295,7 +295,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w14"></a>
 #### W14 — Zařízení, ASIO a WASAPI
 
-- [ ] Rozpracováno: [enumerace, výslovná volba, formát, panel a zachování konfigurace](docs/windows/w14/README.md). Automatické Windows ověření navazuje, hardware se finálně testuje až ve W44. Závislosti: W02, W07, W13.
+- [ ] Rozpracováno: [enumerace, výslovná volba, formát, panel a zachování konfigurace](docs/windows/w14/README.md). [Automatické Windows ověření prošlo](docs/windows/w14/windows-validation.json), hardware se finálně testuje až ve W44. Závislosti: W02, W07, W13.
 - Enumerovat ovladače, zařízení, názvy kanálů, podporované vzorkování a buffery. Nabízet skutečné hodnoty, ukládat volbu podle stabilní identity a při zmizení zařízení vyžádat srozumitelný náhradní postup.
 - Zpřístupnit podporovaný ASIO control panel a WASAPI režimy. Neinstalovat ani nepřibalovat cizí ovladač bez práv; odkazovat na ověřený zdroj výrobce.
 - Ošetřit obsazené zařízení, Windows omezení vstupu, nesoulad formátu, hotplug, změnu výchozího zařízení a spánek/probuzení. Nepřepnout živou kytaru potichu na reproduktory notebooku.
@@ -304,7 +304,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w15"></a>
 #### W15 — Routing jednoho vstupu, mix a monitoring
 
-- [ ] Čeká. Závislosti: W14.
+- [ ] Rozpracováno: [skutečný mono vstup, stereo monitoring a měřáky](docs/windows/w15/README.md), Linux routing a realtime kontrakty. Aparát a nahrávací writer navazují ve W17/W22; Windows ověření ještě probíhá. Závislosti: W14.
 - Zavést volbu konkrétního mono vstupu, správné stereo výstupy a oddělené sběrnice pro suchou kytaru, efekty, podklad, metronom a výsledný mix. Jednotná pravidla úrovní a headroomu.
 - Zapnutí monitoringu musí být výslovné. Přidat dostupné ztlumení, měřiče před i po efektech a ochranu před náhlým skokem hlasitosti při přepnutí parametrů či zařízení.
 - Preferovat vstup i sluchátka na stejném interfejsu. Přímý hardwarový monitoring popsat jako samostatnou cestu bez softwarových efektů, nikoli jako výsledek optimalizace jádra.

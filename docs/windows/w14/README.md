@@ -38,3 +38,8 @@ potvrdit produkční DLL, WinUI formulář a enumeraci sestavených backendů.
 CI enumerace nevydává prázdný seznam za úspěšný poslech nebo funkční ASIO kartu.
 M-Track, obsazené zařízení, mikrofonní oprávnění, hotplug a spánek/probuzení
 vyžadují pozdější skutečnou přejímku W44; nejsou označené jako provedené.
+
+Windows [38160079061](https://github.com/JendaNDT/rocker/actions/runs/38160079061)
+prošel. [Důkaz](windows-validation.json) potvrzuje skutečné sestavení všech
+WASAPI režimů i ASIO, jejich enumeraci v publikovaném WinUI procesu,
+4 CTest a dva čisté starty. Fyzické zařízení nebylo otevřené.

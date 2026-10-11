@@ -81,6 +81,10 @@ int main() {
         check(concurrentOk.load(), "concurrent control calls");
         rocker_audio_start(host);
         rocker_audio_stop(host);
+        uint64_t stoppedTicket=0,startedTicket=0;
+        check(rocker_audio_reserve_stop(host,&stoppedTicket)==ROCKER_OK && rocker_audio_reserve_start(host,&startedTicket)==ROCKER_OK,"ordered intent reservations");
+        check(rocker_audio_start_reserved(host,startedTicket,0)==ROCKER_OK && rocker_audio_stop_reserved(host,stoppedTicket)==ROCKER_OK,"stale stop returns safely");
+        rocker_audio_get_snapshot(host,&phase);check(phase.state==ROCKER_RUNNING,"stale stop cannot cancel a newer start");rocker_audio_stop(host);
         uint32_t jsonSize=0;std::array<char,2048> deviceJson{};
         check(rocker_audio_copy_devices(host,nullptr,0,&jsonSize)==ROCKER_OK && jsonSize>100,"device catalog size");
         check(rocker_audio_copy_devices(host,deviceJson.data(),1,&jsonSize)==ROCKER_BUFFER_TOO_SMALL && deviceJson[0]==0,"small JSON buffer remains terminated");

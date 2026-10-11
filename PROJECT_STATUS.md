@@ -840,3 +840,12 @@ W14: skutečná enumerace JUCE, výběr zařízení a mono kanálu, kontrola for
 ASIO panel, persistence a žádný automatický hotplug fallback. Windows ověření
 a fyzická přejímka zůstávají oddělené. W13 první Windows kontrola odhalila
 a opravila opakované zpracování Stop; nový navazující build je nutný.
+
+W15: skutečný mono input callback, výslovný Live/monitoring, rampy, měřáky
+suché/zpracované/mix sběrnice a analytické bloky se vzorkovou pozicí.
+Linux 5/5 CTest a C# ABI/životní cyklus prošly; aparát je zatím explicitní
+bypass a nahrávací writer/analytický consumer přijdou ve vlastních krocích.
+
+Windows 38160079061 nyní potvrdil W13/W14: 4/4 CTest, C# kontrakty,
+dva WinUI starty a skutečnou enumeraci všech tří WASAPI režimů a ASIO.
+Následné W15 vstupní změny a rezervovaný Stop mají vlastní nový build.
