@@ -12,7 +12,11 @@ je uložených v repozitáři. Jde o plán a návrhy; níže popsaná funkční 
 je zatím současná PWA. [První krok — inventura a reference](docs/windows/baseline/README.md)
 je dokončený, stejně jako [výběr platformy, licencí a distribuce](docs/windows/decisions/0001-platform-and-distribution.md).
 Bratr dostane instalátor, zdroje budou dostupné samostatně. [Technický prototyp W03](windows/README.md)
-má ověřené propojení C# a C++ na Linuxu; jeho WinUI okno a zvuk ještě vyžadují Windows přejímku.
+má už úspěšné Windows sestavení, integrační testy a automatickou kontrolu otevření/zavření okna.
+[Stáhnout sestavený Windows prototyp](https://github.com/JendaNDT/rocker/releases/tag/windows-w03-preview-20261011)
+— ZIP rozbalit a spustit `Rocker.Probe.exe`; vývojové nástroje nejsou potřeba.
+Jde o testovací tón, kompletní funkce a Vintage UI teprve následují. Zvuk a ruční
+ovládání ještě vyžadují přejímku; [výsledky kontrol](docs/windows/w03-windows-validation.json).
 
 ## Co to je
 

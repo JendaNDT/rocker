@@ -1,6 +1,6 @@
 # Rocker pro Windows — úplný implementační plán
 
-Stav k 10. 10. 2026: W01 a W02 jsou dokončené — [inventura](docs/windows/baseline/README.md) a [platforma, licence a předání](docs/windows/decisions/0001-platform-and-distribution.md). W03 má [první implementaci](windows/README.md) a [místní kontroly](docs/windows/w03-validation.json), čeká na skutečné Windows sestavení a přejímku. Celá nativní aplikace zatím hotová není. Podkladem je současná PWA a sada 32 návrhů rozhraní. Tento dokument je hlavní roadmapou pro nově zvolený směr; [původní roadmapa](ROADMAP.md) zůstává historií webové verze.
+Stav k 11. 10. 2026: W01 a W02 jsou dokončené — [inventura](docs/windows/baseline/README.md) a [platforma, licence a předání](docs/windows/decisions/0001-platform-and-distribution.md). W03 má [první implementaci](windows/README.md), úspěšné [Windows sestavení a automatické kontroly](docs/windows/w03-windows-validation.json) i spustitelný ZIP; čeká na ruční přejímku a skutečný poslech. Celá nativní aplikace zatím hotová není. Podkladem je současná PWA a sada 32 návrhů rozhraní. Tento dokument je hlavní roadmapou pro nově zvolený směr; [původní roadmapa](ROADMAP.md) zůstává historií webové verze.
 
 **Výsledek:** instalovatelný kytarový pomocník pro Windows se skutečným nativním ovládáním, vzhledem Vintage a samostatným zvukovým jádrem. Zachová všechny již implementované pracovní postupy Rockeru, převede uživatelská data a doplní práci se soubory a projekty. Bratr dostane až funkčně kompletní testovací verzi; na svém počítači s M-Audio M-Track Solo ověří zvuk, stabilitu a pocit ze hry.
 
@@ -178,12 +178,12 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w03"></a>
 #### W03 — Ověřit WinUI a hranici mezi C# a C++
 
-- [ ] Rozpracováno. Závislosti: W02. [Implementace a Windows přejímka](windows/README.md), [protokol místních kontrol](docs/windows/w03-validation.json).
+- [ ] Rozpracováno. Závislosti: W02. [Implementace a Windows přejímka](windows/README.md), [protokol Windows kontrol](docs/windows/w03-windows-validation.json), [historické Linux kontroly](docs/windows/w03-validation.json).
 - V malém technickém řezu sestavit WinUI okno a nativní audio DLL, předat příkaz, přečíst stav a korektně uvolnit prostředky. Použít umělý tón a virtuální nebo dostupné zařízení, kytara není nutná.
 - Navrhnout verzovaný C ABI kontrakt: neprůhledné handle, velikosti struktur, kódy chyb, kopírování řetězců, vlastnictví bufferů a přesně určená vlákna. Ve spravované vrstvě bezpečná životnost handle; žádné výjimky přes ABI.
 - Prověřit opakovaný start/stop, nesoulad verze DLL a čisté ukončení bez visícího vlákna. UI dostává pouze stavové snímky mimo audio callback.
 - Hotovo, když Windows sestavení spolehlivě přehraje a zastaví tón a integraci lze automaticky ověřit. Je to interní důkaz proveditelnosti, nikoli verze vyžadující bratrův test.
-- Stav: napsané WinUI okno, C# SafeHandle/PInvoke, C ABI a JUCE host s vlastním řídicím vláknem. Na Linuxu prošel C++ kontrakt, skutečné volání z C#, odmítnutí nekompatibilní DLL a test JUCE bez zařízení včetně uvolnění přes finalizaci. NuGet obnovil zvolené Windows závislosti. Chybí Windows kompilace XAML/MSVC, skutečné přehrávání, chování okna a uvolnění zařízení na Windows; W03 proto není označený za hotový. Místní Linux build vypíná audio backends a není distribučním balíkem.
+- Stav: Windows runner sestavil MSVC/JUCE DLL i WinUI, provedl C++ kontrakt, skutečné C# volání do testovací DLL a odmítnutí nekompatibilní DLL. Publikované okno se automaticky otevřelo a po běžném zavření skončilo kódem 0. Pád při načítání XAML po publikování opravil `EnableMsixTooling`. Je dostupné [předběžné vydání](https://github.com/JendaNDT/rocker/releases/tag/windows-w03-preview-20261011) se spustitelným ZIPem a samostatnými zdroji. Zbývá skutečné přehrávání, ruční ovládání a testy zařízení, proto W03 zůstává rozpracovaný. Historický Linux build není distribučním balíkem.
 
 <a id="w04"></a>
 #### W04 — Ověřit noty, média a souběh zvuku

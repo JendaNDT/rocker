@@ -1,5 +1,5 @@
 # Rocker – Project Status
-*Naposled aktualizováno: 10. 10. 2026 — nový směr Windows; historický stav PWA níže pochází z 03. 06. 2026.*
+*Naposled aktualizováno: 11. 10. 2026 — sestavený Windows prototyp; historický stav PWA níže pochází z 03. 06. 2026.*
 
 ## Aktuální směr: nativní Rocker pro Windows
 
@@ -11,7 +11,8 @@ Uživatel nemá ručně připravovat vývojové prostředí. Postup je v
 
 Uživatel zvolil skutečné nativní ovládání Windows a vzhled Vintage. Zvuková
 cesta má používat samostatné nativní jádro; ve W02 bylo vybráno WinUI 3 / C#
-a C++ / JUCE s bezplatnou AGPL/GPL cestou. Integrace ještě není ověřená. Cílové zařízení pro závěrečný
+a C++ / JUCE s bezplatnou AGPL/GPL cestou. Technické propojení a start okna už prošly Windows CI;
+skutečné přehrávání ještě není ověřené. Cílové zařízení pro závěrečný
 test je uživatelem potvrzený M-Audio M-Track Solo s kytarou v jednom vstupu.
 
 Uložený podklad: [úplná roadmapa W01–W48](WINDOWS_ROADMAP.md),
@@ -27,16 +28,21 @@ source hashů, referenční logiky a obnovy dat prošla. W02 je dokončený:
 a [výběr verzí s podklady](docs/windows/decisions/platform-selection.json).
 Bratr stáhne jen instalátor; zdroje budou dostupné samostatným odkazem, bez
 povinného stažení. Veřejné vydání ani placená licence pro tuto cestu nejsou potřeba.
-W03 (WinUI, C++ a testovací tón) je rozpracovaný: implementace je připravená,
-C++ a C# integrační kontroly i JUCE bez zařízení prošly v Linuxu. Pro dokončení zbývá Windows
-build a přejímka okna a skutečného přehrávání; [protokol](docs/windows/w03-validation.json)
-tyto výsledky rozlišuje. Vývoj a průběžné
+W03 (WinUI, C++ a testovací tón) je rozpracovaný: Windows/MSVC sestavení, C++ kontrakt,
+C# integrační kontroly a automatické otevření/zavření publikovaného WinUI okna prošly.
+[Sestavený ZIP pro Jendu](https://github.com/JendaNDT/rocker/releases/tag/windows-w03-preview-20261011)
+má potřebné runtimy, samostatnou nabídku zdrojů a kontrolní součty.
+[Protokol Windows](docs/windows/w03-windows-validation.json) odděluje ověřené sestavení
+od dosud neprovedeného poslechu, ruční přejímky a hardwarových testů.
+[Původní Linux protokol](docs/windows/w03-validation.json) zůstává historickým záznamem.
+Opraven byl pád při načtení XAML po publikování: projekt nyní zapíná `EnableMsixTooling`.
+Vývoj a průběžné
 kontroly proběhnou bez kytary; bratr dostane až funkčně kompletní testovací
 Windows verzi po W43. Skutečná odezva a stabilita jeho zařízení se ověří
 ve W44. První nativní implementace je technický prototyp, ne hotová aplikace pro bratra.
 
 Při W03 znovu prošlo 561/561 testů v 54 souborech, kontrola
-TypeScriptu a lint. To je výsledek současné PWA, nikoli ověření Windows verze.
+TypeScriptu a lint (naposledy 11. 10. 2026). To je výsledek současné PWA, nikoli ověření Windows verze.
 
 ## 🎯 Co to je
 PWA kytarový asistent pro učení a hraní na elektrickou kytaru. Funguje na PC

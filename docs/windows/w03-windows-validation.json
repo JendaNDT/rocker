@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "step": "W03",
+  "checkedDate": "2026-10-11",
+  "status": "windows-build-and-window-smoke-passed-awaiting-manual-audio-acceptance",
+  "builtCommit": "79fb06bcb535fd457e6620da5ea5265711ef0001",
+  "buildRun": "https://github.com/JendaNDT/rocker/actions/runs/38129738997",
+  "publishRun": "https://github.com/JendaNDT/rocker/actions/runs/38130460130",
+  "runner": {
+    "os": "Microsoft Windows Server 2025 Datacenter 10.0.26100",
+    "label": "windows-2025",
+    "image": "windows-2025-vs2026",
+    "imageVersion": "20260925.250.1"
+  },
+  "toolchain": {
+    "msvcFileVersion": "19.51.36260.0",
+    "windowsSdk": "10.0.26100.0\\",
+    "cmake": "cmake version 3.31.10",
+    "visualStudio": "18.0",
+    "ninja": "1.13.2",
+    "os": "Microsoft Windows NT 10.0.26100.0",
+    "dotnet": "10.0.401",
+    "cl": "C:\\Program Files\\Microsoft Visual Studio\\18\\Enterprise\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\cl.exe",
+    "checkedAtUtc": "2026-10-11T09:50:15.7004759Z"
+  },
+  "checks": {
+    "nativeMsvcJuceBuild": "passed",
+    "winuiXamlCompileAndPublish": "passed",
+    "nativeContract": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "device": "fake"
+    },
+    "managedNativeInterop": {
+      "result": "passed",
+      "device": "fake",
+      "coverage": [
+        "C# to C++ P/Invoke",
+        "struct layout",
+        "UTF-8 errors",
+        "start/stop/disposal",
+        "device-error recovery"
+      ]
+    },
+    "incompatibleAbi": {
+      "result": "passed",
+      "coverage": "ABI-2 test DLL rejected before handle creation"
+    },
+    "publishedWindow": {
+      "windowTitle": "Rocker — ověření zvukového jádra",
+      "exitCode": 0,
+      "result": "passed",
+      "checkedAtUtc": "2026-10-11T09:53:48.0362955Z",
+      "audioPlaybackVerified": false
+    },
+    "downloadedArchives": {
+      "result": "passed",
+      "binaryFiles": 576,
+      "licenseFiles": 51,
+      "zipIntegrity": "passed",
+      "sha256": "matched CI and release assets",
+      "peArchitecture": "x64 EXE and audio DLL",
+      "peFilesInspected": 279,
+      "missingAppLocalCrtImports": [],
+      "testBackendAbsent": true,
+      "dotnetAndWinuiRuntimeFilesPresent": true,
+      "sourceFiles": 369,
+      "sourceContent": "All source files match built revision; 333 text files use Windows CRLF, with no other content changes.",
+      "juceSource": "Complete archive, CRC and git revision match be29c81492b6151c8ea8d14c840e1311963b3a83",
+      "publishedBinaryRedownloaded": true
+    },
+    "pwaRegression": {
+      "testsPassed": 561,
+      "testsFailed": 0,
+      "testFiles": 54,
+      "typeScript": "passed",
+      "lint": "passed",
+      "baseline": "32 views, 11 stores, 69 domain cases, 3 surgical traces, 12 media files, 259 source hashes passed"
+    }
+  },
+  "startupFix": {
+    "problem": "Published executable exited with 0xc000027b; diagnostics showed XamlParseException in MainWindow.InitializeComponent.",
+    "change": "EnableMsixTooling=true in Rocker.Probe.csproj; retain startup diagnostics and an automated published-window smoke test.",
+    "reference": "https://github.com/microsoft/WindowsAppSDK/issues/6673",
+    "failedBuildRuns": [
+      38129058489,
+      38129410984
+    ]
+  },
+  "release": {
+    "assets": [
+      {
+        "browser_download_url": "https://github.com/JendaNDT/rocker/releases/download/windows-w03-preview-20261011/Rocker-Windows-sources.zip",
+        "digest": "sha256:ebb6780a1850b88a340e43dbfaadde91e926834acc0805c40f6c1528413c2fd1",
+        "name": "Rocker-Windows-sources.zip",
+        "size": 45971309
+      },
+      {
+        "browser_download_url": "https://github.com/JendaNDT/rocker/releases/download/windows-w03-preview-20261011/Rocker-Windows-x64.zip",
+        "digest": "sha256:8ca2be4f2548db5aa5d1865fdd7675fe8913d6324c52c1e06ab574e9aeae5732",
+        "name": "Rocker-Windows-x64.zip",
+        "size": 96518979
+      },
+      {
+        "browser_download_url": "https://github.com/JendaNDT/rocker/releases/download/windows-w03-preview-20261011/SHA256SUMS.txt",
+        "digest": "sha256:91b9ade0423e0a0e7cbbd84b380614c53745243e29c4c00bb8e86ba82e97b78d",
+        "name": "SHA256SUMS.txt",
+        "size": 184
+      }
+    ],
+    "draft": false,
+    "html_url": "https://github.com/JendaNDT/rocker/releases/tag/windows-w03-preview-20261011",
+    "id": 409583629,
+    "prerelease": true,
+    "tag_name": "windows-w03-preview-20261011",
+    "target_commitish": "79fb06bcb535fd457e6620da5ea5265711ef0001"
+  },
+  "notPerformed": [
+    "Physical audio playback",
+    "Manual keyboard, accessibility and DPI acceptance",
+    "Device disconnect and recovery",
+    "M-Track Solo / ASIO tests",
+    "Round-trip latency measurements",
+    "Clean consumer Windows 11 installation acceptance",
+    "Final installer and W43 license audit"
+  ],
+  "completionRequirement": "Keep W03 unchecked until the manual acceptance scenarios in windows/README.md pass. The portable prototype is for Jenda, not the complete brother handoff."
+}
