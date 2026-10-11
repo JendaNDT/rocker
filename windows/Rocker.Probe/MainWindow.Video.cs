@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
 using Rocker.Video;
+using Rocker.Domain;
 using Rocker.Infrastructure;
 using System.Text.Json;
 
@@ -11,6 +12,9 @@ public sealed partial class MainWindow
 {
     private bool videoBridgeReady, videoReady, changingVideoRates;
     private double videoPosition;
+    private readonly VideoPractice videoPractice=new();
+    private readonly List<SavedVideoLoop> savedVideoLoops=[];
+    private SavedVideoLoop? pendingVideoLoop,deletedVideoLoop;
     private async Task InitializeVideoAsync()
     {
         try
@@ -48,7 +52,7 @@ public sealed partial class MainWindow
             {
                 if (closed) return;
                 var message = VideoProtocol.ReadEvent(args.Source, args.WebMessageAsJson);
-                if (message is null) return;
+                if (message is null || (message.Kind!="bridge-ready" && !videoPractice.Observe(message))) return;
                 switch (message.Kind)
                 {
                     case "bridge-ready":
@@ -59,14 +63,14 @@ public sealed partial class MainWindow
                             appId = VideoProtocol.AppId, onlineVideoVerified = false, audioCoexistenceVerified = false });
                         break;
                     case "ready":
-                        videoReady = true; SetVideoControls(true);
+                        videoReady = true; SetVideoControls(true);if(navigation.Current.ViewId!="08")SendVideo(new{op="pause"});
                         VideoStatus.Text = "Video je připravené. Zvuk YouTube používá sdílený výstup Windows.";
                         break;
                     case "state":
                         VideoStatus.Text = message.Code switch { 1 => "Video hraje.", 2 => "Video je pozastavené.", 3 => "Video se načítá…", 0 => "Video skončilo.", _ => "Video je připravené." };
                         break;
                     case "progress":
-                        videoPosition = message.Position;
+                        videoPosition = message.Position;VideoSeek.Maximum=Math.Max(.01,message.Duration);if(!videoSeeking)VideoSeek.Value=message.Position;TryRestoreVideoLoop();
                         VideoPosition.Text = $"{FormatTime(message.Position)} / {FormatTime(message.Duration)} · {message.Rate:0.##}×";
                         if (VideoRates.ItemsSource is double[] values && values.Contains(message.Rate))
                         { changingVideoRates = true; VideoRates.SelectedItem = message.Rate; changingVideoRates = false; }
@@ -75,7 +79,7 @@ public sealed partial class MainWindow
                         changingVideoRates = true;
                         VideoRates.ItemsSource = message.Rates;
                         VideoRates.SelectedItem = message.Rates?.Contains(1) == true ? 1.0 : message.Rates?.FirstOrDefault();
-                        changingVideoRates = false;
+                        changingVideoRates = false;TryRestoreVideoLoop();
                         break;
                     case "error":
                         videoReady = false; SetVideoControls(false);
@@ -95,22 +99,28 @@ public sealed partial class MainWindow
     }
     private void SetVideoControls(bool value)
     {
-        VideoPlayButton.IsEnabled = VideoPauseButton.IsEnabled = VideoStopButton.IsEnabled = VideoRates.IsEnabled = value;
+        VideoPlayButton.IsEnabled = VideoPauseButton.IsEnabled = VideoStopButton.IsEnabled = VideoRates.IsEnabled = VideoSeek.IsEnabled = VideoMarkA.IsEnabled = VideoMarkB.IsEnabled = VideoApplyLoop.IsEnabled = VideoLoopEnabled.IsEnabled = value;
     }
     private void VideoLoad_Click(object sender, RoutedEventArgs e)
     {
         if (!videoBridgeReady) return;
         var id = VideoProtocol.ExtractId(VideoUrl.Text);
         if (id is null) { VideoStatus.Text = "Vlož platný odkaz na YouTube nebo ID videa."; return; }
-        videoReady = false; SetVideoControls(false);
-        VideoStatus.Text = "Načítám video…";
-        SendVideo(new { op = "load", id });
+        LoadVideo(id);
+    }
+    private void LoadVideo(string id,SavedVideoLoop? loop=null)
+    {
+        videoPractice.Begin(id);pendingVideoLoop=loop;videoReady=false;videoPosition=0;SetVideoControls(false);VideoUrl.Text="https://www.youtube.com/watch?v="+id;VideoLoopEnabled.IsChecked=false;VideoLoopA.Value=loop?.Start??0;VideoLoopB.Value=loop?.End??0;VideoLoopLabel.Text=loop?.Label??"";VideoStatus.Text="Načítám video…";VideoLoopStatus.Text="Smyčka je vypnutá. Přehrávání spustíš výslovně.";SendVideo(new{op="load",id});
     }
     private void SendVideo(object command)
     {
         if (closed || !videoBridgeReady) return;
-        try { VideoView.CoreWebView2.PostWebMessageAsJson(JsonSerializer.Serialize(command)); }
+        try { VideoView.CoreWebView2.PostWebMessageAsJson(JsonSerializer.Serialize(WithVideoToken(command))); }
         catch (Exception error) { VideoStatus.Text = "Přehrávač neodpovídá. " + error.Message; }
+    }
+    private Dictionary<string,object?> WithVideoToken(object command)
+    {
+        var values=JsonSerializer.SerializeToElement(command).EnumerateObject().ToDictionary(p=>p.Name,p=>(object?)p.Value);values["token"]=videoPractice.Token;return values;
     }
     private void VideoPlay_Click(object sender, RoutedEventArgs e) { if (videoReady) SendVideo(new { op = "play" }); }
     private void VideoPause_Click(object sender, RoutedEventArgs e) { if (videoReady) SendVideo(new { op = "pause" }); }

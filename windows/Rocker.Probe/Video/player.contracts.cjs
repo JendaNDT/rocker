@@ -64,3 +64,18 @@ test('loading another video recreates the target without another API request', (
   const b = bridge(); b.send({ op: 'load', id: 'M7lc1UVf-VE' }); b.ready();
   b.send({ op: 'load', id: 'dQw4w9WgXcQ' }); assert.equal(b.scripts.length, 1); assert.equal(b.players.length, 2); assert.equal(b.options.videoId, 'dQw4w9WgXcQ');
 });
+test('A/B loops follow playing progress and never force a paused seek', () => {
+  const b = bridge(); b.send({ op: 'load', id: 'M7lc1UVf-VE', token: 7 }); b.ready();
+  b.send({ op: 'loop', enabled: true, start: 4, end: 10, token: 7 });
+  b.progress(); assert.equal(b.player.seek, undefined);
+  b.options.events.onStateChange({ data: 1 }); assert.equal(b.player.seek, 4);
+  b.player.seek = undefined; b.send({ op: 'loop', enabled: false, token: 7 }); b.progress(); assert.equal(b.player.seek, undefined);
+});
+test('replacement rejects obsolete callbacks and native commands', () => {
+  const b = bridge(); b.send({ op: 'load', id: 'M7lc1UVf-VE', token: 1 }); b.ready(); const old = b.options;
+  b.send({ op: 'load', id: 'dQw4w9WgXcQ', token: 2 }); const count = b.messages.length;
+  old.events.onError({ data: 100 }); old.events.onStateChange({ data: 1 }); old.events.onReady(); assert.equal(b.messages.length, count);
+  b.options.events.onReady(); assert.equal(b.messages.at(-1).token, 2);
+  b.send({ op: 'play', token: 1 }); assert.equal(b.player.played, undefined);
+  b.send({ op: 'seek', seconds: 30, token: 2 }); assert.equal(b.player.seek, 30);
+});

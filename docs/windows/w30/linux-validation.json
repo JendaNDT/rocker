@@ -1,0 +1,14 @@
+{
+  "result": "passed",
+  "bridgeTests": 8,
+  "videoAssertions": 41,
+  "frozenPwaCases": 69,
+  "additionalPwaCases": 372,
+  "rhythmPalmBreakStates": 350,
+  "additionalAssertions": 136,
+  "csharpSyntaxFiles": 97,
+  "typescript": "passed",
+  "nativeFormsVerified": false,
+  "onlineVideoVerified": false,
+  "audioCoexistenceVerified": false
+}

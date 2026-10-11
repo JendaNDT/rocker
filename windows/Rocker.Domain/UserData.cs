@@ -87,7 +87,7 @@ public static class UserData
                 Require(tunings.Length <= 20 && tunings.All(t => t.Id is not null && t.Id.StartsWith("custom-",StringComparison.Ordinal) && ValidId(t.Id) && !string.IsNullOrWhiteSpace(t.Label) && t.Strings is not null && t.Strings.Count == 6 && t.Strings.All(s => s.Midi is >= 24 and <= 84 && !string.IsNullOrEmpty(s.Note))) && tunings.Select(t => t.Id).Distinct().Count() == tunings.Length, "Neplatná vlastní ladění."); value = tunings; break;
             case "yt-loops":
                 var loops = Read<SavedVideoLoop[]>(document.Value);
-                Require(loops.Length <= 10000 && loops.All(l => ValidId(l.Id) && l.VideoId is not null && l.VideoId.Length == 11 && l.VideoId.All(c => char.IsAsciiLetterOrDigit(c) || c is '_' or '-') && l.Label is not null && double.IsFinite(l.Start) && double.IsFinite(l.End) && l.Start >= 0 && l.End > l.Start && double.IsFinite(l.Rate) && l.Rate is >= 0.25 and <= 2), "Neplatná video smyčka."); value = loops; break;
+                Require(loops.Length <= 10000 && loops.All(l => ValidId(l.Id) && l.VideoId is not null && l.VideoId.Length == 11 && l.VideoId.All(c => char.IsAsciiLetterOrDigit(c) || c is '_' or '-') && l.Label is not null && double.IsFinite(l.Start) && double.IsFinite(l.End) && l.Start >= 0 && l.End > l.Start && double.IsFinite(l.Rate) && l.Rate is > 0 and <= 16), "Neplatná video smyčka."); value = loops; break;
             case "ai-settings":
                 var ai = Read<AiSettings>(document.Value); Require(ValidId(ai.Model),"Neplatný model AI."); value = ai; break;
             case "chat":

@@ -42,13 +42,14 @@ public static partial class VideoProtocol
             using var document = JsonDocument.Parse(json, new JsonDocumentOptions { MaxDepth = 8 });
             var root = document.RootElement;
             if (root.ValueKind != JsonValueKind.Object || !root.TryGetProperty("event", out var kind) || kind.ValueKind != JsonValueKind.String) return null;
+            long token=0;if(root.TryGetProperty("token",out var tokenField) && (!tokenField.TryGetInt64(out token) || token<0 || token>int.MaxValue))return null;
             var name = kind.GetString();
-            if (name is "bridge-ready" or "ready") return new VideoEvent(name);
-            if (name is "error" && root.TryGetProperty("code", out var code) && code.TryGetInt32(out var error)) return new VideoEvent(name, Code: error);
+            if (name is "bridge-ready" or "ready") return new VideoEvent(name,Token:token);
+            if (name is "error" && root.TryGetProperty("code", out var code) && code.TryGetInt32(out var error)) return new VideoEvent(name, Code: error,Token:token);
             if (name is "state" && root.TryGetProperty("state", out var state) && state.TryGetInt32(out var number) && number is -1 or 0 or 1 or 2 or 3 or 5)
-                return new VideoEvent(name, Code: number);
+                return new VideoEvent(name, Code: number,Token:token);
             if (name == "progress" && Number(root, "position", out var position) && Number(root, "duration", out var duration) && Number(root, "rate", out var rate) && rate > 0 && rate <= 16)
-                return new VideoEvent(name, Position: position, Duration: duration, Rate: rate);
+                return new VideoEvent(name, Position: position, Duration: duration, Rate: rate,Token:token);
             if (name == "rates" && root.TryGetProperty("rates", out var rates) && rates.ValueKind == JsonValueKind.Array && rates.GetArrayLength() <= 16)
             {
                 var values = new List<double>();
@@ -57,7 +58,7 @@ public static partial class VideoProtocol
                     if (!item.TryGetDouble(out var value) || !double.IsFinite(value) || value <= 0 || value > 16) return null;
                     if (!values.Contains(value)) values.Add(value);
                 }
-                return new VideoEvent(name, Rates: values.ToArray());
+                return new VideoEvent(name, Rates: values.ToArray(),Token:token);
             }
         }
         catch (Exception error) when (error is JsonException or InvalidOperationException or FormatException) { }
@@ -79,4 +80,4 @@ public static partial class VideoProtocol
         _ => $"Přehrávání YouTube selhalo (stav {code})."
     };
 }
-public sealed record VideoEvent(string Kind, int Code = 0, double Position = 0, double Duration = 0, double Rate = 1, double[]? Rates = null);
+public sealed record VideoEvent(string Kind, int Code = 0, double Position = 0, double Duration = 0, double Rate = 1, double[]? Rates = null,long Token=0);

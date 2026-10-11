@@ -20,7 +20,9 @@ public sealed partial class MainWindow
         catch(Exception error){if(!closed)DeviceSelectionStatus.Text="Zařízení nelze změnit. "+error.Message;}
         finally{if(!closed)DeviceBusy(false);}
     }
-    private async void DevicesRefresh_Click(object sender,RoutedEventArgs args)=>await DeviceOperationAsync(async ()=> {
+    private async void DevicesRefresh_Click(object sender,RoutedEventArgs args)=>await DeviceOperationAsync(RefreshDeviceListAsync);
+    private async Task RefreshDeviceListAsync()
+    {
         deviceCatalog=await audio!.GetDevicesAsync();if(closed)return;
         deviceUiUpdating=true;
         DeviceBackendBox.ItemsSource=deviceCatalog.Backends.Select(b=>b.Name).ToArray();
@@ -28,7 +30,7 @@ public sealed partial class MainWindow
         if(DeviceBackendBox.SelectedIndex<0 && deviceCatalog.Backends.Length>0)DeviceBackendBox.SelectedIndex=0;
         deviceUiUpdating=false;UpdateDeviceNames();
         DeviceSelectionStatus.Text=deviceCatalog.Backends.Any(b=>b.Outputs.Length>0)?"Vyber kartu a načti její možnosti. Změny se použijí až tlačítkem Ověřit a použít.":"Není dostupný žádný výstup. Připoj kartu a obnov seznam.";
-    });
+    }
     private void DeviceBackend_Changed(object sender,SelectionChangedEventArgs args){if(!deviceUiUpdating)UpdateDeviceNames();}
     private DeviceBackend? SelectedBackend()=>deviceCatalog?.Backends.FirstOrDefault(b=>b.Name==DeviceBackendBox.SelectedItem as string);
     private void UpdateDeviceNames()

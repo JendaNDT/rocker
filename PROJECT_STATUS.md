@@ -892,3 +892,8 @@ pozici, opakované smyčky a přehrávání jedné/všech stop přes společné 
 Sedm skutečných formátů prošlo 82 kontrolami rendereru; C++ má 19/19 sad a
 změněné MIDI/transport kontroly prošly sanitizéry. Windows ověření čeká;
 reálný poslech se netvrdí a ruční test zůstává až za W43.
+
+W30: YouTube má nativní hledání videa, A/B, posun, skutečné dostupné rychlosti
+a uložené úseky s přejmenováním, smazáním a vrácením. Ověřeno 8 browserových
+testů a 41 stavových/protokolových kontrol; přidané Windows ověření formulářů
+a obnovení SQLite čeká na build. Online přehrávání a souběh ASIO nejsou ověřené.

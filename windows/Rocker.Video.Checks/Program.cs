@@ -19,3 +19,13 @@ foreach (var malformed in new[] { "null", "[]", "not json", "{\"event\":123}", "
     Check(VideoProtocol.ReadEvent(VideoProtocol.Page, malformed) is null, "malformed message rejected without exception");
 Check(VideoProtocol.DescribeError(153).Contains("identifikaci", StringComparison.Ordinal), "actionable identity error");
 Console.WriteLine($"PASS: {checks} URL/bridge assertions; no online video or physical audio tested.");
+var practice=new VideoPractice();practice.Begin("M7lc1UVf-VE");long first=practice.Token;
+Check(practice.Observe(new("ready",Token:first)) && practice.Ready,"current video becomes ready");
+Check(practice.Observe(new("progress",Position:12,Duration:120,Rate:.5,Token:first)) && practice.Position==12,"trusted current position retained");
+practice.SetLoop(4,10);Check(practice.Loop==new VideoRange(4,10),"ordered A/B retained");
+foreach(var range in new[]{new VideoRange(-1,2),new VideoRange(4,4),new VideoRange(4,double.NaN),new VideoRange(4,121)}){bool rejected=false;try{practice.SetLoop(range.Start,range.End);}catch(ArgumentException){rejected=true;}Check(rejected,"invalid/out-of-video range rejected");}
+practice.Begin("dQw4w9WgXcQ");Check(!practice.Ready && practice.Loop is null && practice.Position==0,"replacement resets the complete prior practice state");
+Check(!practice.Observe(new("error",Code:100,Token:first)) && !practice.Ready,"obsolete event cannot affect new video");
+Check(practice.Observe(new("rates",Rates:[.5,1,2],Token:practice.Token)) && practice.Rates.Count==3,"only current offered rates retained");
+Check(VideoProtocol.ReadEvent(VideoProtocol.Page,"{\"event\":\"ready\",\"token\":-1}") is null && VideoProtocol.ReadEvent(VideoProtocol.Page,"{\"event\":\"ready\",\"token\":{}}") is null,"invalid generation token rejected");
+Console.WriteLine($"PASS: {checks} complete video state/protocol assertions.");

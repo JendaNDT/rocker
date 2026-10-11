@@ -107,6 +107,27 @@
                             <Button Content="V prohlížeči" Click="VideoExternal_Click" />
                         </StackPanel>
                         <ComboBox x:Name="VideoRates" Header="Dostupné rychlosti videa" Width="200" SelectionChanged="VideoRate_Changed" IsEnabled="False" />
+                        <Slider x:Name="VideoSeek" Header="Pozice ve videu" Minimum="0" Maximum="1" IsEnabled="False" PointerReleased="VideoSeek_Released" KeyUp="VideoSeek_KeyUp" />
+                        <NumberBox x:Name="VideoLoopA" Header="A · začátek v sekundách" Minimum="0" Maximum="864000" Value="0" SpinButtonPlacementMode="Inline" />
+                        <NumberBox x:Name="VideoLoopB" Header="B · konec v sekundách" Minimum="0" Maximum="864000" Value="0" SpinButtonPlacementMode="Inline" />
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Button x:Name="VideoMarkA" Content="A = nyní" Click="VideoMark_Click" Tag="a" IsEnabled="False" />
+                            <Button x:Name="VideoMarkB" Content="B = nyní" Click="VideoMark_Click" Tag="b" IsEnabled="False" />
+                            <Button x:Name="VideoApplyLoop" Content="Použít A/B" Click="VideoApplyLoop_Click" IsEnabled="False" />
+                        </StackPanel>
+                        <CheckBox x:Name="VideoLoopEnabled" Content="Opakovat úsek A/B" Checked="VideoLoop_Changed" Unchecked="VideoLoop_Changed" />
+                        <TextBox x:Name="VideoLoopLabel" Header="Název úseku" MaxLength="256" />
+                        <Button Content="Uložit pojmenovaný úsek" Click="VideoSaveLoop_Click" />
+                        <ListView x:Name="VideoSavedLoops" Header="Uložené úseky všech videí" DisplayMemberPath="Title" />
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Button Content="Otevřít vybraný úsek" Click="VideoOpenLoop_Click" />
+                            <Button Content="Přejmenovat" Click="VideoRenameLoop_Click" />
+                            <Button Content="Smazat" Click="VideoDeleteLoop_Click" />
+                            <Button Content="Vrátit smazání" Click="VideoUndoLoop_Click" />
+                        </StackPanel>
+                        <TextBlock x:Name="VideoLoopStatus" Text="YouTube smyčka má přibližné časování; neslouží k přesnému sladění nahrávky." TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />
+                        <Button Content="Nastavit sdílený zvuk Windows pro video" Click="VideoSharedAudio_Click" />
+                        <TextBlock Text="YouTube používá sdílený výstup Windows. Pokud s ASIO nebo výhradním WASAPI neslyšíš video, zvol sdílené Windows Audio a stejný interfejs i ve Windows. Nahrávání zachycuje pouze zvolenou nativní sběrnici; zvuk videa se nenahrává." TextWrapping="Wrap" />
                         <TextBlock x:Name="VideoPosition" Text="0:00 / 0:00" />
                         <WebView2 x:Name="VideoView" MaxWidth="640" Height="360" HorizontalAlignment="Stretch" AutomationProperties.Name="Oficiální YouTube přehrávač" />
                         <TextBlock x:Name="VideoStatus" Text="Připravuji přehrávač…" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />

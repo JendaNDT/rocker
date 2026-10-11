@@ -77,6 +77,7 @@ public sealed partial class MainWindow
         selectingNavigation = true; Navigation.SelectedItem = navigationItems[view.Id]; selectingNavigation = false;
         Navigation.IsBackEnabled = BackMenu.IsEnabled = navigation.CanGoBack; ForwardMenu.IsEnabled = navigation.CanGoForward;
         NotationPanel.Visibility = view.Id == "20" ? Visibility.Visible : Visibility.Collapsed;
+        if(view.Id!="08")SendVideo(new{op="pause"});
         VideoPanel.Visibility = view.Id == "08" ? Visibility.Visible : Visibility.Collapsed;
         DevicePanel.Visibility = view.Id == "29" ? Visibility.Visible : Visibility.Collapsed;
         WorkspaceContent.Visibility = view.Id is "08" or "20" or "29" ? Visibility.Collapsed : Visibility.Visible;
@@ -239,6 +240,7 @@ public sealed partial class MainWindow
                 if (choice == ContentDialogResult.Primary && !await guard.Save()) return;
                 if (choice == ContentDialogResult.Secondary) guard.Discard();
             }
+            SendVideo(new{op="pause"});
             CancelPalm();await StopRhythmUiAsync();
             if (autosave is not null) await autosave.FlushAsync();
             TrackWindowBounds();
@@ -274,6 +276,7 @@ public sealed partial class MainWindow
         await VerifyRhythmAndPalmAsync();
         VerifyLibraryGames();
         await VerifyNotationIntegratedAsync();
+        await VerifyVideoPracticeAsync();
         await VerifyDevicesAsync();
         VerifyComponents();
         if (Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTIC_VIEW") == "components") ShowComponents();

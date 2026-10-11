@@ -449,7 +449,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w30"></a>
 #### W30 — YouTube a nativní ovládání cvičení
 
-- [ ] Čeká. Závislosti: W04, W08, W09, W14, W21.
+- [ ] Implementováno; ověření Windows čeká. [W30](docs/windows/w30/README.md): nativní URL, A/B a ukládání úseků, rychlosti skutečně nabídnuté videem, ochrana před pozdními zprávami a sdílený zvuk. Závislosti: W04, W08, W09, W14, W21.
 - Vložit pouze oficiální přehrávač do omezeného WebView2. Nativní UI spravuje URL, uložené úseky, A/B body, názvy a rychlosti, které přehrávač skutečně nabízí.
 - Řešit zakázané vložení videa, smazané video, výpadek internetu, změnu stránky a chybějící WebView2 runtime. Dodržet aktuální pravidla přehrávače a nezakrývat povinné ovládání.
 - Omezit povolené navigace a zprávy webového obsahu, nevystavit mu souborový systém ani AI klíč. Ověřit souběh zvuku a srozumitelnou nabídku WASAPI, pokud ASIO konfigurace druhý výstup nepřipustí.

@@ -28,6 +28,8 @@ public sealed partial class MainWindow : Window
         InitializeShell();
         PositionSlider.AddHandler(UIElement.PointerPressedEvent, new PointerEventHandler((_, args) => { if (args.GetCurrentPoint(PositionSlider).Properties.IsLeftButtonPressed) positionDragging = true; }), true);
         PositionSlider.AddHandler(UIElement.PointerCaptureLostEvent, new PointerEventHandler(Position_Released), true);
+        VideoSeek.AddHandler(UIElement.PointerPressedEvent,new PointerEventHandler((_,args)=>{if(args.GetCurrentPoint(VideoSeek).Properties.IsLeftButtonPressed)videoSeeking=true;}),true);
+        VideoSeek.AddHandler(UIElement.PointerCaptureLostEvent,new PointerEventHandler(VideoSeek_Released),true);
         Closed += (_, _) => { closed = true; timer.Stop(); audio?.Dispose(); audio = null; VideoView.Close(); };
         Activated += async (_, _) =>
         {

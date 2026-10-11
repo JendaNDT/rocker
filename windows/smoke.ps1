@@ -95,6 +95,10 @@ try {
     if ($library.result -ne 'passed' -or $library.nativeChordDiagrams -ne 26 -or $library.nativeRiffTabs -ne 14 -or -not $library.scoreRulesVerified) { throw 'Native library/games check failed.' }
     $rhythmPath = Join-Path $reportDirectory 'rhythm-palm-views.json'
     if (-not (Test-Path $rhythmPath)) { throw "Native rhythm/palm report missing." }
+    $videoPracticePath = Join-Path $reportDirectory 'video-practice.json'
+    if (-not (Test-Path $videoPracticePath)) { throw 'Native video practice report is missing.' }
+    $videoPractice = Get-Content $videoPracticePath -Raw | ConvertFrom-Json
+    if ($videoPractice.result -ne 'passed' -or -not $videoPractice.persistenceReopened -or -not $videoPractice.saveRenameDeleteUndoVerified) { throw 'Native video loop/persistence checks failed.' }
     $notationWorkspacePath = Join-Path $reportDirectory 'notation-workspace.json'
     if (-not (Test-Path $notationWorkspacePath)) { throw 'Native notation workspace report is missing.' }
     $notationWorkspace = Get-Content $notationWorkspacePath -Raw | ConvertFrom-Json
