@@ -1,0 +1,79 @@
+name: Publish verified Windows prototype
+
+on:
+  push:
+    branches: [windows-native-prototype]
+    paths:
+      - '.github/workflows/publish-windows-prototype.yml'
+      - 'docs/windows/releases/current.json'
+      - 'docs/windows/releases/notes.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Verify successful build and download its packages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          run_id=$(jq -r '.runId' docs/windows/releases/current.json)
+          commit=$(jq -r '.commit' docs/windows/releases/current.json)
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/$run_id" > /tmp/build-run.json
+          jq -e --arg commit "$commit" '.conclusion == "success" and .head_sha == $commit and .path == ".github/workflows/windows-prototype.yml" and .head_branch == "windows-native-prototype"' /tmp/build-run.json
+          gh run download "$run_id" --repo "$GITHUB_REPOSITORY" -n Rocker-Windows-downloads -D /tmp/rocker-downloads
+          cd /tmp/rocker-downloads
+          sha256sum --check SHA256SUMS.txt
+      - name: Verify archive contents and matching source revisions
+        run: |
+          python3 - <<'PY'
+          import io, json, struct, zipfile
+          from pathlib import Path
+          selection = json.loads(Path('docs/windows/releases/current.json').read_text())
+          root = Path('/tmp/rocker-downloads')
+          with zipfile.ZipFile(root / 'Rocker-Windows-x64.zip') as package:
+              assert package.testzip() is None
+              info = json.loads(package.read('build-info.json'))
+              assert info['commit'] == selection['commit']
+              assert info['runUrl'].endswith('/' + str(selection['runId']))
+              assert info['checkedWindow']['result'] == 'passed'
+              assert info['checkedWindow']['exitCode'] == 0
+              names = {n.lower() for n in package.namelist()}
+              assert not any('rocker_audio_test' in n for n in names)
+              for name in ['Rocker.Probe.exe', 'rocker_audio.dll', 'Microsoft.UI.Xaml.dll', 'coreclr.dll',
+                           'hostfxr.dll', 'hostpolicy.dll', 'Rocker.Probe.pri', 'CTI-ME.txt']:
+                  assert name.lower() in names, name
+              for name in ['Rocker.Probe.exe', 'rocker_audio.dll']:
+                  data = package.read(name)
+                  offset = struct.unpack_from('<I', data, 0x3c)[0]
+                  assert data[:2] == b'MZ' and data[offset:offset+4] == b'PE\0\0'
+                  assert struct.unpack_from('<H', data, offset+4)[0] == 0x8664
+          with zipfile.ZipFile(root / 'Rocker-Windows-sources.zip') as sources:
+              assert sources.testzip() is None
+              for name, revision in [('rocker-source.zip', info['commit']), ('JUCE-source.zip', info['juceCommit'])]:
+                  with zipfile.ZipFile(io.BytesIO(sources.read(name))) as archive:
+                      assert archive.testzip() is None
+                      assert archive.comment.decode() == revision
+          print('PASS: successful Windows build, x64 app, smoke test, ZIP integrity and matching sources.')
+          PY
+      - name: Publish private repository prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag=$(jq -r '.tag' docs/windows/releases/current.json)
+          commit=$(jq -r '.commit' docs/windows/releases/current.json)
+          title=$(jq -r '.title' docs/windows/releases/current.json)
+          gh release create "$tag" /tmp/rocker-downloads/Rocker-Windows-x64.zip /tmp/rocker-downloads/Rocker-Windows-sources.zip /tmp/rocker-downloads/SHA256SUMS.txt \
+            --repo "$GITHUB_REPOSITORY" --target "$commit" --title "$title" --notes-file docs/windows/releases/notes.md --prerelease
