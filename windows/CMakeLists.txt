@@ -42,13 +42,27 @@ if(ROCKER_WITH_MEDIA)
         GIT_REPOSITORY https://github.com/Signalsmith-Audio/signalsmith-stretch.git
         GIT_TAG a670068d9aeb64913331d5cc29337b19a457a7df)
     FetchContent_MakeAvailable(signalsmith-linear signalsmith-stretch)
-    add_library(rocker_media STATIC native/src/media_clip.cpp)
+    FetchContent_Declare(libwebm
+        GIT_REPOSITORY https://github.com/webmproject/libwebm.git
+        GIT_TAG 6745fd29e0245fc584b0bb9f65018ea2366fe7fb
+        SOURCE_SUBDIR rocker-parser-only)
+    FetchContent_MakeAvailable(libwebm)
+    # Build only the reviewed parser; upstream project flags/sample tools are
+    # unnecessary and would alter the parent project's compiler configuration.
+    add_library(rocker_webm_parser STATIC ${libwebm_SOURCE_DIR}/mkvparser/mkvparser.cc)
+    set_target_properties(rocker_webm_parser PROPERTIES POSITION_INDEPENDENT_CODE ON)
+    target_include_directories(rocker_webm_parser PUBLIC ${libwebm_SOURCE_DIR})
+    add_library(rocker_media STATIC native/src/media_clip.cpp native/src/webm_decoder.cpp native/src/mf_decoder.cpp)
     set_target_properties(rocker_media PROPERTIES POSITION_INDEPENDENT_CODE ON)
     target_include_directories(rocker_media PUBLIC native/include)
     target_compile_definitions(rocker_media PUBLIC
         JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED=1 JUCE_USE_CURL=0
         JUCE_USE_WINDOWS_MEDIA_FORMAT=0 JUCE_USE_FLAC=0 JUCE_USE_OGGVORBIS=0)
-    target_link_libraries(rocker_media PRIVATE juce::juce_audio_formats signalsmith-stretch)
+    target_link_libraries(rocker_media PRIVATE juce::juce_audio_formats signalsmith-stretch rocker_webm_parser)
+    if(WIN32)
+        # GUIDs and COM only: no eager imports from optional Media Foundation DLLs.
+        target_link_libraries(rocker_media PRIVATE mfuuid ole32)
+    endif()
 endif()
 
 if(ROCKER_WITH_JUCE)
@@ -65,7 +79,8 @@ if(BUILD_TESTING)
         add_executable(rocker_media_tests native/tests/media_tests.cpp)
         target_link_libraries(rocker_media_tests PRIVATE rocker_media)
         add_test(NAME media_processing COMMAND rocker_media_tests
-            "${CMAKE_CURRENT_SOURCE_DIR}/../docs/windows/baseline/fixtures/audio")
+            "${CMAKE_CURRENT_SOURCE_DIR}/../docs/windows/baseline/fixtures/audio"
+            "${CMAKE_CURRENT_SOURCE_DIR}/fixtures/media")
     endif()
     # This different library name prevents a fake backend from shipping as the device DLL.
     rocker_audio_target(rocker_audio_test native/tests/fake_driver.cpp)

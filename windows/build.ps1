@@ -45,6 +45,10 @@ try {
     $mediaResult = Get-Content $mediaReport -Raw | ConvertFrom-Json
     if ($mediaResult.result -ne 'passed' -or $mediaResult.checks -le 0) { throw 'Native media checks failed.' }
     Copy-Item $mediaReport (Join-Path $reportDirectory 'media-checks.json')
+    $mediaDependencies = & dumpbin /dependents (Join-Path $nativeBuild 'rocker_media_tests.exe')
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot inspect native media imports.' }
+    if ($mediaDependencies -match '^\s*(mfplat|mfreadwrite|mf)\.dll\s*$') { throw 'Optional media runtime is eagerly imported.' }
+    $mediaDependencies | Set-Content (Join-Path $reportDirectory 'media-dependencies.txt')
     Invoke-Checked 'dotnet' @('run', '--project', 'Rocker.Interop.Checks', '-c', 'Release', '--',
         (Join-Path $nativeBuild 'rocker_audio_test.dll'))
     Invoke-Checked 'dotnet' @('run', '--project', 'Rocker.Interop.Checks', '-c', 'Release', '--no-build', '--',

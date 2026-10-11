@@ -14,7 +14,7 @@ struct Clip {
     std::vector<std::vector<float>> channels;
     std::size_t frames() const noexcept { return channels.empty() ? 0 : channels.front().size(); }
 };
-enum class Error { invalidInput, unsupportedFormat, decodeFailed, limitExceeded, invalidRate, tooShort };
+enum class Error { invalidInput, unsupportedFormat, decodeFailed, limitExceeded, invalidRate, tooShort, platformUnavailable };
 class Failure : public std::runtime_error {
 public:
     Failure(Error code, const char* message) : std::runtime_error(message), code(code) {}

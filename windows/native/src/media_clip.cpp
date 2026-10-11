@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 #include "media_clip.h"
+#include "media_decoders.h"
 #include <juce_audio_formats/juce_audio_formats.h>
 #include <signalsmith-stretch/signalsmith-stretch.h>
 #include <algorithm>
 #include <cmath>
+#include <cstring>
 #include <limits>
 #include <memory>
 
@@ -34,7 +36,18 @@ Clip decode(const std::filesystem::path& path, Limits limits) {
     formats.registerBasicFormats();
     // Probe content, not extension: legacy .ogg fixtures contain Opus, while
     // JUCE's OpusAudioFormat advertises only .opus.
-    std::unique_ptr<juce::AudioFormatReader> reader(formats.createReaderFor(file.createInputStream()));
+    auto stream = file.createInputStream();
+    if (!stream) throw Failure(Error::decodeFailed, "Cannot open the audio stream");
+    if (static_cast<std::uint64_t>(stream->getTotalLength()) > limits.encodedBytes)
+        throw Failure(Error::limitExceeded, "Opened audio exceeds memory budget");
+    unsigned char signature[12]{};
+    const auto signatureBytes = stream->read(signature, sizeof(signature));
+    stream->setPosition(0);
+    if (signatureBytes >= 4 && signature[0] == 0x1a && signature[1] == 0x45 && signature[2] == 0xdf && signature[3] == 0xa3)
+        return detail::decodeWebm(path, limits);
+    if (signatureBytes >= 8 && std::memcmp(signature + 4, "ftyp", 4) == 0)
+        return detail::decodeMp4(path, limits);
+    std::unique_ptr<juce::AudioFormatReader> reader(formats.createReaderFor(std::move(stream)));
     if (!reader) throw Failure(Error::unsupportedFormat, "No decoder recognized the audio content");
     if (reader->lengthInSamples <= 0) throw Failure(Error::decodeFailed, "Audio has no decoded frames");
     validateShape(reader->sampleRate, reader->numChannels, reader->lengthInSamples, limits);

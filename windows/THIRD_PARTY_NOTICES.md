@@ -15,6 +15,9 @@ Původní PWA a její kořenová MIT licence se nemění.
 - Offline mediální modul používá Signalsmith Stretch 1.4.0 a Linear 0.6.4
   pod MIT; přesné revize a úplná oznámení jsou ve zdrojovém balíku a `licenses`.
   Sestavuje se a automaticky ověřuje, přehrávač v okně jej zatím nepoužívá.
+- libwebm 1.0.0.31: parser pod BSD-3-Clause, včetně samostatného patentového
+  grantu. Přesné zdroje a oba texty jsou přibalené. Opus používá existující
+  implementaci z JUCE; systémové AAC/Media Foundation DLL se nepřibalují.
 
 Přesné podklady jsou v rozhodnutí W02 v repozitáři. Toto je interní prototyp,
 nikoli hotový distribuční balík pro bratra. Předběžný spustitelný ZIP uchovává
