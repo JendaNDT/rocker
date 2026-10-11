@@ -68,3 +68,7 @@ vlastního souboru, zrušení systémových dialogů a uložení MIDI. Bez potvr
 uživatele ji nelze označit za provedenou. Neověřené GP3/4/5/GPX a MXL zůstávají
 podporou parseru, nikoli otestovanými formáty Rockeru; důkaz se týká GP7 a
 nekomprimovaného MusicXML.
+
+Podle nového pokynu uživatele z 11. 10. 2026 se tato ruční přejímka přesouvá
+až k ucelené aplikaci po W43. Další části W04 mohou pokračovat bez čekání
+na uživatelské klikání v tomto prototypu; automatické kontroly se nevynechávají.

@@ -3,6 +3,15 @@
 
 ## Aktuální směr: nativní Rocker pro Windows
 
+**Aktuální způsob spolupráce (11. 10. 2026):** Jenda chce nejprve postupně
+postavit celou Windows aplikaci včetně Vintage designu a testovat až potom.
+Pokračovat autonomně podle W04–W43, po jednotlivých krocích provádět automatické
+kontroly a Windows sestavení, zaznamenávat výsledky a informovat o postupu.
+Nežádat o ruční test ani další souhlas s každým krokem v dohodnutém rozsahu.
+Ruční scénáře jsou odložené do přejímky uceleného kandidáta po W43; neověřené
+chování zůstává výslovně označené. Tento pokyn je uložený i v `AGENTS.md` a
+`SKILL.md` a mění předchozí čekání na ruční přejímku každého prototypu.
+
 **Předávání testovacích verzí od 11. 10. 2026:** Jenda požaduje už sestavenou
 aplikaci. Před každým předáním nejdřív Windows build, automatické kontroly a
 ověření balíku; potom odkaz na ZIP s EXE. Zdroje zůstávají dostupné zvlášť.

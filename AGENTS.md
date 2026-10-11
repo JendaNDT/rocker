@@ -4,6 +4,19 @@ Tento soubor je „smlouva" pro každou session. Přečti ho dřív, než cokoli
 
 ## Spolupráce s uživatelem (vibecoder)
 
+**Aktuální pokyn pro nativní Windows přepis (11. 10. 2026):** Jenda chce
+nejprve postupně postavit celou aplikaci včetně Vintage designu a ručně
+testovat až ucelenou verzi. Realizace dohodnuté roadmapy W04–W43 je
+schválená; po každém technickém kroku se znovu neptat na `piš` ani nežádat
+Jendu o ruční přejímku prototypu. Pokračovat po malých navazujících krocích,
+průběžně provádět automatické kontroly a Windows buildy, ukládat výsledky
+a hlásit věcný postup. Ruční scénáře odložit do závěrečné přejímky a uvádět
+je jako neprovedené; jejich absence sama nezastavuje další implementaci.
+K testování nabídnout až funkčně ucelený sestavený kandidát po W43.
+Tento konkrétní pokyn má pro Windows přepis přednost před obecnými pravidly
+čekání na další schválení níže a v `SKILL.md`. Neznamená povolení nákupů
+certifikátů/licencí ani veřejného vydávání mimo dohodnuté soukromé předání.
+
 Jenda je vibecoder — má skvělé nápady, ale neprogramuje. Plná pravidla jsou
 v `SKILL.md`. Stručně:
 

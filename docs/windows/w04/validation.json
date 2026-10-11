@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "step": "W04",
   "scope": "Native notation proof only",
-  "status": "native-notation-preview-published-awaiting-user-acceptance",
+  "status": "native-notation-preview-published-development-continues",
   "checkedDate": "2026-10-11",
   "linuxNotation": {
     "result": "passed",
@@ -190,5 +190,12 @@
     ],
     "error": "HTTP 403 Resource not accessible by integration on release creation despite declared contents:write. Creating the tag alone did not fix it.",
     "resolution": "Draft created with existing connected GitHub account; Actions verified tag/build/packages, uploaded assets to that draft and published it successfully. No new credentials or extracted runner tokens."
+  },
+  "manualAcceptance": {
+    "status": "deferred-not-performed",
+    "timing": "Complete Windows candidate after W43",
+    "decision": "User explicitly requested progressive implementation of the complete app, including design, before manual testing on 2026-10-11.",
+    "blocksFurtherImplementation": false,
+    "automatedChecksStillRequired": true
   }
 }

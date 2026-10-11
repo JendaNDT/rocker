@@ -4,6 +4,16 @@ Stav k 11. 10. 2026: W01–W03 jsou dokončené — [inventura](docs/windows/bas
 
 **Výsledek:** instalovatelný kytarový pomocník pro Windows se skutečným nativním ovládáním, vzhledem Vintage a samostatným zvukovým jádrem. Zachová všechny již implementované pracovní postupy Rockeru, převede uživatelská data a doplní práci se soubory a projekty. Bratr dostane až funkčně kompletní testovací verzi; na svém počítači s M-Audio M-Track Solo ověří zvuk, stabilitu a pocit ze hry.
 
+**Změna pracovního postupu potvrzená Jendou 11. 10. 2026:** nejprve postupně
+implementovat celou aplikaci včetně Vintage rozhraní podle W04–W43; Jenda
+bude ručně testovat až uceleného kandidáta. Průběžné automatické kontroly,
+Windows sestavení a evidence zůstávají povinné. Nečekat po každém kroku na
+další `piš`, poslech ani klikání Jendy. Ruční přejímky prototypů se přesouvají
+do závěrečné přejímky po W43, nejsou tím označené jako úspěšné. Implementaci
+a automaticky ověřený rozsah evidovat odděleně od ručně neověřeného chování.
+Jednotlivé prototypy nejsou výzvou k uživatelskému testování; předání k testu
+následuje až po sjednocení funkcí, designu, dat a instalačního balíku.
+
 ## Orientace
 
 - [Dohodnutý rozsah](#scope)
@@ -736,6 +746,6 @@ Model M-Track Solo je potvrzen uživatelem. Přesný aktuální ovladač, jeho p
 
 ### Jak pokračovat v další pracovní session
 
-Začít nejnižším nedokončeným krokem tohoto dokumentu, nyní W04. Nejprve přečíst pravidla repozitáře, tento plán, rozhodnutí W02 a aktuální stav; ověřit skutečný Git diff. Před realizací konkrétní změny popsat její výsledek a soubory v rozsahu dohodnuté spolupráce. Po dokončení uložit důkazy kontrol a aktualizovat tento dokument i stav projektu.
+Začít nejnižším nedokončeným krokem tohoto dokumentu, nyní W04. Nejprve přečíst pravidla repozitáře, tento plán, rozhodnutí W02 a aktuální stav; ověřit skutečný Git diff. Před realizací konkrétní změny popsat její výsledek a soubory v rozsahu dohodnuté spolupráce. Po dokončení uložit důkazy kontrol a aktualizovat tento dokument i stav projektu. Podle pokynu z 11. 10. 2026 pokračovat v dohodnutém Windows rozsahu bez dalšího per-step schválení a bez čekání na ruční testy Jendy; ty následují až po W43.
 
 Požadavek na tuto roadmapu znamená vytvoření plánovacího podkladu a uložení návrhů. Neoznačuje nativní jádro za hotové, nepřepíná živou PWA a sám o sobě nepublikuje instalátor. W01–W03 jsou dokončené v uvedeném rozsahu; další konkrétní práce naváže na W04; bratrův test zůstává až za W43.

@@ -5,6 +5,16 @@ description: Use when collaborating with a non-programmer or "vibecoder" — som
 
 # Vibecoder workflow
 
+## Project-specific Windows instruction
+
+For Rocker's native Windows rewrite, the user's instruction of 2026-10-11
+supersedes the per-step approval and manual-acceptance pauses below: implement
+the agreed Windows roadmap progressively, including the Vintage design, and
+ask the user to test only the complete candidate after W43. Continue automated
+checks and Windows builds, preserve evidence and report progress. Record manual
+checks as deferred rather than passed. See `AGENTS.md` for the current scope.
+This authorization does not cover new purchases or public distribution.
+
 This skill encodes a collaboration pattern between Claude and a **vibecoder** —
 a person with great ideas, strong product instincts, and zero programming
 background. The vibecoder trusts Claude more than a programmer would, and
