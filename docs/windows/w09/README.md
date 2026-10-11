@@ -43,3 +43,7 @@ Verze a obsah jsou v uzamčených NuGet souborech. Balení přidává notices sk
 obnovených balíčků a úplný [Apache text](evidence/Apache-2.0.txt).
 Zdroje pro kontrolu: NuGet flatcontainer metadata skutečně obnovených verzí,
 https://github.com/ericsink/SQLitePCL.raw a https://sqlite.org/copyright.html.
+
+Windows [38155352032](https://github.com/JendaNDT/rocker/actions/runs/38155352032)
+prošel: 11 souborových, 37 datových a 8 skutečných DPAPI kontrol; dva WinUI
+starty obnovily uloženou lekci a vzhled. [Důkaz](windows-validation.json).

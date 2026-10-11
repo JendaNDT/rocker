@@ -113,6 +113,11 @@ public sealed class DataRepository
         }
         finally { writer.Release(); }
     }
+    public async Task<T> ExclusiveAsync<T>(Func<Task<T>> operation, CancellationToken cancellation = default)
+    {
+        await writer.WaitAsync(cancellation);
+        try { return await operation(); } finally { writer.Release(); }
+    }
     public async Task BackupDatabaseAsync(string destination, CancellationToken cancellation = default)
     {
         await writer.WaitAsync(cancellation);

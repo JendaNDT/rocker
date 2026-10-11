@@ -36,6 +36,7 @@ try
     Console.WriteLine($"PASS: {checks} file ownership/replacement assertions.");
     int storageChecks = await StorageChecks.RunAsync(files);
     int secretChecks = await SecretChecks.RunAsync(files);
-    if (args.Length == 1) await File.WriteAllTextAsync(args[0], System.Text.Json.JsonSerializer.Serialize(new { result="passed", fileChecks=checks, storageChecks, secretChecks, dpapiVerified=OperatingSystem.IsWindows(), forcedTerminationVerified=true, manualHardwareVerified=false }));
+    int backupChecks = await BackupChecks.RunAsync(directory);
+    if (args.Length == 1) await File.WriteAllTextAsync(args[0], System.Text.Json.JsonSerializer.Serialize(new { result="passed", fileChecks=checks, storageChecks, secretChecks, backupChecks, dpapiVerified=OperatingSystem.IsWindows(), forcedTerminationVerified=true, manualHardwareVerified=false }));
 }
 finally { if (Directory.Exists(directory)) Directory.Delete(directory, true); }

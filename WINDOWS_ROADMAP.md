@@ -248,7 +248,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w09"></a>
 #### W09 — Zavést lokální úložiště a projekty
 
-- [ ] Rozpracováno: transakční SQLite, validované dokumenty, soubory médií a projektů, autosave a kontroly obnovy. Závislosti: W05, W06.
+- [x] Hotovo v rozsahu datové vrstvy: [SQLite, projekty a autosave](docs/windows/w09/README.md), [Windows důkaz](docs/windows/w09/windows-validation.json). Editor a další funkce se připojí ve vlastních krocích. Závislosti: W05, W06.
 - SQLite pro strukturovaná data a index, soubory pro zvuk, manifest projektu se stabilními ID stop a relativními odkazy. Oddělit tovární obsah, uživatelská data, cache a dočasné nahrávky.
 - Definovat schéma nastavení, profilu, pokroku, lekcí, presetů, smyček, nahrávek, projektů a AI historie. Každá změna schématu má migraci, validaci a zálohu před převodem.
 - Zavést transakce, atomické nahrazení manifestu, autosave, obnovu po pádu a kontrolu chybějících médií. Nastavení umístění souborů nesmí vytvářet neplatné odkazy ani tiše přepisovat jiné projekty.
@@ -257,7 +257,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w10"></a>
 #### W10 — Bezpečně uložit AI klíč a citlivá nastavení
 
-- [ ] Čeká. Závislosti: W09.
+- [x] Hotovo v rozsahu systémového úložiště a nastavení: [DPAPI a životní cyklus klíče](docs/windows/w10/README.md), [Windows důkaz](docs/windows/w10/windows-validation.json). Převod starých klíčů navazuje ve W12. Závislosti: W09.
 - Zvolit Windows Credential Locker nebo úložiště chráněné DPAPI podle modelu balení. Oddělit tajnou hodnotu od běžných nastavení a záloh, umožnit její změnu a odstranění.
 - Nikdy neukládat klíč do logu, projektu, historie promptů nebo exportu. Síťová vrstva předává jen potřebný kontext; soukromé poznámky a audio neposílat automaticky.
 - Vyřešit import starého nastavení, které klíč může obsahovat: nabídnout jeho bezpečné převzetí nebo nové zadání, nepřekopírovat jej do SQLite jako běžný text.
@@ -266,7 +266,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w11"></a>
 #### W11 — Definovat a implementovat desktopové zálohy
 
-- [ ] Čeká. Závislosti: W09, W10.
+- [ ] Rozpracováno: [záloha, obnova a vratná kopie](docs/windows/w11/README.md), lokální kontroly prošly; Windows integrace navazuje. Závislosti: W09, W10.
 - Navrhnout verzovaný manifest archivu, metadata souborů, kontrolní součty a volbu přibalit nahrávky a projekty. Tajné klíče v exportu standardně nejsou; pouhá záloha databáze nesmí být vydávána za úplnou zálohu zvuku.
 - Obnova předem ukáže obsah, neznámou verzi, konflikty a strategii sloučení či nahrazení. Před přepsáním vytvoří vratnou zálohu; nedokončená obnova nesmí poškodit aktuální data.
 - Ošetřit neplatné cesty v archivu, velikost a počet souborů, volné místo, chybné kontrolní součty a přerušenou operaci. Externí soubory nekopírovat mimo zvolený prostor.

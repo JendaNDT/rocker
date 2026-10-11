@@ -23,8 +23,10 @@ transport. Windows 38153511933 prošel 31 kontrolami komponent v každém ze dvo
 procesů; skutečné snímky jsou v dokumentaci. Celé produktové funkce tím nejsou
 hotové. [W09](docs/windows/w09/README.md) přidává SQLite, vlastněná média,
 přenosné projekty a autosave lekcí/vzhledu. Lokálně prošlo 11 souborových a 37
-datových kontrol, včetně násilného přerušení SQLite transakce. Windows integrace
-se nyní ověřuje. PWA reference: všech 561 testů, typy i lint prošly.
+datových kontrol, včetně násilného přerušení SQLite transakce. Windows 38155352032 potvrdil obnovení dat v obou WinUI procesech a všech 8
+DPAPI kontrol [W10](docs/windows/w10/README.md). [W11](docs/windows/w11/README.md)
+přidává verzované zálohy, náhled konfliktů, vratné kopie a startup recovery.
+Lokálně prošlo 20 scénářů záloh; jeho Windows integrace se nyní ověřuje. PWA reference: všech 561 testů, typy i lint prošly.
 
 ## Aktuální směr: nativní Rocker pro Windows
 

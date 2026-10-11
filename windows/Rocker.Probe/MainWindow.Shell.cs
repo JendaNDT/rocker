@@ -122,6 +122,7 @@ public sealed partial class MainWindow
         if (target.ViewId == "05") return BuildLessonList();
         if (target.ViewId == "06") return BuildLesson(target.ItemId);
         if (target.ViewId == "28") return BuildSettings();
+        if (target.ViewId == "30") return BuildBackups();
         if (target.ViewId == "27") return Card(Text($"Dokončené lekce: {completedLessons.Count} / {catalog.Lessons.Count}. Pokrok a rozpracované kroky se průběžně ukládají."));
         var group = target.ViewId switch { "03" => "tunings", "04" => "metronomePresets", "09" => "surgicalExercises", "10" => "powerChordExercises", "11" => "gallopExercises", "12" => "palmMuteDrills", "13" => "ampPresets", "17" => "chords", "18" => "scales", "19" => "riffs", _ => null };
         if (group is not null) return BuildCatalog(group, target.ItemId);
@@ -227,6 +228,7 @@ public sealed partial class MainWindow
         if (closeApproved) return;
         args.Cancel = true;
         if (closingWindow) return;
+        if (backupOperationRunning) { ShowPersistenceError("Počkej na dokončení zálohy nebo obnovy."); return; }
         if (secretOperationRunning) { ShowPersistenceError("Počkej na dokončení uložení nebo odstranění klíče."); return; }
         closingWindow = true;
         try

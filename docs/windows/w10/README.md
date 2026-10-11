@@ -21,3 +21,7 @@ Kontroly: Linux ověřuje 2 unsupported smlouvy. Windows ověří 8 DPAPI scén�
 chybějící klíč, nepřítomnost canary v prostém souboru, obnovené dešifrování,
 zrušenou změnu, nahrazení, odstranění, poškozené úložiště a čistý adresář.
 Skutečný Windows výsledek se uloží po dokončení příslušného CI běhu.
+
+Windows [38155352032](https://github.com/JendaNDT/rocker/actions/runs/38155352032)
+prošel: 11 souborových, 37 datových a 8 skutečných DPAPI kontrol; dva WinUI
+starty obnovily uloženou lekci a vzhled. [Důkaz](windows-validation.json).

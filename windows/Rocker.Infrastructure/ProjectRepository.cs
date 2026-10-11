@@ -70,7 +70,7 @@ public sealed class ProjectRepository(UserFiles files, DataRepository database)
         string directory = DirectoryFor(id), primary = OwnedPaths.Resolve(directory,"project.rockerproj"); bool recovered = false;
         ProjectManifest project;
         try { project = ReadManifest(primary); }
-        catch (JsonException) { project = ReadManifest(OwnedPaths.Resolve(directory,"previous.rockerproj")); recovered = true; }
+        catch (Exception error) when (error is JsonException or FileNotFoundException) { project = ReadManifest(OwnedPaths.Resolve(directory,"previous.rockerproj")); recovered = true; }
         if (Guid.Parse(project.Id) != Guid.Parse(id)) throw new InvalidDataException("Projekt má jiné ID než jeho složka.");
         var missing = new List<string>();
         foreach (var track in project.Tracks)

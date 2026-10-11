@@ -15,6 +15,7 @@ public sealed partial class MainWindow
     {
         try
         {
+            await BackupService.RecoverInterruptedAsync(userFiles);
             database = await DataRepository.OpenAsync(userFiles);
             var snapshot = await database.SnapshotAsync();
             if (closed) return;

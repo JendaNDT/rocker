@@ -72,7 +72,7 @@ public static class UserData
                 var recording = Read<RecordingData>(document.Value);
                 Require(recording.Id == document.Id && recording.Name is not null && recording.MimeType is not null && double.IsFinite(recording.DurationSec) && recording.DurationSec >= 0 && recording.Bytes is > 0 and <= 1024L*1024*1024 && ValidHash(recording.Sha256) && ValidRelativePath(recording.RelativePath) && recording.RelativePath.StartsWith("recordings/",StringComparison.Ordinal) && recording.Markers is not null && recording.Markers.All(m => ValidId(m.Id) && m.Label is not null && double.IsFinite(m.TimeSec) && m.TimeSec >= 0 && m.TimeSec <= recording.DurationSec),"Neplatná metadata nahrávky."); value = recording; break;
             case "project":
-                var project = Read<ProjectIndex>(document.Value); Require(project.Id == document.Id && project.Name is not null && ValidRelativePath(project.RelativeManifest) && project.RelativeManifest.StartsWith("projects/",StringComparison.Ordinal),"Neplatný index projektu."); value = project; break;
+                var project = Read<ProjectIndex>(document.Value); Require(project.Id == document.Id && project.Name is not null && ValidRelativePath(project.RelativeManifest) && Guid.TryParse(project.Id,out var projectGuid) && project.RelativeManifest=="projects/"+projectGuid.ToString("N")+"/project.rockerproj","Neplatný index projektu."); value = project; break;
             default: throw new InvalidDataException("Neznámý typ dat.");
         }
         return document with { Value = JsonSerializer.SerializeToElement(value,Json) };

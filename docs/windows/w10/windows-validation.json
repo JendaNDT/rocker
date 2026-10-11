@@ -1,0 +1,41 @@
+{
+  "sourceCommit": "f24a86444884f233a2bceea20d6b57db7708b716",
+  "windowsRun": "https://github.com/JendaNDT/rocker/actions/runs/38155352032",
+  "result": "passed",
+  "storage": {
+    "result": "passed",
+    "fileChecks": 11,
+    "storageChecks": 37,
+    "secretChecks": 8,
+    "dpapiVerified": true,
+    "forcedTerminationVerified": true,
+    "manualHardwareVerified": false
+  },
+  "persistence": {
+    "result": "passed",
+    "savedLessonPosition": 1,
+    "theme": "light",
+    "reopenedDatabase": true,
+    "userProfileModified": false
+  },
+  "windows": {
+    "localVideoBridgeVerified": true,
+    "nativeNotationVerified": true,
+    "checkedAtUtc": "2026-10-11T16:31:02.4778424Z",
+    "audioCoexistenceVerified": false,
+    "audioPlaybackVerified": false,
+    "audioHostsCreated": 1,
+    "webViewRuntime": "153.0.4234.48",
+    "exitCode": 0,
+    "result": "passed",
+    "nativeShellViewsVisited": 32,
+    "windowTitle": "Rocker \u2014 P\u0159ehled",
+    "onlineVideoVerified": false,
+    "midiPreparedInCommonEngine": true
+  },
+  "notPerformed": [
+    "Manual file dialogs and restore acceptance",
+    "Complete feature editors",
+    "Physical guitar input and latency"
+  ]
+}
