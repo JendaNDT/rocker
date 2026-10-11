@@ -48,5 +48,7 @@ Linux CTest 10/10 zahrnuje čisté/harmonické tóny, detuning, 8/44.1/48/96/192
 noise/silence, FFT sinus, tři úhozy, worker calibration/epochy, referenční obálky
 /cap/chimes a RT audit aktivních hlasů. C# kontroluje celý ABI snapshot, gate
 hranice, neproveditelnou kalibraci bez vstupu a společnou cestu reference.
-Windows UI/persistence se ověřují. Fyzická kytara, subjektivní přesnost,
+[Windows UI/persistence prošly](windows-validation.json): 10/10 CTest,
+oba publikované WinUI pohledy, všech šest strun, devět továrních ladění,
+vlastní ladění/442 Hz znovu načtené z SQLite a nulové měření bez vstupu. Fyzická kytara, subjektivní přesnost,
 ruční vlastní tuning dialogy a M-Track nejsou otestované.

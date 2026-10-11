@@ -92,6 +92,7 @@ public sealed partial class MainWindow : Window
             RefreshLive(state);
             RefreshMetronome(state);
             RefreshTuner(audio.GetAnalysis());
+            RefreshAudioDiagnostics();
             DeviceText.Text = state.State == AudioState.Running
                 ? $"Vzorkování {state.SampleRate:N0} Hz · buffer {state.BufferFrames} vzorků · výstupy {state.OutputChannels}\nZpracováno {state.RenderedFrames:N0} vzorků."
                 : "Zařízení zatím není otevřené.";

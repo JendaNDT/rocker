@@ -89,6 +89,10 @@ try {
     if (-not (Test-Path $tunerPath)) { throw 'Missing native tuner report.' }
     $tuner = Get-Content $tunerPath -Raw | ConvertFrom-Json
     if ($tuner.result -ne 'passed' -or $tuner.sixStringControls -ne 6 -or -not $tuner.persistenceReopened -or -not $tuner.noInputInventsNoNote) { throw 'Native tuner/persistence failed.' }
+    $diagnosticsPath = Join-Path $reportDirectory 'diagnostics-view.json'
+    if (-not (Test-Path $diagnosticsPath)) { throw 'Missing native diagnostics report.' }
+    $diagnostics = Get-Content $diagnosticsPath -Raw | ConvertFrom-Json
+    if ($diagnostics.result -ne 'passed' -or -not $diagnostics.cachedCountersRead -or -not $diagnostics.unavailableDriverXrunsNotZero) { throw 'Diagnostic report/control contract failed.' }
     if (-not (Test-Path (Join-Path $reportDirectory 'native-content.png'))) { throw 'Native content capture is missing.' }
     try { & (Join-Path $PSScriptRoot 'capture-window.ps1') -WindowHandle $process.MainWindowHandle.ToInt64() -Path (Join-Path $reportDirectory 'native-shell.png') }
     catch { $_ | Out-String | Set-Content (Join-Path $reportDirectory 'desktop-capture-unavailable.txt') }

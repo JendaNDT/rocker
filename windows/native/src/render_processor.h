@@ -3,6 +3,7 @@
 #include "media_clip.h"
 #include "tone_processor.h"
 #include "input_graph.h"
+#include "callback_stats.h"
 
 namespace rocker {
 // Clip ownership and cursor changes require the driver to have joined callbacks.
@@ -11,7 +12,7 @@ class RenderProcessor {
 public:
     RenderProcessor(double frequency, double amplitude) : tone_(frequency, amplitude) {}
     void prepare(double rate) {
-        rate_ = rate; gain_ = 0; tone_.prepare(rate);
+        rate_ = rate;callbacks_.prepare(rate); gain_ = 0; tone_.prepare(rate);
         frames_.store(0, std::memory_order_relaxed);
         input_.prepare(rate,epoch_.fetch_add(1)+1);
     }
@@ -24,6 +25,7 @@ public:
     void selectReference() noexcept {clipMode_=false;liveMode_=false;idleMode_=4;}
     void selectMetronome() noexcept {clipMode_=false;liveMode_=false;idleMode_=3;}
     uint32_t mode() const noexcept{return idleMode_?idleMode_:liveMode_?2u:clipMode_?1u:0u;}
+    const CallbackStats& callbacks() const noexcept{return callbacks_;}
     InputGraph& input() noexcept{return input_;}
     void install(media::Clip clip, double speed) {
         clip_ = std::move(clip); speed_ = speed; clipMode_ = true;liveMode_=false;idleMode_=0;loop_.store(0);loopCycles_.store(0);seek(0);
@@ -96,15 +98,16 @@ public:
         frames_.fetch_add(static_cast<uint64_t>(count));
     }
     void process(const float* const* inputs,int inputChannels,float* const* outputs,int channels,int count) noexcept {
+        const auto before=CallbackStats::Clock::now();
         render(outputs,channels,count);
-        if(authority_ && ticket_.load()!=authority_->load())return;
-        input_.process(inputs && inputChannels>0?inputs[0]:nullptr,outputs,channels,count);
+        if(!authority_ || ticket_.load()==authority_->load())input_.process(inputs && inputChannels>0?inputs[0]:nullptr,outputs,channels,count);
+        callbacks_.completed(before,CallbackStats::Clock::now(),!outputs || channels<=0?0:count);
     }
 private:
     static_assert(std::atomic<double>::is_always_lock_free);
     const std::atomic<uint64_t>* authority_ = nullptr;
     std::atomic<uint64_t> ticket_{0};
-    InputGraph input_;
+    InputGraph input_;CallbackStats callbacks_;
     std::atomic<uint32_t> epoch_{0};
     ToneProcessor tone_;
     media::Clip clip_;

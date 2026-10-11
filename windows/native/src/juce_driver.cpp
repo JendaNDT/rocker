@@ -57,7 +57,7 @@ public:
         field(root,"controlPanel",device->hasControlPanel()); return json(root);
     }); }
     bool configure(const DeviceSelection& choice,std::string& error) override { return onControl([&] {
-        stopOnControl(); failed_.store(false);
+        stopOnControl(); failed_.store(false);failureReason_.store(0);
         // A first failed explicit choice must not fall back to a default later.
         if(!selected_){selection_=choice;selected_=true;}
         try {
@@ -66,6 +66,7 @@ public:
             lastDetails_=describe(*probe,choice); probe->close(); selection_=choice; selected_=true; return true;
         } catch(const std::exception& failure){error=failure.what();return false;}
     }); }
+    int64_t xrunCount() override{return onControl([&]{return device_?static_cast<int64_t>(device_->getXRunCount()):int64_t{-1};});}
     std::string details() override { return onControl([this] { return device_?describe(*device_,selection_):lastDetails_; }); }
     bool controlPanel(std::string& error) override { return onControl([&] {
         if(device_) { error="Stop audio before opening the driver control panel.";return false; }
@@ -78,7 +79,7 @@ public:
         }catch(const std::exception& failure){error=failure.what();return false;}
     }); }
     bool start(RenderProcessor& renderer, std::string& error) override { return onControl([&] {
-        stopOnControl(); failed_.store(false);
+        stopOnControl(); failed_.store(false);failureReason_.store(0);
         try {
             if(!selected_) {
                 // The first explicit start resolves a default once. Later starts
@@ -95,12 +96,13 @@ public:
             if(renderer.mode()==2 && selection_.inputChannel<0){error="Select a physical guitar input before starting Live.";return false;}
             auto candidate=create(selection_); if(!open(*candidate,selection_,error)){candidate->close();return false;}
             lastDetails_=describe(*candidate,selection_);device_=std::move(candidate);tone_=&renderer;stopping_.store(false);device_->start(this);
+            if(failed_.load()){error="Audio device rejected the callback format.";stopOnControl();return false;}
             if(!device_->isPlaying()){error="The audio driver did not start callbacks.";stopOnControl();return false;}
             return true;
         }catch(const std::exception& failure){error=failure.what();stopOnControl();return false;}
     }); }
     void stop() noexcept override { try { onControl([this]{stopOnControl();}); } catch(...){failed_.store(true);} }
-    DriverSnapshot snapshot() const noexcept override { return {sampleRate_.load(), bufferFrames_.load(), channels_.load(), failed_.load()}; }
+    DriverSnapshot snapshot() const noexcept override { return {sampleRate_.load(), bufferFrames_.load(), channels_.load(), failed_.load(),failureReason_.load()}; }
 private:
     juce::AudioIODeviceType* findType(const std::string& backend) {
         for(auto* type:manager_->getAvailableDeviceTypes()) if(type->getTypeName()==juce::String::fromUTF8(backend.c_str())){type->scanForDevices();return type;}
@@ -147,17 +149,18 @@ private:
         stopping_.store(true);if(device_){device_->stop();device_->close();device_.reset();}tone_=nullptr;
         sampleRate_.store(0);bufferFrames_.store(0);channels_.store(0);
     }
+    void fault(uint32_t reason) noexcept{uint32_t empty=0;failureReason_.compare_exchange_strong(empty,reason);failed_.store(true);}
     void audioDeviceAboutToStart(juce::AudioIODevice* device) override {
-        if(sampleRate_.load()!=0 && !stopping_.load()){tone_->enable(false);failed_.store(true);}
+        if(sampleRate_.load()!=0 && !stopping_.load()){tone_->enable(false);fault(3);return;}
         const auto rate=device->getCurrentSampleRate();sampleRate_.store(rate);bufferFrames_.store(static_cast<uint32_t>(device->getCurrentBufferSizeSamples()));channels_.store(static_cast<uint32_t>(device->getActiveOutputChannels().countNumberOfSetBits()));
-        if(rate<=0 || !std::isfinite(rate)){failed_.store(true);tone_->enable(false);}tone_->prepare(rate>0 && std::isfinite(rate)?rate:48000);
+        if(rate<=0 || !std::isfinite(rate)){fault(4);tone_->enable(false);}tone_->prepare(rate>0 && std::isfinite(rate)?rate:48000);
     }
-    void audioDeviceIOCallbackWithContext(const float* const* inputs,int inputChannels,float* const* outputs,int channels,int frames,const juce::AudioIODeviceCallbackContext&) override { tone_->process(inputs,inputChannels,outputs,channels,frames); }
-    void audioDeviceStopped() override {if(!stopping_.load()){tone_->enable(false);failed_.store(true);}}
-    void audioDeviceError(const juce::String&) override {if(tone_)tone_->enable(false);failed_.store(true);}
+    void audioDeviceIOCallbackWithContext(const float* const* inputs,int inputChannels,float* const* outputs,int channels,int frames,const juce::AudioIODeviceCallbackContext&) override {if(failed_.load()){if(outputs && frames>0)for(int c=0;c<channels;++c)if(outputs[c])std::fill_n(outputs[c],frames,0.0f);return;}tone_->process(inputs,inputChannels,outputs,channels,frames); }
+    void audioDeviceStopped() override {if(!stopping_.load()){tone_->enable(false);fault(1);}}
+    void audioDeviceError(const juce::String&) override {if(tone_)tone_->enable(false);fault(2);}
     RuntimeLease lease_;std::thread worker_;juce::AudioDeviceManager* manager_=nullptr;std::unique_ptr<juce::AudioIODevice> device_;
     DeviceSelection selection_;bool selected_=false;std::string lastDetails_="{\"schemaVersion\":1,\"available\":false}";
-    RenderProcessor* tone_=nullptr;std::atomic<bool> stopping_{true},failed_{false};std::atomic<double> sampleRate_{0};std::atomic<uint32_t> bufferFrames_{0},channels_{0};
+    RenderProcessor* tone_=nullptr;std::atomic<bool> stopping_{true},failed_{false};std::atomic<double> sampleRate_{0};std::atomic<uint32_t> bufferFrames_{0},channels_{0},failureReason_{0};
 };
 std::unique_ptr<AudioDriver> makeAudioDriver(){return std::make_unique<JuceDriver>();}
 }

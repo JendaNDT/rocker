@@ -84,6 +84,10 @@ try {
         (Join-Path $nativeBuild 'rocker_audio_test.dll'), '--media', (Split-Path $PSScriptRoot -Parent))
     Invoke-Checked 'dotnet' @('publish', 'Rocker.Probe', '-c', 'Release', '-r', 'win-x64', '--no-restore',
         '-o', $probeOutput, "-p:RockerNativeDll=$(Join-Path $nativeBuild 'rocker_audio.dll')")
+    $sourceCommit = (& git -C (Split-Path $PSScriptRoot -Parent) rev-parse HEAD).Trim()
+    if ($LASTEXITCODE -ne 0 -or $sourceCommit -notmatch '^[0-9a-f]{40}$') { throw 'Cannot determine source commit for diagnostics.' }
+    @{ schemaVersion=1; sourceCommit=$sourceCommit; productVersion=$version; builtAtUtc=[DateTime]::UtcNow.ToString('o') } |
+        ConvertTo-Json | Set-Content (Join-Path $probeOutput 'app-build.json')
     Write-Output "Prototyp byl sestaven do $probeOutput. Ruční přejímka W03 zůstává samostatná."
     if ($Run) { & (Join-Path $probeOutput 'Rocker.Probe.exe') }
 }

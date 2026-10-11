@@ -1,0 +1,42 @@
+{
+  "scope": "W19 tuner, analysis worker and shared reference/chime graph before W20 diagnostics",
+  "sourceCommit": "5835a5136298c6f2243febb4bf3e3a6250893164",
+  "windowsRun": "https://github.com/JendaNDT/rocker/actions/runs/38166564575",
+  "result": "passed",
+  "nativeTests": {
+    "executed": 10,
+    "failures": 0,
+    "skipped": 0
+  },
+  "tuner": {
+    "result": "passed",
+    "sixStringControls": 6,
+    "persistenceReopened": true,
+    "factoryTunings": 9,
+    "nativeAnalysisQueried": true,
+    "noInputInventsNoNote": true,
+    "audioPlaybackVerified": false,
+    "manualTuningDialogsVerified": false
+  },
+  "window": {
+    "onlineVideoVerified": false,
+    "webViewRuntime": "153.0.4234.48",
+    "audioPlaybackVerified": false,
+    "nativeNotationVerified": true,
+    "exitCode": 0,
+    "midiPreparedInCommonEngine": true,
+    "localVideoBridgeVerified": true,
+    "result": "passed",
+    "audioCoexistenceVerified": false,
+    "windowTitle": "Rocker \u2014 P\u0159ehled",
+    "nativeShellViewsVisited": 32,
+    "audioHostsCreated": 1,
+    "checkedAtUtc": "2026-10-11T19:13:55.7028401Z"
+  },
+  "notPerformed": [
+    "Physical guitar precision and M-Track roundtrip latency",
+    "Pointer/keyboard reference listening and subjective tone",
+    "Manual custom tuning dialogs",
+    "Palm-mute calibration UI/exercises (W28)"
+  ]
+}

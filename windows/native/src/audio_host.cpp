@@ -20,6 +20,7 @@ static_assert(sizeof(rocker_amp_config)==96);
 static_assert(sizeof(rocker_metronome_config)==240);
 static_assert(sizeof(rocker_metronome_snapshot)==80);
 static_assert(sizeof(rocker_analysis_snapshot)==144);
+static_assert(sizeof(rocker_diagnostic_snapshot)==160);
 static rocker_metronome_config defaultMetronome(){
     rocker_metronome_config value{sizeof(value),ROCKER_AUDIO_ABI_VERSION,0,100,4,1,0,5,0,0,4,5,160,0,4,1,0,3,4,0,0.8,1,0.5,0.6,{}, {}};
     for(auto& accent:value.accents)accent=1;
@@ -42,6 +43,10 @@ struct rocker_audio_host {
     std::string error;
     uint32_t state=ROCKER_STOPPED;
     std::atomic<uint64_t> intent{0},referenceIntent{0};
+    std::atomic<uint64_t> stopRequests{0};
+    uint64_t deviceStarts=0,deviceFaults=0,mediaErrors=0,configurationFailures=0;
+    int64_t driverXruns=-1;uint32_t lastFailureReason=0;
+    rocker_diagnostic_snapshot diagnosticCache{};
     std::atomic<bool> stopRequested{false};
     // Only small copies hold telemetry; no driver call or graph mutation holds it.
     std::mutex telemetry;
@@ -56,8 +61,8 @@ struct rocker_audio_host {
     std::unique_ptr<rocker::AnalysisWorker> analyzer;
     std::string errorCache;
     std::unique_ptr<rocker::ControlExecutor> executor;
-    void disarmSourcesStopped(){tone.input().monitoring(false,0.15);tone.input().metronome().disableStopped();tone.input().reference().stopJoined();const std::lock_guard lock(telemetry);metroCache.enabled=0;}
-    void stopOnControl(){state=ROCKER_STOPPING;publish();tone.enable(false);driver->stop();disarmSourcesStopped();state=ROCKER_STOPPED;}
+    void disarmSourcesStopped(){driverXruns=-1;tone.input().monitoring(false,0.15);tone.input().metronome().disableStopped();tone.input().reference().stopJoined();const std::lock_guard lock(telemetry);metroCache.enabled=0;}
+    void stopOnControl(){state=ROCKER_STOPPING;publish();tone.enable(false);driver->stop();driverXruns=-1;disarmSourcesStopped();state=ROCKER_STOPPED;}
     void publish(){
         const auto device=driver->snapshot();
         const rocker_audio_snapshot audio={sizeof(audio),ROCKER_AUDIO_ABI_VERSION,state,tone.mode(),device.sampleRate,device.bufferFrames,device.outputChannels,tone.frames()};
@@ -73,7 +78,9 @@ struct rocker_audio_host {
         const double frameAge=reading.rate>0 && reading.epoch==clock.epoch && clock.frame>=reading.frame?(clock.frame-reading.frame)/reading.rate:1;
         const double age=std::max(report.ageSeconds,frameAge);const bool inputActive=active && tone.input().hasInput() && reading.epoch==clock.epoch;const bool fresh=inputActive && age<=0.25;
         const rocker_analysis_snapshot analysis={sizeof(analysis),ROCKER_AUDIO_ABI_VERSION,(fresh?reading.flags:0u)|(inputActive?4u:0u)|(inputActive?report.calibrationFlags:report.calibrationFlags&8u?32u:report.calibrationFlags)|(age>0.25?64u:0u)|(tone.input().reference().playing()?128u:0u)|(tone.input().reference().chimePlaying()?256u:0u),reading.epoch,reading.frame,reading.sequence,reading.hitCount,reading.onsetFrame,report.calibrationToken,reading.rate,fresh?reading.rms:0,fresh?reading.peak:0,fresh?reading.frequency:0,fresh?reading.clarity:0,fresh?reading.centroid:0,reading.hitCentroid,reading.windowSeconds,std::isfinite(age)?age:1,report.calibrationProgress,report.recommendedGate};
-        const std::lock_guard lock(telemetry);analysisCache=analysis;metroSnapshotCache=observedMetro;clockCache=observedClock;audioCache=audio;transportCache=transport;meterCache=meter;errorCache=error;
+        const auto perf=tone.callbacks().observation();
+        const rocker_diagnostic_snapshot diagnostic={sizeof(diagnostic),ROCKER_AUDIO_ABI_VERSION,clock.epoch,(active?1u:0u)|(driverXruns>=0?2u:0u),perf.callbacks,perf.frames,perf.totalNanoseconds,perf.lastNanoseconds,perf.maxNanoseconds,perf.overBudget,levels.dropped,tone.input().analysis().highWatermark(),deviceFaults,deviceStarts,stopRequests.load(),mediaErrors,perf.invalidCallbacks,driverXruns,perf.rate,perf.minFrames,perf.maxFrames,lastFailureReason,tone.mode(),configurationFailures};
+        const std::lock_guard lock(telemetry);diagnosticCache=diagnostic;analysisCache=analysis;metroSnapshotCache=observedMetro;clockCache=observedClock;audioCache=audio;transportCache=transport;meterCache=meter;errorCache=error;
     }
 };
 template<typename Operation>
@@ -105,7 +112,7 @@ static rocker_audio_result startHost(rocker_audio_host& h, uint32_t mode,uint64_
     if((mode==3 || mode==4) && h.state==ROCKER_RUNNING && !h.driver->snapshot().failed){h.tone.authorize(intent);return ROCKER_OK;}
     if (mode==1 && !h.tone.hasClip()) { h.error = "No prepared media is available."; return ROCKER_NOT_READY; }
     if (h.state == ROCKER_RUNNING && !h.driver->snapshot().failed && h.tone.mode() == mode && (mode!=1 || !h.tone.ended())) return ROCKER_OK;
-    h.state=ROCKER_STARTING;h.publish();h.driver->stop();
+    h.state=ROCKER_STARTING;h.driverXruns=-1;h.publish();h.driver->stop();
     h.error.clear();
     if (mode==1) { h.tone.selectClip(); if (h.tone.ended()) h.tone.seek(0); }
     else if(mode==2)h.tone.selectLive();
@@ -115,15 +122,16 @@ static rocker_audio_result startHost(rocker_audio_host& h, uint32_t mode,uint64_
     h.tone.authorize(intent);h.tone.enable(true);
     try {
         if (h.driver->start(h.tone, h.error)) {
+            ++h.deviceStarts;
             if(intent!=h.intent.load()){h.stopOnControl();return ROCKER_OK;}
             h.state = ROCKER_RUNNING; return ROCKER_OK;
         }
     } catch (...) {
         h.error = "The audio driver could not start.";
-        h.tone.enable(false); h.driver->stop(); h.disarmSourcesStopped();h.state = ROCKER_FAULTED;
+        ++h.deviceFaults;h.lastFailureReason=h.driver->snapshot().failureReason?h.driver->snapshot().failureReason:5;h.tone.enable(false); h.driver->stop(); h.disarmSourcesStopped();h.state = ROCKER_FAULTED;
         return ROCKER_INTERNAL_ERROR;
     }
-    h.tone.enable(false); h.driver->stop(); h.disarmSourcesStopped();h.state = ROCKER_FAULTED;
+    ++h.deviceFaults;h.lastFailureReason=h.driver->snapshot().failureReason?h.driver->snapshot().failureReason:5;h.tone.enable(false); h.driver->stop(); h.disarmSourcesStopped();h.state = ROCKER_FAULTED;
     return ROCKER_DEVICE_ERROR;
 }
 rocker_audio_result ROCKER_CALL rocker_audio_reserve_start(rocker_audio_handle host,uint64_t* ticket){
@@ -245,6 +253,14 @@ rocker_audio_result ROCKER_CALL rocker_audio_reference(rocker_audio_handle host,
         return enabled || confirmation?startHost(h,4,ticket):static_cast<rocker_audio_result>(ROCKER_OK);
     });
 }
+rocker_audio_result ROCKER_CALL rocker_audio_get_diagnostics(rocker_audio_handle host,rocker_diagnostic_snapshot* value){
+    if(!host || !value)return ROCKER_INVALID_ARGUMENT;
+    if(value->struct_size!=sizeof(*value)||value->abi_version!=ROCKER_AUDIO_ABI_VERSION)return ROCKER_ABI_MISMATCH;
+    const std::lock_guard lock(host->telemetry);*value=host->diagnosticCache;return ROCKER_OK;
+}
+rocker_audio_result ROCKER_CALL rocker_audio_refresh_diagnostics(rocker_audio_handle host){
+    return withHost(host,[](auto& h)->rocker_audio_result{h.driverXruns=h.state==ROCKER_RUNNING?h.driver->xrunCount():-1;return ROCKER_OK;});
+}
 rocker_audio_result ROCKER_CALL rocker_audio_play(rocker_audio_handle host){
     uint64_t ticket=0;const auto result=rocker_audio_reserve_start(host,&ticket);
     return result==ROCKER_OK?rocker_audio_start_reserved(host,ticket,1):result;
@@ -252,17 +268,18 @@ rocker_audio_result ROCKER_CALL rocker_audio_play(rocker_audio_handle host){
 static void refreshHost(rocker_audio_host& h) {
     if (h.state != ROCKER_RUNNING) return;
     if (h.driver->snapshot().failed) {
+        ++h.deviceFaults;h.lastFailureReason=h.driver->snapshot().failureReason;h.driverXruns=-1;
         h.tone.enable(false); h.driver->stop();h.disarmSourcesStopped(); h.state = ROCKER_FAULTED;
         h.error = "Audio device stopped unexpectedly. Stop and start playback again.";
     } else if (h.tone.clipMode() && h.tone.ended() && !h.metroCache.enabled && !h.tone.input().monitoring() && !h.tone.input().reference().wanted() && !h.tone.input().reference().playing() && !h.tone.input().reference().chimePlaying()) {
-        h.tone.enable(false); h.driver->stop(); h.state = ROCKER_STOPPED;
+        h.tone.enable(false); h.driver->stop();h.driverXruns=-1; h.state = ROCKER_STOPPED;
     } else if((h.tone.mode()==3 || h.tone.mode()==4) && !h.metroCache.enabled && !h.tone.input().monitoring() && !h.tone.input().reference().wanted() && !h.tone.input().reference().playing() && !h.tone.input().reference().chimePlaying())h.stopOnControl();
 }
 rocker_audio_result ROCKER_CALL rocker_audio_reserve_stop(rocker_audio_handle host,uint64_t* ticket){
     if(!host || !ticket)return ROCKER_INVALID_ARGUMENT;
     // The callback authority is the immediate gate. An old control request never
     // writes enable(false) after a newer start has already enabled its ticket.
-    *ticket=host->intent.fetch_add(1)+1;host->referenceIntent.fetch_add(1);host->tone.input().monitoring(false,0.15);host->stopRequested.store(true);return ROCKER_OK;
+    *ticket=host->intent.fetch_add(1)+1;host->stopRequests.fetch_add(1);host->referenceIntent.fetch_add(1);host->tone.input().monitoring(false,0.15);host->stopRequested.store(true);return ROCKER_OK;
 }
 rocker_audio_result ROCKER_CALL rocker_audio_request_stop(rocker_audio_handle host){uint64_t ticket=0;return rocker_audio_reserve_stop(host,&ticket);}
 rocker_audio_result ROCKER_CALL rocker_audio_stop_reserved(rocker_audio_handle host,uint64_t ticket){
@@ -314,7 +331,7 @@ template <typename Decode> static rocker_audio_result prepareMedia(rocker_audio_
             h.tone.install(std::move(clip), speed); h.error.clear(); return ROCKER_OK;
         });
     } catch (const std::exception& error) {
-        return withHost(host, [&](auto& h) -> rocker_audio_result { h.error = error.what(); return ROCKER_MEDIA_ERROR; });
+        return withHost(host, [&](auto& h) -> rocker_audio_result { ++h.mediaErrors;h.error = error.what(); return ROCKER_MEDIA_ERROR; });
     } catch (...) { return ROCKER_INTERNAL_ERROR; }
 }
 #endif
@@ -378,7 +395,7 @@ rocker_audio_result ROCKER_CALL rocker_audio_configure_device(rocker_audio_handl
     choice.rate=config->sample_rate;choice.frames=config->buffer_frames;choice.inputChannel=config->input_channel;choice.outputFirst=config->output_first;
     rocker_audio_request_stop(host);
     return withHost(host,[&](auto& h)->rocker_audio_result{h.stopRequested.exchange(false);h.stopOnControl();h.state=ROCKER_RECONFIGURING;h.publish();
-        const bool ok=h.driver->configure(choice,h.error);h.state=ROCKER_STOPPED;if(ok)h.error.clear();return ok?ROCKER_OK:ROCKER_DEVICE_ERROR;});
+        const bool ok=h.driver->configure(choice,h.error);if(!ok)++h.configurationFailures;h.state=ROCKER_STOPPED;if(ok)h.error.clear();return ok?ROCKER_OK:ROCKER_DEVICE_ERROR;});
 }
 rocker_audio_result ROCKER_CALL rocker_audio_show_control_panel(rocker_audio_handle host){
     return withHost(host,[](auto& h)->rocker_audio_result{if(h.state==ROCKER_RUNNING)return ROCKER_NOT_READY;return h.driver->controlPanel(h.error)?ROCKER_OK:ROCKER_DEVICE_ERROR;});

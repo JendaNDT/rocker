@@ -18,9 +18,9 @@
 extern "C" {
 #endif
 
-/* Version 9 adds off-callback pitch/brightness analysis and noise calibration.
+/* Version 10 adds callback timings, queue watermarks and driver diagnostics.
    Reject earlier DLLs before creating a host. */
-#define ROCKER_AUDIO_ABI_VERSION 9u
+#define ROCKER_AUDIO_ABI_VERSION 10u
 typedef struct rocker_audio_host* rocker_audio_handle;
 typedef uint32_t rocker_audio_result;
 enum {
@@ -94,6 +94,13 @@ typedef struct rocker_analysis_snapshot {
     uint64_t frame,sequence,hit_count,onset_frame,calibration_token;
     double sample_rate,rms,peak,frequency,clarity,centroid,hit_centroid,window_seconds,age_seconds,calibration_progress,recommended_gate;
 } rocker_analysis_snapshot;
+typedef struct rocker_diagnostic_snapshot {
+    uint32_t struct_size,abi_version,epoch,flags;
+    uint64_t callbacks,frames,total_nanoseconds,last_nanoseconds,max_nanoseconds,over_budget,analysis_dropped,analysis_high_water,device_faults,device_starts,stop_requests,media_errors,invalid_callbacks;
+    int64_t driver_xruns;double sample_rate;
+    uint32_t min_frames,max_frames,last_failure_reason,source_mode;
+    uint64_t configuration_failures;
+} rocker_diagnostic_snapshot;
 #pragma pack(pop)
 
 /* Never call from an audio callback. Device operations execute on the native
@@ -137,6 +144,11 @@ ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_calibrate_noise(rocker_a
    the reference tone and does not stop other sources. */
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_reserve_reference(rocker_audio_handle,uint32_t kind,uint64_t* graph_ticket,uint64_t* reference_ticket);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_reference(rocker_audio_handle,uint64_t ticket,uint64_t reference_ticket,uint32_t enabled,double frequency,double volume,uint32_t confirmation);
+/* Timings cover Rocker graph/copy work, not vendor callback overhead.
+   Over-budget counts are not confirmed hardware underruns. driver_xruns=-1
+   means unavailable; refresh queries a vendor only on the control worker. */
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_get_diagnostics(rocker_audio_handle,rocker_diagnostic_snapshot*);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_refresh_diagnostics(rocker_audio_handle);
 /* Immediately silence the graph and invalidate pending starts. Does not wait for vendor I/O. */
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_request_stop(rocker_audio_handle);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_reserve_stop(rocker_audio_handle,uint64_t* ticket);

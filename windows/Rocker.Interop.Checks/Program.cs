@@ -25,6 +25,7 @@ Check(Marshal.SizeOf<MeterSnapshot>()==112,"C# meter layout");
 Check(Marshal.SizeOf<ClockSnapshot>()==72,"C# clock layout");
 Check(Marshal.SizeOf<MetronomeSnapshot>()==80,"C# metronome observation layout");
 Check(Marshal.SizeOf<AnalysisSnapshot>()==144,"C# analysis snapshot layout");
+Check(Marshal.SizeOf<DiagnosticSnapshot>()==160,"C# diagnostics snapshot layout");
 if (mode == "--media")
 {
     if (args.Length != 3) throw new ArgumentException("Media checks need the repository root.");
@@ -158,7 +159,8 @@ await using(var metroAudio=new NativeAudio())
     Check(roundtrip with{Accents=null,Sounds=null}==metro with{Accents=null,Sounds=null} && roundtrip.Accents!.Take(7).SequenceEqual(metro.Accents!) && roundtrip.Sounds!.Take(7).SequenceEqual(metro.Sounds!),"all 240 bytes of metronome configuration cross the ABI");
     try{await metroAudio.SetMetronomeAsync(metro with{Swing=double.NaN});throw new Exception("NaN metronome accepted");}catch(InvalidOperationException){}
     Check(metroAudio.GetMetronome().Bpm==123,"invalid metronome preserves earlier configuration");
-    await metroAudio.StartMetronomeAsync();var state=metroAudio.GetSnapshot();Check(state.State==AudioState.Running && state.Reserved==3,"metronome starts without a guitar or test tone");
+    await metroAudio.StartMetronomeAsync();await metroAudio.RefreshDiagnosticsAsync();var diagnostic=metroAudio.GetDiagnostics();Check(diagnostic.Callbacks==1 && diagnostic.DeviceStarts==1 && diagnostic.SampleRate==48000 && diagnostic.MinFrames>0 && diagnostic.MaxNanoseconds>0 && !diagnostic.DriverXrunsKnown && diagnostic.DriverXruns==-1,"native timing counters and unavailable vendor underruns cross the ABI honestly");var xrunLibrary=NativeLibrary.Load(Path.GetFullPath(args[0]));try{var setXruns=Marshal.GetDelegateForFunctionPointer<SetXruns>(NativeLibrary.GetExport(xrunLibrary,"rocker_test_set_xruns"));setXruns(7);await metroAudio.RefreshDiagnosticsAsync();Check(metroAudio.GetDiagnostics().DriverXrunsKnown && metroAudio.GetDiagnostics().DriverXruns==7,"explicit vendor count stays distinct from over-budget callback timings");setXruns(-1);}finally{NativeLibrary.Free(xrunLibrary);}
+    var state=metroAudio.GetSnapshot();Check(state.State==AudioState.Running && state.Reserved==3,"metronome starts without a guitar or test tone");
     var observed=metroAudio.GetMetronomeSnapshot();Check(observed.Running && observed.Enabled && observed.CountIn && observed.Bar==-2 && observed.PrimaryEvents>0,"count-in metadata crosses the ABI");
     await metroAudio.StopAsync();Check(!metroAudio.GetMetronome().Enabled && !metroAudio.GetMetronomeSnapshot().Enabled,"global stop disarms metronome");
     await metroAudio.StartAsync();Check(!metroAudio.GetMetronomeSnapshot().Enabled,"a subsequent tone does not resurrect stopped clicks");
@@ -211,3 +213,6 @@ delegate void SetFailure(int enabled);
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 delegate void SetDelay(uint milliseconds);
+
+[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+public delegate void SetXruns(long value);

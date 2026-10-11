@@ -343,7 +343,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w19"></a>
 #### W19 — Ladička, detekce tónu a analýza palm mute
 
-- [ ] Rozpracováno: [ladička, worker, kalibrace a společné referenční tóny](docs/windows/w19/README.md). Linux detektor/FFT/worker/RT/PInvoke testy prošly, Windows formulář se ověřuje. Ruční poslech a technika budou v přejímce. Závislosti: W06, W08, W15, W16.
+- [ ] Rozpracováno: [ladička, worker, kalibrace a společné referenční tóny](docs/windows/w19/README.md). Linux detektor/FFT/worker/RT/PInvoke testy i [Windows formulář/persistence prošly](docs/windows/w19/windows-validation.json). Ruční poslech a technika budou v přejímce. Závislosti: W06, W08, W15, W16.
 - Zvolit a ověřit detektor mono tónu s odpovídající licencí, přenést výpočty centů, stabilizaci a confidence gate. Zachovat vedený i chromatický režim, referenční A, značení H/B, tovární a vlastní ladění, referenční tón a volitelný potvrzovací zvuk.
 - Kalibraci šumu, měřič vstupu a algoritmus palm mute odvodit ze skutečných vstupních dat. Ticho, slabý či zkreslený signál mají vlastní stav; bez signálu se nezobrazuje poslední tón jako aktuálně měřený.
 - Vyhodnocovat mimo audio callback, omezit počet aktualizací UI a měřit stáří výsledku. Vysvětlit, že analýza nízkých tónů potřebuje delší okno než samotný monitoring.
@@ -352,7 +352,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w20"></a>
 #### W20 — Diagnostika zvuku a automatické audio kontroly
 
-- [ ] Čeká. Závislosti: W14–W19.
+- [ ] Rozpracováno: [čas grafu, oddělené čítače a diagnostický export](docs/windows/w20/README.md), Linux integrační/RT/PInvoke kontroly prošly. Windows formulář a náhled reportu se ověřují. Závislosti: W14–W19.
 - Zavést bezpečné čítače výpadků, dobu callbacku, maximum front, ztracené bloky, přetečení úrovní a důvody restartu. Jejich sběr nesmí blokovat realtime vlákno.
 - Přidat podporovaný diagnostický export s verzí aplikace, zařízením, ovladačem, konfigurací a naměřenými hodnotami. Neobsahuje API klíče ani uživatelovy nahrávky; před odesláním lze obsah prohlédnout.
 - Vytvořit opakovatelnou sadu offline a simulovaných integračních testů: impulsy, tónové sekvence, vícero kanálů, různé délky bloků, změny zařízení, dlouhý běh a zatížení UI.

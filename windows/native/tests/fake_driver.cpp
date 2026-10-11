@@ -4,7 +4,8 @@
 #include <array>
 #include <thread>
 
-namespace { std::atomic<uint32_t> startDelay{0}; std::atomic<double> lastPeak{0}; std::atomic<bool> failDevice{false}; std::atomic<uint32_t> testFrames{1024}; std::atomic<uint64_t> starts{0}; }
+namespace { std::atomic<int64_t> testXruns{-1};std::atomic<uint32_t> startDelay{0}; std::atomic<double> lastPeak{0}; std::atomic<bool> failDevice{false}; std::atomic<uint32_t> testFrames{1024}; std::atomic<uint64_t> starts{0}; }
+extern "C" ROCKER_API void ROCKER_CALL rocker_test_set_xruns(int64_t value){testXruns.store(std::max(int64_t{-1},value));}
 extern "C" ROCKER_API void ROCKER_CALL rocker_test_set_failure(int enabled) { failDevice.store(enabled != 0); }
 extern "C" ROCKER_API void ROCKER_CALL rocker_test_set_frames(uint32_t frames) { testFrames.store(std::clamp(frames, 1u, 16384u)); }
 extern "C" ROCKER_API uint64_t ROCKER_CALL rocker_test_start_count() { return starts.load(); }
@@ -41,6 +42,7 @@ public:
         if(failDevice.load() || (choice.rate!=0 && choice.rate!=44100 && choice.rate!=48000) || (choice.frames!=0 && choice.frames!=64 && choice.frames!=128 && choice.frames!=256 && choice.frames!=1024) || choice.inputChannel>1 || choice.outputFirst!=0){error="Unsupported test device configuration";return false;}
         choice_=choice;return true;
     }
+    int64_t xrunCount() override{return testXruns.load();}
     std::string details() override { return std::string(R"({"schemaVersion":1,"backend":"Test ASIO","input":"Test interface","output":"Test interface","sampleRate":)")+std::to_string(choice_.rate?choice_.rate:48000)+",\"bufferFrames\":"+std::to_string(choice_.frames?choice_.frames:1024)+R"(,"inputChannels":1,"outputChannels":2,"inputLatencyFrames":32,"outputLatencyFrames":64,"controlPanel":true})"; }
     bool controlPanel(std::string&) override { return true; }
     void stop() noexcept override { running_ = false; }

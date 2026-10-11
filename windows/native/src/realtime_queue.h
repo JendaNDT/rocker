@@ -18,6 +18,7 @@ public:
     bool push(const T& value) noexcept {
         const auto write=write_.load(std::memory_order_relaxed);
         if(write-read_.load(std::memory_order_acquire)>=Capacity) { dropped_.fetch_add(1,std::memory_order_relaxed);return false; }
+        const auto used=write-read_.load(std::memory_order_acquire)+1;if(used>highWater_.load(std::memory_order_relaxed))highWater_.store(used,std::memory_order_relaxed);
         data_[write & (Capacity-1)]=value;write_.store(write+1,std::memory_order_release);return true;
     }
     bool pop(T& value) noexcept {
@@ -26,14 +27,15 @@ public:
         value=data_[read & (Capacity-1)];read_.store(read+1,std::memory_order_release);return true;
     }
     bool pending() const noexcept {const auto read=read_.load(std::memory_order_acquire);return write_.load(std::memory_order_acquire)!=read;}
+    uint64_t highWatermark() const noexcept{return highWater_.load(std::memory_order_relaxed);}
     uint64_t dropped() const noexcept {return dropped_.load(std::memory_order_relaxed);}
     // Reset requires producer and consumer to be joined, e.g. while changing device.
-    void reset() noexcept {read_.store(0);write_.store(0);dropped_.store(0);}
+    void reset() noexcept {read_.store(0);write_.store(0);dropped_.store(0);highWater_.store(0);}
 private:
     std::array<T,Capacity> data_{};
     alignas(64) std::atomic<size_t> read_{0};
     alignas(64) std::atomic<size_t> write_{0};
-    std::atomic<uint64_t> dropped_{0};
+    std::atomic<uint64_t> dropped_{0},highWater_{0};
 };
 struct AnalysisBlock {
     uint64_t firstFrame=0;

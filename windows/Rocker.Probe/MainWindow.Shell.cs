@@ -215,7 +215,7 @@ public sealed partial class MainWindow
             catch (Exception error) { ShellNotice.IsOpen = true; ShellNotice.Message = "Složku nelze otevřít. " + error.Message; }
         };
         panel.Children.Add(open);
-        panel.Children.Add(BuildSecretSettings()); return Card(panel);
+        panel.Children.Add(BuildAudioDiagnostics());panel.Children.Add(BuildSecretSettings()); return Card(panel);
     }
     private async void About_Click(object sender, RoutedEventArgs args)
     {
@@ -270,6 +270,7 @@ public sealed partial class MainWindow
         await VerifyAmplifierAsync();
         await VerifyMetronomeAsync();
         await VerifyTunerAsync();
+        await VerifyDiagnosticsAsync();
         await VerifyDevicesAsync();
         VerifyComponents();
         if (Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTIC_VIEW") == "components") ShowComponents();

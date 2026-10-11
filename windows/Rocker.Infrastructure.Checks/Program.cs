@@ -38,6 +38,7 @@ try
     int secretChecks = await SecretChecks.RunAsync(files);
     int backupChecks = await BackupChecks.RunAsync(directory);
     int migrationChecks = await MigrationChecks.RunAsync(directory);
-    if (args.Length == 1) await File.WriteAllTextAsync(args[0], System.Text.Json.JsonSerializer.Serialize(new { result="passed", fileChecks=checks, storageChecks, secretChecks, backupChecks, migrationChecks, dpapiVerified=OperatingSystem.IsWindows(), forcedTerminationVerified=true, manualHardwareVerified=false }));
+    int diagnosticChecks = AudioDiagnosticChecks.Run();
+    if (args.Length == 1) await File.WriteAllTextAsync(args[0], System.Text.Json.JsonSerializer.Serialize(new { result="passed", fileChecks=checks, storageChecks, secretChecks, backupChecks, migrationChecks, diagnosticChecks, dpapiVerified=OperatingSystem.IsWindows(), forcedTerminationVerified=true, manualHardwareVerified=false }));
 }
 finally { if (Directory.Exists(directory)) Directory.Delete(directory, true); }
