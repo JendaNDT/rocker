@@ -21,6 +21,7 @@ public sealed partial class MainWindow
         var stop=new Button{Content="Zastavit a ztlumit"};stop.Click+=Stop_Click;
         var buttons=new StackPanel{Orientation=Orientation.Horizontal,Spacing=8};buttons.Children.Add(start);buttons.Children.Add(stop);panel.Children.Add(buttons);
         panel.Children.Add(BuildCompactAmplifier());
+        panel.Children.Add(BuildCompactMetronome());
         liveMonitor=new CheckBox{Content="Poslouchat kytaru ve sluchátkách (softwarový monitoring)",IsChecked=false};
         liveMonitor.Checked+=LiveMonitoring_Changed;liveMonitor.Unchecked+=LiveMonitoring_Changed;panel.Children.Add(liveMonitor);
         var level=new Slider{Header="Hlasitost monitoringu",Minimum=0,Maximum=100,Value=liveGain*100};

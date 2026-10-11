@@ -18,9 +18,9 @@
 extern "C" {
 #endif
 
-/* Version 7 adds bounded amplifier parameter updates and true bypass.
+/* Version 8 adds sample-clock metronome synthesis and bounded configuration.
    Reject earlier DLLs before creating a host. */
-#define ROCKER_AUDIO_ABI_VERSION 7u
+#define ROCKER_AUDIO_ABI_VERSION 8u
 typedef struct rocker_audio_host* rocker_audio_handle;
 typedef uint32_t rocker_audio_result;
 enum {
@@ -77,6 +77,18 @@ typedef struct rocker_amp_config {
     uint32_t struct_size,abi_version,enabled,distortion,cabinet,reserved;
     double compression,drive,bass,mid,treble,delay,reverb,chorus,level;
 } rocker_amp_config;
+typedef struct rocker_metronome_config {
+    uint32_t struct_size,abi_version,enabled,bpm,beats,subdivision,sound,sub_sound,count_in;
+    uint32_t ramp_enabled,ramp_every,ramp_step,ramp_target,gap_enabled,audible_bars,silent_bars,poly_enabled,poly_ticks,poly_sound,reserved;
+    double volume,accent_volume,swing,poly_volume;
+    uint32_t accents[16],sounds[16];
+} rocker_metronome_config;
+typedef struct rocker_metronome_snapshot {
+    uint32_t struct_size,abi_version,flags;int32_t beat;
+    uint64_t frame;int64_t bar;double bpm,phase;
+    uint32_t subdivision_tick,poly_tick;
+    uint64_t voice_overloads,primary_events,secondary_events;
+} rocker_metronome_snapshot;
 #pragma pack(pop)
 
 /* Never call from an audio callback. Device operations execute on the native
@@ -103,6 +115,12 @@ ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_set_tempo(rocker_audio_h
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_set_loop(rocker_audio_handle,double start,double end,uint32_t enabled);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_set_amp(rocker_audio_handle,const rocker_amp_config*);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_get_amp(rocker_audio_handle,rocker_amp_config*);
+/* Metronome joins an existing graph without restarting its clock or clip.
+   Configuration never opens a device. Stop all disarms the metronome. */
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_set_metronome(rocker_audio_handle,const rocker_metronome_config*);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_get_metronome(rocker_audio_handle,rocker_metronome_config*);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_get_metronome_snapshot(rocker_audio_handle,rocker_metronome_snapshot*);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_reserve_metronome_start(rocker_audio_handle,uint64_t*);
 /* Immediately silence the graph and invalidate pending starts. Does not wait for vendor I/O. */
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_request_stop(rocker_audio_handle);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_reserve_stop(rocker_audio_handle,uint64_t* ticket);

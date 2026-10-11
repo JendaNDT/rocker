@@ -3,6 +3,7 @@
 #include "realtime_queue.h"
 #include "sample_clock.h"
 #include "amp_dsp.h"
+#include "metronome_dsp.h"
 #include <algorithm>
 #include <cmath>
 namespace rocker {
@@ -15,11 +16,12 @@ struct BusMeters {
 // are lock-free scalar atomics; analysis storage is allocated with the graph.
 class InputGraph {
 public:
-    void prepare(double rate,uint32_t epoch) {rate_=rate;epoch_=epoch;clock_.prepare(rate,epoch);amp_.prepare(rate);gain_=0;inputPresent_.store(false);frame_=0;peak_[0].store(0);peak_[1].store(0);peak_[2].store(0);rms_[0].store(0);rms_[1].store(0);rms_[2].store(0);}
+    void prepare(double rate,uint32_t epoch) {rate_=rate;epoch_=epoch;clock_.prepare(rate,epoch);amp_.prepare(rate);metronome_.prepare(rate);gain_=0;inputPresent_.store(false);frame_=0;peak_[0].store(0);peak_[1].store(0);peak_[2].store(0);rms_[0].store(0);rms_[1].store(0);rms_[2].store(0);}
     void monitoring(bool enabled,double gain) noexcept {gainTarget_.store(gain);monitor_.store(enabled);}
     bool monitoring() const noexcept{return monitor_.load();}
     bool hasInput() const noexcept{return inputPresent_.load();}
     BusMeters meters() const noexcept {return {peak_[0].load(),rms_[0].load(),peak_[1].load(),rms_[1].load(),peak_[2].load(),rms_[2].load(),invalid_.load()+amp_.faults(),inputClips_.load(),outputClips_.load(),analysis_.dropped(),publishedFrame_.load(),publishedEpoch_.load()};}
+    MetronomeProcessor& metronome() noexcept{return metronome_;}
     AmpProcessor& amp() noexcept{return amp_;}
     SampleClock& clock() noexcept{return clock_;}
     AnalysisQueue& analysis() noexcept{return analysis_;}
@@ -27,11 +29,11 @@ public:
         if(!outputs || channels<=0 || frames<=0)return;
         inputPresent_.store(input!=nullptr);
         double peaks[3]{},energy[3]{};uint64_t invalid=0,inputClips=0,outputClips=0;
-        clock_.beginBlock();amp_.beginBlock();
+        clock_.beginBlock();amp_.beginBlock();metronome_.beginBlock();
         const double target=monitor_.load()?gainTarget_.load():0;
         AnalysisBlock block;block.epoch=epoch_;block.sampleRate=rate_;block.firstFrame=frame_;
         for(int i=0;i<frames;++i){
-            const auto tick=clock_.tick();(void)tick;
+            const auto tick=clock_.tick();const double click=metronome_.process(tick,clock_);
             double raw=input?input[i]:0;
             if(!std::isfinite(raw)){raw=0;++invalid;}else if(std::abs(raw)>=1)++inputClips;
             raw=std::clamp(raw,-1.0,1.0);
@@ -41,7 +43,7 @@ public:
             peaks[1]=std::max(peaks[1],std::abs(processed));energy[1]+=processed*processed;
             double mixPeak=0,mixEnergy=0;int present=0;
             for(int c=0;c<channels;++c)if(outputs[c]){
-                double mix=outputs[c][i]+(c<2?processed*gain_:0);
+                double mix=outputs[c][i]+(c<2?processed*gain_+click:0);
                 if(!std::isfinite(mix)){mix=0;++invalid;}if(std::abs(mix)>1)++outputClips;
                 const float safe=static_cast<float>(std::clamp(mix,-1.0,1.0));outputs[c][i]=safe;
                 mixPeak=std::max(mixPeak,std::abs(static_cast<double>(safe)));mixEnergy+=safe*safe;++present;
@@ -50,13 +52,13 @@ public:
             if(input){block.mono[block.count++]=static_cast<float>(raw);if(block.count==block.mono.size()){analysis_.push(block);block.count=0;block.firstFrame=frame_+static_cast<uint64_t>(i)+1;}}
         }
         if(block.count)analysis_.push(block);
-        clock_.publish();
+        metronome_.publish();clock_.publish();
         frame_+=static_cast<uint64_t>(frames);publishedFrame_.store(frame_);publishedEpoch_.store(epoch_);
         invalid_.fetch_add(invalid);inputClips_.fetch_add(inputClips);outputClips_.fetch_add(outputClips);
         for(int b=0;b<3;++b){peak_[b].store(peaks[b]);rms_[b].store(std::sqrt(energy[b]/frames));}
     }
 private:
-    AnalysisQueue analysis_;SampleClock clock_;AmpProcessor amp_;
+    AnalysisQueue analysis_;SampleClock clock_;AmpProcessor amp_;MetronomeProcessor metronome_;
     double rate_=48000,gain_=0;uint32_t epoch_=0;uint64_t frame_=0;
     std::atomic<bool> monitor_{false},inputPresent_{false};std::atomic<double> gainTarget_{0.15};
     std::atomic<double> peak_[3]{},rms_[3]{};

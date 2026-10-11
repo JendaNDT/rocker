@@ -77,6 +77,14 @@ try {
     if (-not (Test-Path $componentsReport)) { throw 'Native components report is missing.' }
     $components = Get-Content $componentsReport -Raw | ConvertFrom-Json
     if ($components.result -ne 'passed' -or $components.checks -lt 31) { throw 'Native components failed.' }
+    foreach ($audioView in @('amplifier-view.json','metronome-view.json')) {
+        $viewPath = Join-Path $reportDirectory $audioView
+        if (-not (Test-Path $viewPath)) { throw "Missing audio view report: $audioView" }
+        $view = Get-Content $viewPath -Raw | ConvertFrom-Json
+        if ($view.result -ne 'passed' -or -not $view.nativeParametersVerified -or -not $view.persistenceReopened) {
+            throw "Native audio form/persistence failed: $audioView"
+        }
+    }
     if (-not (Test-Path (Join-Path $reportDirectory 'native-content.png'))) { throw 'Native content capture is missing.' }
     try { & (Join-Path $PSScriptRoot 'capture-window.ps1') -WindowHandle $process.MainWindowHandle.ToInt64() -Path (Join-Path $reportDirectory 'native-shell.png') }
     catch { $_ | Out-String | Set-Content (Join-Path $reportDirectory 'desktop-capture-unavailable.txt') }

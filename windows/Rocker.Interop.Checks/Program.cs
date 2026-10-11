@@ -23,6 +23,7 @@ Check(Marshal.SizeOf<AudioSnapshot>() == 40, "C# snapshot layout");
 Check(Marshal.SizeOf<TransportSnapshot>() == 56, "C# transport layout");
 Check(Marshal.SizeOf<MeterSnapshot>()==112,"C# meter layout");
 Check(Marshal.SizeOf<ClockSnapshot>()==72,"C# clock layout");
+Check(Marshal.SizeOf<MetronomeSnapshot>()==80,"C# metronome observation layout");
 if (mode == "--media")
 {
     if (args.Length != 3) throw new ArgumentException("Media checks need the repository root.");
@@ -36,6 +37,9 @@ if (mode == "--media")
         Check(transport.Ready == 1 && transport.Playing == 0 && transport.DurationSeconds > 0.57, "MIDI preparation through real P/Invoke");
         audio.Play(); audio.Play();
         Check(audio.GetTransport().Playing == 1, "Common media playback");
+        var beforeMetro=audio.GetClock();var positionBeforeMetro=audio.GetTransport().PositionSeconds;await audio.SetMetronomeAsync(new(Enabled:true));await audio.StartMetronomeAsync();
+        Check(audio.GetClock().Epoch==beforeMetro.Epoch && audio.GetTransport().PositionSeconds==positionBeforeMetro && audio.GetTransport().Playing==1,"metronome joins backing without a cursor/epoch restart");
+        await audio.SetMetronomeAsync(new());Check(audio.GetTransport().Playing==1,"metronome stop keeps backing active");
         audio.Stop(); audio.Seek(0.2); audio.SetVolume(0.4);
         transport = audio.GetTransport();
         Check(Math.Abs(transport.PositionSeconds - 0.2) < 1e-6 && Math.Abs(transport.Volume - 0.4) < 1e-6, "Seek and volume layout");
@@ -142,6 +146,22 @@ await using(var deviceAudio=new NativeAudio())
     deviceAudio.SetMonitoring(true,0.15);Check(deviceAudio.GetMeters().Monitoring,"explicit monitor control crosses the ABI");
     await deviceAudio.StopAsync();Check(!deviceAudio.GetMeters().Monitoring && deviceAudio.GetMeters().InputPeak==0,"stop clears monitoring and stale level");
     await deviceAudio.StartAsync();var active=deviceAudio.GetSnapshot();Check(active.SampleRate==44100 && active.BufferFrames==128,"confirmed format is actually used by the driver");await deviceAudio.StopAsync();
+}
+await using(var metroAudio=new NativeAudio())
+{
+    var metro=new MetronomeConfiguration(Enabled:true,Bpm:123,Beats:7,Subdivision:4,Sound:1,SubSound:3,CountIn:2,Ramp:true,RampEvery:3,RampStep:7,RampTarget:201,Gap:true,AudibleBars:2,SilentBars:3,Poly:true,PolyTicks:5,PolySound:2,Volume:.7,AccentVolume:.9,Swing:.65,PolyVolume:.4,Accents:[2,1,0,1,2,1,1],Sounds:[1,5,2,3,4,5,0]);
+    await metroAudio.SetMetronomeAsync(metro);var roundtrip=metroAudio.GetMetronome();
+    Check(roundtrip with{Accents=null,Sounds=null}==metro with{Accents=null,Sounds=null} && roundtrip.Accents!.Take(7).SequenceEqual(metro.Accents!) && roundtrip.Sounds!.Take(7).SequenceEqual(metro.Sounds!),"all 240 bytes of metronome configuration cross the ABI");
+    try{await metroAudio.SetMetronomeAsync(metro with{Swing=double.NaN});throw new Exception("NaN metronome accepted");}catch(InvalidOperationException){}
+    Check(metroAudio.GetMetronome().Bpm==123,"invalid metronome preserves earlier configuration");
+    await metroAudio.StartMetronomeAsync();var state=metroAudio.GetSnapshot();Check(state.State==AudioState.Running && state.Reserved==3,"metronome starts without a guitar or test tone");
+    var observed=metroAudio.GetMetronomeSnapshot();Check(observed.Running && observed.Enabled && observed.CountIn && observed.Bar==-2 && observed.PrimaryEvents>0,"count-in metadata crosses the ABI");
+    await metroAudio.StopAsync();Check(!metroAudio.GetMetronome().Enabled && !metroAudio.GetMetronomeSnapshot().Enabled,"global stop disarms metronome");
+    await metroAudio.StartAsync();Check(!metroAudio.GetMetronomeSnapshot().Enabled,"a subsequent tone does not resurrect stopped clicks");
+    var before=metroAudio.GetClock();await metroAudio.SetMetronomeAsync(metro with{CountIn=0});await metroAudio.StartMetronomeAsync();var after=metroAudio.GetClock();
+    Check(before.Epoch==after.Epoch && before.Frame==after.Frame && metroAudio.GetSnapshot().Reserved==0,"metronome joins an active source without opening or resetting the device");
+    await metroAudio.SetMetronomeAsync(metro with{Enabled=false});Check(metroAudio.GetSnapshot().State==AudioState.Running,"disabling metronome preserves other sources");
+    await metroAudio.StopAsync();
 }
 // Slow vendor initialization stays on a retained managed worker. Stop and polling remain responsive.
 var delayedLibrary=NativeLibrary.Load(Path.GetFullPath(args[0]));

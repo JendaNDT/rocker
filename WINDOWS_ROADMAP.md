@@ -324,7 +324,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w17"></a>
 #### W17 — Přenést celý aparát a jeho presety
 
-- [ ] Rozpracováno: [plný DSP řetězec, skutečný bypass a Vintage presety](docs/windows/w17/README.md), Linux 7/7 CTest a nativní parameter roundtrip. Windows formulář/persistence se nyní ověřují. Závislosti: W06, W08, W15, W16.
+- [ ] Rozpracováno: [plný DSP řetězec, skutečný bypass a Vintage presety](docs/windows/w17/README.md), Linux 7/7 CTest a nativní parameter roundtrip. [Windows formulář/persistence prošly](docs/windows/w17/windows-validation.json); volba nahrávací sběrnice naváže ve W22 a poslech je odložený. Závislosti: W06, W08, W15, W16.
 - Implementovat kompresi, vstupní zesílení, overdrive/distortion/fuzz, třípásmový EQ, dosavadní charakteristiky kabinetu, delay, reverb, chorus a výstup. Zachovat smysl parametrů a převod továrních i uživatelských presetů; nový zvuk neslibovat jako bitově totožný s Web Audio.
 - Zajistit smoothing, správnou práci se stavem filtrů, ochranu před neplatnými vzorky, DC a denormály, stabilitu zpětné vazby efektů a přechody bez lupnutí. Zpoždění oversamplingu, lookaheadu a případné konvoluce patří do evidence.
 - Ověřit skutečný bypass. Vypnutý nebo nulový efekt nesmí nepozorovaně přidávat prodlevu; současná webová komprese v řetězci je konkrétní důvod pro toto ověření. Nastavit jasné chování doznívání efektů při vypnutí.
@@ -334,7 +334,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w18"></a>
 #### W18 — Metronom a všechny doprovodné zvuky
 
-- [ ] Čeká. Závislosti: W06, W08, W16.
+- [ ] Rozpracováno: [nativní kliky, celý formulář a presety](docs/windows/w18/README.md). Vzorkové a P/Invoke testy prošly; Windows sestavení se ověřuje. Společný start nahrávání/Looperu naváže ve W22/W23. Závislosti: W06, W08, W16.
 - Přenést všechny současné takty, subdivize, per-beat akcenty a zvuky, tap tempo, swing, předtakt, zrychlování, cvičné ticho, drum mode, polyrytmus, presety a vizualizaci kyvadla.
 - Clicky, bicí i pozdější hudební náhledy běží ve společném audio grafu. Hudební události plánovat na konkrétní vzorek; UI kyvadlo a zvýraznění doby odvozovat od transportu.
 - Zachovat ovládání tempa číslem, klávesami i velkým tlačítkem v Live. Změny během hraní mají určený okamžik použití a neduplikují dobu.

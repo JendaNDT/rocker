@@ -35,7 +35,9 @@ kombinací tří zkreslení × tří kabinetů × čtyř vzorkování při maxim
 parametrech, konečný/omezený signál bez DSP resetů, doznívání a jeho vymazání,
 parametrovou frontu a RT alokace aktivního aparátu. C# roundtrip ověřuje
 všech 96 bajtů konfigurace, NaN odmítnutí, zachování předchozího nastavení
-a publikovanou prodlevu. Windows build a formulář/persistence navazují.
+a publikovanou prodlevu. [Windows build prošel](windows-validation.json): 7/7 CTest,
+oba publikované WinUI pohledy, všech devět ovladačů, nativní preset
+a opětovné otevření uložených amp/preset dokumentů. Fyzický zvuk se tím netestoval.
 
 Vlastní waveform export a skutečná volba nahrávací sběrnice navazují ve W22.
 Fyzický poslech, subjektivní kvalita, parametrické přechody a odezva na M-Track

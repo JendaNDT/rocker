@@ -1,0 +1,40 @@
+{
+  "scope": "W17 amplifier DSP, bypass and Vintage controls before W18 metronome integration",
+  "sourceCommit": "e1b46505921ac326a2b761999c0fa4345adbb8bf",
+  "windowsRun": "https://github.com/JendaNDT/rocker/actions/runs/38162719930",
+  "result": "passed",
+  "nativeTests": {
+    "executed": 7,
+    "failures": 0,
+    "skipped": 0
+  },
+  "amplifier": {
+    "result": "passed",
+    "nativeParametersVerified": true,
+    "persistenceReopened": true,
+    "nativeDialCount": 9,
+    "factoryPresetCount": 4,
+    "audioPlaybackVerified": false,
+    "manualPresetDialogsVerified": false
+  },
+  "window": {
+    "checkedAtUtc": "2026-10-11T18:18:03.3480317Z",
+    "result": "passed",
+    "audioPlaybackVerified": false,
+    "nativeNotationVerified": true,
+    "onlineVideoVerified": false,
+    "midiPreparedInCommonEngine": true,
+    "localVideoBridgeVerified": true,
+    "nativeShellViewsVisited": 32,
+    "audioHostsCreated": 1,
+    "windowTitle": "Rocker \u2014 P\u0159ehled",
+    "exitCode": 0,
+    "audioCoexistenceVerified": false,
+    "webViewRuntime": "153.0.4234.48"
+  },
+  "notPerformed": [
+    "Physical guitar listening and M-Track roundtrip latency",
+    "Manual preset save/delete dialogs",
+    "Recording bus integration (W22)"
+  ]
+}

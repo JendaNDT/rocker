@@ -34,6 +34,7 @@ public sealed partial class MainWindow
             ApplyTheme(appSettings.Theme);
             persistenceReady = true;
             await InitializeAmplifierAsync(snapshot.Documents);
+            await InitializeMetronomeAsync(snapshot.Documents);
             await RestoreDevicePreferenceAsync();
             workspaceCache.Clear(); ShowWorkspace();
             if (snapshot.Warnings.Count > 0) ShowPersistenceError($"Při obnovení dat bylo upraveno nebo vynecháno {snapshot.Warnings.Count} neplatných záznamů. Původní databáze je zachovaná.");

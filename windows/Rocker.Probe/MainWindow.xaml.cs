@@ -11,7 +11,7 @@ using Windows.Storage.Streams;
 namespace Rocker.Probe;
 public sealed partial class MainWindow : Window
 {
-    private readonly DispatcherTimer timer = new() { Interval = TimeSpan.FromMilliseconds(200) };
+    private readonly DispatcherTimer timer = new() { Interval = TimeSpan.FromMilliseconds(50) };
     private NativeAudio? audio;
     private ScorePreview? preview;
     private bool closed;
@@ -56,7 +56,7 @@ public sealed partial class MainWindow : Window
     }
     private async void Stop_Click(object sender, RoutedEventArgs e)
     {
-        try { ++playbackIntent; if(audio is not null)await audio.StopAsync(); if(!closingWindow && !closed)RefreshState(); }
+        try { ++playbackIntent; metroEnabled=false;++metroRevision;metroApplyTimer.Stop();if(audio is not null){await audio.StopAsync();await ApplyMetronomeAsync();} if(!closingWindow && !closed)RefreshState(); }
         catch (Exception error) { ShowError(error); }
     }
     private void RefreshState()
@@ -82,7 +82,7 @@ public sealed partial class MainWindow : Window
             StopButton.IsEnabled = state.State != AudioState.Stopped;
             StatusText.Text = state.State switch
             {
-                AudioState.Running => state.Reserved==2 ? "Živý vstup. Monitoring se ovládá samostatně." : transport.Playing != 0 ? "Přehrávání." : "Hraje testovací tón.",
+                AudioState.Running => state.Reserved==3 ? "Metronom." : state.Reserved==2 ? "Živý vstup. Monitoring se ovládá samostatně." : transport.Playing != 0 ? "Přehrávání." : "Hraje testovací tón.",
                 AudioState.Starting => "Spouštím zvukové zařízení…",
                 AudioState.Reconfiguring => "Měním nastavení zvuku…",
                 AudioState.Stopping or AudioState.Closing => "Uvolňuji zvukové zařízení…",
@@ -90,6 +90,7 @@ public sealed partial class MainWindow : Window
                 _ => "Zastaveno. Zařízení je uvolněné."
             };
             RefreshLive(state);
+            RefreshMetronome(state);
             DeviceText.Text = state.State == AudioState.Running
                 ? $"Vzorkování {state.SampleRate:N0} Hz · buffer {state.BufferFrames} vzorků · výstupy {state.OutputChannels}\nZpracováno {state.RenderedFrames:N0} vzorků."
                 : "Zařízení zatím není otevřené.";

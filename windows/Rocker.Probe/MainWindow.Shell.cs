@@ -118,6 +118,7 @@ public sealed partial class MainWindow
     private FrameworkElement BuildWorkspace(NavigationTarget target)
     {
         if (catalog is null) return Text("Výukový obsah není dostupný. Přehrávání souborů zůstává dostupné.");
+        if (target.ViewId == "04") return BuildMetronome();
         if (target.ViewId == "13") return BuildAmplifier();
         if (target.ViewId == "02") return BuildLive();
         if (target.ViewId == "01") return BuildOverview();
@@ -248,7 +249,7 @@ public sealed partial class MainWindow
             TrackWindowBounds();
             try { await windowStore!.SaveAsync(new(1,normalBounds,AppWindow.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Maximized },selectedTheme)); }
             catch (Exception error) { WriteShellDiagnostic("window-state-error.json",new { error = error.Message }); }
-            ampApplyTimer.Stop();timer.Stop();
+            ampApplyTimer.Stop();metroApplyTimer.Stop();timer.Stop();
             if(audio is not null) { await audio.DisposeAsync();audio=null; }
             closeApproved = true; Close();
         }
@@ -266,6 +267,7 @@ public sealed partial class MainWindow
         Navigate(new("01"));
         await VerifyPersistenceAsync();
         await VerifyAmplifierAsync();
+        await VerifyMetronomeAsync();
         await VerifyDevicesAsync();
         VerifyComponents();
         if (Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTIC_VIEW") == "components") ShowComponents();
