@@ -1,0 +1,20 @@
+{
+  "result": "passed",
+  "domain": {
+    "result": "passed",
+    "referenceCases": 69,
+    "boundaryChecks": 136,
+    "contentGroups": 15,
+    "surgicalStatesCompared": 37,
+    "extendedReferenceCases": 372,
+    "extendedStatesCompared": 350
+  },
+  "csharpSyntaxFiles": 93,
+  "csharpSyntaxErrors": 0,
+  "pwaTypeCheck": "passed",
+  "nativeAudioChanges": false,
+  "windowsBuild": "pending",
+  "nativeWindowsViews": "pending",
+  "physicalKeyboardVerified": false,
+  "physicalAudioVerified": false
+}

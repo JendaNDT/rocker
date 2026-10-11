@@ -1,0 +1,41 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Rocker.Domain;
+using Rocker.Interop;
+namespace Rocker.Probe;
+public sealed partial class MainWindow
+{
+    private PracticeRiff? selectedRiff;private ListView? riffNotesList;private Grid? riffTab;
+    private readonly List<(Button Cell,double Start,double Duration)> riffTabCells=[];
+    private FrameworkElement BuildRiffs(string? id)
+    {
+        var panel=Stack();panel.Children.Add(Text("Riffy · tabulatura a nativní doprovod"));var riffs=catalog!.Items("riffs").Select(UserData.Read<PracticeRiff>).ToArray();libraryCounts["riffs"]=riffs.Length;var search=new TextBox{Header="Hledat název, styl nebo techniku",MaxLength=128};var difficulty=new ComboBox{Header="Obtížnost",ItemsSource=new[]{"Všechny","Začátečník","Mírně pokročilý"},SelectedIndex=0};panel.Children.Add(search);panel.Children.Add(difficulty);var list=new ListView{Header="Riffy",ItemsSource=riffs,DisplayMemberPath="Title",SelectionMode=ListViewSelectionMode.Single};panel.Children.Add(list);
+        var details=Text("",true);panel.Children.Add(details);var tuning=Text("",true);panel.Children.Add(tuning);var tempo=new NumberBox{Header="Tempo BPM",Minimum=40,Maximum=240,Value=100,SpinButtonPlacementMode=NumberBoxSpinButtonPlacementMode.Inline};panel.Children.Add(tempo);var countIn=new CheckBox{Content="Jeden takt před začátkem",IsChecked=true};panel.Children.Add(countIn);rhythmEditors["19"]=[list,search,difficulty,tempo,countIn];
+        riffTab=new Grid();var horizontal=new ScrollViewer{Content=riffTab,HorizontalScrollBarVisibility=ScrollBarVisibility.Auto,VerticalScrollBarVisibility=ScrollBarVisibility.Disabled};panel.Children.Add(horizontal);riffNotesList=new ListView{Header="Noty, polohy a techniky",SelectionMode=ListViewSelectionMode.Single};panel.Children.Add(riffNotesList);var reading=Text("Zastaveno.",true);rhythmReadings["19"]=reading;panel.Children.Add(reading);var round=new ProgressBar{Minimum=0,Maximum=100};rhythmRoundBars["19"]=round;panel.Children.Add(round);
+        var grade=new Button{Content="Pomalý tónový drill tohoto riffu"};
+        void Render(PracticeRiff riff){details.Text=$"{riff.Style} · {riff.Focus} · "+(riff.Difficulty=="beginner"?"Začátečník":"Mírně pokročilý");tuning.Text="Požadované ladění: "+AllTunings().First(t=>t.Id==riff.Tuning).Label+" · "+(CurrentTuning().Id==riff.Tuning?"Nastavení odpovídá; skutečné struny ověř ladičkou.":"Nastavení se liší. Přepni ladění před cvičením.");grade.IsEnabled=LibraryPractice.RiffExercise(catalog,riff) is not null;DrawRiffTab(riff);var strings=LibraryPractice.RiffTuning(catalog,riff);riffNotesList.ItemsSource=riff.Notes.OrderBy(n=>n.Start).Select(n=>$"{n.Start:0.##} doby · struna {6-n.StringIndex}, pražec {n.Fret} · {NoteLabel(strings[n.StringIndex]+n.Fret)} · {LibraryPractice.Technique(n.Technique)}").ToArray();}
+        list.SelectionChanged+=async(_,_)=>{if(list.SelectedItem is not PracticeRiff riff)return;if(rhythmRunning || rhythmOperation)await StopRhythmUiAsync();selectedRiff=riff;tempo.Value=riff.Bpm;Render(riff);};
+        void Filter(){string? level=difficulty.SelectedIndex switch{1=>"beginner",2=>"intermediate",_=>null};var filtered=riffs.Where(r=>(level is null || r.Difficulty==level) && (r.Title+" "+r.Style+" "+r.Focus).Contains(search.Text,StringComparison.CurrentCultureIgnoreCase)).ToArray();list.ItemsSource=filtered;list.SelectedItem=filtered.FirstOrDefault(r=>r.Id==selectedRiff?.Id)??filtered.FirstOrDefault();}
+        search.TextChanged+=(_,_)=>Filter();difficulty.SelectionChanged+=(_,_)=>Filter();
+        var start=new Button{Content="Přehrát a cvičit ve smyčce"};start.Click+=async(_,_)=>
+        {
+            if(rhythmOperation || audio is null || selectedRiff is null || !double.IsFinite(tempo.Value))return;rhythmOperation=true;start.IsEnabled=false;
+            try{if(deviceSelectionUnavailable)throw new InvalidOperationException("Vyber dostupný zvukový výstup.");var riff=selectedRiff;if(CurrentTuning().Id!=riff.Tuning)throw new InvalidOperationException("Přepni nastavení na ladění riffu a fyzicky nalaď kytaru.");await StopRhythmUiAsync();var generation=rhythmUiGeneration;await audio.PauseAsync();double bpm=Music.ClampBpm(tempo.Value);var notes=LibraryPractice.RiffPreview(riff,LibraryPractice.RiffTuning(catalog!,riff),bpm);double beats=LibraryPractice.RiffBeats(riff);rhythmView="19";rhythmExerciseId="riff:"+riff.Id;rhythmSavedRounds=0;rhythmTicket=await audio.StartRhythmAsync(notes.Select(n=>new PreviewNote(n.Start,n.Duration,TunerFrequency(n.Midi),n.Volume)).ToArray(),beats,beats,(uint)bpm,false,countIn.IsChecked==true?4u:0u);if(generation!=rhythmUiGeneration || navigation.Current.ViewId!="19" || selectedRiff?.Id!=riff.Id){await audio.StopRhythmAsync();return;}rhythmRunning=true;foreach(var control in rhythmEditors["19"])control.IsEnabled=false;
+            }catch(Exception error){ShowError(error);}finally{rhythmOperation=false;start.IsEnabled=true;}
+        };panel.Children.Add(start);var stop=new Button{Content="Zastavit doprovod"};stop.Click+=async(_,_)=>await StopRhythmUiAsync();panel.Children.Add(stop);
+        var apply=new Button{Content="Použít ladění vybraného riffu"};apply.Click+=async(_,_)=>{if(selectedRiff is not null)await UseLibraryTuningAsync(selectedRiff.Tuning);};panel.Children.Add(apply);grade.Click+=(_,_)=>{if(selectedRiff is not null)Navigate(new("09","riff:"+selectedRiff.Id));};panel.Children.Add(grade);
+        panel.Children.Add(Text("Zvuk je syntetická ukázka výšek a rytmu, nikoli nahraná kytara. Palm mute zkracuje a ztišuje tón; slide, bend a legato jsou značky pro hráče a náhled je nepředvádí. Tónový drill je dostupný pouze pro jednohlasé fráze. Doprovod nehodnotí správnost hry.",true));panel.Children.Add(BuildRecordingControls());var song=new Button{Content="Trénovat vlastní nahrávku v A/B úseku"};song.Click+=(_,_)=>Navigate(new("07"));panel.Children.Add(song);
+        var resolved=id is null?null:catalog.ResolveRiff(id)?.GetProperty("id").GetString();list.SelectedItem=riffs.FirstOrDefault(r=>r.Id==(resolved??selectedRiff?.Id))??riffs[0];return Card(panel);
+    }
+    private void DrawRiffTab(PracticeRiff riff)
+    {
+        if(riffTab is null)return;riffTab.Children.Clear();riffTab.ColumnDefinitions.Clear();riffTab.RowDefinitions.Clear();riffTabCells.Clear();var starts=riff.Notes.Select(n=>n.Start).Distinct().Order().ToArray();for(int col=0;col<=starts.Length;++col)riffTab.ColumnDefinitions.Add(new(){Width=new(col==0?60:64)});for(int row=0;row<7;++row)riffTab.RowDefinitions.Add(new(){Height=new(40)});var tuning=LibraryPractice.RiffTuning(catalog!,riff);
+        for(int str=0;str<6;++str){var label=Text(NoteLabel(tuning[str]),true);Grid.SetRow(label,6-str);riffTab.Children.Add(label);}
+        for(int i=0;i<starts.Length;++i){int col=i+1;var label=Text(starts[i].ToString("0.##"),true);Grid.SetColumn(label,col);riffTab.Children.Add(label);for(int str=0;str<6;++str){var note=riff.Notes.FirstOrDefault(n=>n.Start==starts[i] && n.StringIndex==str);var cell=new Button{Content=note is null?"—":note.Fret.ToString(),IsEnabled=note is not null,HorizontalAlignment=HorizontalAlignment.Stretch,Margin=new(2)};Grid.SetRow(cell,6-str);Grid.SetColumn(cell,col);riffTab.Children.Add(cell);if(note is not null){Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(cell,$"Doba {note.Start:0.##}, struna {6-note.StringIndex}, pražec {note.Fret}, {LibraryPractice.Technique(note.Technique)}");riffTabCells.Add((cell,note.Start,note.Duration));cell.Click+=(_,_)=>{if(riffNotesList is not null)riffNotesList.SelectedIndex=riff.Notes.OrderBy(n=>n.Start).ToList().IndexOf(note);};}}}
+    }
+    private void RefreshRiff(RhythmSnapshot value)
+    {
+        if(selectedRiff is null || navigation.Current.ViewId!="19")return;double position=value.ElapsedBeats%LibraryPractice.RiffBeats(selectedRiff);foreach(var entry in riffTabCells)entry.Cell.Style=position>=entry.Start && position<entry.Start+entry.Duration?(Style)Application.Current.Resources["VintageRootButtonStyle"]:null;
+    }
+}

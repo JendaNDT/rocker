@@ -89,6 +89,10 @@ try {
     if (-not (Test-Path $tunerPath)) { throw 'Missing native tuner report.' }
     $tuner = Get-Content $tunerPath -Raw | ConvertFrom-Json
     if ($tuner.result -ne 'passed' -or $tuner.sixStringControls -ne 6 -or -not $tuner.persistenceReopened -or -not $tuner.noInputInventsNoNote) { throw 'Native tuner/persistence failed.' }
+    $libraryPath = Join-Path $reportDirectory 'library-games-views.json'
+    if (-not (Test-Path $libraryPath)) { throw 'Native library/games report missing.' }
+    $library = Get-Content $libraryPath -Raw | ConvertFrom-Json
+    if ($library.result -ne 'passed' -or $library.nativeChordDiagrams -ne 26 -or $library.nativeRiffTabs -ne 14 -or -not $library.scoreRulesVerified) { throw 'Native library/games check failed.' }
     $rhythmPath = Join-Path $reportDirectory 'rhythm-palm-views.json'
     if (-not (Test-Path $rhythmPath)) { throw "Native rhythm/palm report missing." }
     $rhythm = Get-Content $rhythmPath -Raw | ConvertFrom-Json

@@ -882,4 +882,7 @@ W27 přidává power chord, gallop a palm mute, hudební kola v jediném jádru,
 5% zrychlování a profil kalibrace. ABI je 15. Linux 18/18 CTest, sanitizery,
 CLR a připravené PCM prošly; Windows formuláře se ověřují.
 Funkčně kompletní kandidát ani fyzická přejímka zatím nejsou hotové;
-pokračuje W28 a zbývající roadmapa.
+W28 přidává všechny knihovny a obě hry, s hmatníkem pro klávesnici,
+propojenými riffy a syntetickým poslechem. Doména má 136 dalších ověřených
+tvrzení nad 69 + 372 původními případy a 350 referenčními stavy; skutečné
+Windows formuláře se ověřují. Pokračuje W29 a zbývající roadmapa.

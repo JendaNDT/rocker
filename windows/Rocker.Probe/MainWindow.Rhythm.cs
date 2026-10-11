@@ -23,7 +23,7 @@ public sealed partial class MainWindow
     {
         progressData=documents.FirstOrDefault(d=>d.Kind=="progress" && d.Id=="default") is { } progress?UserData.Read<ProgressData>(progress.Value):ProgressRules.Empty;
         instrumentProfile=documents.FirstOrDefault(d=>d.Kind=="instrument" && d.Id=="default") is { } profile?UserData.Read<InstrumentProfile>(profile.Value):InstrumentProfile.Default;
-        rhythmRunning=false;rhythmView=null;rhythmTicket=0;rhythmEditors.Clear();surgicalListening=false;surgicalState=null;rhythmReadings.Clear();rhythmTargets.Clear();rhythmDiagrams.Clear();rhythmChordKeys.Clear();rhythmRoundBars.Clear();rhythmCells.Clear();palmPickup=appSettings.PalmMute?.Pickup??"bridge";ResetPalmRuntime();
+        rhythmRunning=false;rhythmView=null;rhythmTicket=0;rhythmEditors.Clear();surgicalListening=false;surgicalState=null;rhythmReadings.Clear();rhythmTargets.Clear();rhythmDiagrams.Clear();rhythmChordKeys.Clear();rhythmRoundBars.Clear();rhythmCells.Clear();palmPickup=appSettings.PalmMute?.Pickup??"bridge";ResetPalmRuntime();ResetLibraryGames();
     }
     private void RecordTempo(string id,double bpm)
     {
@@ -84,7 +84,7 @@ public sealed partial class MainWindow
     {
         if(audio is null || rhythmView is null)return;var value=audio.GetRhythm();if(value.Token!=rhythmTicket)return;StoreRhythmRecord(value);
         if(rhythmReadings.TryGetValue(rhythmView,out var reading)){reading.Text=value.State==1?"Předtakt…":$"{value.Bpm} BPM · dokončená kola {value.Rounds} · "+(value.State==2?"Doprovod běží.":"Zastaveno.");}
-        if(value.State==2 && navigation.Current.ViewId==rhythmView){ShowRhythmChord(rhythmView,value.ElapsedBeats);if(rhythmRoundBars.TryGetValue(rhythmView,out var bar))bar.Value=100*(value.ElapsedBeats%value.RoundBeats)/value.RoundBeats;if(rhythmView=="11" && gallopExercise is { } exercise && rhythmCells.TryGetValue("11",out var cell)){double phase=value.ElapsedBeats%exercise.Cell.Sum(),edge=0;int active=0;for(int i=0;i<exercise.Cell.Count;++i){edge+=exercise.Cell[i];if(phase<edge){active=i;break;}}cell.Text="Rytmická buňka: "+string.Join(" · ",exercise.Cell.Select((beats,i)=>(i==active?"[":"")+beats.ToString("0.##")+(i==active?"]":"")))+" doby";}}
+        if(value.State==2 && navigation.Current.ViewId==rhythmView){if(rhythmView=="19")RefreshRiff(value);else ShowRhythmChord(rhythmView,value.ElapsedBeats);if(rhythmRoundBars.TryGetValue(rhythmView,out var bar))bar.Value=100*(value.ElapsedBeats%value.RoundBeats)/value.RoundBeats;if(rhythmView=="11" && gallopExercise is { } exercise && rhythmCells.TryGetValue("11",out var cell)){double phase=value.ElapsedBeats%exercise.Cell.Sum(),edge=0;int active=0;for(int i=0;i<exercise.Cell.Count;++i){edge+=exercise.Cell[i];if(phase<edge){active=i;break;}}cell.Text="Rytmická buňka: "+string.Join(" · ",exercise.Cell.Select((beats,i)=>(i==active?"[":"")+beats.ToString("0.##")+(i==active?"]":"")))+" doby";}}
         if(!value.Active){rhythmRunning=false;foreach(var controls in rhythmEditors.Values)foreach(var control in controls)control.IsEnabled=true;}
     }
     private string InstrumentFingerprint()=>Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(instrumentProfile,UserData.Json))));

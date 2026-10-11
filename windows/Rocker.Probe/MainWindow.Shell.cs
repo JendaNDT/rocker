@@ -67,8 +67,10 @@ public sealed partial class MainWindow
     {
         if (!shellReady || closed) return;
         var target = navigation.Current; var view = WorkspaceViews.Get(target.ViewId);
+        foreach(var old in workspaceCache.Keys.Where(k=>k.ViewId==target.ViewId && k!=target).ToArray())workspaceCache.Remove(old);
         if(target.ViewId!=rhythmView && (rhythmRunning || rhythmOperation))_ = StopRhythmUiAsync();
         if(target.ViewId!="12")CancelPalm();
+        if(target.ViewId!="22" && (earHeard || earOperation))_ = PauseEarPreviewAsync();
         if(target.ViewId!="09" && surgicalListening){surgicalListening=false;UpdateSurgical();}
         visitedViews.Add(view.Id); Title = "Rocker — " + view.Title;
         WorkspaceTitle.Text = view.Title; WorkspaceTrail.Text = "Rocker / " + view.Group + (target.ItemId is null ? "" : " / " + target.ItemId);
@@ -80,7 +82,7 @@ public sealed partial class MainWindow
         WorkspaceContent.Visibility = view.Id is "08" or "20" or "29" ? Visibility.Collapsed : Visibility.Visible;
         if (WorkspaceContent.Visibility == Visibility.Visible)
         {
-            if (view.Id is "01" or "06" or "27") workspaceCache.Remove(target); // Refresh summaries after lesson completion.
+            if (view.Id is "01" or "06" or "19" or "27") workspaceCache.Remove(target); // Refresh summaries after lesson completion.
             if (!workspaceCache.TryGetValue(target, out var page)) { page = BuildWorkspace(target); workspaceCache.Add(target,page); }
             WorkspaceContent.Content = page;
         }
@@ -121,6 +123,11 @@ public sealed partial class MainWindow
     private FrameworkElement BuildWorkspace(NavigationTarget target)
     {
         if (catalog is null) return Text("Výukový obsah není dostupný. Přehrávání souborů zůstává dostupné.");
+        if (target.ViewId == "17") return BuildChords(target.ItemId);
+        if (target.ViewId == "18") return BuildScales(target.ItemId);
+        if (target.ViewId == "19") return BuildRiffs(target.ItemId);
+        if (target.ViewId == "21") return BuildFretboardGame();
+        if (target.ViewId == "22") return BuildEarGame();
         if (target.ViewId is "10" or "11") return BuildRhythmTrainer(target.ViewId,target.ItemId);
         if (target.ViewId == "12") return BuildPalmMute();
         if (target.ViewId == "09") return BuildSurgical(target.ItemId);
@@ -265,6 +272,7 @@ public sealed partial class MainWindow
         await VerifyLessonsAsync();
         VerifySurgical();
         await VerifyRhythmAndPalmAsync();
+        VerifyLibraryGames();
         await VerifyDevicesAsync();
         VerifyComponents();
         if (Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTIC_VIEW") == "components") ShowComponents();

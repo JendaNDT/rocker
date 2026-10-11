@@ -429,7 +429,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w28"></a>
 #### W28 — Akordy, stupnice, riffy a obě hry
 
-- [ ] Čeká. Závislosti: W06, W08, W18, W21, W25.
+- [ ] Rozpracováno. Závislosti: W06, W08, W18, W21, W25. [Nativní knihovny a obě hry](docs/windows/w28/README.md) mají 26 akordů, šest stupnic, 14 riffů, propojený tónový drill a společný zvukový doprovod. Doména a syntaxe prošly; Windows ověření všech pěti pohledů navazuje.
 - Vytvořit nativní diagramy a hmatník s prstokladem, barré, levým/pravým provedením, laděním, značením kořenových tónů, filtrováním a přístupnou textovou alternativou.
 - Přenést veškerý současný obsah a zvukové náhledy. Riff otevře konkrétní cvičení s odpovídajícím tempem; změna ladění nesmí nabízet neplatné polohy bez vysvětlení.
 - Přenést hmatníkovou hru a sluchové intervaly, zadávání myší i klávesnicí, nápovědu, skóre a opakovaný poslech. Sluchové cvičení vyžaduje výstup, ne povinné zapnutí mikrofonu.

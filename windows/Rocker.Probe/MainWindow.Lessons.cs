@@ -53,10 +53,10 @@ public sealed partial class MainWindow
         }
         Render();return Card(panel);
     }
-    private async Task PlayTeachingAsync(IReadOnlyList<TeachingNote> notes,bool repeat=false,uint countIn=0)
+    private async Task<bool> PlayTeachingAsync(IReadOnlyList<TeachingNote> notes,bool repeat=false,uint countIn=0)
     {
-        if(audio is null || closingWindow || deviceOperationRunning)return;if(deviceSelectionUnavailable){ShowPersistenceError("Vyber dostupné výstupní zařízení v nastavení zvuku.");return;}
-        try{await audio.PlayPreviewAsync(notes.Select(n=>new PreviewNote(n.Start,n.Duration,TunerFrequency(n.Midi),n.Volume)).ToArray(),repeat,countIn);RefreshState();}catch(Exception error){ShowError(error);}
+        if(audio is null || closingWindow || deviceOperationRunning)return false;if(deviceSelectionUnavailable){ShowPersistenceError("Vyber dostupné výstupní zařízení v nastavení zvuku.");return false;}
+        try{await audio.PlayPreviewAsync(notes.Select(n=>new PreviewNote(n.Start,n.Duration,TunerFrequency(n.Midi),n.Volume)).ToArray(),repeat,countIn);RefreshState();return true;}catch(Exception error){ShowError(error);return false;}
     }
     private void RefreshLesson(AnalysisSnapshot reading)
     {
