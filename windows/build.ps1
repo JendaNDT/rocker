@@ -34,7 +34,7 @@ try {
     Invoke-Checked 'dotnet' @('run', '--project', 'Rocker.Domain.Checks', '-c', 'Release', '--no-restore', '--',
         (Join-Path $PSScriptRoot '../docs/windows/baseline/fixtures/domain-cases.json'),
         (Join-Path $PSScriptRoot 'content/catalog.json'), (Join-Path $reportDirectory 'domain-checks.json'))
-    Invoke-Checked 'dotnet' @('run', '--project', 'Rocker.Infrastructure.Checks', '-c', 'Release', '--no-restore')
+    Invoke-Checked 'dotnet' @('run', '--project', 'Rocker.Infrastructure.Checks', '-c', 'Release', '--no-restore', '--', (Join-Path $reportDirectory 'storage-checks.json'))
     @{
         os = [Environment]::OSVersion.VersionString
         cl = (Get-Command cl.exe).Source

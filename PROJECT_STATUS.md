@@ -18,10 +18,13 @@ Navazuje [W07 shell](docs/windows/w07/README.md): 32 navigačních cílů, spole
 transport, zachování rozpracované lekce, systémové vzhledy a obnova okna. Dvě
 nové vlastní riffové náhrady jsou v distribučním katalogu s převodem starých ID.
 Windows běh 38152583162 potvrdil všech 32 pohledů, jeden host a návrat úlohy;
-je uložený skutečný snímek okna. [W08](docs/windows/w08/README.md) nyní přidává
-společné přístrojové komponenty a kompaktní transport. Jejich Windows ověření
-navazuje. Kompletní Vintage design, persistence
-a produktové funkce ještě hotové nejsou; ruční přejímka zůstává až po W43.
+je uložený skutečný snímek okna. [W08](docs/windows/w08/README.md) má společné přístrojové komponenty a kompaktní
+transport. Windows 38153511933 prošel 31 kontrolami komponent v každém ze dvou
+procesů; skutečné snímky jsou v dokumentaci. Celé produktové funkce tím nejsou
+hotové. [W09](docs/windows/w09/README.md) přidává SQLite, vlastněná média,
+přenosné projekty a autosave lekcí/vzhledu. Lokálně prošlo 11 souborových a 37
+datových kontrol, včetně násilného přerušení SQLite transakce. Windows integrace
+se nyní ověřuje. PWA reference: všech 561 testů, typy i lint prošly.
 
 ## Aktuální směr: nativní Rocker pro Windows
 

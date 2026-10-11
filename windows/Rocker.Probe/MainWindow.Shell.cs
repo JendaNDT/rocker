@@ -102,6 +102,7 @@ public sealed partial class MainWindow
     private void ApplyTheme(string theme)
     {
         selectedTheme = theme;
+        appSettings = appSettings with { Theme=theme }; SaveSettings();
         ShellRoot.RequestedTheme = theme switch { "dark" => ElementTheme.Dark, "light" => ElementTheme.Light, _ => ElementTheme.Default };
     }
     private void Shell_SizeChanged(object sender, SizeChangedEventArgs args)
@@ -121,7 +122,7 @@ public sealed partial class MainWindow
         if (target.ViewId == "05") return BuildLessonList();
         if (target.ViewId == "06") return BuildLesson(target.ItemId);
         if (target.ViewId == "28") return BuildSettings();
-        if (target.ViewId == "27") return Card(Text($"Dokončené lekce při tomto spuštění: {completedLessons.Count} / {catalog.Lessons.Count}. Trvalý pokrok bude dostupný po dokončení ukládání."));
+        if (target.ViewId == "27") return Card(Text($"Dokončené lekce: {completedLessons.Count} / {catalog.Lessons.Count}. Pokrok a rozpracované kroky se průběžně ukládají."));
         var group = target.ViewId switch { "03" => "tunings", "04" => "metronomePresets", "09" => "surgicalExercises", "10" => "powerChordExercises", "11" => "gallopExercises", "12" => "palmMuteDrills", "13" => "ampPresets", "17" => "chords", "18" => "scales", "19" => "riffs", _ => null };
         if (group is not null) return BuildCatalog(group, target.ItemId);
         var panel = Stack();
@@ -164,7 +165,7 @@ public sealed partial class MainWindow
     private FrameworkElement BuildLesson(string? id)
     {
         var lesson = catalog!.Lessons.FirstOrDefault(lesson => lesson.Id == id) ?? LessonRules.NextIncomplete(catalog.Lessons,completedLessons) ?? catalog.Lessons[0];
-        if (!lessonSessions.ContainsKey(lesson.Id)) lessonSessions.Add(lesson.Id,LessonSession.Start(lesson));
+        if (!lessonSessions.ContainsKey(lesson.Id)) lessonSessions.Add(lesson.Id,LessonSession.Start(lesson,savedLessonPositions.GetValueOrDefault(lesson.Id)) with { Completed=completedLessons.Contains(lesson.Id) });
         var panel = Stack();
         void Render()
         {
@@ -174,10 +175,10 @@ public sealed partial class MainWindow
             panel.Children.Add(Text(step.GetProperty("title").GetString()!)); panel.Children.Add(Text(step.GetProperty("body").GetString()!));
             if (step.GetProperty("kind").GetString() == "note") panel.Children.Add(Text("Cílový tón: " + step.GetProperty("targetLabel").GetString() + ". Živý poslech ještě není dostupný.",true));
             if (step.GetProperty("kind").GetString() == "chord") panel.Children.Add(Text("Akord: " + step.GetProperty("chordId").GetString(),true));
-            if (session.Completed) panel.Children.Add(Text("Lekce je dokončená pro toto spuštění."));
-            var previous = new Button { Content = "Zpět", IsEnabled = !session.IsFirst && !session.Completed }; previous.Click += (_,_) => { lessonSessions[lesson.Id] = session.Previous(); Render(); };
+            if (session.Completed) panel.Children.Add(Text("Lekce je dokončená."));
+            var previous = new Button { Content = "Zpět", IsEnabled = !session.IsFirst && !session.Completed }; previous.Click += (_,_) => { lessonSessions[lesson.Id] = session.Previous(); SaveLessonProgress(); Render(); };
             var next = new Button { Content = session.IsLast ? "Dokončit lekci" : "Další", IsEnabled = !session.Completed };
-            next.Click += (_,_) => { lessonSessions[lesson.Id] = session.IsLast ? session.Finish() : session.Next(); if (session.IsLast) completedLessons.Add(lesson.Id); Render(); };
+            next.Click += (_,_) => { lessonSessions[lesson.Id] = session.IsLast ? session.Finish() : session.Next(); if (session.IsLast) completedLessons.Add(lesson.Id); SaveLessonProgress(); Render(); };
             panel.Children.Add(previous); panel.Children.Add(next);
         }
         Render(); return Card(panel);
@@ -200,7 +201,8 @@ public sealed partial class MainWindow
     {
         var panel = Stack(); var theme = new ComboBox { Header = "Vzhled", ItemsSource = new[] { "Podle Windows", "Tmavý Vintage", "Světlý Vintage" }, SelectedIndex = selectedTheme == "dark" ? 1 : selectedTheme == "light" ? 2 : 0, MinWidth = 200 };
         theme.SelectionChanged += (_,_) => ApplyTheme(theme.SelectedIndex == 1 ? "dark" : theme.SelectedIndex == 2 ? "light" : "system");
-        panel.Children.Add(theme); panel.Children.Add(Text("Poloha, velikost a vzhled okna se uloží při zavření. Vysoký kontrast se řídí nastavením Windows.",true));
+        theme.IsEnabled=persistenceReady;
+        panel.Children.Add(theme); panel.Children.Add(Text("Vzhled a rozpracované lekce se ukládají průběžně. Poloha a velikost okna se uloží při zavření. Vysoký kontrast se řídí nastavením Windows.",true));
         panel.Children.Add(Text("Složka dat: " + userFiles.Root));
         var open = new Button { Content = "Otevřít složku dat" }; open.Click += async (_,_) =>
         {
@@ -235,6 +237,7 @@ public sealed partial class MainWindow
                 if (choice == ContentDialogResult.Primary && !await guard.Save()) return;
                 if (choice == ContentDialogResult.Secondary) guard.Discard();
             }
+            if (autosave is not null) await autosave.FlushAsync();
             TrackWindowBounds();
             try { await windowStore!.SaveAsync(new(1,normalBounds,AppWindow.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Maximized },selectedTheme)); }
             catch (Exception error) { WriteShellDiagnostic("window-state-error.json",new { error = error.Message }); }
@@ -252,6 +255,7 @@ public sealed partial class MainWindow
         bool restoredTask = navigation.Current == task;
         Navigate(new("08")); await EnsureVideoAsync();
         Navigate(new("01"));
+        await VerifyPersistenceAsync();
         VerifyComponents();
         if (Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTIC_VIEW") == "components") ShowComponents();
         await CaptureNativeViewAsync();

@@ -33,6 +33,8 @@ public sealed partial class MainWindow : Window
         {
             if (initialNotationStarted) return;
             initialNotationStarted = true;
+            await InitializePersistenceAsync();
+            if (closed) return;
             await LoadScoreAsync(Path.Combine(AppContext.BaseDirectory, "fixtures", "notation-phrases.gp"));
             if (!closed && !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTICS_DIR"))) await VerifyShellAsync();
         };

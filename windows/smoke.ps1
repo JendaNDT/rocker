@@ -24,8 +24,9 @@ $env:ROCKER_DIAGNOSTICS_DIR = $reportDirectory
 $notationReport = Join-Path $reportDirectory 'notation-view.json'
 $videoReport = Join-Path $reportDirectory 'video-bridge.json'
 $shellReport = Join-Path $reportDirectory 'shell-navigation.json'
+$persistenceReport = Join-Path $reportDirectory 'persistence-view.json'
 $componentsReport = Join-Path $reportDirectory 'native-components.json'
-foreach ($stale in @($shellReport,$componentsReport)) { if (Test-Path $stale) { Remove-Item $stale } }
+foreach ($stale in @($shellReport,$componentsReport,$persistenceReport)) { if (Test-Path $stale) { Remove-Item $stale } }
 if (Test-Path $notationReport) { Remove-Item $notationReport }
 if (Test-Path $videoReport) { Remove-Item $videoReport }
 try {
@@ -70,6 +71,9 @@ try {
     if ($shell.result -ne 'passed' -or $shell.viewsVisited -ne 32 -or -not $shell.backRestoredTask -or $shell.audioHostsCreated -ne 1) {
         throw "Native shell navigation failed: $(Get-Content $shellReport -Raw)"
     }
+    if (-not (Test-Path $persistenceReport)) { throw 'Persistence report is missing.' }
+    $persistence = Get-Content $persistenceReport -Raw | ConvertFrom-Json
+    if ($persistence.result -ne 'passed' -or -not $persistence.reopenedDatabase) { throw 'Native persistence did not survive database reopen.' }
     if (-not (Test-Path $componentsReport)) { throw 'Native components report is missing.' }
     $components = Get-Content $componentsReport -Raw | ConvertFrom-Json
     if ($components.result -ne 'passed' -or $components.checks -lt 31) { throw 'Native components failed.' }

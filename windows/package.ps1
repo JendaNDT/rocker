@@ -62,6 +62,7 @@ foreach ($name in @('AGPL-3.0-only.txt', 'GPL-3.0-only.txt', 'juce-license.txt',
     'asio-license.txt', 'windowsapp-license.txt', 'webview-sdk-license.txt')) {
     Copy-Item (Join-Path $evidence $name) $licenses
 }
+Copy-Item (Join-Path $repository 'docs/windows/w09/evidence/Apache-2.0.txt') (Join-Path $licenses 'SQLitePCLRaw-Apache-2.0.txt')
 $notationEvidence = Join-Path $repository 'docs/windows/w04/evidence'
 foreach ($name in @('alphatab-license.txt', 'alphaskia-license.txt', 'bravura-license.txt')) {
     Copy-Item (Join-Path $notationEvidence $name) $licenses

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 using Rocker.Infrastructure;
+if (args.Length == 3 && args[0] == "--crash-writer") { await StorageChecks.CrashWriterAsync(args[1],args[2]); return; }
 var directory = Path.Combine(Path.GetTempPath(), "rocker-file-check-" + Guid.NewGuid().ToString("N"));
 int checks = 0;
 void Check(bool value, string message) { ++checks; if (!value) throw new Exception(message); }
@@ -32,6 +33,8 @@ try
     await UserFiles.WriteTextAsync(Path.Combine(files.DirectoryFor("settings"),"window.json"), "{\"SchemaVersion\":99,\"Bounds\":null}");
     try { windowStore.Load(); throw new Exception("Corrupt window state accepted"); }
     catch (InvalidDataException) { Check(true, "future or incomplete geometry rejected"); }
-    Console.WriteLine($"PASS: {checks} file ownership/replacement assertions; SQLite and data migration remain W09–W12.");
+    Console.WriteLine($"PASS: {checks} file ownership/replacement assertions.");
+    int storageChecks = await StorageChecks.RunAsync(files);
+    if (args.Length == 1) await File.WriteAllTextAsync(args[0], System.Text.Json.JsonSerializer.Serialize(new { result="passed", fileChecks=checks, storageChecks, forcedTerminationVerified=true, manualHardwareVerified=false }));
 }
 finally { if (Directory.Exists(directory)) Directory.Delete(directory, true); }

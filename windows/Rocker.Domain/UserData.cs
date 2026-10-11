@@ -1,0 +1,96 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+using System.Text.Json;
+namespace Rocker.Domain;
+public sealed record AppSettings(string Theme = "system", string TuningId = "standard", string Handedness = "right", bool ZenMode = false,
+    string Notation = "english", double NoiseGate = 0.06, double ReferenceToneVolume = 0.3, bool TunerConfirmSound = false, bool Onboarded = false);
+public sealed record Pickup(string Position, string Type);
+public sealed record InstrumentProfile(string Name, string BodyType, IReadOnlyList<Pickup> Pickups, string ScaleLength, string StringGauge, string Notes)
+{
+    public static InstrumentProfile Default => new("Solton Double Cut","Double cut, masivní tělo",[new("neck","humbucker"),new("bridge","humbucker")],"25,5\"",".010-.046","");
+}
+public sealed record LessonProgress(IReadOnlyList<string> CompletedIds, IReadOnlyDictionary<string,int> Positions);
+public sealed record TuningString(string Note, int Midi);
+public sealed record CustomTuning(string Id, string Label, IReadOnlyList<TuningString> Strings);
+public sealed record SavedVideoLoop(string Id, string VideoId, string Label, double Start, double End, double Rate);
+public sealed record AiSettings(string Model = "gemini-2.5-flash", bool IncludeProgress = true, bool IncludeInstrument = false);
+public sealed record SavedChatMessage(string Role, string Text, DateTimeOffset? CreatedAt = null);
+public sealed record RecordingData(string Id, string Name, string MimeType, double DurationSec, DateTimeOffset CreatedAt,
+    string RelativePath, long Bytes, string Sha256, IReadOnlyList<Marker> Markers);
+public sealed record ProjectTrack(string Id, string Name, string MediaPath, string Sha256, double DurationSec,
+    double Gain = 1, bool Muted = false, double Pan = 0, bool Solo = false, long OffsetFrames = 0);
+public sealed record ProjectManifest(int SchemaVersion, string Id, string Name, DateTimeOffset CreatedAt, DateTimeOffset UpdatedAt,
+    int SampleRate, IReadOnlyList<ProjectTrack> Tracks);
+public sealed record ProjectIndex(string Id, string Name, string RelativeManifest);
+public sealed record DataDocument(string Kind, string Id, int SchemaVersion, JsonElement Value);
+public static class UserData
+{
+    public static readonly JsonSerializerOptions Json = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase, MaxDepth = 32 };
+    public static IReadOnlySet<string> Kinds { get; } = new HashSet<string>(StringComparer.Ordinal) { "settings","instrument","progress","lessons","amp","amp-presets","metronome","metronome-presets","custom-tunings","yt-loops","ai-settings","chat","recording","project" };
+    public static bool ValidId(string? id) => !string.IsNullOrWhiteSpace(id) && id.Length <= 128 && !id.Any(char.IsControl);
+    public static bool ValidHash(string? value) => value is not null && value.Length == 64 && value.All(c => c is >= '0' and <= '9' or >= 'a' and <= 'f');
+    public static bool ValidRelativePath(string? path) => path is not null && path.Length is > 0 and <= 512 && !path.StartsWith('/') && !path.Contains('\\') && !path.Contains(':') && !path.Any(char.IsControl) && path.Split('/').All(segment => segment.Length > 0 && segment is not "." and not ".." && !segment.EndsWith('.') && segment.All(c => char.IsAsciiLetterOrDigit(c) || c is '_' or '-' or '.'));
+    public static DataDocument Document<T>(string kind, string id, T value) => Normalize(new(kind,id,1,JsonSerializer.SerializeToElement(value,Json)));
+    public static T Read<T>(JsonElement value) => JsonSerializer.Deserialize<T>(value,Json) ?? throw new InvalidDataException("Uložená hodnota chybí.");
+    private static void Require(bool condition, string message) { if (!condition) throw new InvalidDataException(message); }
+    private static bool Unit(double value) => double.IsFinite(value) && value is >= 0 and <= 1;
+    public static DataDocument Normalize(DataDocument document)
+    {
+        Require(Kinds.Contains(document.Kind) && ValidId(document.Id) && document.SchemaVersion == 1, "Typ, ID nebo verze dat není podporovaná.");
+        Require(document.Value.GetRawText().Length <= 1024 * 1024, "Záznam je příliš velký.");
+        RejectSecretFields(document.Value);
+        object value;
+        switch (document.Kind)
+        {
+            case "settings":
+                var settings = Read<AppSettings>(document.Value);
+                Require(settings.Theme is "system" or "dark" or "light" && settings.Handedness is "right" or "left" && settings.Notation is "english" or "german" && ValidId(settings.TuningId) && Unit(settings.NoiseGate) && Unit(settings.ReferenceToneVolume), "Neplatné nastavení."); value = settings; break;
+            case "instrument":
+                var profile = Read<InstrumentProfile>(document.Value);
+                Require(profile.Name is not null && profile.BodyType is not null && profile.ScaleLength is not null && profile.StringGauge is not null && profile.Notes is not null && profile.Pickups is not null && profile.Pickups.Count <= 6 && profile.Pickups.All(p => p.Position is "neck" or "middle" or "bridge" && p.Type is "humbucker" or "single" or "p90"), "Neplatný profil kytary."); value = profile; break;
+            case "progress": value = ProgressRules.Sanitize(document.Value); break;
+            case "lessons":
+                var lessons = Read<LessonProgress>(document.Value);
+                Require(lessons.CompletedIds is not null && lessons.Positions is not null && lessons.Positions.Count <= 10000 && lessons.Positions.All(item => ValidId(item.Key) && item.Value is >= 0 and <= 255), "Neplatná pozice lekce.");
+                value = lessons with { CompletedIds = lessons.CompletedIds!.Where(ValidId).Distinct(StringComparer.Ordinal).ToArray() }; break;
+            case "amp": value = AmpRules.Sanitize(document.Value); break;
+            case "amp-presets": value = AmpRules.SanitizeUserPresets(document.Value); break;
+            case "metronome": value = MetronomeRules.Sanitize(document.Value); break;
+            case "metronome-presets":
+                Require(document.Value.ValueKind == JsonValueKind.Array && document.Value.GetArrayLength() <= 1000,"Neplatné metronomové presety.");
+                value = document.Value.EnumerateArray().Select(item => new { id = item.GetProperty("id").GetString(), name = item.GetProperty("name").GetString(), config = MetronomeRules.Sanitize(item.GetProperty("config")) }).Where(item => ValidId(item.id) && !string.IsNullOrWhiteSpace(item.name)).ToArray(); break;
+            case "custom-tunings":
+                var tunings = Read<CustomTuning[]>(document.Value);
+                Require(tunings.Length <= 20 && tunings.All(t => t.Id is not null && t.Id.StartsWith("custom-",StringComparison.Ordinal) && ValidId(t.Id) && !string.IsNullOrWhiteSpace(t.Label) && t.Strings is not null && t.Strings.Count == 6 && t.Strings.All(s => s.Midi is >= 24 and <= 84 && !string.IsNullOrEmpty(s.Note))) && tunings.Select(t => t.Id).Distinct().Count() == tunings.Length, "Neplatná vlastní ladění."); value = tunings; break;
+            case "yt-loops":
+                var loops = Read<SavedVideoLoop[]>(document.Value);
+                Require(loops.Length <= 10000 && loops.All(l => ValidId(l.Id) && l.VideoId is not null && l.VideoId.Length == 11 && l.VideoId.All(c => char.IsAsciiLetterOrDigit(c) || c is '_' or '-') && l.Label is not null && double.IsFinite(l.Start) && double.IsFinite(l.End) && l.Start >= 0 && l.End > l.Start && double.IsFinite(l.Rate) && l.Rate is >= 0.25 and <= 2), "Neplatná video smyčka."); value = loops; break;
+            case "ai-settings":
+                var ai = Read<AiSettings>(document.Value); Require(ValidId(ai.Model),"Neplatný model AI."); value = ai; break;
+            case "chat":
+                var chat = Read<SavedChatMessage[]>(document.Value); Require(chat.Length <= 10000 && chat.All(m => m.Role is "user" or "model" && m.Text is not null && m.Text.Length <= 100000),"Neplatná historie AI."); value = chat; break;
+            case "recording":
+                var recording = Read<RecordingData>(document.Value);
+                Require(recording.Id == document.Id && recording.Name is not null && recording.MimeType is not null && double.IsFinite(recording.DurationSec) && recording.DurationSec >= 0 && recording.Bytes is > 0 and <= 1024L*1024*1024 && ValidHash(recording.Sha256) && ValidRelativePath(recording.RelativePath) && recording.RelativePath.StartsWith("recordings/",StringComparison.Ordinal) && recording.Markers is not null && recording.Markers.All(m => ValidId(m.Id) && m.Label is not null && double.IsFinite(m.TimeSec) && m.TimeSec >= 0 && m.TimeSec <= recording.DurationSec),"Neplatná metadata nahrávky."); value = recording; break;
+            case "project":
+                var project = Read<ProjectIndex>(document.Value); Require(project.Id == document.Id && project.Name is not null && ValidRelativePath(project.RelativeManifest) && project.RelativeManifest.StartsWith("projects/",StringComparison.Ordinal),"Neplatný index projektu."); value = project; break;
+            default: throw new InvalidDataException("Neznámý typ dat.");
+        }
+        return document with { Value = JsonSerializer.SerializeToElement(value,Json) };
+    }
+    public static void ValidateProject(ProjectManifest project)
+    {
+        Require(project.SchemaVersion == 1 && Guid.TryParse(project.Id,out _) && !string.IsNullOrWhiteSpace(project.Name) && project.SampleRate is >= 8000 and <= 192000 && project.Tracks is not null && project.Tracks.Count <= 256, "Neplatný projekt.");
+        Require(project.Tracks!.All(t => ValidId(t.Id) && t.Name is not null && ValidRelativePath(t.MediaPath) && t.MediaPath.StartsWith("media/",StringComparison.Ordinal) && ValidHash(t.Sha256) && double.IsFinite(t.DurationSec) && t.DurationSec >= 0 && Unit(t.Gain) && double.IsFinite(t.Pan) && t.Pan is >= -1 and <= 1 && t.OffsetFrames >= 0) && project.Tracks!.Select(t => t.Id).Distinct().Count() == project.Tracks!.Count,"Neplatné stopy projektu.");
+    }
+    private static void RejectSecretFields(JsonElement value)
+    {
+        if (value.ValueKind == JsonValueKind.Object)
+            foreach (var entry in value.EnumerateObject())
+            {
+                var key = entry.Name.Replace("_","").Replace("-","").ToLowerInvariant();
+                Require(key is not ("apikey" or "secret" or "password" or "authorization" or "accesstoken"), "Tajné údaje nepatří do běžného úložiště.");
+                RejectSecretFields(entry.Value);
+            }
+        else if (value.ValueKind == JsonValueKind.Array) foreach (var entry in value.EnumerateArray()) RejectSecretFields(entry);
+    }
+}

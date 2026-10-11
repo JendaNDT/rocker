@@ -1,0 +1,151 @@
+{
+  "scope": "W08 shared native component catalog and compact transport; feature integration continues",
+  "sourceCommit": "f6a7b1ed0ff6dc5749656d1744b4a105505fa098",
+  "windowsRun": "https://github.com/JendaNDT/rocker/actions/runs/38153511933",
+  "result": "passed",
+  "starts": [
+    {
+      "window": {
+        "result": "passed",
+        "midiPreparedInCommonEngine": true,
+        "onlineVideoVerified": false,
+        "localVideoBridgeVerified": true,
+        "webViewRuntime": "153.0.4234.48",
+        "nativeShellViewsVisited": 32,
+        "exitCode": 0,
+        "audioHostsCreated": 1,
+        "windowTitle": "Rocker \u2014 P\u0159ehled",
+        "checkedAtUtc": "2026-10-11T16:05:17.5511261Z",
+        "audioCoexistenceVerified": false,
+        "nativeNotationVerified": true,
+        "audioPlaybackVerified": false
+      },
+      "components": {
+        "result": "passed",
+        "checks": 31,
+        "realInputVerified": false,
+        "keyboardAndScreenReaderManualVerified": false,
+        "highContrastManualVerified": false
+      },
+      "navigation": {
+        "result": "passed",
+        "viewsVisited": 32,
+        "views": [
+          "01",
+          "02",
+          "03",
+          "04",
+          "05",
+          "06",
+          "07",
+          "08",
+          "09",
+          "10",
+          "11",
+          "12",
+          "13",
+          "14",
+          "15",
+          "16",
+          "17",
+          "18",
+          "19",
+          "20",
+          "21",
+          "22",
+          "23",
+          "24",
+          "25",
+          "26",
+          "27",
+          "28",
+          "29",
+          "30",
+          "31",
+          "32"
+        ],
+        "backRestoredTask": true,
+        "audioHostsCreated": 1,
+        "cachedNativePages": 30,
+        "manualInteractionsVerified": false,
+        "completeFeaturesVerified": false
+      }
+    },
+    {
+      "window": {
+        "result": "passed",
+        "midiPreparedInCommonEngine": true,
+        "onlineVideoVerified": false,
+        "localVideoBridgeVerified": true,
+        "webViewRuntime": "153.0.4234.48",
+        "nativeShellViewsVisited": 32,
+        "exitCode": 0,
+        "audioHostsCreated": 1,
+        "windowTitle": "Rocker \u2014 P\u0159ehled",
+        "checkedAtUtc": "2026-10-11T16:05:21.1434460Z",
+        "audioCoexistenceVerified": false,
+        "nativeNotationVerified": true,
+        "audioPlaybackVerified": false
+      },
+      "components": {
+        "result": "passed",
+        "checks": 31,
+        "realInputVerified": false,
+        "keyboardAndScreenReaderManualVerified": false,
+        "highContrastManualVerified": false
+      },
+      "navigation": {
+        "result": "passed",
+        "viewsVisited": 32,
+        "views": [
+          "01",
+          "02",
+          "03",
+          "04",
+          "05",
+          "06",
+          "07",
+          "08",
+          "09",
+          "10",
+          "11",
+          "12",
+          "13",
+          "14",
+          "15",
+          "16",
+          "17",
+          "18",
+          "19",
+          "20",
+          "21",
+          "22",
+          "23",
+          "24",
+          "25",
+          "26",
+          "27",
+          "28",
+          "29",
+          "30",
+          "31",
+          "32"
+        ],
+        "backRestoredTask": true,
+        "audioHostsCreated": 1,
+        "cachedNativePages": 30,
+        "manualInteractionsVerified": false,
+        "completeFeaturesVerified": false
+      }
+    }
+  ],
+  "screenshots": [
+    "windows-overview.png",
+    "windows-components.png"
+  ],
+  "notPerformed": [
+    "Manual keyboard, screen reader, DPI and high contrast acceptance",
+    "Physical guitar input and latency",
+    "Complete product features"
+  ]
+}

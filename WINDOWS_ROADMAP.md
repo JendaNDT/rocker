@@ -237,7 +237,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w08"></a>
 #### W08 — Implementovat Vintage designový systém
 
-- [ ] Rozpracováno: [společné Vintage komponenty](docs/windows/w08/README.md), nativní ovladače, diagramy, měřák a kompaktní transport. Konkrétní Windows build a snímky navazují. Závislosti: W07.
+- [ ] Rozpracováno: [společné Vintage komponenty](docs/windows/w08/README.md), nativní ovladače, diagramy, měřák a kompaktní transport. [Windows build a snímky prošly](docs/windows/w08/windows-validation.json); Live a kompletní produktové pohledy se připojí v příslušných funkčních krocích. Závislosti: W07.
 - Převést návrhy do tokenů barev, typografie, rozestupů, hran a stavů. Preferovat Segoe/system fonty pro ovládání; dekorativní písmo a materiály jen tam, kde pomáhají hudebnímu přístroji.
 - Připravit společné seznamy, formuláře, panely, transport, level metr, knoby se zadáním čísla, diagramy a chybové stavy. Každý vlastní widget musí mít klávesnici a UI Automation reprezentaci.
 - Rozpracovat stavové specifikace všech 32 pohledů, včetně malého okna, vysokého DPI, vysokého kontrastu, offline režimu a prázdných dat. Systémový dialog nereplikovat obrázkem nebo vlastním webovým formulářem.
@@ -248,7 +248,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w09"></a>
 #### W09 — Zavést lokální úložiště a projekty
 
-- [ ] Čeká. Závislosti: W05, W06.
+- [ ] Rozpracováno: transakční SQLite, validované dokumenty, soubory médií a projektů, autosave a kontroly obnovy. Závislosti: W05, W06.
 - SQLite pro strukturovaná data a index, soubory pro zvuk, manifest projektu se stabilními ID stop a relativními odkazy. Oddělit tovární obsah, uživatelská data, cache a dočasné nahrávky.
 - Definovat schéma nastavení, profilu, pokroku, lekcí, presetů, smyček, nahrávek, projektů a AI historie. Každá změna schématu má migraci, validaci a zálohu před převodem.
 - Zavést transakce, atomické nahrazení manifestu, autosave, obnovu po pádu a kontrolu chybějících médií. Nastavení umístění souborů nesmí vytvářet neplatné odkazy ani tiše přepisovat jiné projekty.

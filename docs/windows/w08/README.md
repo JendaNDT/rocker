@@ -31,5 +31,9 @@ snímek je doplňkový a jeho absence neskrývá výsledek renderu. Ruční klá
 čtečky, všechny vysoké DPI a systémový vysoký kontrast jsou další W37/W42,
 nejsou vydávané za již provedené testy.
 
-Aktuální Windows sestavení tohoto řezu se ověřuje. Základ shellu před tímto
-řezem prošel v běhu 38152583162; to samo nepotvrzuje nové vlastní komponenty.
+Windows sestavení [38153511933](https://github.com/JendaNDT/rocker/actions/runs/38153511933)
+prošlo oběma starty, 31 kontrolami komponent v každém procesu, navigací všech
+32 pohledů, notovým rendererem, místním video bridgem a čistým zavřením.
+[Důkaz](windows-validation.json) a skutečné WinUI snímky
+[přehledu](windows-overview.png) a [komponent](windows-components.png) jsou
+uložené zde. Tyto výsledky nepotvrzují dosud nepřipojené produktové funkce.
