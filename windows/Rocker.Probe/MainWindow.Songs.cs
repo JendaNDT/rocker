@@ -100,7 +100,7 @@ public sealed partial class MainWindow
             if(song is not null && mediaPath is not null){song=song with{Speed=speed,Position=Math.Min(sourcePosition,song.Duration)};SaveSong();if((transport.Reserved&1)!=0)await ApplySongLoopAsync();}
             if(transport.Playing!=0)await audio.PlayAsync();MediaStatus.Text="Rychlost byla změněna bez změny výšky tónu.";
         }catch{currentSpeed=previous;throw;}
-        finally{if(!closed){songUpdating=true;SpeedBox.SelectedIndex=Array.IndexOf(new[]{.25,.5,.75,1.,1.5,2.},currentSpeed);if(songSpeed is not null)songSpeed.Value=currentSpeed;songUpdating=false;SetBusy(false);if(songCancel is not null)songCancel.IsEnabled=false;DrawSongWaveform();}}
+        finally{if(!closed){songUpdating=true;SpeedBox.SelectedIndex=Array.IndexOf(new[]{.25,.5,.75,1.0,1.5,2.0},currentSpeed);if(songSpeed is not null)songSpeed.Value=currentSpeed;songUpdating=false;SetBusy(false);if(songCancel is not null)songCancel.IsEnabled=false;DrawSongWaveform();}}
     }
     private async Task ApplySongLoopAsync()
     {
@@ -119,7 +119,7 @@ public sealed partial class MainWindow
     private void RefreshSong(Rocker.Interop.TransportSnapshot transport)
     {
         if(song is not null && mediaPath is not null && !busy && transport.Ready!=0 && Math.Abs(transport.Speed-currentSpeed)>1e-8){
-            currentSpeed=transport.Speed;songRampQueuedSpeed=null;songUpdating=true;if(songSpeed is not null)songSpeed.Value=currentSpeed;SpeedBox.SelectedIndex=Array.IndexOf(new[]{.25,.5,.75,1.,1.5,2.},currentSpeed);songUpdating=false;song=song with{Speed=currentSpeed};SaveSong();
+            currentSpeed=transport.Speed;songRampQueuedSpeed=null;songUpdating=true;if(songSpeed is not null)songSpeed.Value=currentSpeed;SpeedBox.SelectedIndex=Array.IndexOf(new[]{.25,.5,.75,1.0,1.5,2.0},currentSpeed);songUpdating=false;song=song with{Speed=currentSpeed};SaveSong();
         }
         if(song?.Ramp==true && mediaPath is not null && audio is not null && !busy && (transport.Reserved&1)!=0 && (transport.Reserved&(16|32))==0 && transport.Playing!=0 && currentSpeed<song.RampTarget-1e-8 && songRampQueuedSpeed is null && (songRampTask is null || songRampTask.IsCompleted))songRampTask=PrepareSongRampAsync();
         if(transport.Playing==0 && songRampQueuedSpeed is not null && (transport.Reserved&32)==0)songRampQueuedSpeed=null;

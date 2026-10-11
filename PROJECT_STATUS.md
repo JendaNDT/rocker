@@ -858,3 +858,14 @@ W15/W16 prošly Windows běhy 38160896192 a 38161618474. W17 přidává celý
 DSP řetězec, 2× FIR oversampling s 15vzorkovou skupinovou prodlevou, pravý
 bypass, native Vintage knobs, sdílené presety a jejich persistence. Linux
 7/7 CTest a nativní C# roundtrip prošly; Windows ověření aparátu navazuje.
+
+Windows W17–W20 prošly sestavením, C# propojením a oběma WinUI kontrolami
+(včetně aparátu, metronomu, ladičky a náhledu diagnostiky); důkazy jsou
+v `docs/windows/w17` až `w20`. W21 přidává bounded read-ahead PCM cache,
+samostatnou pauzu/seek, nativní časovou osu, uložené úseky, vzorkový předtakt
+a předem připravené zrychlení na A/B hranici. Linux 12/12 CTest včetně
+40min source, 2000 souběžných výměn a ASan/UBSan prošel, C# SQLite nyní
+ověřuje i nový typ song. První Windows W21 běh prošel 12/12 native testů
+a PInvoke; odhalil chybný zápis dvou C# čísel ve formuláři. Oprava má nový
+Windows build. Funkčně kompletní kandidát ani fyzická přejímka zatím nejsou
+hotové; pokračuje W22 a další dohodnuté části roadmapy.
