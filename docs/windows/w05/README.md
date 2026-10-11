@@ -11,7 +11,7 @@ PWA ani větev `main` se tímto přepisem nemění.
 - `Rocker.Probe`: aktuální nativní pracovní okno; plný shell a produktové
   pohledy jsou následující W07/W08. Třídy WinUI nepatří do domény ani DSP.
 - `Rocker.Domain`: hudební výpočty, čistá pravidla a verzovaný obsah bez UI/audio.
-  Aktuální řez portuje všech 69 případů W01, nikoli všechny stavové automaty W06.
+  Aktuální řez portuje všech 69 případů W01, 37 stavů Surgical a pravidla dokončení lekcí; další automaty W06 navazují.
 - `Rocker.Infrastructure`: uživatelské cesty, vlastnictví souborů a bezpečná
   výměna textového souboru. SQLite, projekty a migrace jsou W09–W12.
 - `Rocker.Interop`: verze a životnost C ABI, SafeHandle a worker příkazy.
@@ -42,7 +42,10 @@ uživateli nenabízí před funkčně uceleným kandidátem po W43.
 konstanty do `windows/content/catalog.json` se schématem 1 a SHA256 zdrojů.
 Obsah se neopisuje a W01 reference se nepřepisuje. `--check` porovná živý export;
 `--check-frozen` ověřuje všech 15 skupin vůči W01 a hashům bez PWA vývojových
-závislostí, takže jej může provést Windows build.
+závislostí, takže jej může provést Windows build. Hash textových TS zdrojů používá
+kanonické LF konce řádků; ostatní obsah se nezmění. První uzamčená Windows
+obnova v běhu 38150103154 prošla, kontrola obsahu však odhalila CRLF checkout;
+opravuje se kanonizace konců řádků, nikoli vypnutí kontroly.
 
 Doménový loader hlídá verzi, velikost, ID, duplicity, vazby lekcí na akordy
 a cílové noty. Plán kromě původního zobrazovaného chování uchovává konkrétní ID
@@ -52,7 +55,7 @@ PWA je výslovné, ne vydávané za nové měření hry. Žádný uložený API 
 není součástí katalogu ani referenčních dat.
 
 Před W43 zůstává kontrola obsahu dvou převzatých riffů podle W02, všechny
-lesson/trainer automaty, nástroje W29 a kompletní persistence. Přenesené
+zbývající trainer automaty, nástroje W29 a kompletní persistence. Přenesené
 referenční případy samy neoznačují celou aplikaci ani celé W06 za hotové.
 
 ## Lokální kontroly
@@ -68,7 +71,7 @@ dotnet run --project windows/Rocker.Infrastructure.Checks -c Release
 node scripts/export-windows-content.mjs --check-frozen
 ```
 
-Linux prošel 69 referenčními a 10 hraničními doménovými kontrolami,
+Linux prošel 69 referenčními a 56 dalšími doménovými kontrolami (včetně 37 stavů Surgical),
 7 souborovými kontrolami a obnovou uzamčeného grafu. Windows uzamčené sestavení
 všech vrstev a symbolů se ověřuje navazujícím CI; dokud protokol není uložený,
 nelze tento konkrétní build označit za potvrzený.

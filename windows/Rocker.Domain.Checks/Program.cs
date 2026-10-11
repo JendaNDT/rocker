@@ -52,6 +52,32 @@ catch (InvalidDataException) { Check(true, "future content schema rejected"); }
 var duplicate = File.ReadAllText(args[1]).Replace("\"id\": \"stage-2\"", "\"id\": \"stage-1\"");
 try { ContentCatalog.Load(System.Text.Encoding.UTF8.GetBytes(duplicate)); throw new Exception("Duplicate content ID accepted"); }
 catch (InvalidDataException) { Check(true, "duplicate ID rejected"); }
-Console.WriteLine($"PASS: {compared} frozen PWA cases and {checks - compared} boundary assertions; lesson/trainer state machines remain W06 work.");
+var tracesPath = Path.Combine(Path.GetDirectoryName(args[0])!, "surgical-traces.json");
+using var traces = JsonDocument.Parse(File.ReadAllText(tracesPath));
+int surgicalStates = 0;
+foreach (var trace in traces.RootElement.EnumerateArray())
+{
+    var expectedStates = trace.GetProperty("states").EnumerateArray().ToArray();
+    var exercise = JsonSerializer.Deserialize<SurgicalExercise>(expectedStates[0].GetProperty("exercise"), options)!;
+    var state = SurgicalEngine.Start(exercise);
+    Check(JsonElement.DeepEquals(JsonSerializer.SerializeToElement(state, options), expectedStates[0]), "initial surgical reference state"); ++surgicalStates;
+    int index = 1;
+    foreach (var note in trace.GetProperty("notes").EnumerateArray())
+    {
+        state = SurgicalEngine.FeedNote(state, note.GetInt32());
+        Check(JsonElement.DeepEquals(JsonSerializer.SerializeToElement(state, options), expectedStates[index++]), "surgical transition matches frozen PWA trace"); ++surgicalStates;
+    }
+    Check(index == expectedStates.Length, "all surgical states compared");
+}
+var firstExercise = JsonSerializer.Deserialize<SurgicalExercise>(content.Items("surgicalExercises").First(), options)!;
+var firstState = SurgicalEngine.Start(firstExercise);
+Check(SurgicalEngine.CurrentTarget(firstState) == firstExercise.Notes[0], "surgical current target");
+Check(SurgicalEngine.FeedNote(firstState, firstExercise.Notes[0] + 12).Position == 1, "original octave-equivalent pitch-class matching preserved");
+Check(firstState.Position == 0 && firstState.ErrorCounts.All(count => count == 0), "original state not mutated");
+try { SurgicalEngine.Start(new SurgicalExercise("empty", "Empty", "", [])); throw new Exception("Empty exercise accepted"); }
+catch (ArgumentException) { Check(true, "invalid exercise rejected before state creation"); }
+Check(LessonRules.Completion(content.Lessons, [content.Lessons[0].Id, content.Lessons[0].Id]).Done == 1, "duplicate completions counted once");
+Check(LessonRules.NextIncomplete(content.Lessons, content.Lessons.Select(item => item.Id).ToArray()) is null, "all lessons completed");
+Console.WriteLine($"PASS: {compared} frozen PWA cases and {checks - compared} additional assertions, including {surgicalStates} frozen surgical states; other trainer rules remain W06 work.");
 
-if (args.Length == 3) File.WriteAllText(args[2], JsonSerializer.Serialize(new { result = "passed", referenceCases = compared, boundaryChecks = checks - compared, contentGroups = 15, stateMachinesPorted = false }));
+if (args.Length == 3) File.WriteAllText(args[2], JsonSerializer.Serialize(new { result = "passed", referenceCases = compared, boundaryChecks = checks - compared, contentGroups = 15, surgicalStatesCompared = surgicalStates, otherTrainerStateMachinesPorted = false }));

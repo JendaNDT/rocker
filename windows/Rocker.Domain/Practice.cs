@@ -79,7 +79,7 @@ public static partial class Practice
     }
     public static DailyPlan GenerateDailyPlan(ContentCatalog content, IReadOnlyCollection<string> completed, DateOnly today)
     {
-        var lesson = content.Lessons.FirstOrDefault(item => !completed.Contains(item.Id));
+        var lesson = LessonRules.NextIncomplete(content.Lessons, completed);
         var focus = (int)today.DayOfWeek % 3;
         PlanItem[] items = [
             new("tune", "Naladění", "Nalaď kytaru, ať cvičíš na čistém zvuku.", 2, "/tuner"),
