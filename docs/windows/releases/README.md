@@ -15,7 +15,9 @@ přihlášení účtem s přístupem.
 3. Aktualizovat `current.json`: ID úspěšného běhu, sestavený commit, nový jedinečný
    tag a název vydání. Přes běžné oprávnění Git vytvořit a pushnout nový lightweight
    tag přesně na sestavený commit; staré tagy nepřepisovat. Workflow jeho SHA ověří.
-   Přepsat `notes.md` podle skutečného výsledku. Commitnout a pushnout
+   Přepsat `notes.md` podle skutečného výsledku. Ověřená cesta W04: přes stávající
+   připojený GitHub účet vytvořit draft předběžného vydání s vybraným tagem, názvem
+   a těmito poznámkami; Actions do draftu nahrají balíky a zveřejní jej. Commitnout a pushnout
    tyto dva soubory; spustí se `Publish verified Windows prototype`.
 4. Publikační workflow zkontroluje úspěch vybraného Windows běhu, příslušnost
    k tomuto repozitáři/větvi/workflow, revize zdrojů, SHA-256 a obsah ZIPu.
@@ -39,5 +41,8 @@ Při publikaci W04 odmítl GitHub Actions vytvoření vydání s HTTP 403 navzdo
 deklarovanému `contents: write`. Předem vytvořený tag sám o sobě chybu neodstranil.
 Draft vydání se podařilo vytvořit přes stávající připojený GitHub účet. Workflow
 umí do existujícího draftu nahrát ověřené soubory bez přepisování příloh; tato
-publikační oprávnění je nutné ověřit na skutečném běhu. Tokeny se nevytahují
+publikační cesta prošla v běhu
+[38135801231](https://github.com/JendaNDT/rocker/actions/runs/38135801231). Tokeny se nevytahují
 z runneru a v repozitáři se neukládají.
+
+Notový řez W04: [vydání](https://github.com/JendaNDT/rocker/releases/tag/windows-w04-notation-preview-20261011), [ověření a omezení](../w04/validation.json).

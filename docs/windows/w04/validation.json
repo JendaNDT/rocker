@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "step": "W04",
   "scope": "Native notation proof only",
-  "status": "native-notation-windows-build-and-view-passed-awaiting-user-acceptance",
+  "status": "native-notation-preview-published-awaiting-user-acceptance",
   "checkedDate": "2026-10-11",
   "linuxNotation": {
     "result": "passed",
@@ -150,6 +150,45 @@
         "size": 130729624,
         "sha256": "a04483683be58d21fa37db64f17f1c65439e2d7714a66319684051c58c0caa22"
       }
+    ],
+    "publishedBinaryRedownloadedAndVerified": true
+  },
+  "publishRun": "https://github.com/JendaNDT/rocker/actions/runs/38135801231",
+  "release": {
+    "id": 409626034,
+    "draft": false,
+    "prerelease": true,
+    "html_url": "https://github.com/JendaNDT/rocker/releases/tag/windows-w04-notation-preview-20261011",
+    "tag_name": "windows-w04-notation-preview-20261011",
+    "target_commitish": "975a760329eaaa65cf2f69d453e72d4d572ee15e",
+    "assets": [
+      {
+        "name": "Rocker-Windows-sources.zip",
+        "size": 130729624,
+        "digest": "sha256:a04483683be58d21fa37db64f17f1c65439e2d7714a66319684051c58c0caa22",
+        "browser_download_url": "https://github.com/JendaNDT/rocker/releases/download/windows-w04-notation-preview-20261011/Rocker-Windows-sources.zip"
+      },
+      {
+        "name": "Rocker-Windows-x64.zip",
+        "size": 100994057,
+        "digest": "sha256:42a6acbb223d197deb4aaccb97539509a372501b225f2f995292fa41e6ccfd72",
+        "browser_download_url": "https://github.com/JendaNDT/rocker/releases/download/windows-w04-notation-preview-20261011/Rocker-Windows-x64.zip"
+      },
+      {
+        "name": "SHA256SUMS.txt",
+        "size": 184,
+        "digest": "sha256:ee49aeaad868464e7199df4630ef11c670b1277b360fc5d310c1c4e3b9f8400f",
+        "browser_download_url": "https://github.com/JendaNDT/rocker/releases/download/windows-w04-notation-preview-20261011/SHA256SUMS.txt"
+      }
     ]
+  },
+  "publicationIssue": {
+    "failedRun": "https://github.com/JendaNDT/rocker/actions/runs/38135572394",
+    "failedAttempts": [
+      1,
+      2
+    ],
+    "error": "HTTP 403 Resource not accessible by integration on release creation despite declared contents:write. Creating the tag alone did not fix it.",
+    "resolution": "Draft created with existing connected GitHub account; Actions verified tag/build/packages, uploaded assets to that draft and published it successfully. No new credentials or extracted runner tokens."
   }
 }

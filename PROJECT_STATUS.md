@@ -45,6 +45,8 @@ ochranou není ověřený. W04 je rozpracovaný: první technický řez přidáv
 [Podklady W04](docs/windows/w04/README.md) oddělují implementaci od výsledků
 Windows sestavení a ruční přejímky. Windows build, 22 notových kontrol a
 import/vykreslení v publikovaném WinUI okně prošly v běhu 38135049339.
+[Sestavené vydání W04](https://github.com/JendaNDT/rocker/releases/tag/windows-w04-notation-preview-20261011)
+je zveřejněné v soukromém repozitáři; publikovaný ZIP byl znovu stažen a ověřen.
 Klikání a systémové dialogy na Jendově počítači zatím potvrzené nejsou.
 Přehrávání not, média, zpomalování a YouTube
 zatím implementované nejsou.
