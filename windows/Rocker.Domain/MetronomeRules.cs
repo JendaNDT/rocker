@@ -8,6 +8,7 @@ public sealed record PolyrhythmConfig(bool Enabled, int TicksPerBeat, string Sou
 public sealed record MetronomeConfig(int Bpm, int BeatsPerBar, int Subdivision, IReadOnlyList<string> AccentPattern, string Sound, double Volume,
     double AccentVolume, RampConfig Ramp, GapConfig Gap, double Swing, int CountInBars, PolyrhythmConfig Polyrhythm)
 {
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] public string? VisualMode {get;init;}
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] public IReadOnlyList<string?>? SoundPattern { get; init; }
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] public string? SubdivisionSound { get; init; }
 }

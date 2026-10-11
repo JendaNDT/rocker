@@ -6,6 +6,9 @@ on:
     paths:
       - 'windows/**'
       - 'scripts/export-windows-content.mjs'
+      - 'scripts/export-windows-migration-fixture.mjs'
+      - 'src/lib/migrationArchive.ts'
+      - 'docs/windows/w12/**'
       - 'scripts/export-windows-domain-reference.mjs'
       - 'docs/windows/w06/domain-reference.json'
       - 'src/lib/**'

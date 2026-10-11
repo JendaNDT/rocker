@@ -17,11 +17,11 @@ public sealed class BackupService(UserFiles files,DataRepository database)
     private sealed record RestoreJournal(int Version,string Stage,string Rollback,IReadOnlyList<string> Existing,bool Committed);
     private sealed record ArchiveData(string Stage,BackupManifest Manifest,DataDocument[] Documents,string Hash);
     private string JournalPath => Path.Combine(files.DirectoryFor("settings"),"restore-journal.json");
-    public async Task ExportAsync(string destination,bool includeRecordings=true,bool includeProjects=true,CancellationToken cancellation=default)
+    public Task ExportAsync(string destination,bool includeRecordings=true,bool includeProjects=true,CancellationToken cancellation=default) => Task.Run(()=>ExportCoreAsync(destination,includeRecordings,includeProjects,cancellation),cancellation);
+    private async Task ExportCoreAsync(string destination,bool includeRecordings=true,bool includeProjects=true,CancellationToken cancellation=default)
     {
-        await database.ExclusiveAsync(async ()=>
+        await database.ExclusiveAsync(async snapshot=>
         {
-            var snapshot=await database.SnapshotAsync(cancellation);
             if(snapshot.Warnings.Count>0)throw new InvalidDataException("Záloha se nevytvořila: nejprve vyřeš varování uložených dat.");
             var documents=snapshot.Documents.Where(d=>(includeRecordings || d.Kind!="recording") && (includeProjects || d.Kind!="project")).ToArray();
             // Only typed documents and explicitly referenced media enter the archive.
@@ -154,7 +154,8 @@ public sealed class BackupService(UserFiles files,DataRepository database)
         }
         catch { Directory.Delete(root,true);throw; }
     }
-    public async Task<BackupPreview> PreviewAsync(string path,CancellationToken cancellation=default)
+    public Task<BackupPreview> PreviewAsync(string path,CancellationToken cancellation=default) => Task.Run(()=>PreviewCoreAsync(path,cancellation),cancellation);
+    private async Task<BackupPreview> PreviewCoreAsync(string path,CancellationToken cancellation=default)
     {
         var data=await ReadArchiveAsync(path,cancellation);
         try
@@ -164,18 +165,19 @@ public sealed class BackupService(UserFiles files,DataRepository database)
         }
         finally { Directory.Delete(OwnedPaths.Resolve(files.Root,data.Stage),true); }
     }
-    public async Task<RestoreResult> RestoreAsync(string path,BackupPreview approved,RestoreStrategy strategy,CancellationToken cancellation=default)
+    public Task<RestoreResult> RestoreAsync(string path,BackupPreview approved,RestoreStrategy strategy,CancellationToken cancellation=default) => Task.Run(()=>RestoreCoreAsync(path,approved,strategy,cancellation),cancellation);
+    private async Task<RestoreResult> RestoreCoreAsync(string path,BackupPreview approved,RestoreStrategy strategy,CancellationToken cancellation=default)
     {
         if(!Enum.IsDefined(strategy))throw new ArgumentException("Neplatná strategie obnovy.");
-        return await database.ExclusiveAsync(async ()=>
+        await RecoverInterruptedAsync(files,cancellation);
+        return await database.ExclusiveAsync(async current=>
         {
-            await RecoverInterruptedAsync(files,cancellation);
             var data=await ReadArchiveAsync(path,cancellation);string stageRoot=OwnedPaths.Resolve(files.Root,data.Stage);
             bool journalCreated=false;
             try
             {
                 if(data.Hash!=approved.Sha256)throw new InvalidDataException("Archiv se od náhledu změnil. Otevři náhled znovu.");
-                var current=await database.SnapshotAsync(cancellation);if(current.Warnings.Count>0)throw new InvalidDataException("Nejprve vyřeš varování uložených dat.");
+                if(current.Warnings.Count>0)throw new InvalidDataException("Nejprve vyřeš varování uložených dat.");
                 var combined=current.Documents.ToDictionary(d=>(d.Kind,d.Id));int imported=0,kept=0;
                 if(strategy==RestoreStrategy.ReplaceIncluded)
                     foreach(var key in combined.Keys.Where(key=>(key.Kind!="recording" || data.Manifest.IncludesRecordings) && (key.Kind!="project" || data.Manifest.IncludesProjects)).ToArray())combined.Remove(key);
@@ -235,7 +237,8 @@ public sealed class BackupService(UserFiles files,DataRepository database)
         try { string? relative=JsonSerializer.Deserialize<string>(File.ReadAllText(path));return ValidOperationPath(relative,"restore-") && Directory.Exists(OwnedPaths.Resolve(files.Root,relative!)) ? relative:null; }
         catch(Exception error) when(error is JsonException or IOException or InvalidDataException){return null;}
     }
-    public async Task<RestoreResult> UndoLastRestoreAsync(CancellationToken cancellation=default)
+    public Task<RestoreResult> UndoLastRestoreAsync(CancellationToken cancellation=default) => Task.Run(()=>UndoLastRestoreCoreAsync(cancellation),cancellation);
+    private async Task<RestoreResult> UndoLastRestoreCoreAsync(CancellationToken cancellation=default)
     {
         string relative=LastRollback() ?? throw new InvalidDataException("Vratná kopie není dostupná.");
         var oldFiles=new UserFiles(OwnedPaths.Resolve(files.Root,relative));var oldDb=await DataRepository.OpenAsync(oldFiles,cancellation);

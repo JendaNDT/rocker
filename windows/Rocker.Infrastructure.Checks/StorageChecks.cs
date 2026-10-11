@@ -50,6 +50,9 @@ internal static class StorageChecks
         autosave.Queue(UserData.Document("settings","default",new AppSettings(Theme:"light")));
         autosave.Queue(UserData.Document("settings","default",initial)); await autosave.FlushAsync();
         Check(UserData.Read<AppSettings>((await database.SnapshotAsync()).Documents.Single(x=>x.Kind=="settings").Value)==initial,"latest autosave wins");
+        var entered=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);var release=new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var exclusive=database.ExclusiveAsync(async _=>{entered.SetResult();await release.Task;return true;});await entered.Task;
+        var reader=database.SnapshotAsync();Check(!reader.IsCompleted,"exclusive profile operation also excludes concurrent database readers");release.SetResult();await exclusive;await reader;
         string signal = Path.Combine(files.Root,"child-ready");
         var start = new ProcessStartInfo(Environment.ProcessPath!) { UseShellExecute=false };
         if (string.Equals(Path.GetFileNameWithoutExtension(Environment.ProcessPath),"dotnet",StringComparison.OrdinalIgnoreCase)) start.ArgumentList.Add(Assembly.GetExecutingAssembly().Location);

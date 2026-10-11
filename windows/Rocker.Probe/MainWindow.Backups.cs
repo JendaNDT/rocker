@@ -68,6 +68,7 @@ public sealed partial class MainWindow
             catch(Exception){status.Text="Vratnou kopii se nepodařilo použít. Původní soubory kopie zůstávají zachované.";}
             finally{backupOperationRunning=false;if(!closed)ShellInteractionRoot.IsEnabled=true;}
         };
+        panel.Children.Add(BuildLegacyImport());
         panel.Children.Add(recordings);panel.Children.Add(projects);panel.Children.Add(export);panel.Children.Add(restore);panel.Children.Add(undo);panel.Children.Add(status);
         panel.Children.Add(Text("Převod ze staré webové aplikace bude dostupný po dokončení importu. Její místní data se tímto postupem nemažou.",true));return Card(panel);
     }

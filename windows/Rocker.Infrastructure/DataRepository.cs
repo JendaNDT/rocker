@@ -78,7 +78,12 @@ public sealed class DataRepository
         }
         finally { writer.Release(); }
     }
-    public Task<DataSnapshot> SnapshotAsync(CancellationToken cancellation = default) => Task.Run(() =>
+    public async Task<DataSnapshot> SnapshotAsync(CancellationToken cancellation = default)
+    {
+        await writer.WaitAsync(cancellation);
+        try { return await SnapshotCoreAsync(cancellation); } finally { writer.Release(); }
+    }
+    private Task<DataSnapshot> SnapshotCoreAsync(CancellationToken cancellation) => Task.Run(() =>
     {
         cancellation.ThrowIfCancellationRequested();
         using var connection = Connect();
@@ -113,10 +118,10 @@ public sealed class DataRepository
         }
         finally { writer.Release(); }
     }
-    public async Task<T> ExclusiveAsync<T>(Func<Task<T>> operation, CancellationToken cancellation = default)
+    public async Task<T> ExclusiveAsync<T>(Func<DataSnapshot,Task<T>> operation, CancellationToken cancellation = default)
     {
         await writer.WaitAsync(cancellation);
-        try { return await operation(); } finally { writer.Release(); }
+        try { return await operation(await SnapshotCoreAsync(cancellation)); } finally { writer.Release(); }
     }
     public async Task BackupDatabaseAsync(string destination, CancellationToken cancellation = default)
     {

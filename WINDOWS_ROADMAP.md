@@ -275,7 +275,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w12"></a>
 #### W12 — Připravit převod z PWA včetně nahrávek
 
-- [ ] Čeká. Závislosti: W04, W09–W11.
+- [ ] Rozpracováno: [převod všech 11 skupin a původních nahrávek](docs/windows/w12/README.md), skutečný referenční archiv PWA, náhled a deduplikace. Windows integrace navazuje; produkční webový export zatím není nasazený. Závislosti: W04, W09–W11.
 - Implementovat import starých záloh nastavení podle 11 klíčů v kapitole o migraci. Zachovat ID, časové údaje a vlastní obsah; známé rozdíly mezi webovým a nativním nastavením přeložit, ostatní vysvětlit v reportu.
 - Připravit malý migrační export v PWA pro IndexedDB nahrávky s původními soubory, MIME typem, názvem, délkou a časem vytvoření. Změna exportu a případné nasazení jsou samostatný implementační úkol; tento dokument je neprovádí.
 - Native aplikace nemůže přímo převzít localStorage jiného prohlížeče. Nabídnout jasný postup exportu ze stávajícího profilu a importu souboru; původní data neodstraňovat.

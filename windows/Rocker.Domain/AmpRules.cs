@@ -1,7 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 using System.Text.Json;
 namespace Rocker.Domain;
-public sealed record AmpSettings(double Compression, double Drive, string Distortion, double Bass, double Mid, double Treble, string Cabinet, double Delay, double Reverb, double Chorus, double Level);
+public sealed record AmpSettings(double Compression, double Drive, string Distortion, double Bass, double Mid, double Treble, string Cabinet, double Delay, double Reverb, double Chorus, double Level)
+{
+    [System.Text.Json.Serialization.JsonIgnore(Condition=System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)] public string? PresetId {get;init;}
+}
 public sealed record AmpPreset(string Id, string Name, AmpSettings Settings);
 public static class AmpRules
 {

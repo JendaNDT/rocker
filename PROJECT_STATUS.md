@@ -26,7 +26,10 @@ přenosné projekty a autosave lekcí/vzhledu. Lokálně prošlo 11 souborových
 datových kontrol, včetně násilného přerušení SQLite transakce. Windows 38155352032 potvrdil obnovení dat v obou WinUI procesech a všech 8
 DPAPI kontrol [W10](docs/windows/w10/README.md). [W11](docs/windows/w11/README.md)
 přidává verzované zálohy, náhled konfliktů, vratné kopie a startup recovery.
-Lokálně prošlo 20 scénářů záloh; jeho Windows integrace se nyní ověřuje. PWA reference: všech 561 testů, typy i lint prošly.
+Lokálně prošlo 20 scénářů záloh; jeho Windows integrace se nyní ověřuje.
+[W12](docs/windows/w12/README.md) má export z PWA, import starých záloh a všech
+pěti formátů nahrávek, náhled, deduplikaci a oddělené převzetí starého klíče.
+Lokálně prošlo 28 migračních kontrol. Webová změna není na produkčním main. PWA reference: všech 567 testů, typy i lint prošly.
 
 ## Aktuální směr: nativní Rocker pro Windows
 

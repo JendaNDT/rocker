@@ -52,9 +52,9 @@ public static class UserData
                 var lessons = Read<LessonProgress>(document.Value);
                 Require(lessons.CompletedIds is not null && lessons.Positions is not null && lessons.Positions.Count <= 10000 && lessons.Positions.All(item => ValidId(item.Key) && item.Value is >= 0 and <= 255), "Neplatná pozice lekce.");
                 value = lessons with { CompletedIds = lessons.CompletedIds!.Where(ValidId).Distinct(StringComparer.Ordinal).ToArray() }; break;
-            case "amp": value = AmpRules.Sanitize(document.Value); break;
+            case "amp": value = AmpRules.Sanitize(document.Value) with { PresetId=document.Value.ValueKind==JsonValueKind.Object && document.Value.TryGetProperty("presetId",out var preset) && preset.ValueKind==JsonValueKind.String && ValidId(preset.GetString()) ? preset.GetString():null }; break;
             case "amp-presets": value = AmpRules.SanitizeUserPresets(document.Value); break;
-            case "metronome": value = MetronomeRules.Sanitize(document.Value); break;
+            case "metronome": value = MetronomeRules.Sanitize(document.Value) with { VisualMode=document.Value.ValueKind==JsonValueKind.Object && document.Value.TryGetProperty("visualMode",out var mode) && mode.ValueKind==JsonValueKind.String && mode.GetString() is "dots" or "pendulum" ? mode.GetString():null }; break;
             case "metronome-presets":
                 Require(document.Value.ValueKind == JsonValueKind.Array && document.Value.GetArrayLength() <= 1000,"Neplatné metronomové presety.");
                 value = document.Value.EnumerateArray().Select(item => new { id = item.GetProperty("id").GetString(), name = item.GetProperty("name").GetString(), config = MetronomeRules.Sanitize(item.GetProperty("config")) }).Where(item => ValidId(item.id) && !string.IsNullOrWhiteSpace(item.name)).ToArray(); break;

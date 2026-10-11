@@ -7,6 +7,9 @@ import {
   isValidBackup,
   knownBackupEntries,
 } from "@/lib/backup";
+import { buildMigrationArchive } from "@/lib/migrationArchive";
+import { listRecordings, getRecording } from "@/lib/recordingsDb";
+import type { Recording } from "@/lib/recordings";
 import { downloadBlob } from "@/lib/download";
 
 const SECONDARY =
@@ -18,6 +21,7 @@ const SECONDARY =
  * not part of the backup.
  */
 export function DataBackup() {
+  const [exportingWindows, setExportingWindows] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   function downloadBackup() {
@@ -33,6 +37,24 @@ export function DataBackup() {
       blob,
       `rocker-zaloha-${new Date().toISOString().slice(0, 10)}.json`,
     );
+  }
+
+  async function exportForWindows() {
+    if (exportingWindows) return;
+    setExportingWindows(true); setError(null);
+    try {
+      const entries: Record<string, string> = {};
+      for (const key of BACKUP_KEYS) { const raw = localStorage.getItem(key); if (raw !== null) entries[key] = raw; }
+      const recordings: Recording[] = [];
+      for (const meta of await listRecordings()) {
+        const recording = await getRecording(meta.id);
+        if (!recording) throw new Error("Nahrávka během exportu chybí. Zkus export znovu.");
+        recordings.push(recording);
+      }
+      const archive = await buildMigrationArchive(buildBackup(entries), recordings);
+      downloadBlob(archive, `rocker-pro-windows-${new Date().toISOString().slice(0, 10)}.rockermigration`);
+    } catch (failure) { setError(failure instanceof Error ? failure.message : "Export pro Windows se nezdařil."); }
+    finally { setExportingWindows(false); }
   }
 
   async function restoreFromFile(file: File) {
@@ -90,6 +112,9 @@ export function DataBackup() {
         <button type="button" onClick={downloadBackup} className={SECONDARY}>
           Zálohovat
         </button>
+        <button type="button" onClick={() => void exportForWindows()} disabled={exportingWindows} className={SECONDARY}>
+          {exportingWindows ? "Připravuji převod…" : "Exportovat pro Windows včetně nahrávek"}
+        </button>
         <label className={`cursor-pointer ${SECONDARY}`}>
           Obnovit ze zálohy
           <input
@@ -102,7 +127,8 @@ export function DataBackup() {
       </div>
       {error && <p className="mt-3 text-sm text-danger">{error}</p>}
       <p className="mt-3 text-xs text-muted">
-        Soubor zálohy obsahuje i tvůj AI klíč — ber ho jako osobní a nesdílej
+        Export pro Windows zahrnuje i nahrávky a značky, vynechá AI klíč a původní data ponechá. Limit je 256 MB.
+        Běžný soubor JSON zálohy obsahuje i tvůj AI klíč — ber ho jako osobní a nesdílej
         ho.
       </p>
     </div>
