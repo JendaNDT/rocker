@@ -20,7 +20,13 @@ public sealed record SavedVideoLoop(string Id, string VideoId, string Label, dou
 public sealed record AiSettings(string Model = "gemini-2.5-flash", bool IncludeProgress = true, bool IncludeInstrument = false);
 public sealed record SavedChatMessage(string Role, string Text, DateTimeOffset? CreatedAt = null);
 public sealed record RecordingData(string Id, string Name, string MimeType, double DurationSec, DateTimeOffset CreatedAt,
-    string RelativePath, long Bytes, string Sha256, IReadOnlyList<Marker> Markers);
+    string RelativePath, long Bytes, string Sha256, IReadOnlyList<Marker> Markers,
+    [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)] CaptureMetadata? Capture = null)
+{
+    [JsonIgnore] public string LibraryLabel => Name + (Capture?.Partial==true ? " · neúplná / obnovená" : "");
+}
+public sealed record CaptureMetadata(int SampleRate, int Channels, int Bus, long Frames, long? FirstFrame, uint? Epoch,
+    uint DspLatencyFrames, bool DspChanged, bool Partial, string? Failure = null);
 public sealed record ProjectTrack(string Id, string Name, string MediaPath, string Sha256, double DurationSec,
     double Gain = 1, bool Muted = false, double Pan = 0, bool Solo = false, long OffsetFrames = 0);
 public sealed record ProjectManifest(int SchemaVersion, string Id, string Name, DateTimeOffset CreatedAt, DateTimeOffset UpdatedAt,
@@ -80,6 +86,7 @@ public static class UserData
                 var chat = Read<SavedChatMessage[]>(document.Value); Require(chat.Length <= 10000 && chat.All(m => m.Role is "user" or "model" && m.Text is not null && m.Text.Length <= 100000),"Neplatná historie AI."); value = chat; break;
             case "recording":
                 var recording = Read<RecordingData>(document.Value);
+                if(recording.Capture is { } capture) Require(capture.SampleRate is >=8000 and <=192000 && capture.Channels is 1 or 2 && capture.Bus is >=0 and <=2 && capture.Frames>0 && (capture.FirstFrame is null or >=0) && Math.Abs(recording.DurationSec-capture.Frames/(double)capture.SampleRate)<0.00001 && (capture.Failure is null || capture.Failure.Length<=512),"Neplatné údaje pořízení nahrávky.");
                 Require(recording.Id == document.Id && recording.Name is not null && recording.MimeType is not null && double.IsFinite(recording.DurationSec) && recording.DurationSec >= 0 && recording.Bytes is > 0 and <= 1024L*1024*1024 && ValidHash(recording.Sha256) && ValidRelativePath(recording.RelativePath) && recording.RelativePath.StartsWith("recordings/",StringComparison.Ordinal) && recording.Markers is not null && recording.Markers.All(m => ValidId(m.Id) && m.Label is not null && double.IsFinite(m.TimeSec) && m.TimeSec >= 0 && m.TimeSec <= recording.DurationSec),"Neplatná metadata nahrávky."); value = recording; break;
             case "project":
                 var project = Read<ProjectIndex>(document.Value); Require(project.Id == document.Id && project.Name is not null && ValidRelativePath(project.RelativeManifest) && Guid.TryParse(project.Id,out var projectGuid) && project.RelativeManifest=="projects/"+projectGuid.ToString("N")+"/project.rockerproj","Neplatný index projektu."); value = project; break;

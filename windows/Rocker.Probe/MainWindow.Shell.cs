@@ -118,6 +118,8 @@ public sealed partial class MainWindow
     private FrameworkElement BuildWorkspace(NavigationTarget target)
     {
         if (catalog is null) return Text("Výukový obsah není dostupný. Přehrávání souborů zůstává dostupné.");
+        if (target.ViewId == "14") return BuildRecordings();
+        if (target.ViewId == "32") return BuildRecordingExport();
         if (target.ViewId == "07") return BuildSong();
         if (target.ViewId == "03") return BuildTuner();
         if (target.ViewId == "04") return BuildMetronome();
@@ -233,15 +235,16 @@ public sealed partial class MainWindow
         if (closeApproved) return;
         args.Cancel = true;
         if (closingWindow) return;
+        if (exportOperation) { ShowPersistenceError("Počkej na dokončení exportu nebo jej zruš v pohledu Export."); return; }
         if (backupOperationRunning) { ShowPersistenceError("Počkej na dokončení zálohy nebo obnovy."); return; }
         if (deviceOperationRunning) { ShowPersistenceError("Počkej na dokončení změny zvukového zařízení."); return; }
         if (secretOperationRunning) { ShowPersistenceError("Počkej na dokončení uložení nebo odstranění klíče."); return; }
         closingWindow = true;
         try
         {
-            foreach (var guard in closeGuards.Values.Where(guard => guard.State.RequiresConfirmation))
+            foreach (var guard in closeGuards.Values.Where(guard => guard.State.RequiresConfirmation).ToArray())
             {
-                var dialog = new ContentDialog { XamlRoot = ShellRoot.XamlRoot, Title = "Zavřít Rocker?", Content = guard.State.Prompt, PrimaryButtonText = "Uložit a zavřít", SecondaryButtonText = "Zahodit", CloseButtonText = "Zrušit", DefaultButton = ContentDialogButton.Primary };
+                var dialog = new ContentDialog { XamlRoot = ShellRoot.XamlRoot, Title = "Zavřít Rocker?", Content = guard.State.Prompt, PrimaryButtonText = "Uložit a zavřít", SecondaryButtonText = guard.State.Recording ? "" : "Zahodit", CloseButtonText = "Zrušit", DefaultButton = ContentDialogButton.Primary };
                 var choice = await dialog.ShowAsync();
                 if (choice == ContentDialogResult.None) return;
                 if (choice == ContentDialogResult.Primary && !await guard.Save()) return;
@@ -273,6 +276,7 @@ public sealed partial class MainWindow
         await VerifyTunerAsync();
         await VerifyDiagnosticsAsync();
         await VerifySongsAsync();
+        await VerifyRecordingsAsync();
         await VerifyDevicesAsync();
         VerifyComponents();
         if (Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTIC_VIEW") == "components") ShowComponents();

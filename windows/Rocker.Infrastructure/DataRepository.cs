@@ -108,15 +108,14 @@ public sealed class DataRepository
         }
         transaction.Commit(); return new DataSnapshot(documents,warnings);
     },cancellation);
-    public async Task RemoveAsync(string kind, string id, CancellationToken cancellation = default)
+    public Task RemoveAsync(string kind,string id,CancellationToken cancellation=default)=>RemoveManyAsync([(kind,id)],cancellation);
+    public async Task RemoveManyAsync(IEnumerable<(string Kind,string Id)> keys,CancellationToken cancellation=default)
     {
-        if (!UserData.Kinds.Contains(kind) || !UserData.ValidId(id)) throw new ArgumentException("Neplatný záznam.");
-        await writer.WaitAsync(cancellation);
-        try
+        var owned=keys.Distinct().ToArray();if(owned.Length>10000 || owned.Any(k=>!UserData.Kinds.Contains(k.Kind)||!UserData.ValidId(k.Id)))throw new ArgumentException("Neplatné záznamy.");
+        await writer.WaitAsync(cancellation);try
         {
-            await Task.Run(() => { using var connection = Connect(); Execute(connection,"PRAGMA synchronous=FULL;"); if ((long)(Scalar(connection,"PRAGMA user_version") ?? 0L) != SchemaVersion) throw new InvalidDataException("Schéma databáze se změnilo."); using var cmd = connection.CreateCommand(); cmd.CommandText = "DELETE FROM documents WHERE kind=$kind AND id=$id"; cmd.Parameters.AddWithValue("$kind",kind); cmd.Parameters.AddWithValue("$id",id); cancellation.ThrowIfCancellationRequested(); cmd.ExecuteNonQuery(); },cancellation);
-        }
-        finally { writer.Release(); }
+            await Task.Run(()=>{using var connection=Connect();Execute(connection,"PRAGMA synchronous=FULL;");if((long)(Scalar(connection,"PRAGMA user_version")??0L)!=SchemaVersion)throw new InvalidDataException("Schéma databáze se změnilo.");using var transaction=connection.BeginTransaction();foreach(var key in owned){cancellation.ThrowIfCancellationRequested();using var cmd=connection.CreateCommand();cmd.Transaction=transaction;cmd.CommandText="DELETE FROM documents WHERE kind=$kind AND id=$id";cmd.Parameters.AddWithValue("$kind",key.Kind);cmd.Parameters.AddWithValue("$id",key.Id);cmd.ExecuteNonQuery();}cancellation.ThrowIfCancellationRequested();transaction.Commit();},cancellation);
+        }finally{writer.Release();}
     }
     public async Task<T> ExclusiveAsync<T>(Func<DataSnapshot,Task<T>> operation, CancellationToken cancellation = default)
     {

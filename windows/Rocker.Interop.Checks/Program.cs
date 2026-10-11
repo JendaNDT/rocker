@@ -25,6 +25,7 @@ Check(Marshal.SizeOf<MeterSnapshot>()==112,"C# meter layout");
 Check(Marshal.SizeOf<ClockSnapshot>()==72,"C# clock layout");
 Check(Marshal.SizeOf<MetronomeSnapshot>()==80,"C# metronome observation layout");
 Check(Marshal.SizeOf<AnalysisSnapshot>()==144,"C# analysis snapshot layout");
+Check(Marshal.SizeOf<RecordingSnapshot>()==88,"C# recording snapshot layout");
 Check(Marshal.SizeOf<DiagnosticSnapshot>()==160,"C# diagnostics snapshot layout");
 if (mode == "--media")
 {
@@ -37,6 +38,10 @@ if (mode == "--media")
         var transport = audio.GetTransport();
         await audio.SetLoopAsync(0.1,0.3,true);Check(audio.GetClock().Flags==2,"loop configuration never starts audio");await audio.SetLoopAsync(0,0,false);
         Check(transport.Ready == 1 && transport.Playing == 0 && transport.DurationSeconds > 0.57, "MIDI preparation through real P/Invoke");
+        var orderingLibrary=NativeLibrary.Load(Path.GetFullPath(args[0]));try{var process=Marshal.GetDelegateForFunctionPointer<ProcessSamples>(NativeLibrary.GetExport(orderingLibrary,"rocker_test_process"));
+            for(int ordering=0;ordering<30;++ordering){var play=audio.PlayAsync();var pause=audio.PauseAsync();await Task.WhenAll(play,pause);process(1,0);for(int retry=0;retry<100 && audio.GetTransport().Playing!=0;++retry)await Task.Delay(5);Check(audio.GetTransport().Playing==0,"ordered controls preserve final pause at callback boundary");var one=audio.SeekAsync(.1);var two=audio.SeekAsync(.2);await Task.WhenAll(one,two);process(1,0);for(int retry=0;retry<100 && Math.Abs(audio.GetTransport().PositionSeconds-.2)>1e-6;++retry)await Task.Delay(5);Check(Math.Abs(audio.GetTransport().PositionSeconds-.2)<1e-6,"ordered seeks preserve last position at callback boundary");}
+        }finally{NativeLibrary.Free(orderingLibrary);}
+        audio.Stop();audio.Seek(0);
         audio.Play(); audio.Play();
         Check(audio.GetTransport().Playing == 1, "Common media playback");
         var beforeMetro=audio.GetClock();var positionBeforeMetro=audio.GetTransport().PositionSeconds;await audio.SetMetronomeAsync(new(Enabled:true));await audio.StartMetronomeAsync();
@@ -96,6 +101,19 @@ if (mode == "--no-device")
         Check(recovered.GetSnapshot().State == AudioState.Stopped, "SafeHandle finalization released the singleton JUCE runtime");
     Console.WriteLine("PASS: real JUCE message thread, no-device errors, disposal and SafeHandle finalization (no audio device)");
     return;
+}
+await using(var captureAudio=new NativeAudio())
+{
+    var native=NativeLibrary.Load(Path.GetFullPath(args[0]));
+    try{
+        var process=Marshal.GetDelegateForFunctionPointer<ProcessSamples>(NativeLibrary.GetExport(native,"rocker_test_process"));
+        await captureAudio.ConfigureDeviceAsync(new("Test ASIO","Test interface","Test interface",48000,128,0));
+        var path=Path.Combine(Path.GetTempPath(),"rocker-clr-capture-"+Guid.NewGuid().ToString("N")+".wav");
+        try{var token=await captureAudio.StartRecordingAsync(path,0);for(int i=0;i<3;++i)process(127,.25f);var finishing=captureAudio.StopRecordingAsync();process(128,.25f);await finishing;var state=captureAudio.GetRecording();Check(state.Token==token && state.Complete && state.WrittenFrames==381 && state.Channels==1,"C# recording captures actual selected mono input and final partial block");
+            var exported=path+".export.wav";try{await MediaExport.WavAsync(path,exported,.001,.005);Check(new FileInfo(exported).Length==44+192*3,"C# offline WAV range exports exact samples");}finally{if(File.Exists(exported))File.Delete(exported);}
+        }finally{if(File.Exists(path))File.Delete(path);}
+        var failed=captureAudio.SetAmplifierAsync(new(Drive:double.NaN));var valid=captureAudio.SetAmplifierAsync(new());try{await failed;throw new Exception("invalid amp accepted");}catch(InvalidOperationException){}await valid;Check(captureAudio.GetAmplifier()==new AmplifierConfiguration(),"a failed queued control does not poison its successor");
+    }finally{NativeLibrary.Free(native);}
 }
 for (var i = 0; i < 20; i++)
 {
@@ -216,3 +234,5 @@ delegate void SetDelay(uint milliseconds);
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 public delegate void SetXruns(long value);
+
+[UnmanagedFunctionPointer(CallingConvention.Cdecl)]delegate void ProcessSamples(uint frames,float sample);

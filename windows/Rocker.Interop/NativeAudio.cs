@@ -40,7 +40,7 @@ internal sealed class AudioHandle : SafeHandleZeroOrMinusOneIsInvalid
 
 internal static class NativeMethods
 {
-    internal const uint AbiVersion = 11;
+    internal const uint AbiVersion = 12;
     private const string Library = "rocker_audio";
     [DllImport(Library, EntryPoint = "rocker_audio_get_abi_version", CallingConvention = CallingConvention.Cdecl)]
     internal static extern uint GetAbiVersion();
@@ -100,6 +100,7 @@ public sealed partial class NativeAudio : IDisposable, IAsyncDisposable
     private bool preparing;
     private readonly List<Task> workers = new(64);
     private Task? disposal;
+    private Task controlTail=Task.CompletedTask;
 
     public NativeAudio()
     {
@@ -139,8 +140,9 @@ public sealed partial class NativeAudio : IDisposable, IAsyncDisposable
             try
             {
                 var pointer=handle.DangerousGetHandle();
-                var task=Task.Run(()=> {try {uint result=operation(pointer);if(result!=0)throw new InvalidOperationException($"Zvuková operace selhala (stav {result}). {ReadWorkerError(pointer)}");}finally{handle.DangerousRelease();}});
-                workers.Add(task);return task;
+                var previous=controlTail;
+                var task=Task.Run(async ()=> {try {try{await previous.ConfigureAwait(false);}catch(Exception){ /* Each caller observes its own failure; later controls still run. */ }uint result=operation(pointer);if(result!=0)throw new InvalidOperationException($"Zvuková operace selhala (stav {result}). {ReadWorkerError(pointer)}");}finally{handle.DangerousRelease();}});
+                controlTail=task;workers.Add(task);return task;
             }
             catch{if(retained)handle.DangerousRelease();throw;}
         }

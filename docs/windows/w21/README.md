@@ -36,6 +36,5 @@ přepočítají z původního tempa bez obnovy společných hodin.
 
 Offline kontroly čtou syntetickou 40min WAV (76,8 MB decoded mono PCM),
 vzdálený seek na poslední sample, všech šest rychlostí A4, waveform a
-samostatný monitoring při pauze/seek. Windows formulář a přechody se dále
-ověřují; skutečná karta, poslech, file pickery a drag/drop jsou neprovedené
+samostatný monitoring při pauze/seek. Windows sestavení, formulář a SQLite [prošly](windows-validation.json); skutečná karta, poslech, file pickery a drag/drop jsou neprovedené
 scénáře závěrečné přejímky.

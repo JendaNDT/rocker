@@ -5,6 +5,7 @@
 #include "amp_dsp.h"
 #include "metronome_dsp.h"
 #include "reference_dsp.h"
+#include "recording_tap.h"
 #include <algorithm>
 #include <cmath>
 namespace rocker {
@@ -22,6 +23,7 @@ public:
     bool monitoring() const noexcept{return monitor_.load();}
     bool hasInput() const noexcept{return inputPresent_.load();}
     BusMeters meters() const noexcept {return {peak_[0].load(),rms_[0].load(),peak_[1].load(),rms_[1].load(),peak_[2].load(),rms_[2].load(),invalid_.load()+amp_.faults(),inputClips_.load(),outputClips_.load(),analysis_.dropped(),publishedFrame_.load(),publishedEpoch_.load()};}
+    RecordingTap& recording() noexcept{return recording_;}
     ReferenceProcessor& reference() noexcept{return reference_;}
     MetronomeProcessor& metronome() noexcept{return metronome_;}
     AmpProcessor& amp() noexcept{return amp_;}
@@ -31,36 +33,38 @@ public:
         if(!outputs || channels<=0 || frames<=0)return;
         inputPresent_.store(input!=nullptr);
         double peaks[3]{},energy[3]{};uint64_t invalid=0,inputClips=0,outputClips=0;
-        clock_.beginBlock();amp_.beginBlock();metronome_.beginBlock();reference_.beginBlock();
+        recording_.beginBlock(rate_,epoch_);clock_.beginBlock();amp_.beginBlock();metronome_.beginBlock();reference_.beginBlock();
+        const auto dspFrames=amp_.latency();
         const double target=monitor_.load()?gainTarget_.load():0;
         AnalysisBlock block;block.epoch=epoch_;block.sampleRate=rate_;block.firstFrame=frame_;
         for(int i=0;i<frames;++i){
             const auto tick=clock_.tick();const double click=metronome_.process(tick,clock_)+reference_.process();
             double raw=input?input[i]:0;
-            if(!std::isfinite(raw)){raw=0;++invalid;}else if(std::abs(raw)>=1)++inputClips;
+            if(!std::isfinite(raw)){raw=0;++invalid;recording_.invalidSample();}else if(std::abs(raw)>=1)++inputClips;
             raw=std::clamp(raw,-1.0,1.0);
             const double processed=amp_.process(raw);
             gain_+=std::clamp(target-gain_,-1.0/(rate_*0.01),1.0/(rate_*0.01));
             peaks[0]=std::max(peaks[0],std::abs(raw));energy[0]+=raw*raw;
             peaks[1]=std::max(peaks[1],std::abs(processed));energy[1]+=processed*processed;
-            double mixPeak=0,mixEnergy=0;int present=0;
+            double mixPeak=0,mixEnergy=0;int present=0;float captureLeft=0,captureRight=0;
             for(int c=0;c<channels;++c)if(outputs[c]){
                 double mix=outputs[c][i]+(c<2?processed*gain_+click:0);
-                if(!std::isfinite(mix)){mix=0;++invalid;}if(std::abs(mix)>1)++outputClips;
-                const float safe=static_cast<float>(std::clamp(mix,-1.0,1.0));outputs[c][i]=safe;
+                if(!std::isfinite(mix)){mix=0;++invalid;recording_.invalidSample();}if(std::abs(mix)>1)++outputClips;
+                const float safe=static_cast<float>(std::clamp(mix,-1.0,1.0));outputs[c][i]=safe;if(c==0)captureLeft=safe;else if(c==1)captureRight=safe;
                 mixPeak=std::max(mixPeak,std::abs(static_cast<double>(safe)));mixEnergy+=safe*safe;++present;
             }
+            recording_.sample(raw,processed,captureLeft,captureRight,tick,input!=nullptr,dspFrames);
             peaks[2]=std::max(peaks[2],mixPeak);energy[2]+=present?mixEnergy/present:0;
             if(input){block.mono[block.count++]=static_cast<float>(raw);if(block.count==block.mono.size()){analysis_.push(block);block.count=0;block.firstFrame=frame_+static_cast<uint64_t>(i)+1;}}
         }
         if(block.count)analysis_.push(block);
-        metronome_.publish();clock_.publish();
+        recording_.endBlock();metronome_.publish();clock_.publish();
         frame_+=static_cast<uint64_t>(frames);publishedFrame_.store(frame_);publishedEpoch_.store(epoch_);
         invalid_.fetch_add(invalid);inputClips_.fetch_add(inputClips);outputClips_.fetch_add(outputClips);
         for(int b=0;b<3;++b){peak_[b].store(peaks[b]);rms_[b].store(std::sqrt(energy[b]/frames));}
     }
 private:
-    AnalysisQueue analysis_;SampleClock clock_;AmpProcessor amp_;MetronomeProcessor metronome_;ReferenceProcessor reference_;
+    RecordingTap recording_;AnalysisQueue analysis_;SampleClock clock_;AmpProcessor amp_;MetronomeProcessor metronome_;ReferenceProcessor reference_;
     double rate_=48000,gain_=0;uint32_t epoch_=0;uint64_t frame_=0;
     std::atomic<bool> monitor_{false},inputPresent_{false};std::atomic<double> gainTarget_{0.15};
     std::atomic<double> peak_[3]{},rms_[3]{};

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 using Rocker.Infrastructure;
+if(args.Length==3 && args[0]=="--capture-crash"){await RecordingChecks.CrashAsync(args[1],args[2]);return;}
 if (args.Length == 3 && args[0] == "--crash-writer") { await StorageChecks.CrashWriterAsync(args[1],args[2]); return; }
 var directory = Path.Combine(Path.GetTempPath(), "rocker-file-check-" + Guid.NewGuid().ToString("N"));
 int checks = 0;
@@ -39,6 +40,7 @@ try
     int backupChecks = await BackupChecks.RunAsync(directory);
     int migrationChecks = await MigrationChecks.RunAsync(directory);
     int diagnosticChecks = AudioDiagnosticChecks.Run();
-    if (args.Length == 1) await File.WriteAllTextAsync(args[0], System.Text.Json.JsonSerializer.Serialize(new { result="passed", fileChecks=checks, storageChecks, secretChecks, backupChecks, migrationChecks, diagnosticChecks, dpapiVerified=OperatingSystem.IsWindows(), forcedTerminationVerified=true, manualHardwareVerified=false }));
+    int recordingChecks = await RecordingChecks.RunAsync(directory);
+    if (args.Length == 1) await File.WriteAllTextAsync(args[0], System.Text.Json.JsonSerializer.Serialize(new { result="passed", fileChecks=checks, storageChecks, secretChecks, backupChecks, migrationChecks, diagnosticChecks, recordingChecks, dpapiVerified=OperatingSystem.IsWindows(), forcedTerminationVerified=true, manualHardwareVerified=false }));
 }
 finally { if (Directory.Exists(directory)) Directory.Delete(directory, true); }

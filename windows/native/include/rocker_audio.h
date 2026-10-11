@@ -18,9 +18,9 @@
 extern "C" {
 #endif
 
-/* Version 11 adds independent backing pause and streaming media telemetry.
+/* Version 12 adds sample-counted recording buses and disk finalization state.
    Reject earlier DLLs before creating a host. */
-#define ROCKER_AUDIO_ABI_VERSION 11u
+#define ROCKER_AUDIO_ABI_VERSION 12u
 typedef struct rocker_audio_host* rocker_audio_handle;
 typedef uint32_t rocker_audio_result;
 enum {
@@ -101,6 +101,11 @@ typedef struct rocker_diagnostic_snapshot {
     uint32_t min_frames,max_frames,last_failure_reason,source_mode;
     uint64_t configuration_failures;
 } rocker_diagnostic_snapshot;
+typedef struct rocker_recording_snapshot {
+    uint32_t struct_size,abi_version,state,failure,bus,sample_rate,channels,epoch;
+    uint64_t token,written_frames,captured_frames,first_frame,dropped_blocks,high_water;
+    uint32_t flags,dsp_latency_frames;
+} rocker_recording_snapshot;
 #pragma pack(pop)
 
 /* Never call from an audio callback. Device operations execute on the native
@@ -111,6 +116,11 @@ typedef struct rocker_diagnostic_snapshot {
    destroy from all concurrent calls and must not reuse a destroyed handle.
    Structures require the exact ABI version and size. No exception crosses ABI. */
 ROCKER_API uint32_t ROCKER_CALL rocker_audio_get_abi_version(void);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_reserve_recording(rocker_audio_handle,uint64_t*,uint64_t*);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_start_recording_reserved(rocker_audio_handle,uint64_t,uint64_t,const char*,uint32_t,uint32_t);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_request_recording_stop(rocker_audio_handle);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_finish_recording(rocker_audio_handle);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_get_recording(rocker_audio_handle,rocker_recording_snapshot*);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_create(const rocker_audio_config*, rocker_audio_handle*);
 /* Reserve on the calling/UI thread, then start on a worker using the same ticket.
    A later stop invalidates it even when that worker has not been scheduled yet. */
@@ -189,6 +199,12 @@ ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_show_control_panel(rocke
    copied, never borrowed. A short buffer is terminated and reports TOO_SMALL. */
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_copy_last_error(rocker_audio_handle, char*, uint32_t capacity, uint32_t* required);
 ROCKER_API void ROCKER_CALL rocker_audio_destroy(rocker_audio_handle);
+/* Offline file conversion. Callbacks run on workers, never on the audio thread.
+   The destination must be a new file; cancellation leaves a partial temporary
+   file for the caller to remove. end_seconds=0 means the source end. */
+typedef uint32_t (ROCKER_CALL *rocker_export_cancel)(void*);
+typedef void (ROCKER_CALL *rocker_export_progress)(void*,double);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_export_wav(const char* source,const char* destination,double start_seconds,double end_seconds,rocker_export_cancel cancel,rocker_export_progress progress,void* context);
 
 #ifdef __cplusplus
 }

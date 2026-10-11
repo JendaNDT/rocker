@@ -1,0 +1,43 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+using System.Buffers.Binary;
+using System.Text.Json;
+using System.Diagnostics;
+using System.Reflection;
+using Rocker.Domain;
+using Rocker.Infrastructure;
+internal static class RecordingChecks
+{
+    private static void Wave(string path,int rate,int channels,int frames,bool checkpoint)
+        {
+            byte[] value=new byte[44+frames*channels*3];"RIFF"u8.CopyTo(value);"WAVEfmt "u8.CopyTo(value.AsSpan(8));"data"u8.CopyTo(value.AsSpan(36));
+            BinaryPrimitives.WriteUInt32LittleEndian(value.AsSpan(4),checkpoint?(uint)(value.Length-8):36);BinaryPrimitives.WriteUInt32LittleEndian(value.AsSpan(16),16);BinaryPrimitives.WriteUInt16LittleEndian(value.AsSpan(20),1);BinaryPrimitives.WriteUInt16LittleEndian(value.AsSpan(22),(ushort)channels);BinaryPrimitives.WriteUInt32LittleEndian(value.AsSpan(24),(uint)rate);BinaryPrimitives.WriteUInt32LittleEndian(value.AsSpan(28),(uint)(rate*channels*3));BinaryPrimitives.WriteUInt16LittleEndian(value.AsSpan(32),(ushort)(channels*3));BinaryPrimitives.WriteUInt16LittleEndian(value.AsSpan(34),24);BinaryPrimitives.WriteUInt32LittleEndian(value.AsSpan(40),checkpoint?(uint)(frames*channels*3):0);for(int i=44;i<value.Length;++i)value[i]=(byte)(i%127);File.WriteAllBytes(path,value);
+        }
+    public static async Task CrashAsync(string root,string signal)
+    {
+        var files=new UserFiles(root);var database=await DataRepository.OpenAsync(files);var library=new RecordingLibrary(files,database);var draft=await library.BeginAsync("Vynuceně přerušený proces",48000,1,0);Wave(library.PendingPath(draft.Id),48000,1,1027,false);using(var stream=new FileStream(library.PendingPath(draft.Id),FileMode.Open,FileAccess.ReadWrite,FileShare.None))stream.Flush(true);await File.WriteAllTextAsync(signal,"ready");await Task.Delay(Timeout.Infinite);
+    }
+    public static async Task<int> RunAsync(string directory)
+    {
+        var files=new UserFiles(Path.Combine(directory,"capture-checks"));var database=await DataRepository.OpenAsync(files);var library=new RecordingLibrary(files,database);int checks=0;
+        void Check(bool ok,string label){++checks;if(!ok)throw new Exception(label);}
+        var draft=await library.BeginAsync("Normální záznam",48000,1,0);Wave(library.PendingPath(draft.Id),48000,1,127,true);
+        var saved=await library.FinishAsync(draft,new(48000,1,0,127,96000,2,0,false,false));Check(saved is{Capture.Partial:false}&&saved.Capture.Frames==127,"completed mono capture metadata");
+        var bytes=await File.ReadAllBytesAsync(OwnedPaths.Resolve(files.Root,saved!.RelativePath));Check(bytes.Length==426&&BinaryPrimitives.ReadUInt32LittleEndian(bytes.AsSpan(40))==381,"odd PCM24 padding outside data size");Check(await new OwnedMedia(files).VerifyAsync(new(saved.RelativePath,saved.Sha256,saved.Bytes)),"recording hash matches saved padded file");
+        var marker=new Marker("bridge",.001,"Most");saved=saved with{Markers=[marker]};await library.SaveAsync(saved);Check((await library.ListAsync()).Single().Markers.Single()==marker,"marker and time persistence");
+        var interrupted=await library.BeginAsync("Pád během zápisu",48000,2,2);Wave(library.PendingPath(interrupted.Id),48000,2,259,false);var warnings=await library.RecoverAsync();var recovered=(await library.ListAsync()).Single(r=>r.Id==interrupted.Id);Check(warnings.Count==1&&recovered.Capture is{Partial:true,Frames:259},"recovery uses aligned body beyond stale header");
+        bytes=File.ReadAllBytes(OwnedPaths.Resolve(files.Root,recovered.RelativePath));Check(BinaryPrimitives.ReadUInt32LittleEndian(bytes.AsSpan(40))==1554,"recovery repairs durable RIFF header");Check((await library.RecoverAsync()).Count==0,"recovery is idempotent");
+        var renamed=await library.BeginAsync("Pád po přejmenování",44100,1,1);Wave(library.PendingPath(renamed.Id),44100,1,100,false);File.Move(library.PendingPath(renamed.Id),files.RecordingPath(Guid.Parse(renamed.Id),".wav"));await library.RecoverAsync();Check((await library.ListAsync()).Any(r=>r.Id==renamed.Id&&r.Capture!.Frames==100),"recovery after rename before SQLite commit");
+        await library.RemoveAsync(saved);Check(!(await library.ListAsync()).Any(r=>r.Id==saved.Id)&&File.Exists(OwnedPaths.Resolve(files.Root,saved.RelativePath)),"delete retains referenced media");await library.UndoAsync();Check((await library.ListAsync()).Single(r=>r.Id==saved.Id).Markers.Single()==marker,"undo preserves identity and markers");
+        await library.RemoveManyAsync([saved,recovered]);Check(!(await library.ListAsync()).Any(r=>r.Id==saved.Id||r.Id==recovered.Id),"group delete removes all selected rows");await library.UndoAsync();Check((await library.ListAsync()).Count==3,"group undo restores all selected rows atomically");
+        string export=Path.Combine(directory,"capture-export.wav");await library.ExportOriginalAsync(saved,export);Check(File.ReadAllBytes(export).SequenceEqual(File.ReadAllBytes(OwnedPaths.Resolve(files.Root,saved.RelativePath))),"export retains original bytes");
+        using var cancellation=new CancellationTokenSource();cancellation.Cancel();try{await library.ExportOriginalAsync(saved,export,cancellation.Token);throw new Exception("cancel ignored");}catch(OperationCanceledException){Check(File.ReadAllBytes(export).Length==saved.Bytes,"cancel retains previous export");}
+        try{await library.ExportOriginalAsync(saved,OwnedPaths.Resolve(files.Root,saved.RelativePath));throw new Exception("owned export accepted");}catch(InvalidDataException){Check(true,"export cannot overwrite owned recordings");}
+        var partial=await library.BeginAsync("Chyba uprostřed dávky",48000,1,0);Wave(library.PendingPath(partial.Id),48000,1,300,false);var partialTake=await library.FinishAsync(partial,new(48000,1,0,256,10,1,0,false,true,"Zápis se přerušil"));Check(partialTake?.Capture is{Frames:300,Partial:true},"failed write salvages aligned PCM beyond last acknowledged packet");
+        var malformed=await library.BeginAsync("Poškozený soubor",48000,1,0);File.WriteAllBytes(library.PendingPath(malformed.Id),new byte[100]);Check((await library.RecoverAsync()).Count==1&&File.Exists(library.PendingPath(malformed.Id)),"malformed recovery retains original");
+        var invalid=saved with{Capture=saved.Capture! with{Frames=100}};try{await library.SaveAsync(invalid);throw new Exception("invalid duration accepted");}catch(InvalidDataException){Check((await library.ListAsync()).Single(r=>r.Id==saved.Id).Capture!.Frames==127,"invalid metadata leaves committed record intact");}
+        string terminatedRoot=Path.Combine(directory,"capture-terminated"),signal=Path.Combine(directory,"capture-ready");var startInfo=new ProcessStartInfo(Environment.ProcessPath!){UseShellExecute=false};if(string.Equals(Path.GetFileNameWithoutExtension(Environment.ProcessPath),"dotnet",StringComparison.OrdinalIgnoreCase))startInfo.ArgumentList.Add(Assembly.GetExecutingAssembly().Location);foreach(var argument in new[]{"--capture-crash",terminatedRoot,signal})startInfo.ArgumentList.Add(argument);
+        using(var child=Process.Start(startInfo)??throw new Exception("Capture crash process did not start")){var watch=Stopwatch.StartNew();while(!File.Exists(signal)&&!child.HasExited&&watch.Elapsed<TimeSpan.FromSeconds(10))await Task.Delay(25);if(!File.Exists(signal)){if(!child.HasExited)child.Kill();throw new Exception("Capture process did not persist its body");}child.Kill();await child.WaitForExitAsync();}
+        var terminatedFiles=new UserFiles(terminatedRoot);var reopened=await DataRepository.OpenAsync(terminatedFiles);var afterCrash=new RecordingLibrary(terminatedFiles,reopened);await afterCrash.RecoverAsync();var crashTake=(await afterCrash.ListAsync()).Single();Check(crashTake.Capture is{Frames:1027,Partial:true,FirstFrame:null},"forced process termination restores uncheckpointed PCM without invented clock metadata");Check(await new OwnedMedia(terminatedFiles).VerifyAsync(new(crashTake.RelativePath,crashTake.Sha256,crashTake.Bytes)),"forced process recovery creates matching durable file and SQLite row");
+        Console.WriteLine($"PASS: {checks} recording persistence/recovery/export assertions.");return checks;
+    }
+}

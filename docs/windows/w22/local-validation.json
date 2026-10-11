@@ -1,0 +1,51 @@
+{
+  "scope": "W22 recording writer, native library and export; Windows and hardware checks pending",
+  "nativeTests": {
+    "executed": 14,
+    "failures": 0
+  },
+  "sanitizers": {
+    "fullExecuted": 14,
+    "finalRelevantExecuted": 3,
+    "failures": 0
+  },
+  "infrastructure": {
+    "result": "passed",
+    "fileChecks": 11,
+    "storageChecks": 39,
+    "secretChecks": 2,
+    "backupChecks": 20,
+    "migrationChecks": 28,
+    "diagnosticChecks": 10,
+    "recordingChecks": 20,
+    "dpapiVerified": false,
+    "forcedTerminationVerified": true,
+    "manualHardwareVerified": false
+  },
+  "interop": {
+    "recordingLayoutBytes": 88,
+    "captureAndWavRange": true,
+    "orderedControlsAtCallbackBoundary": true,
+    "mediaAndDisposal": true,
+    "mismatchedAbi": true
+  },
+  "domain": {
+    "result": "passed",
+    "referenceCases": 69,
+    "boundaryChecks": 73,
+    "contentGroups": 15,
+    "surgicalStatesCompared": 37,
+    "extendedReferenceCases": 372,
+    "extendedStatesCompared": 350
+  },
+  "pwa": {
+    "tests": 567,
+    "typeCheck": "passed",
+    "lint": "passed"
+  },
+  "notPerformed": [
+    "WinUI build/form verification in this Linux environment",
+    "Physical M-Track capture or measured roundtrip",
+    "Manual picker/drag/drop/dialog interactions"
+  ]
+}

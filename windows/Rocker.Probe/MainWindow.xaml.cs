@@ -56,7 +56,7 @@ public sealed partial class MainWindow : Window
     }
     private async void Stop_Click(object sender, RoutedEventArgs e)
     {
-        try { ++playbackIntent; metroEnabled=false;++metroRevision;metroApplyTimer.Stop();if(audio is not null){await audio.StopAsync();await ApplyMetronomeAsync();} if(!closingWindow && !closed)RefreshState(); }
+        try { ++playbackIntent; metroEnabled=false;++metroRevision;metroApplyTimer.Stop();if(audio is not null){await audio.StopAsync();await StopCaptureAsync();await ApplyMetronomeAsync();} if(!closingWindow && !closed)RefreshState(); }
         catch (Exception error) { ShowError(error); }
     }
     private void RefreshState()
@@ -82,7 +82,7 @@ public sealed partial class MainWindow : Window
             StopButton.IsEnabled = state.State != AudioState.Stopped;
             StatusText.Text = state.State switch
             {
-                AudioState.Running => state.Reserved==3 ? "Metronom." : state.Reserved==2 ? "Živý vstup. Monitoring se ovládá samostatně." : transport.Playing != 0 ? "Přehrávání." : state.Reserved==1 ? "Skladba pozastavena; zvukové zařízení běží." : "Hraje testovací tón.",
+                AudioState.Running => state.Reserved==5 ? "Nahrávání; monitoring se ovládá samostatně." : state.Reserved==3 ? "Metronom." : state.Reserved==2 ? "Živý vstup. Monitoring se ovládá samostatně." : transport.Playing != 0 ? "Přehrávání." : state.Reserved==1 ? "Skladba pozastavena; zvukové zařízení běží." : "Hraje testovací tón.",
                 AudioState.Starting => "Spouštím zvukové zařízení…",
                 AudioState.Reconfiguring => "Měním nastavení zvuku…",
                 AudioState.Stopping or AudioState.Closing => "Uvolňuji zvukové zařízení…",
@@ -94,6 +94,7 @@ public sealed partial class MainWindow : Window
             RefreshTuner(audio.GetAnalysis());
             RefreshAudioDiagnostics();
             RefreshSong(transport);
+            RefreshRecording();
             DeviceText.Text = state.State == AudioState.Running
                 ? $"Vzorkování {state.SampleRate:N0} Hz · buffer {state.BufferFrames} vzorků · výstupy {state.OutputChannels}\nZpracováno {state.RenderedFrames:N0} vzorků."
                 : "Zařízení zatím není otevřené.";

@@ -23,7 +23,7 @@ public sealed partial class MainWindow
             backupOperationRunning=true;export.IsEnabled=restore.IsEnabled=false;
             try
             {
-                await autosave!.FlushAsync();
+                if(!await StopCaptureAsync())return;await autosave!.FlushAsync();
                 await new BackupService(userFiles,database).ExportAsync(file.Path,recordings.IsChecked==true,projects.IsChecked==true);
                 status.Text="Záloha je uložená: "+file.Path;
             }
@@ -38,7 +38,7 @@ public sealed partial class MainWindow
             backupOperationRunning=true;export.IsEnabled=restore.IsEnabled=false;
             try
             {
-                await autosave!.FlushAsync();var service=new BackupService(userFiles,database);var preview=await service.PreviewAsync(file.Path);
+                if(!await StopCaptureAsync())return;await autosave!.FlushAsync();var service=new BackupService(userFiles,database);var preview=await service.PreviewAsync(file.Path);
                 var choice=new ComboBox {Header="Řešení konfliktů",ItemsSource=new[]{"Sloučit · existující položky zachovat","Nahradit zahrnutá data ze zálohy"},SelectedIndex=0,HorizontalAlignment=HorizontalAlignment.Stretch};
                 var details=Stack();details.Children.Add(Text($"{preview.Documents} záznamů · {preview.Recordings} nahrávek · {preview.Projects} projektů\n{preview.Bytes/1024d/1024:F1} MB · {preview.Conflicts} konfliktů"));
                 details.Children.Add(Text("Nahradí se jen typy zahrnuté v této záloze. Vratná kopie zachová původní databázi a soubory. AI klíč zůstává ve Windows.",true));details.Children.Add(choice);
@@ -61,7 +61,7 @@ public sealed partial class MainWindow
             backupOperationRunning=true;ShellInteractionRoot.IsEnabled=false;
             try
             {
-                await autosave!.FlushAsync();if(audio is not null)await audio.StopAsync();await new BackupService(userFiles,database).UndoLastRestoreAsync();
+                if(!await StopCaptureAsync())return;await autosave!.FlushAsync();if(audio is not null)await audio.StopAsync();await new BackupService(userFiles,database).UndoLastRestoreAsync();
                 lessonSessions.Clear();completedLessons.Clear();savedLessonPositions.Clear();persistenceReady=false;await InitializePersistenceAsync();
                 ShellNotice.IsOpen=true;ShellNotice.Severity=InfoBarSeverity.Success;ShellNotice.Title="Obnova vrácena";ShellNotice.Message="Předchozí stav dat je obnovený.";
             }

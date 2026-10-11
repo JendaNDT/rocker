@@ -363,7 +363,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w21"></a>
 #### W21 — Přehrávání vlastních skladeb a práce s úsekem
 
-- [ ] Rozpracováno: [blokové čtení, samostatný transport a nativní úseky](docs/windows/w21/README.md). Závislosti: W04, W08, W09, W16.
+- [ ] Rozpracováno: [blokové čtení, samostatný transport a nativní úseky](docs/windows/w21/README.md), [Windows formulář a persistence prošly](docs/windows/w21/windows-validation.json). Rozšíření dlouhých WebM/AAC navazuje před kandidátem. Závislosti: W04, W08, W09, W16.
 - Implementovat asynchronní otevření a dekódování souboru, waveform cache, časovou osu, seek, A/B smyčku, změnu rychlosti bez změny výšky, předtakt a postupné zrychlování.
 - Velké soubory číst postupně; příprava waveformy a time stretching nesmějí blokovat monitoring. Délku, pozice a mezní hodnoty počítat z audio dat, ne z nepřesného UI časovače.
 - Ukládat pojmenované úseky a poslední pozici. Při chybějícím souboru nabídnout jeho dohledání; neplatný formát nesmí ukončit aplikaci.
@@ -372,7 +372,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w22"></a>
 #### W22 — Spolehlivé nahrávání, knihovna a export
 
-- [ ] Čeká. Závislosti: W09, W15–W17, W21.
+- [ ] Rozpracováno: [PCM24 diskový writer, obnova po pádu, nativní knihovna a export](docs/windows/w22/README.md). Linux 14/14 CTest, C# propojení a 20 kontrol ukládání nahrávek prošly; Windows formulář/persistence se ověřují v CI. Fyzický záznam je odložený do závěrečné přejímky. Závislosti: W09, W15–W17, W21.
 - Nahrávat vybranou sběrnici přes předalokovanou frontu na pracovní diskové vlákno. Délka je odvozena od počtu vzorků. Primární bezeztrátový výstup je PCM WAV; podporovanou hloubku a velké soubory řešit podle reálných limitů writeru.
 - Záznam během práce bezpečně průběžně uchovávat, po ukončení dokončit hlavičku a metadata. Zaplněný disk, chyba oprávnění nebo nestíhající zápis nesmějí vytvořit falešně úspěšný záznam; nabídnout obnovu dostupné části.
 - Implementovat seznam, přejmenování, výběr více položek, přehrání, pojmenované časové značky včetně skoku na ně, porovnání dvou take-ů A/B, export a mazání s možností návratu či potvrzením. Zachovat původní importované soubory i jejich markery, případný převod označit.

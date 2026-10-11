@@ -865,7 +865,11 @@ v `docs/windows/w17` až `w20`. W21 přidává bounded read-ahead PCM cache,
 samostatnou pauzu/seek, nativní časovou osu, uložené úseky, vzorkový předtakt
 a předem připravené zrychlení na A/B hranici. Linux 12/12 CTest včetně
 40min source, 2000 souběžných výměn a ASan/UBSan prošel, C# SQLite nyní
-ověřuje i nový typ song. První Windows W21 běh prošel 12/12 native testů
-a PInvoke; odhalil chybný zápis dvou C# čísel ve formuláři. Oprava má nový
-Windows build. Funkčně kompletní kandidát ani fyzická přejímka zatím nejsou
-hotové; pokračuje W22 a další dohodnuté části roadmapy.
+ověřuje i nový typ song. Windows W21 prošel po opravě dvou chyb ve formuláři
+v běhu 38171318422 (důkaz `docs/windows/w21/windows-validation.json`).
+W22 přidává diskový PCM24 writer tří sběrnic, předtakt, exact frame metadata,
+obnovu po pádu, nativní knihovnu, značky, A/B, hromadné mazání/undo a
+zrušitelný export úseku WAV. ABI je 12. Linux 14/14 CTest a sanitizery,
+C# propojení, 20 kontrol nahrávek a původních 567 testů prošly;
+Windows sestavení/formulář/persistence navazuje. Funkčně kompletní kandidát
+ani fyzická přejímka zatím nejsou hotové; pokračuje W23 a zbývající roadmapa.
