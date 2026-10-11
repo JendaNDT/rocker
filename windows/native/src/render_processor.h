@@ -23,6 +23,7 @@ public:
     void selectTone() noexcept { clipMode_ = false;liveMode_=false;idleMode_=0; }
     void selectClip() noexcept { clipMode_ = true;liveMode_=false;idleMode_=0;mediaPlaying_.store(true); }
     void selectLive() noexcept { clipMode_=false;liveMode_=true;idleMode_=0; }
+    void selectPreview() noexcept{clipMode_=false;liveMode_=false;idleMode_=8;}
     void selectReference() noexcept {clipMode_=false;liveMode_=false;idleMode_=4;}
     void selectLooper() noexcept{clipMode_=false;liveMode_=false;idleMode_=6;}
     void selectRecording() noexcept{clipMode_=false;liveMode_=false;idleMode_=5;}

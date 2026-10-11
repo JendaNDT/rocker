@@ -89,6 +89,10 @@ try {
     if (-not (Test-Path $tunerPath)) { throw 'Missing native tuner report.' }
     $tuner = Get-Content $tunerPath -Raw | ConvertFrom-Json
     if ($tuner.result -ne 'passed' -or $tuner.sixStringControls -ne 6 -or -not $tuner.persistenceReopened -or -not $tuner.noInputInventsNoNote) { throw 'Native tuner/persistence failed.' }
+    $lessonsPath = Join-Path $reportDirectory 'lessons-view.json'
+    if (-not (Test-Path $lessonsPath)) { throw 'Native lesson verification report is missing.' }
+    $lessons = Get-Content $lessonsPath -Raw | ConvertFrom-Json
+    if ($lessons.result -ne 'passed' -or $lessons.nativeStepKinds -ne 3 -or $lessons.totalLessons -ne 18 -or -not $lessons.completionSavedOnce) { throw "Native lesson verification failed: $(Get-Content $lessonsPath -Raw)" }
     $studioPath = Join-Path $reportDirectory 'studio-view.json'
     if (-not (Test-Path $studioPath)) { throw 'Studio native verification report is missing.' }
     $studio = Get-Content $studioPath -Raw | ConvertFrom-Json

@@ -38,8 +38,10 @@ loads preserve controls on the retained project.
 
 Validation: [Linux checks](linux-validation.json), frozen domain references,
 actual C# ↔ C++ mixer/export/alignment calls, 16 native tests, portable transfer to
-another data root and rejection of tampered media. Windows build/form checks are
-pending at this checkpoint. The WinUI smoke check requires two native track rows,
+another data root and rejection of tampered media. Windows run 38177955339 passed all 16 native tests and CLR calls, then
+found an invalid StackPanel.IsEnabled use in the Studio UI. It has been replaced
+with Control.IsEnabled on child controls; the corrected Windows build/form check
+is pending. The WinUI smoke check requires two native track rows,
 two timeline regions, reopened SQLite/manifest data and an exact 560-frame source.
 Physical M-Track Solo overdub, delay accuracy, dialogs and listening remain
 **unperformed**, deferred to the complete candidate. Capture crash recovery keeps

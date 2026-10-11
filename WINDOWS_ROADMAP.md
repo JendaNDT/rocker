@@ -402,7 +402,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w25"></a>
 #### W25 — Lekce a postup výukou
 
-- [ ] Čeká. Závislosti: W06, W08, W09, W18, W19.
+- [ ] Rozpracováno. Závislosti: W06, W08, W09, W18, W19. [Nativní lekce a zvukové ukázky](docs/windows/w25/README.md) mají všech 18 lekcí, tři typy kroků, tónovou kontrolu, trvalý postup a přehrávání v jediném grafu. Prošlo 17 nativních testů a kontroly CLR/domény; skutečný Windows formulář se ověřuje.
 - Implementovat výběr všech lekcí, jednotlivé kroky, přehrání ukázek, tónovou kontrolu, navigaci klávesnicí, dokončení a pokračování po restartu.
 - Zachovat rozdíl mezi kontrolou jednotlivého tónu a akordovým režimem „hraj se mnou“. Monofonní detektor nesmí bez dalšího slibovat vyhodnocení celého akordu.
 - Chybějící vstupní zařízení blokuje pouze úlohy, které je potřebují. Čtení, poslech a manuální potvrzení vhodného kroku musí mít jasná pravidla, nikoli fingovaně úspěšnou detekci.

@@ -165,34 +165,6 @@ public sealed partial class MainWindow
         }
         return Card(panel);
     }
-    private FrameworkElement BuildLessonList()
-    {
-        var panel = Stack(); panel.Children.Add(Text("Vyber lekci. Rozpracovaný krok se při přepnutí pohledu zachová."));
-        var list = new ListView { IsItemClickEnabled = true, SelectionMode = ListViewSelectionMode.Single, DisplayMemberPath = "Title", ItemsSource = catalog!.Lessons.Select(lesson => new ListEntry(lesson.Id,lesson.Title,$"{lesson.EstimatedMinutes} min")).ToArray() };
-        list.ItemClick += (_,args) => { if (args.ClickedItem is ListEntry entry) Navigate(new("06",entry.Id)); };
-        panel.Children.Add(list); return Card(panel);
-    }
-    private FrameworkElement BuildLesson(string? id)
-    {
-        var lesson = catalog!.Lessons.FirstOrDefault(lesson => lesson.Id == id) ?? LessonRules.NextIncomplete(catalog.Lessons,completedLessons) ?? catalog.Lessons[0];
-        if (!lessonSessions.ContainsKey(lesson.Id)) lessonSessions.Add(lesson.Id,LessonSession.Start(lesson,savedLessonPositions.GetValueOrDefault(lesson.Id)) with { Completed=completedLessons.Contains(lesson.Id) });
-        var panel = Stack();
-        void Render()
-        {
-            panel.Children.Clear(); var session = lessonSessions[lesson.Id]; var step = session.CurrentStep;
-            panel.Children.Add(Text(lesson.Title)); panel.Children.Add(Text($"Krok {session.StepIndex + 1} / {lesson.Steps.Count}",true));
-            panel.Children.Add(new ProgressBar { Minimum = 0, Maximum = 100, Value = session.ProgressPercent });
-            panel.Children.Add(Text(step.GetProperty("title").GetString()!)); panel.Children.Add(Text(step.GetProperty("body").GetString()!));
-            if (step.GetProperty("kind").GetString() == "note") panel.Children.Add(Text("Cílový tón: " + step.GetProperty("targetLabel").GetString() + ". Živý poslech ještě není dostupný.",true));
-            if (step.GetProperty("kind").GetString() == "chord") panel.Children.Add(Text("Akord: " + step.GetProperty("chordId").GetString(),true));
-            if (session.Completed) panel.Children.Add(Text("Lekce je dokončená."));
-            var previous = new Button { Content = "Zpět", IsEnabled = !session.IsFirst && !session.Completed }; previous.Click += (_,_) => { lessonSessions[lesson.Id] = session.Previous(); SaveLessonProgress(); Render(); };
-            var next = new Button { Content = session.IsLast ? "Dokončit lekci" : "Další", IsEnabled = !session.Completed };
-            next.Click += (_,_) => { lessonSessions[lesson.Id] = session.IsLast ? session.Finish() : session.Next(); if (session.IsLast) completedLessons.Add(lesson.Id); SaveLessonProgress(); Render(); };
-            panel.Children.Add(previous); panel.Children.Add(next);
-        }
-        Render(); return Card(panel);
-    }
     private FrameworkElement BuildCatalog(string group, string? selected)
     {
         var panel = Stack(); panel.Children.Add(Text("Obsah je přenesený. Příslušný trenažér nebo hudební nástroj ještě dokončujeme.",true));
@@ -283,6 +255,7 @@ public sealed partial class MainWindow
         await VerifyRecordingsAsync();
         await VerifyLooperAsync();
         await VerifyStudioAsync();
+        await VerifyLessonsAsync();
         await VerifyDevicesAsync();
         VerifyComponents();
         if (Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTIC_VIEW") == "components") ShowComponents();

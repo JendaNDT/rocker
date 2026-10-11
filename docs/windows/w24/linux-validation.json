@@ -25,7 +25,17 @@
     "result": "passed",
     "tests": 16,
     "callbackAllocationAudit": "passed",
-    "sanitizers": "pending"
+    "sanitizers": {
+      "result": "passed",
+      "tests": 3,
+      "checks": [
+        "project_mixer",
+        "recording_contract",
+        "common_transport"
+      ],
+      "addressSanitizer": true,
+      "undefinedBehaviorSanitizer": true
+    }
   },
   "interop": {
     "result": "passed",
@@ -39,7 +49,12 @@
     "lint": "passed"
   },
   "windows": {
-    "result": "pending",
+    "result": "failed",
+    "runId": 38177955339,
+    "commit": "293917d2d878b83074df36a60be562bc251e0ef0",
+    "nativeTests": 16,
+    "nativeAndInterop": "passed",
+    "failure": "WinUI Studio used StackPanel.IsEnabled; replaced with Control.IsEnabled on child controls. Rebuild pending.",
     "physicalAudioVerified": false
   }
 }

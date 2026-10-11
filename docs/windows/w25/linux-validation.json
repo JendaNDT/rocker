@@ -1,0 +1,42 @@
+{
+  "native": {
+    "result": "passed",
+    "tests": 17
+  },
+  "sanitizers": {
+    "result": "passed",
+    "tests": 4,
+    "suites": [
+      "teaching_preview",
+      "project_mixer",
+      "realtime_contract",
+      "audio_contract"
+    ],
+    "addressSanitizer": true,
+    "undefinedBehaviorSanitizer": true
+  },
+  "domain": {
+    "result": "passed",
+    "referenceCases": 69,
+    "boundaryChecks": 96,
+    "contentGroups": 15,
+    "surgicalStatesCompared": 37,
+    "extendedReferenceCases": 372,
+    "extendedStatesCompared": 350
+  },
+  "interop": {
+    "result": "passed",
+    "device": "fake",
+    "previewSharesLiveDeviceEpoch": true
+  },
+  "pwa": {
+    "result": "passed",
+    "tests": 567,
+    "types": "passed"
+  },
+  "windows": {
+    "result": "pending",
+    "physicalPitchChecksVerified": false,
+    "manualKeyboardVerified": false
+  }
+}

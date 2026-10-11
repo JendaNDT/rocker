@@ -26,6 +26,7 @@ Check(Marshal.SizeOf<ClockSnapshot>()==72,"C# clock layout");
 Check(Marshal.SizeOf<MetronomeSnapshot>()==80,"C# metronome observation layout");
 Check(Marshal.SizeOf<AnalysisSnapshot>()==144,"C# analysis snapshot layout");
 Check(Marshal.SizeOf<LoopSnapshot>()==120,"C# looper snapshot layout");
+Check(Marshal.SizeOf<PreviewNote>()==32,"native teaching note layout");
 Check(Marshal.SizeOf<ClipInfo>()==32 && Marshal.SizeOf<RecordingAlignment>()==64,"source info and recording alignment layout");
 Check(Marshal.SizeOf<RecordingSnapshot>()==88,"C# recording snapshot layout");
 Check(Marshal.SizeOf<DiagnosticSnapshot>()==160,"C# diagnostics snapshot layout");
@@ -122,6 +123,7 @@ await using(var captureAudio=new NativeAudio())
             var overdub=studioFile+".take.wav";try{await captureAudio.SeekAsync(0);await captureAudio.StartRecordingAsync(overdub,0,0,ticket);process(127,.125f);var finish=captureAudio.StopRecordingAsync();process(1,0);await finish;var placement=captureAudio.GetRecordingAlignment();Check(placement.Started && placement.Continuous && placement.FirstProjectFrame==0 && placement.MediaTicket==ticket,"first overdub sample records the backing source coordinate independently of UI timing");}finally{if(File.Exists(overdub))File.Delete(overdub);}
             await captureAudio.StopAsync();await captureAudio.ClearMediaAsync();Check(captureAudio.GetTransport().Ready==0,"project switch clears the old playable source");
         }finally{if(File.Exists(studioFile))File.Delete(studioFile);}
+        await captureAudio.StartLiveAsync();var beforePhrase=captureAudio.GetClock();await captureAudio.PlayPreviewAsync([new(0,.2,110),new(.018,.2,165),new(.036,.2,220)]);process(128,.125f);var afterPhrase=captureAudio.GetClock();Check(beforePhrase.Epoch==afterPhrase.Epoch && afterPhrase.Frame>=beforePhrase.Frame,"polyphonic teaching phrase joins the existing live graph without another device epoch");await captureAudio.StopPreviewAsync();process(1024,0);await captureAudio.StopAsync();
         var failed=captureAudio.SetAmplifierAsync(new(Drive:double.NaN));var valid=captureAudio.SetAmplifierAsync(new());try{await failed;throw new Exception("invalid amp accepted");}catch(InvalidOperationException){}await valid;Check(captureAudio.GetAmplifier()==new AmplifierConfiguration(),"a failed queued control does not poison its successor");
     }finally{NativeLibrary.Free(native);}
 }

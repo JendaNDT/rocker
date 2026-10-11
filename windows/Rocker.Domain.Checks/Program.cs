@@ -101,6 +101,9 @@ catch (ArgumentException) { Check(true, "invalid rhythm exercise rejected"); }
 Check(StudioRules.Place(new(4800,48,96,15,1,true),48000,48000,10000)==new TrackPlacement(4593,0),"studio accounts once for input, output, DSP and manual delay");
 Check(StudioRules.Place(new(0,48,96,0,0,true),48000,96000,10000)==new TrackPlacement(0,144),"negative compensated offset trims the source at its own sample rate");
 Check(StudioRules.Place(new(100,null,96,15,0,true),48000,48000,10000)==new TrackPlacement(100,0),"unknown driver delay is never fabricated as a measured offset");
+var emPreview=TeachingPreview.Chord(content.Find("chords","Em")!.Value);Check(emPreview.Select(n=>n.Midi).SequenceEqual(new[]{40,47,52,55,59,64}),"lesson chord preview uses the actual played frets on six standard strings");
+Check(Math.Abs(TeachingPreview.Chord(content.Find("chords","Em")!.Value,arpeggio:true).Last().Start-.9)<1e-9,"arpeggio previews schedule individual strings without UI timers");
+foreach(var lesson in content.Lessons){var traversal=LessonSession.Start(lesson);for(int step=0;step<lesson.Steps.Count-1;++step)traversal=traversal.Next();Check(traversal.Finish().Completed,"every lesson can complete its original manual progression");}
 var navigation = new NavigationSession();
 navigation.Navigate(new("06", content.Lessons[0].Id)); navigation.Navigate(new("09", "spider")); navigation.Back();
 Check(navigation.Current == new NavigationTarget("06", content.Lessons[0].Id), "back restores specific lesson task");

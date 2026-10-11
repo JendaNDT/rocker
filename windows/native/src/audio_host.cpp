@@ -48,7 +48,7 @@ struct rocker_audio_host {
     rocker::RenderProcessor tone;
     std::unique_ptr<rocker::AudioDriver> driver;
     std::unique_ptr<rocker::RecordingWorker> recorder;
-    std::atomic<uint64_t> recordingIntent{0};
+    std::atomic<uint64_t> recordingIntent{0},previewIntent{0};
     rocker_recording_snapshot recordingCache{};rocker_recording_alignment alignmentCache{};
     rocker_loop_snapshot loopCache{};std::unique_ptr<rocker::LoopBuffer> loopBuffer;
     std::shared_ptr<rocker::media::ProjectSource> projectSource;uint64_t projectTicket=0;
@@ -80,7 +80,7 @@ struct rocker_audio_host {
     std::unique_ptr<rocker::AnalysisWorker> analyzer;
     std::string errorCache;
     std::unique_ptr<rocker::ControlExecutor> executor;
-    void disarmSourcesStopped(){driverXruns=-1;tone.input().looper().stopJoined();tone.requestPlayback(false,true);tone.cancelRamp(true);tone.input().monitoring(false,0.15);tone.input().metronome().disableStopped();tone.input().reference().stopJoined();const std::lock_guard lock(telemetry);metroCache.enabled=0;}
+    void disarmSourcesStopped(){driverXruns=-1;tone.input().looper().stopJoined();tone.requestPlayback(false,true);tone.cancelRamp(true);tone.input().monitoring(false,0.15);tone.input().metronome().disableStopped();tone.input().reference().stopJoined();tone.input().preview().stopJoined();const std::lock_guard lock(telemetry);metroCache.enabled=0;}
     void finishCaptureJoined(uint32_t failure){tone.input().recording().finishJoined(failure);if(recorder->active() && !recorder->wait(std::chrono::seconds(2))){recorder->cancel();recorder->wait(std::chrono::seconds(2));}}
     void stopOnControl(){state=ROCKER_STOPPING;publish();tone.enable(false);driver->stop();finishCaptureJoined(0);driverXruns=-1;disarmSourcesStopped();state=ROCKER_STOPPED;}
     void publish(){
@@ -134,7 +134,7 @@ static rocker_audio_result startHost(rocker_audio_host& h, uint32_t mode,uint64_
     h.stopRequested.exchange(false);
     if(mode==4 && !h.tone.input().reference().wanted())return ROCKER_NOT_READY;
     if(mode==3 && !h.metroCache.enabled)return ROCKER_NOT_READY;
-    if((mode==3 || mode==4 || mode==5 || mode==6) && h.state==ROCKER_RUNNING && !h.driver->snapshot().failed){if(mode==6 && h.tone.mode()==0)h.tone.selectLooper();h.tone.authorize(intent);return ROCKER_OK;}
+    if((mode==3 || mode==4 || mode==5 || mode==6 || mode==8) && h.state==ROCKER_RUNNING && !h.driver->snapshot().failed){if(mode==6 && h.tone.mode()==0)h.tone.selectLooper();if(mode==8 && h.tone.mode()==0)h.tone.selectPreview();h.tone.authorize(intent);return ROCKER_OK;}
     if ((mode==1 || mode==7) && !h.tone.hasClip()) { h.error = "No prepared media is available."; return ROCKER_NOT_READY; }
     if(h.state==ROCKER_RUNNING && !h.driver->snapshot().failed && (mode==1 || mode==2 || mode==7)) {
         h.tone.authorize(intent);
@@ -150,6 +150,7 @@ static rocker_audio_result startHost(rocker_audio_host& h, uint32_t mode,uint64_
     else if(mode==4)h.tone.selectReference();
     else if(mode==5)h.tone.selectRecording();
     else if(mode==6)h.tone.selectLooper();
+    else if(mode==8)h.tone.selectPreview();
     else h.tone.selectTone();
     h.tone.authorize(intent);h.tone.enable(true);
     try {
@@ -238,7 +239,7 @@ static rocker_audio_result configureMetronomeHost(rocker_audio_host& h,const roc
         if(!h.tone.input().metronome().configure(params,h.state!=ROCKER_RUNNING)){h.error="Metronome parameter queue is full. Retry the latest setting.";return ROCKER_NOT_READY;}
         h.tone.input().clock().tempo(owned.bpm);
         {const std::lock_guard lock(h.telemetry);h.metroCache=owned;}
-        if(!params.enabled && !h.recorder->active() && h.state==ROCKER_RUNNING && h.tone.mode()==3 && !h.tone.input().monitoring() && !h.tone.input().reference().wanted() && !h.tone.input().reference().playing() && !h.tone.input().reference().chimePlaying())h.stopOnControl();
+        if(!params.enabled && !h.recorder->active() && h.state==ROCKER_RUNNING && h.tone.mode()==3 && !h.tone.input().monitoring() && !h.tone.input().reference().wanted() && !h.tone.input().reference().playing() && !h.tone.input().reference().chimePlaying() && !h.tone.input().preview().active())h.stopOnControl();
         return ROCKER_OK;
 }
 rocker_audio_result ROCKER_CALL rocker_audio_set_metronome(rocker_audio_handle host,const rocker_metronome_config* value){
@@ -369,9 +370,9 @@ static void refreshHost(rocker_audio_host& h) {
         ++h.deviceFaults;h.lastFailureReason=h.driver->snapshot().failureReason;h.driverXruns=-1;
         h.tone.enable(false); h.driver->stop();h.finishCaptureJoined(2);h.disarmSourcesStopped(); h.state = ROCKER_FAULTED;
         h.error = "Audio device stopped unexpectedly. Stop and start playback again.";
-    } else if (h.tone.clipMode() && h.tone.ended() && !h.recorder->active() && !h.tone.input().looper().active() && !h.tone.input().looper().pending() && !h.metroCache.enabled && !h.tone.input().monitoring() && !h.tone.input().reference().wanted() && !h.tone.input().reference().playing() && !h.tone.input().reference().chimePlaying()) {
+    } else if (h.tone.clipMode() && h.tone.ended() && !h.recorder->active() && !h.tone.input().looper().active() && !h.tone.input().looper().pending() && !h.metroCache.enabled && !h.tone.input().monitoring() && !h.tone.input().reference().wanted() && !h.tone.input().reference().playing() && !h.tone.input().reference().chimePlaying() && !h.tone.input().preview().active()) {
         h.tone.enable(false); h.driver->stop();h.driverXruns=-1; h.state = ROCKER_STOPPED;
-    } else if((h.tone.mode()==3 || h.tone.mode()==4 || h.tone.mode()==5 || h.tone.mode()==6) && !h.recorder->active() && !h.tone.input().looper().active() && !h.tone.input().looper().pending() && !h.metroCache.enabled && !h.tone.input().monitoring() && !h.tone.input().reference().wanted() && !h.tone.input().reference().playing() && !h.tone.input().reference().chimePlaying())h.stopOnControl();
+    } else if((h.tone.mode()==3 || h.tone.mode()==4 || h.tone.mode()==5 || h.tone.mode()==6 || h.tone.mode()==8) && !h.recorder->active() && !h.tone.input().looper().active() && !h.tone.input().looper().pending() && !h.metroCache.enabled && !h.tone.input().monitoring() && !h.tone.input().reference().wanted() && !h.tone.input().reference().playing() && !h.tone.input().reference().chimePlaying() && !h.tone.input().preview().active())h.stopOnControl();
 }
 rocker_audio_result ROCKER_CALL rocker_audio_reserve_stop(rocker_audio_handle host,uint64_t* ticket){
     if(!host || !ticket)return ROCKER_INVALID_ARGUMENT;
@@ -459,6 +460,14 @@ rocker_audio_result ROCKER_CALL rocker_audio_prepare_file_reserved(rocker_audio_
 rocker_audio_result ROCKER_CALL rocker_audio_reserve_media(rocker_audio_handle host,uint64_t* ticket){if(!host || !ticket)return ROCKER_INVALID_ARGUMENT;*ticket=host->mediaIntent.fetch_add(1)+1;return ROCKER_OK;}
 rocker_audio_result ROCKER_CALL rocker_audio_prepare_file_for_loop(rocker_audio_handle host,const char* path,double speed,uint64_t afterCycles){if(!afterCycles)return ROCKER_INVALID_ARGUMENT;return prepareFileWithIntent(host,path,speed,0,afterCycles);}
 rocker_audio_result ROCKER_CALL rocker_audio_clear_media_reserved(rocker_audio_handle host,uint64_t ticket){if(!host || !ticket)return ROCKER_INVALID_ARGUMENT;return withHost(host,[=](auto& h)->rocker_audio_result{if(ticket!=h.mediaIntent.load())return ROCKER_OK;h.collectClips();if(h.stagedClips.size()>=64)return ROCKER_NOT_READY;const auto id=++h.clipGeneration;auto empty=std::make_unique<rocker::media::Clip>();empty->sampleRate=48000;h.stagedClips.push_back({id,ticket,std::move(empty)});if(!h.tone.stage(h.stagedClips.back().clip.get(),1,id,h.state!=ROCKER_RUNNING,0,ticket)){h.stagedClips.pop_back();return ROCKER_NOT_READY;}h.projectSource.reset();h.projectTicket=0;h.regularClipGeneration=id;const std::lock_guard lock(h.telemetry);h.waveformJson="[]";return ROCKER_OK;});}
+rocker_audio_result ROCKER_CALL rocker_audio_reserve_preview(rocker_audio_handle host,uint64_t* graph,uint64_t* phrase){if(!host || !graph || !phrase)return ROCKER_INVALID_ARGUMENT;const auto result=rocker_audio_reserve_metronome_start(host,graph);if(result!=ROCKER_OK)return result;*phrase=host->previewIntent.fetch_add(1)+1;return ROCKER_OK;}
+rocker_audio_result ROCKER_CALL rocker_audio_preview_reserved(rocker_audio_handle host,uint64_t graph,uint64_t phrase,const rocker_preview_note* notes,uint32_t count,uint32_t repeat,uint32_t countIn){
+    if(!host || !graph || !phrase || !notes || count<1 || count>128 || repeat>1 || countIn>32)return ROCKER_INVALID_ARGUMENT;
+    rocker::PreviewPattern pattern;pattern.token=phrase;pattern.count=count;pattern.repeat=repeat;pattern.countInBeats=countIn;
+    for(uint32_t i=0;i<count;++i){const auto& note=notes[i];if(!std::isfinite(note.start_seconds)||note.start_seconds<0 || !std::isfinite(note.duration_seconds)||note.duration_seconds<=0 || note.start_seconds+note.duration_seconds>60 || !std::isfinite(note.frequency_hz)||note.frequency_hz<20 || note.frequency_hz>5000 || !std::isfinite(note.volume)||note.volume<0 || note.volume>1)return ROCKER_INVALID_ARGUMENT;pattern.notes[i]={note.start_seconds,note.duration_seconds,note.frequency_hz,note.volume};pattern.length=std::max(pattern.length,note.start_seconds+note.duration_seconds);}
+    return withHost(host,[=](auto& h)->rocker_audio_result{if(graph!=h.intent.load() || phrase!=h.previewIntent.load())return ROCKER_OK;if(!h.tone.input().preview().arm(pattern))return ROCKER_NOT_READY;return startHost(h,8,graph);});
+}
+rocker_audio_result ROCKER_CALL rocker_audio_stop_preview(rocker_audio_handle host){if(!host)return ROCKER_INVALID_ARGUMENT;host->previewIntent.fetch_add(1);host->tone.input().preview().cancel();return ROCKER_OK;}
 rocker_audio_result ROCKER_CALL rocker_audio_cancel_ramp(rocker_audio_handle host){return withHost(host,[](auto& h)->rocker_audio_result{return h.tone.cancelRamp(h.state!=ROCKER_RUNNING)?ROCKER_OK:ROCKER_NOT_READY;});}
 static rocker_audio_result prepareMidiWithIntent(rocker_audio_handle host,const uint8_t* data,uint32_t count,double speed,uint64_t reserved) {
     if (!host || !data || !count) return ROCKER_INVALID_ARGUMENT;

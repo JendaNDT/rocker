@@ -82,7 +82,7 @@ public sealed partial class MainWindow : Window
             StopButton.IsEnabled = state.State != AudioState.Stopped;
             StatusText.Text = state.State switch
             {
-                AudioState.Running => state.Reserved==6 ? "Looper." : state.Reserved==5 ? "Nahrávání; monitoring se ovládá samostatně." : state.Reserved==3 ? "Metronom." : state.Reserved==2 ? "Živý vstup. Monitoring se ovládá samostatně." : transport.Playing != 0 ? "Přehrávání." : state.Reserved==1 ? "Skladba pozastavena; zvukové zařízení běží." : "Hraje testovací tón.",
+                AudioState.Running => state.Reserved==8 ? "Zvuková ukázka." : state.Reserved==6 ? "Looper." : state.Reserved==5 ? "Nahrávání; monitoring se ovládá samostatně." : state.Reserved==3 ? "Metronom." : state.Reserved==2 ? "Živý vstup. Monitoring se ovládá samostatně." : transport.Playing != 0 ? "Přehrávání." : state.Reserved==1 ? "Skladba pozastavena; zvukové zařízení běží." : "Hraje testovací tón.",
                 AudioState.Starting => "Spouštím zvukové zařízení…",
                 AudioState.Reconfiguring => "Měním nastavení zvuku…",
                 AudioState.Stopping or AudioState.Closing => "Uvolňuji zvukové zařízení…",
@@ -91,7 +91,7 @@ public sealed partial class MainWindow : Window
             };
             RefreshLive(state);
             RefreshMetronome(state);
-            RefreshTuner(audio.GetAnalysis());
+            var analysis=audio.GetAnalysis();RefreshTuner(analysis);RefreshLesson(analysis);
             RefreshAudioDiagnostics();
             RefreshSong(transport);
             RefreshRecording();

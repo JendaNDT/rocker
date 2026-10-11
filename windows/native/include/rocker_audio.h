@@ -191,6 +191,10 @@ ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_pause(rocker_audio_handl
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_play_count_in_reserved(rocker_audio_handle,uint64_t,uint32_t,uint32_t,double);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_cancel_media(rocker_audio_handle);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_clear_media_reserved(rocker_audio_handle,uint64_t ticket);
+typedef struct rocker_preview_note {double start_seconds,duration_seconds,frequency_hz,volume;} rocker_preview_note;
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_reserve_preview(rocker_audio_handle,uint64_t* graph,uint64_t* phrase);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_preview_reserved(rocker_audio_handle,uint64_t graph,uint64_t phrase,const rocker_preview_note*,uint32_t count,uint32_t repeat,uint32_t count_in_beats);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_stop_preview(rocker_audio_handle);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_reserve_media(rocker_audio_handle,uint64_t*);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_prepare_file_reserved(rocker_audio_handle,uint64_t,const char*,double,uint64_t);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_prepare_midi_reserved(rocker_audio_handle,uint64_t,const uint8_t*,uint32_t,double);

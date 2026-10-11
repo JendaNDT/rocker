@@ -25,7 +25,7 @@ public sealed partial class MainWindow
     private FrameworkElement BuildStudio()
     {
         var panel=Stack();panel.Children.Add(Text("Studio · projekt na disku"));
-        void Action(string label,Func<Task> work){var button=new Button{Content=label};button.Click+=async(_,_)=>{if(captureDraft is not null || studioOperation || studioEditTask is{IsCompleted:false} || database is null || audio is null)return;studioOperation=true;if(studioTrackEditor is not null)studioTrackEditor.IsEnabled=false;try{await work();}catch(OperationCanceledException){ShowPersistenceError("Operace Studia byla zrušena.");}catch(Exception error){ShowPersistenceError("Studio: "+error.Message);}finally{studioOperation=false;if(studioTrackEditor is not null)studioTrackEditor.IsEnabled=true;RefreshStudio();}};panel.Children.Add(button);}
+        void Action(string label,Func<Task> work){var button=new Button{Content=label};button.Click+=async(_,_)=>{if(captureDraft is not null || studioOperation || studioEditTask is{IsCompleted:false} || database is null || audio is null)return;studioOperation=true;SetStudioEditorEnabled(false);try{await work();}catch(OperationCanceledException){ShowPersistenceError("Operace Studia byla zrušena.");}catch(Exception error){ShowPersistenceError("Studio: "+error.Message);}finally{studioOperation=false;SetStudioEditorEnabled(true);RefreshStudio();}};panel.Children.Add(button);}
         Action("Nový projekt…",async()=>{var name=await AskRecordingNameAsync("Nový projekt","Moje skladba");if(name is null)return;await InvalidateStudioPlaybackAsync();var now=DateTimeOffset.UtcNow;studioProject=new(1,Guid.NewGuid().ToString(),name,now,now,48000,[]);studioUndo.Clear();await SaveStudioAsync();await ReloadStudioListsAsync();});
         studioProjects=new ComboBox{Header="Projekty",DisplayMemberPath="Name",HorizontalAlignment=HorizontalAlignment.Stretch};panel.Children.Add(studioProjects);
         Action("Otevřít vybraný projekt",async()=>{if(studioProjects.SelectedItem is not ProjectIndex selected)return;await InvalidateStudioPlaybackAsync();var loaded=await new ProjectRepository(userFiles,database!).LoadAsync(selected.Id);if(loaded.MissingMedia.Count>0)throw new InvalidDataException("Projekt má chybějící nebo změněné stopy. Původní manifest je zachovaný.");studioProject=loaded.Project;studioUndo.Clear();studioOwnsPlayback=false;studioTicket=0;RefreshStudio();});
@@ -53,6 +53,7 @@ public sealed partial class MainWindow
         studioReading=Text("Vytvoř nebo otevři projekt.",true);panel.Children.Add(studioReading);_ = ReloadStudioListsAsync();RefreshStudio();return panel;
     }
     private async Task InvalidateStudioPlaybackAsync(){if(audio is not null){await audio.StopAsync();await audio.ClearMediaAsync();}studioOwnsPlayback=false;studioTicket=0;mediaPath=null;mediaMidi=null;song=null;}
+    private void SetStudioEditorEnabled(bool enabled){if(studioTrackEditor is not null)foreach(var control in studioTrackEditor.Children.OfType<Control>())control.IsEnabled=enabled;}
     private void RememberStudio(){if(studioProject is null)return;if(studioUndo.Count>=20){var keep=studioUndo.Take(19).Reverse().ToArray();studioUndo.Clear();foreach(var value in keep)studioUndo.Push(value);}studioUndo.Push(studioProject);}
     private async Task SaveStudioAsync()
     {
