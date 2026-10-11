@@ -11,7 +11,8 @@ public sealed record AppSettings(string Theme = "system", string TuningId = "sta
     [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)] NavigationTarget? ResumeTask = null,
     [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)] PlanProgress? PracticePlan = null,
     [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingDefault)] bool KeepAwake = false,
-    [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)] PlanProgress? AiPlanProgress = null);
+    [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)] PlanProgress? AiPlanProgress = null,
+    [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingDefault)] int SetupStep = 0);
 public sealed record PlanProgress(string Key, IReadOnlyList<string> Completed);
 public sealed record DevicePreference(string Backend, string Input, string Output, double SampleRate=0, uint BufferFrames=0, int InputChannel=-1, uint OutputFirst=0);
 public sealed record Pickup(string Position, string Type);
@@ -71,6 +72,7 @@ public static class UserData
             case "settings":
                 var settings = Read<AppSettings>(document.Value);
                 Require(settings.Theme is "system" or "dark" or "light" && settings.Handedness is "right" or "left" && settings.Notation is "english" or "german" && ValidId(settings.TuningId) && Unit(settings.NoiseGate) && Unit(settings.ReferenceToneVolume), "Neplatné nastavení.");
+                Require(settings.SetupStep is >=0 and <=5,"Neplatný krok průvodce.");
                 if(settings.ResumeTask is { } resume)WorkspaceViews.Validate(resume);
                 foreach(var plan in new[]{settings.PracticePlan,settings.AiPlanProgress}.OfType<PlanProgress>())Require(ValidId(plan.Key) && plan.Completed is not null && plan.Completed.Count<=32 && plan.Completed.All(ValidId),"Neplatný stav plánu.");
                 if(settings.ReferenceA is double referenceA)Require(double.IsFinite(referenceA) && referenceA is >=430 and <=450,"Neplatná referenční frekvence A.");

@@ -44,7 +44,7 @@ public sealed partial class MainWindow
             InitializeVideoPractice(snapshot.Documents);
             InitializeAi(snapshot.Documents);if(practiceSession.Phase is PracticePhase.Running or PracticePhase.Paused)practiceSession.End();RefreshPracticeControls();
             await RestoreDevicePreferenceAsync();
-            workspaceCache.Clear(); ShowWorkspace();
+            workspaceCache.Clear();if(!appSettings.Onboarded && string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTICS_DIR")))Navigate(new("31"));else ShowWorkspace();
             if (snapshot.Warnings.Count > 0) ShowPersistenceError($"Při obnovení dat bylo upraveno nebo vynecháno {snapshot.Warnings.Count} neplatných záznamů. Původní databáze je zachovaná.");
         }
         catch (Exception)

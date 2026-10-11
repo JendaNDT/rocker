@@ -488,7 +488,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w34"></a>
 #### W34 — Nastavení a první spuštění
 
-- [ ] Čeká. Závislosti: W08–W12, W14, W19, W20, W31–W33.
+- [ ] Implementováno: [W34](docs/windows/w34/README.md), Windows kontrola čeká. Závislosti: W08–W12, W14, W19, W20, W31–W33.
 - Sjednotit nastavení zvuku, vstupního kanálu, vzhledu, klávesnice, AI, umístění dat a diagnostiky. Zachovat Zen režim skrývající gamifikaci. Ověřit okamžik uplatnění každé volby a jasně odlišit změny vyžadující restart zvuku.
 - Průvodce zahrne profil, případný import, výstup a vstup, otestování úrovně, monitoring a informace o ukládání. Jde dokončit bez kytary i bez AI klíče; lze se k němu vrátit.
 - Nabídnout jasně označený ukázkový signál pro ověření aplikace bez zařízení. Reset jednotlivého nastavení není nečekané smazání celé databáze.

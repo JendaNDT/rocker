@@ -127,6 +127,7 @@ public sealed partial class MainWindow
     private FrameworkElement BuildWorkspace(NavigationTarget target)
     {
         if (catalog is null) return Text("Výukový obsah není dostupný. Přehrávání souborů zůstává dostupné.");
+        if (target.ViewId == "31")return BuildFirstRun();
         if (target.ViewId == "26")return BuildInstrument();
         if (target.ViewId == "27")return BuildProgress();
         if (target.ViewId == "23")return BuildAiChat();
@@ -186,21 +187,6 @@ public sealed partial class MainWindow
         var search = new TextBox { Header = "Hledat", PlaceholderText = "Název nebo popis", MaxLength = 128 };
         search.TextChanged += (_,_) => list.ItemsSource = entries.Where(entry => entry.Title.Contains(search.Text,StringComparison.CurrentCultureIgnoreCase) || entry.Detail.Contains(search.Text,StringComparison.CurrentCultureIgnoreCase)).ToArray();
         panel.Children.Add(search); panel.Children.Add(list); panel.Children.Add(detail); return Card(panel);
-    }
-    private FrameworkElement BuildSettings()
-    {
-        var panel = Stack(); var theme = new ComboBox { Header = "Vzhled", ItemsSource = new[] { "Podle Windows", "Tmavý Vintage", "Světlý Vintage" }, SelectedIndex = selectedTheme == "dark" ? 1 : selectedTheme == "light" ? 2 : 0, MinWidth = 200 };
-        theme.SelectionChanged += (_,_) => ApplyTheme(theme.SelectedIndex == 1 ? "dark" : theme.SelectedIndex == 2 ? "light" : "system");
-        theme.IsEnabled=persistenceReady;
-        panel.Children.Add(theme); panel.Children.Add(Text("Vzhled a rozpracované lekce se ukládají průběžně. Poloha a velikost okna se uloží při zavření. Vysoký kontrast se řídí nastavením Windows.",true));
-        panel.Children.Add(Text("Složka dat: " + userFiles.Root));
-        var open = new Button { Content = "Otevřít složku dat" }; open.Click += async (_,_) =>
-        {
-            try { Directory.CreateDirectory(userFiles.Root); await Windows.System.Launcher.LaunchFolderAsync(await Windows.Storage.StorageFolder.GetFolderFromPathAsync(userFiles.Root)); }
-            catch (Exception error) { ShellNotice.IsOpen = true; ShellNotice.Message = "Složku nelze otevřít. " + error.Message; }
-        };
-        panel.Children.Add(open);
-        panel.Children.Add(BuildAudioDiagnostics());panel.Children.Add(BuildSecretSettings()); return Card(panel);
     }
     private async void About_Click(object sender, RoutedEventArgs args)
     {
@@ -277,6 +263,7 @@ public sealed partial class MainWindow
         await VerifyAiViewsAsync();
         await VerifyPracticeAndProfileAsync();
         await VerifyOverviewLiveAsync();
+        await VerifyFirstRunAsync();
         await VerifyDevicesAsync();
         VerifyComponents();
         if (Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTIC_VIEW") == "components") ShowComponents();
