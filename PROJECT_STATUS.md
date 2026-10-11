@@ -61,7 +61,10 @@ Nový [offline C++ mediální modul](docs/windows/w04/media.md) dekóduje
 WAV/MP3/Ogg/Opus a mění rychlost se zachováním tónu pomocí Signalsmith.
 Linux ověření prošlo 103/103 kontrolami. Ještě není připojený k oknu ani
 společnému transportu; WebM/AAC, přehrávání not a YouTube zbývají.
-Průběžný Windows build ověří nový modul; ruční poslech je odložený po W43.
+Windows běh 38142313330 prošel: 103/103 mediálních kontrol, původní
+kontrakty a noty, WinUI smoke i balení. Stažené interní ZIPy a všech šest
+zdrojových archivů prošly kontrolou. [Protokol médií](docs/windows/w04/media-validation.json)
+obsahuje skutečná měření; ruční poslech je odložený po W43.
 [Původní Linux protokol](docs/windows/w03-validation.json) zůstává historickým záznamem.
 Opraven byl pád při načtení XAML po publikování: projekt nyní zapíná `EnableMsixTooling`.
 Vývoj a průběžné

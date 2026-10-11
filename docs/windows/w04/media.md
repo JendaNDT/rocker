@@ -84,3 +84,18 @@ JUCE/Signalsmith vyžadují i `-DROCKER_WITH_MEDIA=OFF`.
 Windows `build.ps1` provede stejné CTest kontroly a uchová `media-checks.json`
 spolu s notami, C# propojením a WinUI smoke testem. Průběžné artefakty slouží
 vývoji; uživatel dostane k ručnímu testu až ucelený kandidát.
+
+## Výsledek Windows sestavení
+
+[Windows běh 38142313330](https://github.com/JendaNDT/rocker/actions/runs/38142313330)
+na revizi `6df3fd0ec952f0b49d1c9c11058015281a3f2d62` prošel: 103/103 mediálních
+kontrol, 2/2 CTest sady, C# propojení a odmítnutí nesprávného ABI, 22/22
+notových kontrol, otevření okna s vykreslenými notami a ukončení s kódem 0.
+
+Interní balíky byly stažené z Actions; prošly SHA-256, CRC obou ZIPů i šesti
+zdrojových archivů a shodou jejich Git revizí. Testovací backend není v balíku,
+EXE a nativní DLL jsou x64. Licence Signalsmith jsou přibalené. Fyzický zvuk
+se v CI nepřehrával. Nové vydání pro uživatele se nevytvářelo ani nenabízelo
+k předčasnému ručnímu testování.
+
+Úplná měření, nástroje a identifikace balíků: [media-validation.json](media-validation.json).
