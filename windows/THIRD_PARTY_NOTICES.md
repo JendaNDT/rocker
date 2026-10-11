@@ -9,7 +9,11 @@ Původní PWA a její kořenová MIT licence se nemění.
 - .NET a Windows App SDK mají vlastní licence a podmínky distribuovaných součástí.
 
 Přesné podklady jsou v rozhodnutí W02 v repozitáři. Toto je interní prototyp,
-nikoli hotový distribuční balík pro bratra. Před jeho předáním W43 musí vzniknout
+nikoli hotový distribuční balík pro bratra. Předběžný spustitelný ZIP uchovává
+licenční podklady ve složce `licenses`; odpovídající zdroje Rockeru a celého
+připnutého JUCE jsou nabídnuté zvlášť v `Rocker-Windows-sources.zip` u stejného
+vydání. Identifikaci sestavení obsahuje `build-info.json`.
+Před předáním bratrovi ve W43 musí vzniknout
 úplný soupis skutečně přibalených komponent a jejich licenčních textů, odpovídající
 zdrojový archiv a dostupný samostatný odkaz vedle instalátoru. Pouhý tento stručný
 soubor finální licenční povinnosti nenahrazuje.

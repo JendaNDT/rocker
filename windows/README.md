@@ -124,5 +124,6 @@ SafeHandle. Události z audio callbacku se čtou jako stavové snímky, nepřed�
 se jako spravované callbacky.
 
 Při vydání bratrovi se zdroje nabídnou zvlášť, nikoli jako součást instalátoru.
-Tento prototyp sám žádný zdrojový archiv, instalátor ani veřejné vydání nevytváří.
+Průběžný prototyp nabízí spustitelný ZIP a samostatný archiv odpovídajících
+zdrojů; nejde o finální instalátor ani veřejné vydání.
 [Licenční poznámky](THIRD_PARTY_NOTICES.md) nenahrazují finální distribuční kontrolu.

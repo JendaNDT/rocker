@@ -7,7 +7,7 @@ public partial class App : Application
     private Window? window;
     public App()
     {
-        UnhandledException += (_, args) => LogStartupFailure(args.Exception);
+        UnhandledException += (_, args) => LogStartupFailure(args.Exception, args.Message);
         try { InitializeComponent(); }
         catch (Exception error) { LogStartupFailure(error); throw; }
     }
@@ -20,7 +20,7 @@ public partial class App : Application
         }
         catch (Exception error) { LogStartupFailure(error); throw; }
     }
-    private static void LogStartupFailure(Exception error)
+    private static void LogStartupFailure(Exception error, string? context = null)
     {
         // Diagnostics must never replace or suppress the original startup exception.
         try
@@ -28,7 +28,7 @@ public partial class App : Application
             var directory = Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTICS_DIR")
                 ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Rocker", "logs");
             Directory.CreateDirectory(directory);
-            File.AppendAllText(Path.Combine(directory, "startup-error.txt"), $"{DateTime.UtcNow:O}\n{error}\n");
+            File.AppendAllText(Path.Combine(directory, "startup-error.txt"), $"{DateTime.UtcNow:O}\n{context}\n{error}\n");
         }
         catch (Exception) { }
     }
