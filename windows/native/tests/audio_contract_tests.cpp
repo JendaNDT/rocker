@@ -80,6 +80,17 @@ int main() {
         for (auto& caller : callers) caller.join();
         check(concurrentOk.load(), "concurrent control calls");
         rocker_audio_start(host);
+        rocker_audio_stop(host);
+        uint32_t jsonSize=0;std::array<char,2048> deviceJson{};
+        check(rocker_audio_copy_devices(host,nullptr,0,&jsonSize)==ROCKER_OK && jsonSize>100,"device catalog size");
+        check(rocker_audio_copy_devices(host,deviceJson.data(),1,&jsonSize)==ROCKER_BUFFER_TOO_SMALL && deviceJson[0]==0,"small JSON buffer remains terminated");
+        check(rocker_audio_copy_devices(host,deviceJson.data(),deviceJson.size(),&jsonSize)==ROCKER_OK && std::strstr(deviceJson.data(),"Test ASIO"),"native catalog contents");
+        rocker_device_config chosen{sizeof(chosen),ROCKER_AUDIO_ABI_VERSION,44100,128,1,0,0};
+        check(rocker_audio_configure_device(host,&chosen,"Test ASIO","Test interface","Test interface")==ROCKER_OK,"explicit mono channel configuration");
+        check(rocker_audio_copy_device_details(host,deviceJson.data(),deviceJson.size(),&jsonSize)==ROCKER_OK && std::strstr(deviceJson.data(),"44100"),"actual configured details");
+        chosen.buffer_frames=512;check(rocker_audio_configure_device(host,&chosen,"Test ASIO","Test interface","Test interface")==ROCKER_DEVICE_ERROR,"unsupported format rejected");
+        check(rocker_audio_copy_device_details(host,deviceJson.data(),deviceJson.size(),&jsonSize)==ROCKER_OK && std::strstr(deviceJson.data(),"128"),"failed selection preserves last configuration");
+        chosen.abi_version=ROCKER_AUDIO_ABI_VERSION-1;check(rocker_audio_configure_device(host,&chosen,"Test ASIO","Test interface","Test interface")==ROCKER_ABI_MISMATCH,"device config ABI version validated");
         rocker_audio_destroy(host);
         rocker_audio_destroy(nullptr);
         check(rocker_audio_stop(nullptr) == ROCKER_INVALID_ARGUMENT, "null handle rejected");

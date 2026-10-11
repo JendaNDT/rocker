@@ -18,9 +18,9 @@
 extern "C" {
 #endif
 
-/* Version 3 adds nonblocking stop requests and cached lifecycle telemetry.
+/* Version 4 adds explicit device selection, enumeration and capabilities.
    Reject earlier DLLs before creating a host. */
-#define ROCKER_AUDIO_ABI_VERSION 3u
+#define ROCKER_AUDIO_ABI_VERSION 4u
 typedef struct rocker_audio_host* rocker_audio_handle;
 typedef uint32_t rocker_audio_result;
 enum {
@@ -53,6 +53,13 @@ typedef struct rocker_transport_snapshot {
     uint32_t ready, playing, ended, reserved;
     double duration_seconds, position_seconds, speed, volume;
 } rocker_transport_snapshot;
+typedef struct rocker_device_config {
+    uint32_t struct_size, abi_version;
+    double sample_rate;
+    uint32_t buffer_frames;
+    int32_t input_channel; /* -1: output only, otherwise physical mono channel */
+    uint32_t output_first, reserved; /* physical stereo pair: first, first+1 */
+} rocker_device_config;
 #pragma pack(pop)
 
 /* Never call from an audio callback. Device operations execute on the native
@@ -85,6 +92,15 @@ ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_play(rocker_audio_handle
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_seek(rocker_audio_handle, double seconds);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_set_volume(rocker_audio_handle, double volume);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_get_transport(rocker_audio_handle, rocker_transport_snapshot*);
+/* Device queries/configuration are worker operations, never UI/callback calls.
+   UTF-8 JSON queries are copied in one call. Empty input means output only.
+   Explicit configuration validates by opening silently, then closes. Failure
+   preserves the previous selection; neither path automatically resumes sound. */
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_copy_devices(rocker_audio_handle, char*, uint32_t, uint32_t*);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_copy_capabilities(rocker_audio_handle, const char* backend, const char* input, const char* output, char*, uint32_t, uint32_t*);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_configure_device(rocker_audio_handle, const rocker_device_config*, const char* backend, const char* input, const char* output);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_copy_device_details(rocker_audio_handle, char*, uint32_t, uint32_t*);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_show_control_panel(rocker_audio_handle);
 /* required includes the terminating zero; capacity=0 queries size. UTF-8 is
    copied, never borrowed. A short buffer is terminated and reports TOO_SMALL. */
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_copy_last_error(rocker_audio_handle, char*, uint32_t capacity, uint32_t* required);

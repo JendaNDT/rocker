@@ -107,6 +107,23 @@ for(var attempt=0;attempt<20;attempt++)
     await using var audio=new NativeAudio();var starting=audio.StartAsync();var stopping=audio.StopAsync();await Task.WhenAll(starting,stopping);
     Check(audio.GetSnapshot().State==AudioState.Stopped,"stop before worker scheduling invalidates reserved start");
 }
+await using(var deviceAudio=new NativeAudio())
+{
+    var devices=await deviceAudio.GetDevicesAsync();Check(devices.Backends.Length==1 && devices.Backends[0].Name=="Test ASIO","device catalog uses the real native query");
+    var choice=new DeviceConfiguration("Test ASIO","Test interface","Test interface",44100,128,1);
+    var caps=await deviceAudio.GetCapabilitiesAsync(choice);Check(caps.Inputs.Length==2 && caps.Rates.Contains(48000) && caps.Buffers.Contains(128u),"physical channel names and driver formats cross the ABI");
+    await deviceAudio.ConfigureDeviceAsync(choice);var detail=await deviceAudio.GetDeviceDetailsAsync();
+    Check(detail.SampleRate==44100 && detail.BufferFrames==128 && detail.InputLatencyFrames==32 && deviceAudio.GetSnapshot().State==AudioState.Stopped,"configuration validates without starting sound");
+    try{await deviceAudio.ConfigureDeviceAsync(choice with{BufferFrames=512});throw new Exception("Unsupported driver format accepted");}
+    catch(InvalidOperationException){ }
+    detail=await deviceAudio.GetDeviceDetailsAsync();Check(detail.SampleRate==44100 && detail.BufferFrames==128,"failed configuration preserves the previous selection");
+    try{await deviceAudio.GetCapabilitiesAsync(choice with{Output="Missing interface"});throw new Exception("Missing named device accepted");}
+    catch(InvalidOperationException){ }
+    try{await deviceAudio.ConfigureDeviceAsync(choice with{InputChannel=64});throw new Exception("Invalid physical channel accepted");}
+    catch(ArgumentException){ }
+    await deviceAudio.ShowDeviceControlPanelAsync();
+    await deviceAudio.StartAsync();var active=deviceAudio.GetSnapshot();Check(active.SampleRate==44100 && active.BufferFrames==128,"confirmed format is actually used by the driver");await deviceAudio.StopAsync();
+}
 // Slow vendor initialization stays on a retained managed worker. Stop and polling remain responsive.
 var delayedLibrary=NativeLibrary.Load(Path.GetFullPath(args[0]));
 var setDelay=Marshal.GetDelegateForFunctionPointer<SetDelay>(NativeLibrary.GetExport(delayedLibrary,"rocker_test_set_start_delay"));

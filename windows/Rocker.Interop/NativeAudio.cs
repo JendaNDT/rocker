@@ -40,7 +40,7 @@ internal sealed class AudioHandle : SafeHandleZeroOrMinusOneIsInvalid
 
 internal static class NativeMethods
 {
-    internal const uint AbiVersion = 3;
+    internal const uint AbiVersion = 4;
     private const string Library = "rocker_audio";
     [DllImport(Library, EntryPoint = "rocker_audio_get_abi_version", CallingConvention = CallingConvention.Cdecl)]
     internal static extern uint GetAbiVersion();
@@ -86,7 +86,7 @@ internal static class NativeMethods
     internal static extern void Destroy(IntPtr handle);
 }
 
-public sealed class NativeAudio : IDisposable, IAsyncDisposable
+public sealed partial class NativeAudio : IDisposable, IAsyncDisposable
 {
     private readonly object control = new();
     private readonly AudioHandle handle;

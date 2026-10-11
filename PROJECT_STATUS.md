@@ -29,7 +29,7 @@ přidává verzované zálohy, náhled konfliktů, vratné kopie a startup recov
 Windows 38156474475 potvrdil 20 scénářů záloh a dva WinUI starty.
 [W12](docs/windows/w12/README.md) má export z PWA, import starých záloh a všech
 pěti formátů nahrávek, náhled, deduplikaci a oddělené převzetí starého klíče.
-Lokálně prošlo 28 migračních kontrol. Webová změna není na produkčním main. PWA reference: všech 567 testů, typy i lint prošly.
+Lokálně prošlo 28 migračních kontrol, Windows 38157147391 prošel všemi 29 (navíc skutečné DPAPI převzetí klíče). Webová změna není na produkčním main. PWA reference: všech 567 testů, typy i lint prošly.
 
 ## Aktuální směr: nativní Rocker pro Windows
 
@@ -835,3 +835,8 @@ mono-sečtený `getRecordingStream()` místo syrového streamu (viz
 W13: asynchronní řízení zařízení, rychlá stavová kopie a ztišení, identity
 startů a callback brána proti pozdnímu spuštění. Linux realtime/C ABI/C#
 kontrakty procházejí; Windows důkaz a další zařízení navazují.
+
+W14: skutečná enumerace JUCE, výběr zařízení a mono kanálu, kontrola formátu,
+ASIO panel, persistence a žádný automatický hotplug fallback. Windows ověření
+a fyzická přejímka zůstávají oddělené. W13 první Windows kontrola odhalila
+a opravila opakované zpracování Stop; nový navazující build je nutný.

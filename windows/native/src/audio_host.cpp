@@ -12,6 +12,7 @@
 static_assert(sizeof(rocker_audio_config) == 24);
 static_assert(sizeof(rocker_audio_snapshot) == 40);
 static_assert(sizeof(rocker_transport_snapshot) == 56);
+static_assert(sizeof(rocker_device_config)==32);
 struct rocker_audio_host;
 static void refreshHost(rocker_audio_host&);
 struct rocker_audio_host {
@@ -67,6 +68,7 @@ rocker_audio_result ROCKER_CALL rocker_audio_create(const rocker_audio_config* c
 }
 static rocker_audio_result startHost(rocker_audio_host& h, bool media,uint64_t intent) {
     if(intent!=h.intent.load())return ROCKER_OK;
+    h.stopRequested.exchange(false);
     if (media && !h.tone.hasClip()) { h.error = "No prepared media is available."; return ROCKER_NOT_READY; }
     if (h.state == ROCKER_RUNNING && !h.driver->snapshot().failed && h.tone.clipMode() == media && (!media || !h.tone.ended())) return ROCKER_OK;
     h.state=ROCKER_STARTING;h.publish();h.driver->stop();
@@ -119,7 +121,7 @@ rocker_audio_result ROCKER_CALL rocker_audio_request_stop(rocker_audio_handle ho
 rocker_audio_result ROCKER_CALL rocker_audio_stop(rocker_audio_handle host){
     if(!host)return ROCKER_INVALID_ARGUMENT;
     rocker_audio_request_stop(host);
-    return withHost(host,[](auto& h)->rocker_audio_result{h.stopOnControl();return ROCKER_OK;});
+    return withHost(host,[](auto& h)->rocker_audio_result{h.stopRequested.exchange(false);h.stopOnControl();return ROCKER_OK;});
 }
 rocker_audio_result ROCKER_CALL rocker_audio_get_snapshot(rocker_audio_handle host,rocker_audio_snapshot* out){
     if(!host || !out)return ROCKER_INVALID_ARGUMENT;
@@ -184,6 +186,49 @@ rocker_audio_result ROCKER_CALL rocker_audio_prepare_midi(rocker_audio_handle ho
     (void)speed;
     return ROCKER_NOT_READY;
 #endif
+}
+static bool deviceText(const char* value,std::string& copied) {
+    if(!value)return false;
+    size_t length=0;while(length<1024 && value[length])++length;
+    if(length==1024)return false;
+    copied.assign(value,length);return true;
+}
+static rocker_audio_result copyJson(const std::string& value,char* buffer,uint32_t capacity,uint32_t* required) {
+    if(value.size()>1024*1024)return ROCKER_DEVICE_ERROR;
+    *required=static_cast<uint32_t>(value.size()+1);if(capacity==0)return ROCKER_OK;
+    const auto count=std::min(value.size(),static_cast<size_t>(capacity-1));std::memcpy(buffer,value.data(),count);buffer[count]='\0';
+    return capacity<*required?ROCKER_BUFFER_TOO_SMALL:ROCKER_OK;
+}
+template<class Query> static rocker_audio_result queryDevice(rocker_audio_handle host,char* buffer,uint32_t capacity,uint32_t* required,Query query) {
+    if(!required || (capacity && !buffer))return ROCKER_INVALID_ARGUMENT;
+    return withHost(host,[&](auto& h)->rocker_audio_result{
+        if(h.state==ROCKER_RUNNING)return ROCKER_NOT_READY;
+        try{return copyJson(query(*h.driver),buffer,capacity,required);}catch(const std::exception& e){h.error=e.what();return ROCKER_DEVICE_ERROR;}
+    });
+}
+rocker_audio_result ROCKER_CALL rocker_audio_copy_devices(rocker_audio_handle host,char* buffer,uint32_t capacity,uint32_t* required){
+    return queryDevice(host,buffer,capacity,required,[](auto& driver){return driver.catalog();});
+}
+rocker_audio_result ROCKER_CALL rocker_audio_copy_capabilities(rocker_audio_handle host,const char* backend,const char* input,const char* output,char* buffer,uint32_t capacity,uint32_t* required){
+    rocker::DeviceSelection choice;if(!deviceText(backend,choice.backend)||!deviceText(input,choice.input)||!deviceText(output,choice.output))return ROCKER_INVALID_ARGUMENT;
+    return queryDevice(host,buffer,capacity,required,[&](auto& driver){return driver.capabilities(choice);});
+}
+rocker_audio_result ROCKER_CALL rocker_audio_copy_device_details(rocker_audio_handle host,char* buffer,uint32_t capacity,uint32_t* required){
+    if(!required || (capacity && !buffer))return ROCKER_INVALID_ARGUMENT;
+    return withHost(host,[&](auto& h)->rocker_audio_result{try{return copyJson(h.driver->details(),buffer,capacity,required);}catch(const std::exception& e){h.error=e.what();return ROCKER_DEVICE_ERROR;}});
+}
+rocker_audio_result ROCKER_CALL rocker_audio_configure_device(rocker_audio_handle host,const rocker_device_config* config,const char* backend,const char* input,const char* output){
+    if(!config)return ROCKER_INVALID_ARGUMENT;
+    if(config->struct_size!=sizeof(*config)||config->abi_version!=ROCKER_AUDIO_ABI_VERSION)return ROCKER_ABI_MISMATCH;
+    if(!std::isfinite(config->sample_rate) || (config->sample_rate!=0 && (config->sample_rate<8000 || config->sample_rate>192000)) || (config->buffer_frames!=0 && (config->buffer_frames<16 || config->buffer_frames>8192)) || config->input_channel < -1 || config->input_channel>63 || config->output_first>62 || config->reserved!=0)return ROCKER_INVALID_ARGUMENT;
+    rocker::DeviceSelection choice;if(!deviceText(backend,choice.backend)||choice.backend.empty()||!deviceText(input,choice.input)||!deviceText(output,choice.output)||choice.output.empty())return ROCKER_INVALID_ARGUMENT;
+    choice.rate=config->sample_rate;choice.frames=config->buffer_frames;choice.inputChannel=config->input_channel;choice.outputFirst=config->output_first;
+    rocker_audio_request_stop(host);
+    return withHost(host,[&](auto& h)->rocker_audio_result{h.stopRequested.exchange(false);h.stopOnControl();h.state=ROCKER_RECONFIGURING;h.publish();
+        const bool ok=h.driver->configure(choice,h.error);h.state=ROCKER_STOPPED;if(ok)h.error.clear();return ok?ROCKER_OK:ROCKER_DEVICE_ERROR;});
+}
+rocker_audio_result ROCKER_CALL rocker_audio_show_control_panel(rocker_audio_handle host){
+    return withHost(host,[](auto& h)->rocker_audio_result{if(h.state==ROCKER_RUNNING)return ROCKER_NOT_READY;return h.driver->controlPanel(h.error)?ROCKER_OK:ROCKER_DEVICE_ERROR;});
 }
 rocker_audio_result ROCKER_CALL rocker_audio_copy_last_error(rocker_audio_handle host, char* buffer, uint32_t capacity, uint32_t* required) {
     if (!required || (capacity > 0 && !buffer)) return ROCKER_INVALID_ARGUMENT;

@@ -229,6 +229,7 @@ public sealed partial class MainWindow
         args.Cancel = true;
         if (closingWindow) return;
         if (backupOperationRunning) { ShowPersistenceError("Počkej na dokončení zálohy nebo obnovy."); return; }
+        if (deviceOperationRunning) { ShowPersistenceError("Počkej na dokončení změny zvukového zařízení."); return; }
         if (secretOperationRunning) { ShowPersistenceError("Počkej na dokončení uložení nebo odstranění klíče."); return; }
         closingWindow = true;
         try
@@ -262,6 +263,7 @@ public sealed partial class MainWindow
         Navigate(new("08")); await EnsureVideoAsync();
         Navigate(new("01"));
         await VerifyPersistenceAsync();
+        await VerifyDevicesAsync();
         VerifyComponents();
         if (Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTIC_VIEW") == "components") ShowComponents();
         await CaptureNativeViewAsync();

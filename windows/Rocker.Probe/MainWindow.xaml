@@ -96,8 +96,27 @@
                 </Border>
                 <Border x:Name="DevicePanel" Background="{ThemeResource VintagePanel}" Padding="16" CornerRadius="4" Visibility="Collapsed">
                     <StackPanel Spacing="12">
-                        <TextBlock Text="Test A · 440 Hz. Použije se výchozí výstup Windows; kytaru tato verze nenahrává."
+                        <TextBlock Text="Vyber ovladač, zvukovou kartu a vstup pro kytaru. Změna nastavení zastaví přehrávání; monitoring se nezapíná automaticky."
                                    TextWrapping="Wrap" />
+                        <ContentControl x:Name="DeviceControls" HorizontalContentAlignment="Stretch">
+                            <StackPanel Spacing="12">
+                                <Button Content="Obnovit seznam zařízení (zastaví zvuk)" Click="DevicesRefresh_Click" />
+                                <ComboBox x:Name="DeviceBackendBox" Header="Ovladač" HorizontalAlignment="Stretch" SelectionChanged="DeviceBackend_Changed" />
+                                <ComboBox x:Name="DeviceInputBox" Header="Vstupní zařízení" HorizontalAlignment="Stretch" DisplayMemberPath="Label" SelectionChanged="DeviceNames_Changed" />
+                                <ComboBox x:Name="DeviceOutputBox" Header="Výstupní zařízení / sluchátka" HorizontalAlignment="Stretch" DisplayMemberPath="Label" SelectionChanged="DeviceNames_Changed" />
+                                <Button Content="Načíst možnosti vybrané karty (zastaví zvuk)" Click="DeviceInspect_Click" />
+                                <ComboBox x:Name="DeviceChannelBox" Header="Jediný mono vstup kytary" DisplayMemberPath="Label" HorizontalAlignment="Stretch" />
+                                <ComboBox x:Name="DevicePairBox" Header="Výstupní kanály" DisplayMemberPath="Label" HorizontalAlignment="Stretch" />
+                                <ComboBox x:Name="DeviceRateBox" Header="Vzorkování (Hz)" DisplayMemberPath="Label" HorizontalAlignment="Stretch" />
+                                <ComboBox x:Name="DeviceBufferBox" Header="Buffer (vzorky)" DisplayMemberPath="Label" HorizontalAlignment="Stretch" />
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <Button x:Name="ApplyDeviceButton" Content="Ověřit a použít" IsEnabled="False" Click="DeviceApply_Click" />
+                                    <Button x:Name="DevicePanelButton" Content="Panel ovladače" IsEnabled="False" Click="DeviceControlPanel_Click" />
+                                </StackPanel>
+                            </StackPanel>
+                        </ContentControl>
+                        <TextBlock x:Name="DeviceSelectionStatus" Text="Zařízení zatím není vybrané. První testovací tón použije výchozí výstup; vstup kytary se otevře pouze výslovnou volbou." TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />
+                        <TextBlock Text="Pro kytaru i sluchátka používej stejný interfejs. Direct Monitor na kartě je samostatný poslech bez softwarových efektů. ASIO vyžaduje ovladač výrobce; aplikace ho neinstaluje. Sdílené WASAPI umožňuje zvuk ostatních aplikací, výhradní režim ho může omezit." TextWrapping="Wrap" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                         <Button x:Name="StartButton" Content="Spustit tón" Click="Start_Click" />
                         <TextBlock x:Name="DeviceText" Text="Zařízení zatím není otevřené." TextWrapping="Wrap" />
                         <TextBlock Text="Velikost bufferu není měření celkové odezvy. Zavření okna zastaví zvuk a uvolní zařízení."

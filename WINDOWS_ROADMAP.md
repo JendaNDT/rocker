@@ -295,7 +295,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w14"></a>
 #### W14 — Zařízení, ASIO a WASAPI
 
-- [ ] Čeká. Závislosti: W02, W07, W13.
+- [ ] Rozpracováno: [enumerace, výslovná volba, formát, panel a zachování konfigurace](docs/windows/w14/README.md). Automatické Windows ověření navazuje, hardware se finálně testuje až ve W44. Závislosti: W02, W07, W13.
 - Enumerovat ovladače, zařízení, názvy kanálů, podporované vzorkování a buffery. Nabízet skutečné hodnoty, ukládat volbu podle stabilní identity a při zmizení zařízení vyžádat srozumitelný náhradní postup.
 - Zpřístupnit podporovaný ASIO control panel a WASAPI režimy. Neinstalovat ani nepřibalovat cizí ovladač bez práv; odkazovat na ověřený zdroj výrobce.
 - Ošetřit obsazené zařízení, Windows omezení vstupu, nesoulad formátu, hotplug, změnu výchozího zařízení a spánek/probuzení. Nepřepnout živou kytaru potichu na reproduktory notebooku.

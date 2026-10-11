@@ -29,5 +29,9 @@ chybné ABI, média, MIDI a dispose během přípravy.
 
 Audit pokrývá vlastní renderer a SPSC, nikoli všechny interní alokace JUCE
 nebo skutečného ovladače. Ověření Windows sestavení navazuje samostatně.
+První Windows build 38159239630 odhalil opakované zpracování stop-requestu
+po dokončeném Stop: následný čtenář mohl vidět přechodný stav. Oprava spotřebuje
+požadavek před sériovou operací; další Windows build ověří tento kontrakt znovu.
+
 Fyzická latence, hotplug, spánek a hardware jsou odložené do závěrečné
 přejímky; skutečný vstup se tímto krokem zatím neotevírá.

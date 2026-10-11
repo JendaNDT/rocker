@@ -66,11 +66,11 @@ public sealed partial class MainWindow : Window
         {
             var state = audio.GetSnapshot();
             var transport = audio.GetTransport();
-            StartButton.IsEnabled = !busy && state.State != AudioState.Running;
-            PlayMediaButton.IsEnabled = PlayMenu.IsEnabled = !busy && transport.Ready != 0 && transport.Playing == 0;
+            StartButton.IsEnabled = !deviceSelectionUnavailable && !deviceOperationRunning && !busy && state.State != AudioState.Running;
+            PlayMediaButton.IsEnabled = PlayMenu.IsEnabled = !deviceSelectionUnavailable && !deviceOperationRunning && !busy && transport.Ready != 0 && transport.Playing == 0;
             RewindButton.IsEnabled = PositionSlider.IsEnabled = !busy && transport.Ready != 0;
             SpeedBox.IsEnabled = !busy && transport.Ready != 0;
-            PlayScoreButton.IsEnabled = !busy && preview is not null;
+            PlayScoreButton.IsEnabled = !deviceSelectionUnavailable && !deviceOperationRunning && !busy && preview is not null;
             if (!positionDragging)
             {
                 updatingPosition = true;

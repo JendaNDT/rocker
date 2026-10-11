@@ -33,6 +33,7 @@ public sealed partial class MainWindow
             autosave.Failed += (_,_) => DispatcherQueue.TryEnqueue(()=>ShowPersistenceError("Automatické uložení se nezdařilo. Změny zůstávají v paměti; zkus aplikaci zavřít pro opakování zápisu."));
             ApplyTheme(appSettings.Theme);
             persistenceReady = true;
+            await RestoreDevicePreferenceAsync();
             workspaceCache.Clear(); ShowWorkspace();
             if (snapshot.Warnings.Count > 0) ShowPersistenceError($"Při obnovení dat bylo upraveno nebo vynecháno {snapshot.Warnings.Count} neplatných záznamů. Původní databáze je zachovaná.");
         }
