@@ -76,6 +76,9 @@ neověřují zvukový ovladač. Sestavení hlavního DLL navíc kompiluje skute�
 backend, včetně povoleného ASIO. CMake používá Ninja a již aktivované MSVC;
 nepotřebuje generátor Visual Studia novější než zvolený CMake.
 
+Průběžný výsledek a konkrétní zbývající scénáře jsou v
+[protokolu ruční přejímky](../docs/windows/w03-manual-acceptance.md).
+
 Potom ručně ověřit a zaznamenat:
 
 1. Start bez zvuku, běžné ovládání okna, Tab a přístupové klávesy.

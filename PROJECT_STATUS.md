@@ -12,7 +12,7 @@ Uživatel nemá ručně připravovat vývojové prostředí. Postup je v
 Uživatel zvolil skutečné nativní ovládání Windows a vzhled Vintage. Zvuková
 cesta má používat samostatné nativní jádro; ve W02 bylo vybráno WinUI 3 / C#
 a C++ / JUCE s bezplatnou AGPL/GPL cestou. Technické propojení a start okna už prošly Windows CI;
-skutečné přehrávání ještě není ověřené. Cílové zařízení pro závěrečný
+Jenda 11. 10. 2026 potvrdil skutečný poslech testovacího tónu i zastavení, opětovné spuštění a zastavení zvuku při zavření okna. Cílové zařízení pro závěrečný
 test je uživatelem potvrzený M-Audio M-Track Solo s kytarou v jednom vstupu.
 
 Uložený podklad: [úplná roadmapa W01–W48](WINDOWS_ROADMAP.md),
@@ -28,12 +28,19 @@ source hashů, referenční logiky a obnovy dat prošla. W02 je dokončený:
 a [výběr verzí s podklady](docs/windows/decisions/platform-selection.json).
 Bratr stáhne jen instalátor; zdroje budou dostupné samostatným odkazem, bez
 povinného stažení. Veřejné vydání ani placená licence pro tuto cestu nejsou potřeba.
-W03 (WinUI, C++ a testovací tón) je rozpracovaný: Windows/MSVC sestavení, C++ kontrakt,
+W03 (WinUI, C++ a testovací tón) je uzavřený v rozsahu technického řezu se zaznamenanými omezeními: Windows/MSVC sestavení, C++ kontrakt,
 C# integrační kontroly a automatické otevření/zavření publikovaného WinUI okna prošly.
 [Sestavený ZIP pro Jendu](https://github.com/JendaNDT/rocker/releases/tag/windows-w03-preview-20261011)
 má potřebné runtimy, samostatnou nabídku zdrojů a kontrolní součty.
 [Protokol Windows](docs/windows/w03-windows-validation.json) odděluje ověřené sestavení
-od dosud neprovedeného poslechu, ruční přejímky a hardwarových testů.
+od uživatelem potvrzeného poslechu a základního ovládání i dosud neprovedených dalších ručních a hardwarových testů.
+Jenda následně potvrdil Tab/Enter, 20 start/stop cyklů, oba sluchátkové výstupy
+a nové spuštění po zavření během tónu. Odpojení skutečného zařízení uživatel
+výslovně odmítl testovat; ruční kontrola chybějící DLL a další scénáře
+v [protokolu](docs/windows/w03-manual-acceptance.md) zůstávají neověřené.
+Nepodepsanou zvukovou DLL na Jendově počítači blokoval Smart App Control
+(0x800711C7); přehrávání fungovalo po jeho vypnutí. Podepsaný balík se zapnutou
+ochranou není ověřený. Následuje W04 — noty, média a souběh zvuku.
 [Původní Linux protokol](docs/windows/w03-validation.json) zůstává historickým záznamem.
 Opraven byl pád při načtení XAML po publikování: projekt nyní zapíná `EnableMsixTooling`.
 Vývoj a průběžné

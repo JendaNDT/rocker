@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "step": "W03",
   "checkedDate": "2026-10-11",
-  "status": "windows-build-and-window-smoke-passed-awaiting-manual-audio-acceptance",
+  "status": "w03-technical-slice-complete-with-recorded-limitations",
   "builtCommit": "79fb06bcb535fd457e6620da5ea5265711ef0001",
   "buildRun": "https://github.com/JendaNDT/rocker/actions/runs/38129738997",
   "publishRun": "https://github.com/JendaNDT/rocker/actions/runs/38130460130",
@@ -77,6 +77,29 @@
       "typeScript": "passed",
       "lint": "passed",
       "baseline": "32 views, 11 stores, 69 domain cases, 3 surgical traces, 12 media files, 259 source hashes passed"
+    },
+    "manualAudioAcceptance": {
+      "result": "passed-user-reported",
+      "checkedDate": "2026-10-11",
+      "tester": "Jenda",
+      "coverage": [
+        "Audible test tone",
+        "Stop playback",
+        "Restart playback",
+        "Close window during playback stops sound",
+        "Tab and Enter button operation",
+        "20 start/stop cycles",
+        "Tone audible in both headphones",
+        "Reopen after closing during playback starts silent and allows playback"
+      ],
+      "evidence": "User confirmed playback worked and then confirmed completion of the requested stop/restart/close checks in chat. User subsequently confirmed all three requested checks (keyboard, 20 cycles/stereo, close and reopen) passed.",
+      "device": "Not recorded; do not infer M-Track Solo.",
+      "appControl": {
+        "initialError": "0x800711C7 loading rocker_audio.dll",
+        "smartAppControlInitially": "enabled-user-confirmed",
+        "playbackAfter": "User disabled Smart App Control and confirmed playback worked.",
+        "signedBuildVerified": false
+      }
     }
   },
   "startupFix": {
@@ -117,13 +140,22 @@
     "target_commitish": "79fb06bcb535fd457e6620da5ea5265711ef0001"
   },
   "notPerformed": [
-    "Physical audio playback",
-    "Manual keyboard, accessibility and DPI acceptance",
+    "Access keys, accessibility and DPI acceptance",
     "Device disconnect and recovery",
     "M-Track Solo / ASIO tests",
     "Round-trip latency measurements",
     "Clean consumer Windows 11 installation acceptance",
-    "Final installer and W43 license audit"
+    "Final installer and W43 license audit",
+    "Manual missing-DLL and restoration acceptance",
+    "Manual process/thread termination and device-release inspection"
   ],
-  "completionRequirement": "Keep W03 unchecked until the manual acceptance scenarios in windows/README.md pass. The portable prototype is for Jenda, not the complete brother handoff."
+  "completionRequirement": "W03 technical-slice criterion is met by Windows build, automated integration/lifecycle checks and user-reported tone playback, 20 cycles, stereo, keyboard and close/reopen. Physical disconnect test was explicitly declined by the user. Other unperformed scenarios remain recorded as unverified, not passed; complete product/hardware acceptance remains separate.",
+  "waivedChecks": [
+    {
+      "scenario": "Physical device disconnect and recovery",
+      "decision": "User explicitly declined this test in chat on 2026-10-11.",
+      "result": "not-performed",
+      "scope": "Manual W03 acceptance only; no device-recovery claim."
+    }
+  ]
 }
