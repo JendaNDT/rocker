@@ -40,7 +40,7 @@ internal sealed class AudioHandle : SafeHandleZeroOrMinusOneIsInvalid
 
 internal static class NativeMethods
 {
-    internal const uint AbiVersion = 10;
+    internal const uint AbiVersion = 11;
     private const string Library = "rocker_audio";
     [DllImport(Library, EntryPoint = "rocker_audio_get_abi_version", CallingConvention = CallingConvention.Cdecl)]
     internal static extern uint GetAbiVersion();
@@ -78,6 +78,8 @@ internal static class NativeMethods
     internal static extern uint Seek(AudioHandle handle, double seconds);
     [DllImport(Library, EntryPoint="rocker_audio_seek",CallingConvention=CallingConvention.Cdecl)]
     internal static extern uint SeekRaw(IntPtr handle,double seconds);
+    [DllImport("rocker_audio",EntryPoint="rocker_audio_pause",CallingConvention=CallingConvention.Cdecl)]
+    internal static extern uint PauseRaw(IntPtr handle);
     [DllImport(Library, EntryPoint = "rocker_audio_set_volume", CallingConvention = CallingConvention.Cdecl)]
     internal static extern uint Volume(AudioHandle handle, double volume);
     [DllImport(Library, EntryPoint = "rocker_audio_get_transport", CallingConvention = CallingConvention.Cdecl)]
@@ -118,10 +120,11 @@ public sealed partial class NativeAudio : IDisposable, IAsyncDisposable
     public Task StartLiveAsync()=>ReservedStartAsync(2);
     private Task ReservedStartAsync(uint mode)
     {
-        lock(control) {CheckAlive();CheckResult(NativeMethods.ReserveStart(handle,out var ticket));return ControlAsync(pointer=>NativeMethods.StartReserved(pointer,ticket,mode));}
+        lock(control) {CheckAlive();CheckResult(mode is 1 or 2 ? MetronomeMethods.Reserve(handle,out var ticket) : NativeMethods.ReserveStart(handle,out ticket));return ControlAsync(pointer=>NativeMethods.StartReserved(pointer,ticket,mode));}
     }
     public Task SeekAsync(double seconds) => ControlAsync(pointer=>NativeMethods.SeekRaw(pointer,seconds));
     public Task PlayAsync() => ReservedStartAsync(1);
+    public Task PauseAsync()=>ControlAsync(pointer=>NativeMethods.PauseRaw(pointer));
     public Task StopAsync()
     {
         lock(control) { CheckAlive(); CheckResult(NativeMethods.ReserveStop(handle,out var ticket)); return ControlAsync(pointer=>NativeMethods.StopReserved(pointer,ticket)); }
@@ -152,7 +155,7 @@ public sealed partial class NativeAudio : IDisposable, IAsyncDisposable
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
         if (path.Contains('\0')) throw new ArgumentException("Cesta obsahuje neplatný znak.", nameof(path));
         CheckSpeed(speed);
-        return PrepareAsync(pointer => NativeMethods.PrepareFile(pointer, Path.GetFullPath(path), speed));
+        return PrepareAsync((pointer,ticket) => SongMethods.File(pointer,ticket,Path.GetFullPath(path),speed,0));
     }
     public Task PrepareMidiAsync(byte[] bytes, double speed = 1)
     {
@@ -161,9 +164,9 @@ public sealed partial class NativeAudio : IDisposable, IAsyncDisposable
         // The worker owns an immutable copy; callers can reuse their MIDI buffer.
         if (bytes.Length is 0 or > 4 * 1024 * 1024) throw new ArgumentException("MIDI musí mít nejvýše 4 MB.", nameof(bytes));
         var owned = (byte[])bytes.Clone();
-        return PrepareAsync(pointer => NativeMethods.PrepareMidi(pointer, owned, (uint)owned.Length, speed));
+        return PrepareAsync((pointer,ticket) => SongMethods.Midi(pointer,ticket,owned,(uint)owned.Length,speed));
     }
-    private Task PrepareAsync(Func<IntPtr, uint> operation)
+    private Task PrepareAsync(Func<IntPtr,ulong,uint> operation)
     {
         lock (control)
         {
@@ -176,12 +179,13 @@ public sealed partial class NativeAudio : IDisposable, IAsyncDisposable
             try
             {
                 var pointer = handle.DangerousGetHandle();
+                CheckResult(SongMethods.Reserve(handle,out var ticket));
                 preparing = true;
                 var task = Task.Run(() =>
                 {
                     try
                     {
-                        var result = operation(pointer);
+                        var result = operation(pointer,ticket);
                         if (result != 0) throw new InvalidOperationException($"Načtení zvuku selhalo (stav {result}). {ReadWorkerError(pointer)}");
                     }
                     finally { lock (control) preparing = false; handle.DangerousRelease(); }
@@ -250,7 +254,7 @@ public sealed partial class NativeAudio : IDisposable, IAsyncDisposable
         lock(control)
         {
             if(disposal is not null)return new(disposal);
-            disposed=true;NativeMethods.RequestStop(handle);
+            disposed=true;SongMethods.Cancel(handle);NativeMethods.RequestStop(handle);
             bool retained=false;handle.DangerousAddRef(ref retained);
             var pointer=handle.DangerousGetHandle();var pending=workers.ToArray();handle.Dispose();
             disposal=Task.Run(async ()=>

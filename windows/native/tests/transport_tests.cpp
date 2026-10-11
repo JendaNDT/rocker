@@ -83,6 +83,9 @@ int main(int argc, char** argv) {
         check(rocker_audio_stop(host) == ROCKER_OK, "media stop");
         check(rocker_audio_seek(host, 0.2) == ROCKER_OK, "seek stopped transport");
         check(rocker_audio_get_transport(host, &transport) == ROCKER_OK && !transport.playing && std::abs(transport.position_seconds - 0.2) < 1e-6, "seek exact position");
+        uint64_t cancelledMedia=0;check(rocker_audio_reserve_media(host,&cancelledMedia)==ROCKER_OK && rocker_audio_cancel_media(host)==ROCKER_OK,"cancel queued media reservation before a worker runs");
+        check(rocker_audio_prepare_file_reserved(host,cancelledMedia,"missing-file-that-must-not-be-decoded.wav",1,0)==ROCKER_OK,"cancelled queued preparation does not decode or replace the active source");
+        check(rocker_audio_get_transport(host,&transport)==ROCKER_OK && std::abs(transport.position_seconds-.2)<1e-6,"queued cancellation preserves prior source position");
         check(rocker_audio_seek(host, 10) == ROCKER_INVALID_ARGUMENT, "out-of-range seek rejected");
         check(rocker_audio_set_volume(host, std::numeric_limits<double>::quiet_NaN()) == ROCKER_INVALID_ARGUMENT, "NaN volume rejected");
         check(rocker_audio_set_volume(host, 0.4) == ROCKER_OK, "master media volume");

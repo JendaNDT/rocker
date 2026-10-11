@@ -82,7 +82,7 @@ public sealed partial class MainWindow : Window
             StopButton.IsEnabled = state.State != AudioState.Stopped;
             StatusText.Text = state.State switch
             {
-                AudioState.Running => state.Reserved==3 ? "Metronom." : state.Reserved==2 ? "Živý vstup. Monitoring se ovládá samostatně." : transport.Playing != 0 ? "Přehrávání." : "Hraje testovací tón.",
+                AudioState.Running => state.Reserved==3 ? "Metronom." : state.Reserved==2 ? "Živý vstup. Monitoring se ovládá samostatně." : transport.Playing != 0 ? "Přehrávání." : state.Reserved==1 ? "Skladba pozastavena; zvukové zařízení běží." : "Hraje testovací tón.",
                 AudioState.Starting => "Spouštím zvukové zařízení…",
                 AudioState.Reconfiguring => "Měním nastavení zvuku…",
                 AudioState.Stopping or AudioState.Closing => "Uvolňuji zvukové zařízení…",
@@ -93,6 +93,7 @@ public sealed partial class MainWindow : Window
             RefreshMetronome(state);
             RefreshTuner(audio.GetAnalysis());
             RefreshAudioDiagnostics();
+            RefreshSong(transport);
             DeviceText.Text = state.State == AudioState.Running
                 ? $"Vzorkování {state.SampleRate:N0} Hz · buffer {state.BufferFrames} vzorků · výstupy {state.OutputChannels}\nZpracováno {state.RenderedFrames:N0} vzorků."
                 : "Zařízení zatím není otevřené.";
@@ -247,13 +248,7 @@ public sealed partial class MainWindow : Window
             var file = await picker.PickSingleFileAsync();
             if (file is null || closed || busy) return;
             Navigate(new("07"));
-            SetBusy(true);
-            MediaStatus.Text = "Načítám zvuk a připravuji rychlost…";
-            await audio.PrepareFileAsync(file.Path, currentSpeed);
-            if (closed) return;
-            mediaPath = file.Path; mediaMidi = null;
-            MediaTitle.Text = file.Name;
-            MediaStatus.Text = "Nahrávka je připravená. Přehrávání spustíš tlačítkem.";
+            await OpenSongFileAsync(file.Path,file.Name);
         }
         catch (Exception error) { if (!closed) MediaStatus.Text = "Nahrávku nelze otevřít. " + error.Message; }
         finally { if (!closed) SetBusy(false); }
@@ -276,7 +271,7 @@ public sealed partial class MainWindow : Window
             MediaStatus.Text = "Připravuji přehrávání not…";
             await audio.PrepareMidiAsync(current.Midi, currentSpeed);
             if (closed) return;
-            mediaMidi = current.Midi; mediaPath = null;
+            mediaMidi = current.Midi; mediaPath = null;song=null;songPeaks=[];workspaceCache.Remove(new("07"));
             MediaTitle.Text = "Noty · syntetický strunný zvuk";
             if (intent == playbackIntent) await audio.PlayAsync();
             MediaStatus.Text = "Noty jsou připravené ve společném přehrávači.";
@@ -294,29 +289,10 @@ public sealed partial class MainWindow : Window
         if (audio is null || busy || SpeedBox.SelectedItem is not ComboBoxItem item) return;
         var speed = double.Parse((string)item.Tag, System.Globalization.CultureInfo.InvariantCulture);
         if (speed == currentSpeed || (mediaPath is null && mediaMidi is null)) return;
-        var previous = currentSpeed;
-        try
-        {
-            ++playbackIntent;
-            await audio.StopAsync();
-            SetBusy(true);
-            MediaStatus.Text = "Připravuji novou rychlost; přehrávání je zastavené…";
-            if (mediaPath is not null) await audio.PrepareFileAsync(mediaPath, speed);
-            else await audio.PrepareMidiAsync(mediaMidi!, speed);
-            if (closed) return;
-            currentSpeed = speed;
-            MediaStatus.Text = "Rychlost je připravená bez změny výšky tónů. Přehrávání spustíš tlačítkem.";
-        }
-        catch (Exception error)
-        {
-            if (!closed)
-            {
-                MediaStatus.Text = "Rychlost nelze změnit. " + error.Message;
-                SpeedBox.SelectedIndex = Array.IndexOf(new[] { 0.25, 0.5, 0.75, 1.0, 1.5, 2.0 }, previous);
-            }
-        }
-        finally { if (!closed) SetBusy(false); }
+        try { await ChangeSongSpeedAsync(speed); }
+        catch(Exception error){ShowError(error);}
     }
+
     private void Volume_Changed(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
     {
         if (audio is null) return;

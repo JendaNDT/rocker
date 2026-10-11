@@ -1,0 +1,23 @@
+{
+  "scope": "W20 diagnostics before W21 streamed backing and song workspace",
+  "sourceCommit": "edca7b88d87ff72a632f91148b93a37dbed28c48",
+  "windowsRun": "https://github.com/JendaNDT/rocker/actions/runs/38168307711",
+  "result": "passed",
+  "nativeTests": {
+    "executed": 11,
+    "failures": 0,
+    "skipped": 0
+  },
+  "diagnostics": {
+    "result": "passed",
+    "cachedCountersRead": true,
+    "unavailableDriverXrunsNotZero": true,
+    "fixedReportSchema": true,
+    "manualExportPickerVerified": false,
+    "physicalAudioVerified": false
+  },
+  "notPerformed": [
+    "Physical device xruns and guitar roundtrip",
+    "Manual export picker and sustained UI load with M-Track Solo"
+  ]
+}

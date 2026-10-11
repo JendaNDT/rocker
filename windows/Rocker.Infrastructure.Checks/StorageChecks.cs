@@ -32,10 +32,12 @@ internal static class StorageChecks
         var project = new ProjectManifest(1,id,"První",DateTimeOffset.UtcNow,DateTimeOffset.UtcNow,48000,[new("track","Kytara",trackPath,media.Sha256,1)]);
         await projects.SaveAsync(project);
         docs.Add(UserData.Document("project",id,new ProjectIndex(id,"První","projects/"+Guid.Parse(id).ToString("N")+"/project.rockerproj")));
+        string songId=Guid.NewGuid().ToString("D");
+        docs.Add(UserData.Document("song",songId,new SongSession(songId,"Reference song",Path.Combine(files.Root,"external.wav"),60,12,.75,[new("intro","Úvod",5,15)],1)));
         await database.SaveAsync(docs,replaceAll:true);
         database = await DataRepository.OpenAsync(files);
         var snapshot = await database.SnapshotAsync();
-        Check(snapshot.Documents.Count == UserData.Kinds.Count && snapshot.Warnings.Count == 0,"all fourteen data kinds survive reopening");
+        Check(snapshot.Documents.Count == UserData.Kinds.Count && snapshot.Warnings.Count == 0,"all supported data kinds survive reopening");
         foreach (var doc in docs) Check(JsonElement.DeepEquals(snapshot.Documents.Single(x=>x.Kind==doc.Kind && x.Id==doc.Id).Value,doc.Value),"round trip " + doc.Kind);
         var invalid = new DataDocument("settings","secret",1,JsonSerializer.SerializeToElement(new { apiKey="SECRET_CANARY_DO_NOT_STORE" }));
         try { await database.SaveAsync([UserData.Document("settings","default",new AppSettings()),invalid],replaceAll:true); throw new Exception("Invalid batch accepted"); }
@@ -44,7 +46,7 @@ internal static class StorageChecks
         {
             cancellation.Cancel();
             try { await database.SaveAsync([],true,cancellation.Token); throw new Exception("Cancelled save accepted"); }
-            catch (OperationCanceledException) { Check((await database.SnapshotAsync()).Documents.Count==14,"cancelled replacement keeps state"); }
+            catch (OperationCanceledException) { Check((await database.SnapshotAsync()).Documents.Count==UserData.Kinds.Count,"cancelled replacement keeps state"); }
         }
         var autosave = new Autosave(database);
         autosave.Queue(UserData.Document("settings","default",new AppSettings(Theme:"light")));
@@ -103,7 +105,7 @@ internal static class StorageChecks
         catch (InvalidDataException) { byte[] after = await File.ReadAllBytesAsync(futureDb); Check(before.SequenceEqual(after),"future SQLite schema refused without changing bytes"); }
         using (var connection = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource=database.DatabasePath,Pooling=false }.ToString())) { connection.Open();using var cmd=connection.CreateCommand();cmd.CommandText="INSERT INTO documents VALUES('settings','broken',1,'null','test')";cmd.ExecuteNonQuery(); }
         snapshot = await database.SnapshotAsync();
-        Check(snapshot.Documents.Count==14 && snapshot.Warnings.Count==1,"invalid row isolated and valid rows retained");
+        Check(snapshot.Documents.Count==UserData.Kinds.Count && snapshot.Warnings.Count==1,"invalid row isolated and valid rows retained");
         Console.WriteLine($"PASS: {checks} SQLite, crash recovery, media, project and autosave assertions.");
         return checks;
     }

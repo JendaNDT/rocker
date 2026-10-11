@@ -44,6 +44,5 @@ Test reportuje skutečný wall time/over-budget, nemá přenosný práh CPU ani
 nevydává syntetické tempo za fyzický hardware nebo měření ovladače.
 C# PInvoke kontroluje 160b ABI 10, skutečné callback čítače, unknown -1 i
 výslovný simulovaný vendor count 7. Deset report schema testů chrání pravdivost
-latence, oddělené čítače a pevný export bez soukromých dat. Windows UI/report
-se ověřují; export picker, zatížení fyzické karty/UI při hraní a skutečné
+latence, oddělené čítače a pevný export bez soukromých dat. Windows sestavení a formulář/report [prošly](windows-validation.json); export picker, zatížení fyzické karty/UI při hraní a skutečné
 underruny jsou neprovedené do přejímky.

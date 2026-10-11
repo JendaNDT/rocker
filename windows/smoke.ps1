@@ -89,6 +89,10 @@ try {
     if (-not (Test-Path $tunerPath)) { throw 'Missing native tuner report.' }
     $tuner = Get-Content $tunerPath -Raw | ConvertFrom-Json
     if ($tuner.result -ne 'passed' -or $tuner.sixStringControls -ne 6 -or -not $tuner.persistenceReopened -or -not $tuner.noInputInventsNoNote) { throw 'Native tuner/persistence failed.' }
+    $songsPath = Join-Path $reportDirectory 'songs-view.json'
+    if (-not (Test-Path $songsPath)) { throw 'Song workspace report is missing.' }
+    $songsView = Get-Content $songsPath -Raw | ConvertFrom-Json
+    if ($songsView.result -ne 'passed' -or -not $songsView.persistenceReopened -or -not $songsView.nativeWaveformCanvas -or -not $songsView.missingSourcePreserved) { throw 'Song workspace persistence or controls failed.' }
     $diagnosticsPath = Join-Path $reportDirectory 'diagnostics-view.json'
     if (-not (Test-Path $diagnosticsPath)) { throw 'Missing native diagnostics report.' }
     $diagnostics = Get-Content $diagnosticsPath -Raw | ConvertFrom-Json

@@ -352,7 +352,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w20"></a>
 #### W20 — Diagnostika zvuku a automatické audio kontroly
 
-- [ ] Rozpracováno: [čas grafu, oddělené čítače a diagnostický export](docs/windows/w20/README.md), Linux integrační/RT/PInvoke kontroly prošly. Windows formulář a náhled reportu se ověřují. Závislosti: W14–W19.
+- [ ] Rozpracováno: [čas grafu, oddělené čítače a diagnostický export](docs/windows/w20/README.md), Linux integrační/RT/PInvoke kontroly prošly. [Windows formulář a náhled reportu prošly](docs/windows/w20/windows-validation.json). Závislosti: W14–W19.
 - Zavést bezpečné čítače výpadků, dobu callbacku, maximum front, ztracené bloky, přetečení úrovní a důvody restartu. Jejich sběr nesmí blokovat realtime vlákno.
 - Přidat podporovaný diagnostický export s verzí aplikace, zařízením, ovladačem, konfigurací a naměřenými hodnotami. Neobsahuje API klíče ani uživatelovy nahrávky; před odesláním lze obsah prohlédnout.
 - Vytvořit opakovatelnou sadu offline a simulovaných integračních testů: impulsy, tónové sekvence, vícero kanálů, různé délky bloků, změny zařízení, dlouhý běh a zatížení UI.
@@ -363,7 +363,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w21"></a>
 #### W21 — Přehrávání vlastních skladeb a práce s úsekem
 
-- [ ] Čeká. Závislosti: W04, W08, W09, W16.
+- [ ] Rozpracováno: [blokové čtení, samostatný transport a nativní úseky](docs/windows/w21/README.md). Závislosti: W04, W08, W09, W16.
 - Implementovat asynchronní otevření a dekódování souboru, waveform cache, časovou osu, seek, A/B smyčku, změnu rychlosti bez změny výšky, předtakt a postupné zrychlování.
 - Velké soubory číst postupně; příprava waveformy a time stretching nesmějí blokovat monitoring. Délku, pozice a mezní hodnoty počítat z audio dat, ne z nepřesného UI časovače.
 - Ukládat pojmenované úseky a poslední pozici. Při chybějícím souboru nabídnout jeho dohledání; neplatný formát nesmí ukončit aplikaci.

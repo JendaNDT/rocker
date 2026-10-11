@@ -36,6 +36,7 @@ public sealed partial class MainWindow
             await InitializeAmplifierAsync(snapshot.Documents);
             await InitializeMetronomeAsync(snapshot.Documents);
             InitializeTuner(snapshot.Documents);
+            InitializeSongs(snapshot.Documents);
             await RestoreDevicePreferenceAsync();
             workspaceCache.Clear(); ShowWorkspace();
             if (snapshot.Warnings.Count > 0) ShowPersistenceError($"Při obnovení dat bylo upraveno nebo vynecháno {snapshot.Warnings.Count} neplatných záznamů. Původní databáze je zachovaná.");

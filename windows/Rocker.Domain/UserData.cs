@@ -30,7 +30,7 @@ public sealed record DataDocument(string Kind, string Id, int SchemaVersion, Jso
 public static class UserData
 {
     public static readonly JsonSerializerOptions Json = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase, MaxDepth = 32 };
-    public static IReadOnlySet<string> Kinds { get; } = new HashSet<string>(StringComparer.Ordinal) { "settings","instrument","progress","lessons","amp","amp-presets","metronome","metronome-presets","custom-tunings","yt-loops","ai-settings","chat","recording","project" };
+    public static IReadOnlySet<string> Kinds { get; } = new HashSet<string>(StringComparer.Ordinal) { "settings","instrument","progress","lessons","amp","amp-presets","metronome","metronome-presets","custom-tunings","yt-loops","ai-settings","chat","recording","project","song" };
     public static bool ValidId(string? id) => !string.IsNullOrWhiteSpace(id) && id.Length <= 128 && !id.Any(char.IsControl);
     public static bool ValidHash(string? value) => value is not null && value.Length == 64 && value.All(c => c is >= '0' and <= '9' or >= 'a' and <= 'f');
     public static bool ValidRelativePath(string? path) => path is not null && path.Length is > 0 and <= 512 && !path.StartsWith('/') && !path.Contains('\\') && !path.Contains(':') && !path.Any(char.IsControl) && path.Split('/').All(segment => segment.Length > 0 && segment is not "." and not ".." && !segment.EndsWith('.') && segment.All(c => char.IsAsciiLetterOrDigit(c) || c is '_' or '-' or '.'));
@@ -46,6 +46,8 @@ public static class UserData
         object value;
         switch (document.Kind)
         {
+            case "song":
+                var song=SongRules.Validate(Read<SongSession>(document.Value));Require(song.Id==document.Id,"ID skladby neodpovídá záznamu.");value=song;break;
             case "settings":
                 var settings = Read<AppSettings>(document.Value);
                 Require(settings.Theme is "system" or "dark" or "light" && settings.Handedness is "right" or "left" && settings.Notation is "english" or "german" && ValidId(settings.TuningId) && Unit(settings.NoiseGate) && Unit(settings.ReferenceToneVolume), "Neplatné nastavení.");

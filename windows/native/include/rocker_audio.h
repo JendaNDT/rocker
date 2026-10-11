@@ -18,9 +18,9 @@
 extern "C" {
 #endif
 
-/* Version 10 adds callback timings, queue watermarks and driver diagnostics.
+/* Version 11 adds independent backing pause and streaming media telemetry.
    Reject earlier DLLs before creating a host. */
-#define ROCKER_AUDIO_ABI_VERSION 10u
+#define ROCKER_AUDIO_ABI_VERSION 11u
 typedef struct rocker_audio_host* rocker_audio_handle;
 typedef uint32_t rocker_audio_result;
 enum {
@@ -163,6 +163,15 @@ ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_get_snapshot(rocker_audi
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_prepare_file(rocker_audio_handle, const char* utf8_path, double speed);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_prepare_midi(rocker_audio_handle, const uint8_t*, uint32_t count, double speed);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_play(rocker_audio_handle);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_pause(rocker_audio_handle);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_play_count_in_reserved(rocker_audio_handle,uint64_t,uint32_t,uint32_t,double);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_cancel_media(rocker_audio_handle);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_reserve_media(rocker_audio_handle,uint64_t*);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_prepare_file_reserved(rocker_audio_handle,uint64_t,const char*,double,uint64_t);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_prepare_midi_reserved(rocker_audio_handle,uint64_t,const uint8_t*,uint32_t,double);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_cancel_ramp(rocker_audio_handle);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_prepare_file_for_loop(rocker_audio_handle,const char*,double,uint64_t);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_copy_waveform(rocker_audio_handle,char*,uint32_t,uint32_t*);
 /* Seek stops playback and releases the device. Position is in stretched time. */
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_seek(rocker_audio_handle, double seconds);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_set_volume(rocker_audio_handle, double volume);

@@ -118,6 +118,7 @@ public sealed partial class MainWindow
     private FrameworkElement BuildWorkspace(NavigationTarget target)
     {
         if (catalog is null) return Text("Výukový obsah není dostupný. Přehrávání souborů zůstává dostupné.");
+        if (target.ViewId == "07") return BuildSong();
         if (target.ViewId == "03") return BuildTuner();
         if (target.ViewId == "04") return BuildMetronome();
         if (target.ViewId == "13") return BuildAmplifier();
@@ -133,7 +134,7 @@ public sealed partial class MainWindow
         var panel = Stack();
         panel.Children.Add(Text(target.ViewId switch {
             "02" => "Živý vstup z kytary ještě není dostupný. Přehrávání nahrávky nebo not můžeš ovládat ve spodním panelu.",
-            "07" => "Otevři zvukový soubor ve společném přehrávači. Hlasitost, pozice i zpomalení jsou ve spodním panelu; úseky A/B přibudou později.",
+
             "14" => "Nahrávky zatím nejsou uložené v knihovně. Zvukový soubor můžeš otevřít a přehrát.",
             "15" => "Studio čeká na připojení stop a ukládání projektu.", "16" => "Looper čeká na živý vstup a nahrávání vrstev.",
             "21" => "Hra na hmatníku čeká na dokončení pracovního rozhraní.", "22" => "Sluchové cvičení čeká na ovládání otázek a společné přehrávání tónů.",
@@ -271,6 +272,7 @@ public sealed partial class MainWindow
         await VerifyMetronomeAsync();
         await VerifyTunerAsync();
         await VerifyDiagnosticsAsync();
+        await VerifySongsAsync();
         await VerifyDevicesAsync();
         VerifyComponents();
         if (Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTIC_VIEW") == "components") ShowComponents();
