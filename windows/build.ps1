@@ -45,16 +45,27 @@ try {
     $mediaResult = Get-Content $mediaReport -Raw | ConvertFrom-Json
     if ($mediaResult.result -ne 'passed' -or $mediaResult.checks -le 0) { throw 'Native media checks failed.' }
     Copy-Item $mediaReport (Join-Path $reportDirectory 'media-checks.json')
+    $transportReport = Join-Path $nativeBuild 'transport-checks.json'
+    if (-not (Test-Path $transportReport)) { throw 'Common transport checks did not produce evidence.' }
+    $transportResult = Get-Content $transportReport -Raw | ConvertFrom-Json
+    if ($transportResult.result -ne 'passed' -or $transportResult.checks -le 0) { throw 'Common transport checks failed.' }
+    Copy-Item $transportReport (Join-Path $reportDirectory 'transport-checks.json')
     $mediaDependencies = & dumpbin /dependents (Join-Path $nativeBuild 'rocker_media_tests.exe')
     if ($LASTEXITCODE -ne 0) { throw 'Cannot inspect native media imports.' }
     if ($mediaDependencies -match '^\s*(mfplat|mfreadwrite|mf)\.dll\s*$') { throw 'Optional media runtime is eagerly imported.' }
     $mediaDependencies | Set-Content (Join-Path $reportDirectory 'media-dependencies.txt')
+    $audioDependencies = & dumpbin /dependents (Join-Path $nativeBuild 'rocker_audio.dll')
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot inspect delivered native audio imports.' }
+    if ($audioDependencies -match '^\s*(mfplat|mfreadwrite|mf)\.dll\s*$') { throw 'Optional media runtime is eagerly imported by the device DLL.' }
+    $audioDependencies | Set-Content (Join-Path $reportDirectory 'audio-dependencies.txt')
     Invoke-Checked 'dotnet' @('run', '--project', 'Rocker.Interop.Checks', '-c', 'Release', '--',
         (Join-Path $nativeBuild 'rocker_audio_test.dll'))
     Invoke-Checked 'dotnet' @('run', '--project', 'Rocker.Interop.Checks', '-c', 'Release', '--no-build', '--',
         (Join-Path $nativeBuild 'rocker_audio_test_incompatible.dll'), '--mismatched-abi')
     Invoke-Checked 'dotnet' @('run', '--project', 'Rocker.Notation.Checks', '-c', 'Release', '--',
         (Join-Path $PSScriptRoot 'fixtures'), $reportDirectory)
+    Invoke-Checked 'dotnet' @('run', '--project', 'Rocker.Interop.Checks', '-c', 'Release', '--no-build', '--',
+        (Join-Path $nativeBuild 'rocker_audio_test.dll'), '--media', (Split-Path $PSScriptRoot -Parent))
     Invoke-Checked 'dotnet' @('publish', 'Rocker.Probe', '-c', 'Release', '-r', 'win-x64',
         '-o', $probeOutput, "-p:RockerNativeDll=$(Join-Path $nativeBuild 'rocker_audio.dll')")
     Write-Output "Prototyp byl sestaven do $probeOutput. Ruční přejímka W03 zůstává samostatná."

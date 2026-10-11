@@ -19,6 +19,13 @@ public struct AudioSnapshot
 }
 
 [StructLayout(LayoutKind.Sequential, Pack = 8)]
+public struct TransportSnapshot
+{
+    public uint StructSize, AbiVersion, Ready, Playing, Ended, Reserved;
+    public double DurationSeconds, PositionSeconds, Speed, Volume;
+}
+
+[StructLayout(LayoutKind.Sequential, Pack = 8)]
 internal struct AudioConfig
 {
     public uint StructSize, AbiVersion;
@@ -45,8 +52,22 @@ internal static class NativeMethods
     internal static extern uint Stop(AudioHandle handle);
     [DllImport(Library, EntryPoint = "rocker_audio_get_snapshot", CallingConvention = CallingConvention.Cdecl)]
     internal static extern uint Snapshot(AudioHandle handle, ref AudioSnapshot snapshot);
+    [DllImport(Library, EntryPoint = "rocker_audio_prepare_file", CallingConvention = CallingConvention.Cdecl)]
+    internal static extern uint PrepareFile(IntPtr handle, [MarshalAs(UnmanagedType.LPUTF8Str)] string path, double speed);
+    [DllImport(Library, EntryPoint = "rocker_audio_prepare_midi", CallingConvention = CallingConvention.Cdecl)]
+    internal static extern uint PrepareMidi(IntPtr handle, byte[] bytes, uint count, double speed);
+    [DllImport(Library, EntryPoint = "rocker_audio_play", CallingConvention = CallingConvention.Cdecl)]
+    internal static extern uint Play(AudioHandle handle);
+    [DllImport(Library, EntryPoint = "rocker_audio_seek", CallingConvention = CallingConvention.Cdecl)]
+    internal static extern uint Seek(AudioHandle handle, double seconds);
+    [DllImport(Library, EntryPoint = "rocker_audio_set_volume", CallingConvention = CallingConvention.Cdecl)]
+    internal static extern uint Volume(AudioHandle handle, double volume);
+    [DllImport(Library, EntryPoint = "rocker_audio_get_transport", CallingConvention = CallingConvention.Cdecl)]
+    internal static extern uint Transport(AudioHandle handle, ref TransportSnapshot snapshot);
     [DllImport(Library, EntryPoint = "rocker_audio_copy_last_error", CallingConvention = CallingConvention.Cdecl)]
     internal static extern uint Error(AudioHandle handle, [Out] byte[]? buffer, uint capacity, out uint required);
+    [DllImport(Library, EntryPoint = "rocker_audio_copy_last_error", CallingConvention = CallingConvention.Cdecl)]
+    internal static extern uint ErrorRaw(IntPtr handle, [Out] byte[]? buffer, uint capacity, out uint required);
     [DllImport(Library, EntryPoint = "rocker_audio_destroy", CallingConvention = CallingConvention.Cdecl)]
     internal static extern void Destroy(IntPtr handle);
 }
@@ -56,6 +77,7 @@ public sealed class NativeAudio : IDisposable
     private readonly object control = new();
     private readonly AudioHandle handle;
     private bool disposed;
+    private bool preparing;
 
     public NativeAudio()
     {
@@ -74,6 +96,73 @@ public sealed class NativeAudio : IDisposable
 
     public void Start() { lock (control) { CheckAlive(); CheckResult(NativeMethods.Start(handle)); } }
     public void Stop() { lock (control) { CheckAlive(); CheckResult(NativeMethods.Stop(handle)); } }
+    public void Play() { lock (control) { CheckAlive(); CheckResult(NativeMethods.Play(handle)); } }
+    public void Seek(double seconds) { lock (control) { CheckAlive(); CheckResult(NativeMethods.Seek(handle, seconds)); } }
+    public void SetVolume(double volume) { lock (control) { CheckAlive(); CheckResult(NativeMethods.Volume(handle, volume)); } }
+    public Task PrepareFileAsync(string path, double speed = 1)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+        if (path.Contains('\0')) throw new ArgumentException("Cesta obsahuje neplatný znak.", nameof(path));
+        CheckSpeed(speed);
+        return PrepareAsync(pointer => NativeMethods.PrepareFile(pointer, Path.GetFullPath(path), speed));
+    }
+    public Task PrepareMidiAsync(byte[] bytes, double speed = 1)
+    {
+        ArgumentNullException.ThrowIfNull(bytes);
+        CheckSpeed(speed);
+        // The worker owns an immutable copy; callers can reuse their MIDI buffer.
+        if (bytes.Length is 0 or > 4 * 1024 * 1024) throw new ArgumentException("MIDI musí mít nejvýše 4 MB.", nameof(bytes));
+        var owned = (byte[])bytes.Clone();
+        return PrepareAsync(pointer => NativeMethods.PrepareMidi(pointer, owned, (uint)owned.Length, speed));
+    }
+    private Task PrepareAsync(Func<IntPtr, uint> operation)
+    {
+        lock (control)
+        {
+            CheckAlive();
+            if (preparing) throw new InvalidOperationException("Zvuk se už načítá. Počkej na dokončení.");
+            bool retained = false;
+            handle.DangerousAddRef(ref retained);
+            try
+            {
+                var pointer = handle.DangerousGetHandle();
+                preparing = true;
+                return Task.Run(() =>
+                {
+                    try
+                    {
+                        var result = operation(pointer);
+                        if (result != 0) throw new InvalidOperationException($"Načtení zvuku selhalo (stav {result}). {ReadWorkerError(pointer)}");
+                    }
+                    finally { lock (control) preparing = false; handle.DangerousRelease(); }
+                });
+            }
+            catch { preparing = false; if (retained) handle.DangerousRelease(); throw; }
+        }
+    }
+    private static void CheckSpeed(double speed)
+    {
+        if (!double.IsFinite(speed) || speed < 0.25 || speed > 2) throw new ArgumentOutOfRangeException(nameof(speed), "Rychlost musí být 0,25× až 2×.");
+    }
+    private static string ReadWorkerError(IntPtr pointer)
+    {
+        if (NativeMethods.ErrorRaw(pointer, null, 0, out var required) != 0 || required == 0 || required > 65536)
+            return "Zvuková chyba bez dostupných podrobností.";
+        var bytes = new byte[required];
+        if (NativeMethods.ErrorRaw(pointer, bytes, required, out _) != 0) return "Podrobnosti zvukové chyby nelze načíst.";
+        var end = Array.IndexOf(bytes, (byte)0);
+        return Encoding.UTF8.GetString(bytes.AsSpan(0, end < 0 ? bytes.Length : end));
+    }
+    public TransportSnapshot GetTransport()
+    {
+        lock (control)
+        {
+            CheckAlive();
+            var snapshot = new TransportSnapshot { StructSize = (uint)Marshal.SizeOf<TransportSnapshot>(), AbiVersion = NativeMethods.AbiVersion };
+            CheckResult(NativeMethods.Transport(handle, ref snapshot));
+            return snapshot;
+        }
+    }
     public AudioSnapshot GetSnapshot()
     {
         lock (control)
@@ -110,6 +199,9 @@ public sealed class NativeAudio : IDisposable
         lock (control)
         {
             if (disposed) return;
+            // Stop is short even during worker decoding. The retained SafeHandle
+            // releases native ownership only after an outstanding worker returns.
+            NativeMethods.Stop(handle);
             handle.Dispose();
             disposed = true;
         }

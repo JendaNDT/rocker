@@ -1,6 +1,12 @@
 # Rocker – Project Status
 *Naposled aktualizováno: 11. 10. 2026 — sestavený Windows prototyp; historický stav PWA níže pochází z 03. 06. 2026.*
 
+Aktuální navazující změna W04: média a MIDI jsou připojené ke společnému C++
+přehrávači a WinUI ovládání (přehrát/zastavit, seek, hlasitost, rychlost).
+Linux prošel 3/3 CTest, 36 transportními kontrolami a skutečným C# P/Invoke,
+včetně zavření handle během načítání. Windows sestavení této změny teprve
+ověří CI. Podrobnosti: [společné přehrávání](docs/windows/w04/common-playback.md).
+
 ## Aktuální směr: nativní Rocker pro Windows
 
 **Aktuální způsob spolupráce (11. 10. 2026):** Jenda chce nejprve postupně

@@ -35,7 +35,8 @@ try {
     } while (-not (Test-Path $notationReport) -and (Get-Date) -lt $deadline)
     if (-not (Test-Path $notationReport)) { throw 'Native notation did not finish within 45 seconds.' }
     $notation = Get-Content $notationReport -Raw | ConvertFrom-Json
-    if ($notation.result -ne 'passed' -or -not $notation.bitmapDecoded -or $notation.BarCount -ne 2) {
+    if ($notation.result -ne 'passed' -or -not $notation.bitmapDecoded -or $notation.BarCount -ne 2 -or
+        -not $notation.midiPreparedInCommonEngine) {
         throw "Published native notation failed: $(Get-Content $notationReport -Raw)"
     }
     if (-not $process.CloseMainWindow()) { throw 'The application rejected a normal window close.' }
@@ -47,6 +48,7 @@ try {
         exitCode = $process.ExitCode
         audioPlaybackVerified = $false
         nativeNotationVerified = $true
+        midiPreparedInCommonEngine = $true
         checkedAtUtc = [DateTime]::UtcNow.ToString('o')
     } | ConvertTo-Json | Set-Content (Join-Path $reportDirectory 'window-smoke.json')
     Write-Output 'PASS: published WinUI application opened a window and exited normally; audio playback not tested.'

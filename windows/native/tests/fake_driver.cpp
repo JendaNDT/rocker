@@ -9,7 +9,7 @@ extern "C" ROCKER_API void ROCKER_CALL rocker_test_set_failure(int enabled) { fa
 namespace rocker {
 class FakeDriver final : public AudioDriver {
 public:
-    bool start(ToneProcessor& tone, std::string& error) override {
+    bool start(RenderProcessor& tone, std::string& error) override {
         if (failDevice.load()) {
             error = "Test device unavailable: zařízení";
             return false;

@@ -23,7 +23,8 @@ typedef struct rocker_audio_host* rocker_audio_handle;
 typedef uint32_t rocker_audio_result;
 enum {
     ROCKER_OK = 0, ROCKER_INVALID_ARGUMENT = 1, ROCKER_ABI_MISMATCH = 2,
-    ROCKER_DEVICE_ERROR = 3, ROCKER_BUFFER_TOO_SMALL = 4, ROCKER_INTERNAL_ERROR = 5
+    ROCKER_DEVICE_ERROR = 3, ROCKER_BUFFER_TOO_SMALL = 4, ROCKER_INTERNAL_ERROR = 5,
+    ROCKER_MEDIA_ERROR = 6, ROCKER_NOT_READY = 7
 };
 enum { ROCKER_STOPPED = 0, ROCKER_RUNNING = 1, ROCKER_FAULTED = 2 };
 
@@ -44,6 +45,11 @@ typedef struct rocker_audio_snapshot {
     uint32_t output_channels;
     uint64_t rendered_frames;
 } rocker_audio_snapshot;
+typedef struct rocker_transport_snapshot {
+    uint32_t struct_size, abi_version;
+    uint32_t ready, playing, ended, reserved;
+    double duration_seconds, position_seconds, speed, volume;
+} rocker_transport_snapshot;
 #pragma pack(pop)
 
 /* Control-thread API only; never call from an audio callback. All pointers are
@@ -56,6 +62,18 @@ ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_create(const rocker_audi
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_start(rocker_audio_handle);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_stop(rocker_audio_handle);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_get_snapshot(rocker_audio_handle, rocker_audio_snapshot*);
+/* Preparation is synchronous worker work. Decoding does not hold the host's
+   control mutex, so Stop remains available. Successful preparation stops the
+   driver before replacing PCM and never starts sound. Failed preparation keeps
+   the previous clip. UTF-8 paths and MIDI data are borrowed only for the call.
+   Callers must retain the handle until the worker call completes. */
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_prepare_file(rocker_audio_handle, const char* utf8_path, double speed);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_prepare_midi(rocker_audio_handle, const uint8_t*, uint32_t count, double speed);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_play(rocker_audio_handle);
+/* Seek stops playback and releases the device. Position is in stretched time. */
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_seek(rocker_audio_handle, double seconds);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_set_volume(rocker_audio_handle, double volume);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_get_transport(rocker_audio_handle, rocker_transport_snapshot*);
 /* required includes the terminating zero; capacity=0 queries size. UTF-8 is
    copied, never borrowed. A short buffer is terminated and reports TOO_SMALL. */
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_copy_last_error(rocker_audio_handle, char*, uint32_t capacity, uint32_t* required);

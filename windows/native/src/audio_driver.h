@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 #pragma once
-#include "tone_processor.h"
+#include "render_processor.h"
 #include <memory>
 #include <string>
 
@@ -13,7 +13,7 @@ struct DriverSnapshot {
 class AudioDriver {
 public:
     virtual ~AudioDriver() = default;
-    virtual bool start(ToneProcessor&, std::string& error) = 0;
+    virtual bool start(RenderProcessor&, std::string& error) = 0;
     // Must stop and join callbacks before returning, including after failed start.
     virtual void stop() noexcept = 0;
     virtual DriverSnapshot snapshot() const noexcept = 0;

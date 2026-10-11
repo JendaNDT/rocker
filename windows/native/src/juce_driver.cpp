@@ -46,7 +46,7 @@ public:
         if (auto* messages = juce::MessageManager::getInstanceWithoutCreating()) messages->stopDispatchLoop();
         if (worker_.joinable()) worker_.join();
     }
-    bool start(ToneProcessor& tone, std::string& error) override {
+    bool start(RenderProcessor& tone, std::string& error) override {
         return onControl([&] {
             stopOnControl();
             failed_.store(false);
@@ -118,7 +118,7 @@ private:
     RuntimeLease lease_;
     std::thread worker_;
     juce::AudioDeviceManager* manager_ = nullptr;
-    ToneProcessor* tone_ = nullptr;
+    RenderProcessor* tone_ = nullptr;
     bool attached_ = false;
     std::atomic<bool> stopping_{true}, failed_{false};
     std::atomic<double> sampleRate_{0};

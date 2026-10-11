@@ -14,10 +14,13 @@ Původní PWA a její kořenová MIT licence se nemění.
   mají SIL Open Font License; úplné texty jsou přibalené v `licenses`.
 - Offline mediální modul používá Signalsmith Stretch 1.4.0 a Linear 0.6.4
   pod MIT; přesné revize a úplná oznámení jsou ve zdrojovém balíku a `licenses`.
-  Sestavuje se a automaticky ověřuje, přehrávač v okně jej zatím nepoužívá.
+  Modul je připojený ke společnému C++ přehrávači v okně. Syntéza not je vlastní
+  procedurální kód pod AGPLv3 bez přibaleného SoundFontu.
 - libwebm 1.0.0.31: parser pod BSD-3-Clause, včetně samostatného patentového
   grantu. Přesné zdroje a oba texty jsou přibalené. Opus používá existující
   implementaci z JUCE; systémové AAC/Media Foundation DLL se nepřibalují.
+  Úplná oznámení Ogg, Opus, Opusfile a libopusenc a patentové informace Opus
+  jsou přibalené samostatně v `licenses`.
 
 Přesné podklady jsou v rozhodnutí W02 v repozitáři. Toto je interní prototyp,
 nikoli hotový distribuční balík pro bratra. Předběžný spustitelný ZIP uchovává

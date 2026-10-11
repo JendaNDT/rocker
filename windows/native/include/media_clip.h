@@ -29,4 +29,7 @@ Clip decode(const std::filesystem::path&, Limits limits = {});
 // 0.25x–2x speed; 1x is an exact copy. Samples of non-unity speeds are spectral
 // reconstructions, not bit-exact. Very short clips are explicitly rejected.
 Clip stretch(const Clip&, double speed, Limits limits = {});
+// Bounded offline procedural plucked-string synthesis; no SoundFont or second
+// device is opened. SMF 0/1, note-on/off, tempo and sustain are supported.
+Clip synthesizeMidi(const uint8_t* bytes, uint32_t count, Limits limits = {});
 }

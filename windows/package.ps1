@@ -40,6 +40,11 @@ New-Item -ItemType Directory -Force -Path $app, $sources, $packages | Out-Null
 Copy-Item (Join-Path $publish '*') $app -Recurse
 $licenses = Join-Path $app 'licenses'
 New-Item -ItemType Directory -Force -Path $licenses | Out-Null
+foreach ($codec in @('ogg', 'opus/opus', 'opus/opusfile', 'opus/libopusenc')) {
+    $name = $codec.Replace('/', '-')
+    Copy-Item (Join-Path $juce "modules/juce_audio_formats/codecs/$codec/COPYING") (Join-Path $licenses "$name-license.txt")
+}
+Copy-Item (Join-Path $juce 'modules/juce_audio_formats/codecs/opus/opus/LICENSE_PLEASE_READ.txt') (Join-Path $licenses 'opus-patent-information.txt')
 foreach ($dependency in $mediaSources) {
     $checkout = Join-Path $PSScriptRoot ('out/native/_deps/' + $dependency.Directory)
     $revision = Invoke-Git @('-C', $checkout, 'rev-parse', 'HEAD')
@@ -106,7 +111,9 @@ ROCKER - TESTOVACÍ PROTOTYP PRO WINDOWS
 Vyžaduje Windows 11 x64 od 24H2. Vývojové nástroje nejsou potřeba.
 Toto je technický prototyp s testovacím tónem a notovým náhledem, ne kompletní Rocker.
 Noty se vykreslují nativně; lze otevřít MusicXML/Guitar Pro, vybrat takt a uložit MIDI.
-Přehrávání not, starých nahrávek, zpomalování a YouTube zatím nejsou implementované.
+Nahrávky a jednoduchý syntetický strunný zvuk not používají společný C++ přehrávač.
+Lze přehrávat, zastavit, změnit pozici, hlasitost a rychlost bez změny výšky tónů.
+Bicí, ohýbání tónů, pokročilé notové nástroje a YouTube zatím nejsou dokončené.
 Zvuk, skutečná odezva a chování na tvém zařízení vyžadují ruční ověření.
 Balík není podepsaný certifikátem. Zapnutý Smart App Control může blokovat jeho DLL.
 Tato verze není ověřená se zapnutým Smart App Control; podepisování zatím není připravené.
@@ -124,6 +131,7 @@ Licence a oznámení jsou ve složce licenses; vlastní Windows kód je pod AGPL
     alphaSkiaCommit = $notationSources[1].Commit
     checkedNotation = (Get-Content (Join-Path $reports 'notation-checks.json') -Raw | ConvertFrom-Json)
     checkedMedia = (Get-Content (Join-Path $reports 'media-checks.json') -Raw | ConvertFrom-Json)
+    checkedTransport = (Get-Content (Join-Path $reports 'transport-checks.json') -Raw | ConvertFrom-Json)
     signalsmithStretchCommit = $mediaSources[0].Commit
     signalsmithLinearCommit = $mediaSources[1].Commit
     libwebmCommit = $mediaSources[2].Commit
@@ -154,7 +162,7 @@ AlphaTab-source.zip and AlphaSkia-source.zip contain the unmodified upstream rev
 recorded in build-info.json. Their upstream build instructions are in each archive.
 Rocker uses the exact NuGet packages 1.8.3 and 3.4.135; it does not rebuild those packages.
 Signalsmith-Stretch-source.zip and Signalsmith-Linear-source.zip contain the pinned
-MIT sources used by the offline media module checks. CMake fetches these exact
+MIT sources used by the common media player. CMake fetches these exact
 commits automatically; local source overrides are documented in docs/windows/w04/media.md.
 libwebm-source.zip contains the exact parser revision with its BSD notice and patent grant.
 The WebM decoder uses the Opus implementation already included in the full JUCE sources.

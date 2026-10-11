@@ -15,11 +15,18 @@ public sealed partial class MainWindow : Window
     private NativeAudio? audio;
     private ScorePreview? preview;
     private bool closed;
+    private bool busy, updatingPosition, positionDragging;
+    private int playbackIntent;
+    private string? mediaPath;
+    private byte[]? mediaMidi;
+    private double currentSpeed = 1;
     private bool initialNotationStarted;
     public MainWindow()
     {
         InitializeComponent();
-        AppWindow.Resize(new Windows.Graphics.SizeInt32(900, 900));
+        AppWindow.Resize(new Windows.Graphics.SizeInt32(1080, 940));
+        PositionSlider.AddHandler(UIElement.PointerPressedEvent, new PointerEventHandler((_, _) => positionDragging = true), true);
+        PositionSlider.AddHandler(UIElement.PointerCaptureLostEvent, new PointerEventHandler(Position_Released), true);
         Closed += (_, _) => { closed = true; timer.Stop(); audio?.Dispose(); audio = null; };
         Activated += async (_, _) =>
         {
@@ -38,12 +45,12 @@ public sealed partial class MainWindow : Window
     }
     private void Start_Click(object sender, RoutedEventArgs e)
     {
-        try { audio?.Start(); RefreshState(); }
+        try { ++playbackIntent; audio?.Start(); RefreshState(); }
         catch (Exception error) { ShowError(error); }
     }
     private void Stop_Click(object sender, RoutedEventArgs e)
     {
-        try { audio?.Stop(); RefreshState(); }
+        try { ++playbackIntent; audio?.Stop(); RefreshState(); }
         catch (Exception error) { ShowError(error); }
     }
     private void RefreshState()
@@ -52,11 +59,24 @@ public sealed partial class MainWindow : Window
         try
         {
             var state = audio.GetSnapshot();
-            StartButton.IsEnabled = state.State != AudioState.Running;
+            var transport = audio.GetTransport();
+            StartButton.IsEnabled = !busy && state.State != AudioState.Running;
+            PlayMediaButton.IsEnabled = PlayMenu.IsEnabled = !busy && transport.Ready != 0 && transport.Playing == 0;
+            RewindButton.IsEnabled = PositionSlider.IsEnabled = !busy && transport.Ready != 0;
+            SpeedBox.IsEnabled = !busy && transport.Ready != 0;
+            PlayScoreButton.IsEnabled = !busy && preview is not null;
+            if (!positionDragging)
+            {
+                updatingPosition = true;
+                PositionSlider.Maximum = Math.Max(1e-6, transport.DurationSeconds);
+                PositionSlider.Value = Math.Min(transport.PositionSeconds, PositionSlider.Maximum);
+                updatingPosition = false;
+            }
+            PositionText.Text = $"{FormatTime(transport.PositionSeconds)} / {FormatTime(transport.DurationSeconds)}";
             StopButton.IsEnabled = state.State != AudioState.Stopped;
             StatusText.Text = state.State switch
             {
-                AudioState.Running => "Hraje testovací tón.",
+                AudioState.Running => transport.Playing != 0 ? "Přehrávání." : "Hraje testovací tón.",
                 AudioState.Faulted => "Zvuk se zastavil kvůli chybě zařízení. " + audio.GetLastError(),
                 _ => "Zastaveno. Zařízení je uvolněné."
             };
@@ -92,7 +112,9 @@ public sealed partial class MainWindow : Window
 
     private async Task LoadScoreAsync(string path)
     {
-        XmlButton.IsEnabled = GpButton.IsEnabled = OpenScoreButton.IsEnabled = ExportMidiButton.IsEnabled = false;
+        if (busy) return;
+        SetBusy(true);
+        ExportMidiButton.IsEnabled = ExportMidiMenu.IsEnabled = false;
         preview = null;
         NotationStatus.Text = "Načítám a vykresluji noty…";
         try
@@ -124,9 +146,24 @@ public sealed partial class MainWindow : Window
             SelectionBox.Visibility = Visibility.Collapsed;
             SelectionStatus.Text = "Takt zatím není vybraný. Klikni do notového řádku.";
             NotationStatus.Text = $"{Path.GetFileName(path)} · stopy {result.TrackCount} · takty {result.BarCount} · MIDI noty {result.NoteOnCount}";
-            ExportMidiButton.IsEnabled = true;
+            ExportMidiButton.IsEnabled = ExportMidiMenu.IsEnabled = true;
+            bool prepared = false;
+            if (audio is not null)
+            {
+                try
+                {
+                    await audio.PrepareMidiAsync(result.Midi, currentSpeed);
+                    if (closed) return;
+                    mediaMidi = result.Midi; mediaPath = null;
+                    MediaTitle.Text = "Noty · " + Path.GetFileName(path);
+                    MediaStatus.Text = "Noty jsou připravené. Přehrávání spustíš tlačítkem.";
+                    prepared = audio.GetTransport().Ready != 0;
+                }
+                catch (Exception error) { if (!closed) MediaStatus.Text = "Noty se zobrazily; jejich zvuk nelze připravit. " + error.Message; }
+            }
+            if (closed) return;
             WriteNotationReport(new { result = "passed", bitmapDecoded = true, result.Width, result.Height,
-                result.BarCount, result.NoteOnCount, audioPlaybackVerified = false });
+                result.BarCount, result.NoteOnCount, midiPreparedInCommonEngine = prepared, audioPlaybackVerified = false });
         }
         catch (Exception error)
         {
@@ -140,7 +177,7 @@ public sealed partial class MainWindow : Window
         }
         finally
         {
-            if (!closed) XmlButton.IsEnabled = GpButton.IsEnabled = OpenScoreButton.IsEnabled = true;
+            if (!closed) SetBusy(false);
         }
     }
 
@@ -152,7 +189,7 @@ public sealed partial class MainWindow : Window
         Canvas.SetLeft(SelectionBox, bar.X); Canvas.SetTop(SelectionBox, bar.Y);
         SelectionBox.Width = bar.Width; SelectionBox.Height = bar.Height;
         SelectionBox.Visibility = Visibility.Visible;
-        SelectionStatus.Text = $"Takt {bar.Number} · MIDI tick {bar.StartTick:N0} až {bar.EndTick:N0}. Zvukové přehrávání not zatím není propojené.";
+        SelectionStatus.Text = $"Takt {bar.Number} · MIDI tick {bar.StartTick:N0} až {bar.EndTick:N0}. Výběr taktu je připraven pro pozdější smyčku.";
     }
 
     private async void ExportMidi_Click(object sender, RoutedEventArgs e)
@@ -173,6 +210,128 @@ public sealed partial class MainWindow : Window
         }
         catch (Exception error) { if (!closed) NotationStatus.Text = "MIDI nelze uložit. " + error.Message; }
     }
+
+    private void SetBusy(bool value)
+    {
+        busy = value;
+        XmlButton.IsEnabled = GpButton.IsEnabled = OpenScoreButton.IsEnabled = OpenScoreMenu.IsEnabled =
+            OpenMediaButton.IsEnabled = OpenMediaMenu.IsEnabled = !value;
+        if (value)
+        {
+            PlayMediaButton.IsEnabled = PlayMenu.IsEnabled = PlayScoreButton.IsEnabled =
+                StartButton.IsEnabled = SpeedBox.IsEnabled = RewindButton.IsEnabled = PositionSlider.IsEnabled = false;
+        }
+        if (!closed) RefreshState();
+    }
+    private async void OpenMedia_Click(object sender, RoutedEventArgs e)
+    {
+        if (busy || audio is null) return;
+        try
+        {
+            var picker = new FileOpenPicker();
+            WinRT.Interop.InitializeWithWindow.Initialize(picker, WinRT.Interop.WindowNative.GetWindowHandle(this));
+            foreach (var extension in new[] { ".wav", ".mp3", ".ogg", ".opus", ".webm", ".m4a", ".mp4" }) picker.FileTypeFilter.Add(extension);
+            var file = await picker.PickSingleFileAsync();
+            if (file is null || closed || busy) return;
+            SetBusy(true);
+            MediaStatus.Text = "Načítám zvuk a připravuji rychlost…";
+            await audio.PrepareFileAsync(file.Path, currentSpeed);
+            if (closed) return;
+            mediaPath = file.Path; mediaMidi = null;
+            MediaTitle.Text = file.Name;
+            MediaStatus.Text = "Nahrávka je připravená. Přehrávání spustíš tlačítkem.";
+        }
+        catch (Exception error) { if (!closed) MediaStatus.Text = "Nahrávku nelze otevřít. " + error.Message; }
+        finally { if (!closed) SetBusy(false); }
+    }
+    private void PlayMedia_Click(object sender, RoutedEventArgs e)
+    {
+        if (busy || audio is null) return;
+        try { ++playbackIntent; audio.Play(); RefreshState(); }
+        catch (Exception error) { ShowError(error); }
+    }
+    private async void PlayScore_Click(object sender, RoutedEventArgs e)
+    {
+        if (busy || audio is null || preview is null) return;
+        var intent = ++playbackIntent;
+        var current = preview;
+        try
+        {
+            SetBusy(true);
+            MediaStatus.Text = "Připravuji přehrávání not…";
+            await audio.PrepareMidiAsync(current.Midi, currentSpeed);
+            if (closed) return;
+            mediaMidi = current.Midi; mediaPath = null;
+            MediaTitle.Text = "Noty · syntetický strunný zvuk";
+            if (intent == playbackIntent) audio.Play();
+            MediaStatus.Text = "Noty jsou připravené ve společném přehrávači.";
+        }
+        catch (Exception error) { if (!closed) MediaStatus.Text = "Noty nelze přehrát. " + error.Message; }
+        finally { if (!closed) SetBusy(false); }
+    }
+    private void Rewind_Click(object sender, RoutedEventArgs e)
+    {
+        try { ++playbackIntent; audio?.Seek(0); RefreshState(); }
+        catch (Exception error) { ShowError(error); }
+    }
+    private async void Speed_Changed(object sender, SelectionChangedEventArgs e)
+    {
+        if (audio is null || busy || SpeedBox.SelectedItem is not ComboBoxItem item) return;
+        var speed = double.Parse((string)item.Tag, System.Globalization.CultureInfo.InvariantCulture);
+        if (speed == currentSpeed || (mediaPath is null && mediaMidi is null)) return;
+        var previous = currentSpeed;
+        try
+        {
+            ++playbackIntent;
+            audio.Stop();
+            SetBusy(true);
+            MediaStatus.Text = "Připravuji novou rychlost; přehrávání je zastavené…";
+            if (mediaPath is not null) await audio.PrepareFileAsync(mediaPath, speed);
+            else await audio.PrepareMidiAsync(mediaMidi!, speed);
+            if (closed) return;
+            currentSpeed = speed;
+            MediaStatus.Text = "Rychlost je připravená bez změny výšky tónů. Přehrávání spustíš tlačítkem.";
+        }
+        catch (Exception error)
+        {
+            if (!closed)
+            {
+                MediaStatus.Text = "Rychlost nelze změnit. " + error.Message;
+                SpeedBox.SelectedIndex = Array.IndexOf(new[] { 0.25, 0.5, 0.75, 1.0, 1.5, 2.0 }, previous);
+            }
+        }
+        finally { if (!closed) SetBusy(false); }
+    }
+    private void Volume_Changed(object sender, Microsoft.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs e)
+    {
+        if (audio is null) return;
+        try { audio.SetVolume(e.NewValue / 100); }
+        catch (Exception error) { ShowError(error); }
+    }
+    private void Position_Released(object sender, PointerRoutedEventArgs e)
+    {
+        if (!positionDragging) return;
+        positionDragging = false;
+        SeekPosition();
+    }
+    private static bool IsSeekKey(Windows.System.VirtualKey key) => key is
+        Windows.System.VirtualKey.Left or Windows.System.VirtualKey.Right or Windows.System.VirtualKey.Up or
+        Windows.System.VirtualKey.Down or Windows.System.VirtualKey.Home or Windows.System.VirtualKey.End or
+        Windows.System.VirtualKey.PageUp or Windows.System.VirtualKey.PageDown;
+    private void Position_KeyDown(object sender, KeyRoutedEventArgs e) { if (IsSeekKey(e.Key)) positionDragging = true; }
+    private void Position_KeyUp(object sender, KeyRoutedEventArgs e)
+    {
+        if (!IsSeekKey(e.Key)) return;
+        positionDragging = false; SeekPosition();
+    }
+    private void SeekPosition()
+    {
+        if (updatingPosition || busy || audio is null || !PositionSlider.IsEnabled) return;
+        try { ++playbackIntent; audio.Seek(PositionSlider.Value); RefreshState(); }
+        catch (Exception error) { ShowError(error); }
+    }
+    private static string FormatTime(double seconds) => TimeSpan.FromSeconds(Math.Max(0, seconds)).ToString(@"m\:ss");
+    private void Close_Click(object sender, RoutedEventArgs e) => Close();
 
     private static void WriteNotationReport(object report)
     {

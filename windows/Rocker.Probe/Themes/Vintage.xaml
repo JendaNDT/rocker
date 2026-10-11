@@ -1,0 +1,21 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Default">
+            <SolidColorBrush x:Key="VintageBackground" Color="#211E1A" />
+            <SolidColorBrush x:Key="VintagePanel" Color="#302B25" />
+            <SolidColorBrush x:Key="VintageAccent" Color="#C78C50" />
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Light">
+            <SolidColorBrush x:Key="VintageBackground" Color="#FAF6F0" />
+            <SolidColorBrush x:Key="VintagePanel" Color="#F0E7DA" />
+            <SolidColorBrush x:Key="VintageAccent" Color="#905622" />
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="HighContrast">
+            <SolidColorBrush x:Key="VintageBackground" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="VintagePanel" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="VintageAccent" Color="{ThemeResource SystemColorHighlightColor}" />
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+</ResourceDictionary>
