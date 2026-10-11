@@ -18,9 +18,9 @@
 extern "C" {
 #endif
 
-/* Version 12 adds sample-counted recording buses and disk finalization state.
+/* Version 13 adds the common-clock layered looper.
    Reject earlier DLLs before creating a host. */
-#define ROCKER_AUDIO_ABI_VERSION 12u
+#define ROCKER_AUDIO_ABI_VERSION 13u
 typedef struct rocker_audio_host* rocker_audio_handle;
 typedef uint32_t rocker_audio_result;
 enum {
@@ -32,6 +32,12 @@ enum { ROCKER_STOPPED = 0, ROCKER_RUNNING = 1, ROCKER_FAULTED = 2,
     ROCKER_STARTING = 3, ROCKER_RECONFIGURING = 4, ROCKER_STOPPING = 5, ROCKER_CLOSING = 6 };
 
 #pragma pack(push, 8)
+typedef struct rocker_loop_snapshot {
+    uint32_t struct_size,abi_version,state,failure,layers,bus,sample_rate,flags;
+    uint64_t frames,position,cycles,start_frame,acknowledged,capacity;
+    uint32_t delay_frames,reserved;
+    float gains[8];
+} rocker_loop_snapshot;
 typedef struct rocker_audio_config {
     uint32_t struct_size;
     uint32_t abi_version;
@@ -199,6 +205,11 @@ ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_show_control_panel(rocke
    copied, never borrowed. A short buffer is terminated and reports TOO_SMALL. */
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_copy_last_error(rocker_audio_handle, char*, uint32_t capacity, uint32_t* required);
 ROCKER_API void ROCKER_CALL rocker_audio_destroy(rocker_audio_handle);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_loop_command(rocker_audio_handle,uint64_t graph_ticket,uint32_t kind,uint32_t bus,uint32_t count_in_bars,uint32_t beats,uint32_t aligned,uint32_t delay_frames,uint32_t layer,double gain);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_get_loop(rocker_audio_handle,rocker_loop_snapshot*);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_set_loop_metadata(rocker_audio_handle,uint32_t bus,uint32_t flags,uint32_t delay);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_load_loop_layer(rocker_audio_handle,const char* path,uint32_t layer,double gain);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_export_loop(rocker_audio_handle,const char* path,int32_t layer);
 /* Offline file conversion. Callbacks run on workers, never on the audio thread.
    The destination must be a new file; cancellation leaves a partial temporary
    file for the caller to remove. end_seconds=0 means the source end. */

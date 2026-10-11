@@ -30,7 +30,9 @@ public sealed record CaptureMetadata(int SampleRate, int Channels, int Bus, long
 public sealed record ProjectTrack(string Id, string Name, string MediaPath, string Sha256, double DurationSec,
     double Gain = 1, bool Muted = false, double Pan = 0, bool Solo = false, long OffsetFrames = 0);
 public sealed record ProjectManifest(int SchemaVersion, string Id, string Name, DateTimeOffset CreatedAt, DateTimeOffset UpdatedAt,
-    int SampleRate, IReadOnlyList<ProjectTrack> Tracks);
+    int SampleRate, IReadOnlyList<ProjectTrack> Tracks,
+    [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)] LoopSessionMetadata? Looper = null);
+public sealed record LoopSessionMetadata(int Bus, long Frames, uint DelayFrames, bool DelayMeasured, bool Partial);
 public sealed record ProjectIndex(string Id, string Name, string RelativeManifest);
 public sealed record DataDocument(string Kind, string Id, int SchemaVersion, JsonElement Value);
 public static class UserData
@@ -97,6 +99,7 @@ public static class UserData
     public static void ValidateProject(ProjectManifest project)
     {
         Require(project.SchemaVersion == 1 && Guid.TryParse(project.Id,out _) && !string.IsNullOrWhiteSpace(project.Name) && project.SampleRate is >= 8000 and <= 192000 && project.Tracks is not null && project.Tracks.Count <= 256, "Neplatný projekt.");
+        if(project.Looper is { } loop)Require(loop.Bus is 0 or 1 && loop.Frames>0 && loop.Frames<=2097152 && loop.DelayFrames<=192000 && project.Tracks!.Count is >=1 and <=8 && project.Tracks.All(t=>t.OffsetFrames==0 && Math.Abs(t.DurationSec-loop.Frames/(double)project.SampleRate)<0.00001),"Neplatná Looper session.");
         Require(project.Tracks!.All(t => ValidId(t.Id) && t.Name is not null && ValidRelativePath(t.MediaPath) && t.MediaPath.StartsWith("media/",StringComparison.Ordinal) && ValidHash(t.Sha256) && double.IsFinite(t.DurationSec) && t.DurationSec >= 0 && Unit(t.Gain) && double.IsFinite(t.Pan) && t.Pan is >= -1 and <= 1 && t.OffsetFrames >= 0) && project.Tracks!.Select(t => t.Id).Distinct().Count() == project.Tracks!.Count,"Neplatné stopy projektu.");
     }
     private static void RejectSecretFields(JsonElement value)

@@ -51,7 +51,7 @@ one failed command cannot prevent a later valid command.
 - SQLite/files: 20 recording assertions, including a child process killed after
   writing uncheckpointed PCM, header/rename recovery, hash, marker round-trip,
   group undo and cancelled original export preserving an existing target.
-- Windows build, WinUI form and reopened recording database: pending CI.
+- Windows build, both WinUI runs and reopened recording database: [passed](windows-validation.json).
 - Physical M-Track capture, loopback latency, manual file dialogs, sustained
   disk load and listening: deferred to the full-candidate acceptance.
 

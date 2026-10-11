@@ -1,0 +1,24 @@
+{
+  "scope": "W22 recording writer and native library before W23 looper",
+  "sourceCommit": "63905873b3fe795b0155e7e903aebff69d05abf9",
+  "windowsRun": "https://github.com/JendaNDT/rocker/actions/runs/38173877273",
+  "result": "passed",
+  "nativeTests": {
+    "executed": 14,
+    "failures": 0,
+    "skipped": 0
+  },
+  "recordings": {
+    "result": "passed",
+    "persistenceReopened": true,
+    "nativeLibraryList": true,
+    "nativeRecordingControls": 2,
+    "hardwareCaptureVerified": false,
+    "manualDialogsVerified": false
+  },
+  "notPerformed": [
+    "Physical M-Track Solo capture and roundtrip latency",
+    "Manual save/marker/compare/dialog checks",
+    "Sustained recording under actual hardware load"
+  ]
+}

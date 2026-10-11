@@ -68,6 +68,9 @@ int main(){
     rocker::RecordingTap capture;capture.arm({1,2,0,48000,1});
     audit=true;capture.beginBlock(48000,1);for(uint64_t i=0;i<10000;++i)capture.sample(.25,.5,.1f,-.1f,{i,0,false,0},true);capture.endBlock();audit=false;
     check(allocations.load()==0 && releases.load()==0 && capture.observation().captured==10000,"recording bus packing and bounded disk queue allocate/release no callback ownership");
+    rocker::LoopBuffer loopBuffer(8192);rocker::LoopCommand installLoop;installLoop.buffer=&loopBuffer;processor.input().looper().command(installLoop);rocker::LoopCommand firstLoop;firstLoop.kind=1;processor.input().looper().command(firstLoop);
+    audit=true;for(int i=0;i<8;++i)processor.process(inputs,1,outputs,2,512);audit=false;rocker::LoopCommand endLoop;endLoop.kind=2;processor.input().looper().command(endLoop);audit=true;processor.process(inputs,1,outputs,2,512);audit=false;rocker::LoopCommand addLoop;addLoop.kind=3;addLoop.delay=64;processor.input().looper().command(addLoop);audit=true;for(int i=0;i<20;++i)processor.process(inputs,1,outputs,2,512);audit=false;rocker::LoopCommand undoLoop;undoLoop.kind=6;processor.input().looper().command(undoLoop);audit=true;processor.process(inputs,1,outputs,2,512);audit=false;
+    check(allocations.load()==0 && releases.load()==0 && processor.input().looper().observation().layers==1,"first loop, playback, compensated overdub and undo allocate/release no callback ownership");
     std::atomic<uint64_t> authority{1};processor.authority(authority);processor.authorize(1);authority.store(2);processor.enable(true);
     processor.render(outputs,2,512);
     check(std::all_of(left.begin(),left.end(),[](float v){return v==0;}) && std::all_of(right.begin(),right.end(),[](float v){return v==0;}),"late enable cannot resurrect a cancelled authority");

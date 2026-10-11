@@ -1,0 +1,46 @@
+{
+  "scope": "W23 native looper before Windows UI validation",
+  "nativeTests": {
+    "executed": 15,
+    "failures": 0
+  },
+  "sanitizers": {
+    "relevantExecuted": 6,
+    "failures": 0
+  },
+  "interop": {
+    "abi": 13,
+    "loopSnapshotBytes": 120,
+    "actualCallbackFrames": 800,
+    "layerExportRestoreAndProvenance": true,
+    "controlFifoAndDisposal": true,
+    "mismatchedAbi": true
+  },
+  "domain": {
+    "result": "passed",
+    "referenceCases": 69,
+    "boundaryChecks": 73,
+    "contentGroups": 15,
+    "surgicalStatesCompared": 37,
+    "extendedReferenceCases": 372,
+    "extendedStatesCompared": 350
+  },
+  "storage": {
+    "result": "passed",
+    "fileChecks": 11,
+    "storageChecks": 39,
+    "secretChecks": 2,
+    "backupChecks": 20,
+    "migrationChecks": 28,
+    "diagnosticChecks": 10,
+    "recordingChecks": 22,
+    "dpapiVerified": false,
+    "forcedTerminationVerified": true,
+    "manualHardwareVerified": false
+  },
+  "notPerformed": [
+    "Windows build/form in Linux",
+    "Physical M-Track monitoring/loopback/overdub",
+    "Manual session/dialog checks"
+  ]
+}

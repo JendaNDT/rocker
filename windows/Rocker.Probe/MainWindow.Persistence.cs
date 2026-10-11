@@ -18,6 +18,7 @@ public sealed partial class MainWindow
             await BackupService.RecoverInterruptedAsync(userFiles);
             database = await DataRepository.OpenAsync(userFiles);
             await InitializeRecordingsAsync();
+            ResetLooperWorkspace();
             var snapshot = await database.SnapshotAsync();
             if (closed) return;
             var settings = snapshot.Documents.FirstOrDefault(d=>d.Kind=="settings" && d.Id=="default");

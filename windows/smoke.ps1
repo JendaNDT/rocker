@@ -89,6 +89,10 @@ try {
     if (-not (Test-Path $tunerPath)) { throw 'Missing native tuner report.' }
     $tuner = Get-Content $tunerPath -Raw | ConvertFrom-Json
     if ($tuner.result -ne 'passed' -or $tuner.sixStringControls -ne 6 -or -not $tuner.persistenceReopened -or -not $tuner.noInputInventsNoNote) { throw 'Native tuner/persistence failed.' }
+    $looperPath = Join-Path $reportDirectory 'looper-view.json'
+    if (-not (Test-Path $looperPath)) { throw 'Looper workspace report is missing.' }
+    $looper = Get-Content $looperPath -Raw | ConvertFrom-Json
+    if ($looper.result -ne 'passed' -or $looper.nativeLayersLoaded -ne 2 -or $looper.exactFrames -ne 480 -or -not $looper.persistenceReopened -or -not $looper.pausedWithoutAudioDevice) { throw 'Native Looper form or session persistence failed.' }
     $recordingsPath = Join-Path $reportDirectory 'recordings-view.json'
     if (-not (Test-Path $recordingsPath)) { throw 'Recording workspace report is missing.' }
     $recordings = Get-Content $recordingsPath -Raw | ConvertFrom-Json

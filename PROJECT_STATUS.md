@@ -871,5 +871,10 @@ W22 přidává diskový PCM24 writer tří sběrnic, předtakt, exact frame meta
 obnovu po pádu, nativní knihovnu, značky, A/B, hromadné mazání/undo a
 zrušitelný export úseku WAV. ABI je 12. Linux 14/14 CTest a sanitizery,
 C# propojení, 20 kontrol nahrávek a původních 567 testů prošly;
-Windows sestavení/formulář/persistence navazuje. Funkčně kompletní kandidát
+Windows W22 prošel v běhu 38173877273 (důkaz `docs/windows/w22/windows-validation.json`).
+W23 přidává nativní Looper: 8 mono vrstev/64 MiB, vzorkový předtakt a
+taktové hranice, kompenzovaný overdub, undo a explicitně uložené projekty.
+ABI je 13; Linux 15/15 CTest, C# ukládání/obnovení vrstev a 22 kontrol
+nahrávek/projektů prošly. Windows sestavení/formulář/persistence navazuje.
+Funkčně kompletní kandidát
 ani fyzická přejímka zatím nejsou hotové; pokračuje W23 a zbývající roadmapa.

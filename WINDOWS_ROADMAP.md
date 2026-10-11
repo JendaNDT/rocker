@@ -372,7 +372,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w22"></a>
 #### W22 — Spolehlivé nahrávání, knihovna a export
 
-- [ ] Rozpracováno: [PCM24 diskový writer, obnova po pádu, nativní knihovna a export](docs/windows/w22/README.md). Linux 14/14 CTest, C# propojení a 20 kontrol ukládání nahrávek prošly; Windows formulář/persistence se ověřují v CI. Fyzický záznam je odložený do závěrečné přejímky. Závislosti: W09, W15–W17, W21.
+- [ ] Rozpracováno: [PCM24 diskový writer, obnova po pádu, nativní knihovna a export](docs/windows/w22/README.md). Linux 14/14 CTest, C# propojení a 20 kontrol ukládání nahrávek prošly; [Windows sestavení, formulář a persistence prošly](docs/windows/w22/windows-validation.json). Fyzický záznam je odložený do závěrečné přejímky. Závislosti: W09, W15–W17, W21.
 - Nahrávat vybranou sběrnici přes předalokovanou frontu na pracovní diskové vlákno. Délka je odvozena od počtu vzorků. Primární bezeztrátový výstup je PCM WAV; podporovanou hloubku a velké soubory řešit podle reálných limitů writeru.
 - Záznam během práce bezpečně průběžně uchovávat, po ukončení dokončit hlavičku a metadata. Zaplněný disk, chyba oprávnění nebo nestíhající zápis nesmějí vytvořit falešně úspěšný záznam; nabídnout obnovu dostupné části.
 - Implementovat seznam, přejmenování, výběr více položek, přehrání, pojmenované časové značky včetně skoku na ně, porovnání dvou take-ů A/B, export a mazání s možností návratu či potvrzením. Zachovat původní importované soubory i jejich markery, případný převod označit.
@@ -382,7 +382,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w23"></a>
 #### W23 — Looper se správným časováním a vrstvami
 
-- [ ] Čeká. Závislosti: W16, W18, W22.
+- [ ] Rozpracováno: [nativní vzorkový Looper, vrstvy a uložené sessions](docs/windows/w23/README.md). Linux 15/15 CTest, kompenzovaný impuls, 20 000 opakování, callback audit a obnovení vrstev prošly. Windows formulář a projektová persistence se ověřují v CI; poslech je odložený. Závislosti: W16, W18, W22.
 - Přenést první záznam určující délku, přehrávání smyčky a overdub vrstev. Určit volné versus taktově zarovnané zahájení, předtakt a pravidla zaokrouhlení hranic.
 - Vrstvy mají společnou délku v celých vzorcích, správné úrovně a přechod přes konec bez lupnutí; při nové vrstvě se využije známá kompenzace zachycení a přehrávání.
 - Doplnit návrat poslední vrstvy, bezpečné vymazání, persistenci nebo výslovné uložení session a export do nahrávek či Studia. Paměťové limity a ztráta zařízení mají viditelný stav.

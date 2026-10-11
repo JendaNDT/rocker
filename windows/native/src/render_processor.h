@@ -23,6 +23,7 @@ public:
     void selectClip() noexcept { clipMode_ = true;liveMode_=false;idleMode_=0;mediaPlaying_.store(true); }
     void selectLive() noexcept { clipMode_=false;liveMode_=true;idleMode_=0; }
     void selectReference() noexcept {clipMode_=false;liveMode_=false;idleMode_=4;}
+    void selectLooper() noexcept{clipMode_=false;liveMode_=false;idleMode_=6;}
     void selectRecording() noexcept{clipMode_=false;liveMode_=false;idleMode_=5;}
     void selectMetronome() noexcept {clipMode_=false;liveMode_=false;idleMode_=3;}
     uint32_t mode() const noexcept{const auto idle=idleMode_.load();return idle?idle:liveMode_?2u:clipMode_?1u:0u;}

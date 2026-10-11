@@ -25,6 +25,7 @@ Check(Marshal.SizeOf<MeterSnapshot>()==112,"C# meter layout");
 Check(Marshal.SizeOf<ClockSnapshot>()==72,"C# clock layout");
 Check(Marshal.SizeOf<MetronomeSnapshot>()==80,"C# metronome observation layout");
 Check(Marshal.SizeOf<AnalysisSnapshot>()==144,"C# analysis snapshot layout");
+Check(Marshal.SizeOf<LoopSnapshot>()==120,"C# looper snapshot layout");
 Check(Marshal.SizeOf<RecordingSnapshot>()==88,"C# recording snapshot layout");
 Check(Marshal.SizeOf<DiagnosticSnapshot>()==160,"C# diagnostics snapshot layout");
 if (mode == "--media")
@@ -112,6 +113,8 @@ await using(var captureAudio=new NativeAudio())
         try{var token=await captureAudio.StartRecordingAsync(path,0);for(int i=0;i<3;++i)process(127,.25f);var finishing=captureAudio.StopRecordingAsync();process(128,.25f);await finishing;var state=captureAudio.GetRecording();Check(state.Token==token && state.Complete && state.WrittenFrames==381 && state.Channels==1,"C# recording captures actual selected mono input and final partial block");
             var exported=path+".export.wav";try{await MediaExport.WavAsync(path,exported,.001,.005);Check(new FileInfo(exported).Length==44+192*3,"C# offline WAV range exports exact samples");}finally{if(File.Exists(exported))File.Delete(exported);}
         }finally{if(File.Exists(path))File.Delete(path);}
+        await captureAudio.LoopCommandAsync(1);process(672,.25f);await captureAudio.LoopCommandAsync(2);process(1,0);for(int retry=0;retry<100 && captureAudio.GetLoop().Layers!=1;++retry)await Task.Delay(5);Check(captureAudio.GetLoop().Frames==800 && captureAudio.GetLoop().Layers==1,"C# looper uses actual callback frames on the shared device");await captureAudio.StopAsync();
+        var loopFile=Path.Combine(Path.GetTempPath(),"rocker-clr-loop-"+Guid.NewGuid().ToString("N")+".wav");try{await captureAudio.ExportLoopAsync(loopFile,0);await captureAudio.LoadLoopLayerAsync(loopFile,0,.3);await captureAudio.SetLoopMetadataAsync(1,true,64);var restored=captureAudio.GetLoop();Check(restored.Frames==800 && restored.State==6 && Math.Abs(restored.Gain0-.3)<1e-6 && (restored.Flags&1)!=0 && restored.Bus==1,"C# layer restoration preserves rate, gain and partial provenance without playback");}finally{if(File.Exists(loopFile))File.Delete(loopFile);}await captureAudio.LoopCommandAsync(7);
         var failed=captureAudio.SetAmplifierAsync(new(Drive:double.NaN));var valid=captureAudio.SetAmplifierAsync(new());try{await failed;throw new Exception("invalid amp accepted");}catch(InvalidOperationException){}await valid;Check(captureAudio.GetAmplifier()==new AmplifierConfiguration(),"a failed queued control does not poison its successor");
     }finally{NativeLibrary.Free(native);}
 }
