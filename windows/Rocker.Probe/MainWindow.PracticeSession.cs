@@ -57,6 +57,7 @@ public sealed partial class MainWindow
     private async void PracticeEnd_Click(object sender,RoutedEventArgs args){practiceSession.End();FlushPractice();try{if(autosave is not null)await autosave.FlushAsync();}catch(Exception){ShowPersistenceError("Čas cvičení se zatím nepodařilo uložit; zůstává v paměti.");}RefreshPracticeControls();}
     private void RefreshPracticeControls()
     {
+        UpdateWakeLock();
         PracticeStart.IsEnabled=persistenceReady && practiceSession.Phase!=PracticePhase.Running;PracticeStart.Content=practiceSession.Phase==PracticePhase.Paused?"Pokračovat ve cvičení":"Zahájit cvičení";PracticePause.IsEnabled=practiceSession.Phase==PracticePhase.Running;PracticeEnd.IsEnabled=practiceSession.Phase is PracticePhase.Running or PracticePhase.Paused;PracticeStatus.Text=(practiceSession.Phase switch{PracticePhase.Running=>"Cvičení běží; počítá se jen aktivita",PracticePhase.Paused=>"Cvičení pozastavené",PracticePhase.Ended=>"Cvičení ukončené",_=>"Cvičení není zahájené"})+" · aktivně "+FormatTime(practiceSession.TotalMs/1000);
     }
 }

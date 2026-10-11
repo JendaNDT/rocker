@@ -99,6 +99,12 @@ try {
     if (-not (Test-Path $aiViewsPath)) { throw 'Native AI workspace report is missing.' }
     $aiViews = Get-Content $aiViewsPath -Raw | ConvertFrom-Json
     if ($aiViews.result -ne 'passed' -or $aiViews.nativeViews -ne 3 -or -not $aiViews.persistenceReopened -or -not $aiViews.unknownTaskRejected) { throw 'Native AI form/plan/history checks failed.' }
+    foreach ($integratedName in @('practice-profile.json','overview-live.json')) {
+        $integratedPath = Join-Path $reportDirectory $integratedName
+        if (-not (Test-Path $integratedPath)) { throw "Missing integrated native report: $integratedName" }
+        $integrated = Get-Content $integratedPath -Raw | ConvertFrom-Json
+        if ($integrated.result -ne 'passed') { throw "Integrated native check failed: $integratedName" }
+    }
     $videoPracticePath = Join-Path $reportDirectory 'video-practice.json'
     if (-not (Test-Path $videoPracticePath)) { throw 'Native video practice report is missing.' }
     $videoPractice = Get-Content $videoPracticePath -Raw | ConvertFrom-Json

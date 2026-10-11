@@ -479,7 +479,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w33"></a>
 #### W33 — Dokončit Přehled, Live a návaznosti
 
-- [ ] Čeká. Závislosti: W17–W19, W22, W25–W28, W31, W32.
+- [ ] Implementováno: [W33](docs/windows/w33/README.md), Windows integrace čeká. Závislosti: W17–W19, W22, W25–W28, W31, W32.
 - Denní plán a AI plán otevírají konkrétní lekci, riff, trenažér nebo úsek s potřebnými parametry. Zachovat „pokračovat“ a návrat do plánu, stav hotové úlohy a doporučený další krok.
 - Live propojí velkou ladičku, metronom, aparát, vstupní úroveň a jeden skutečný nahrávací transport. Nepovolí spuštění dvou konkurenčních rekordérů ze dvou obrazovek.
 - Udržet stabilní ovládání zvuku při přepínání pohledů a režim pro hraní z odstupu. Zabránění uspání platí jen během zvolené aktivní session a po zastavení se uvolní.

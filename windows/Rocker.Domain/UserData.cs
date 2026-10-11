@@ -7,7 +7,12 @@ public sealed record AppSettings(string Theme = "system", string TuningId = "sta
     [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)] DevicePreference? AudioDevice = null,
     [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingDefault)] bool AmpEnabled = false,
     [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)] double? ReferenceA = null,
-    [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)] PalmProfile? PalmMute = null);
+    [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)] PalmProfile? PalmMute = null,
+    [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)] NavigationTarget? ResumeTask = null,
+    [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)] PlanProgress? PracticePlan = null,
+    [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingDefault)] bool KeepAwake = false,
+    [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)] PlanProgress? AiPlanProgress = null);
+public sealed record PlanProgress(string Key, IReadOnlyList<string> Completed);
 public sealed record DevicePreference(string Backend, string Input, string Output, double SampleRate=0, uint BufferFrames=0, int InputChannel=-1, uint OutputFirst=0);
 public sealed record Pickup(string Position, string Type);
 public sealed record InstrumentProfile(string Name, string BodyType, IReadOnlyList<Pickup> Pickups, string ScaleLength, string StringGauge, string Notes)
@@ -66,6 +71,8 @@ public static class UserData
             case "settings":
                 var settings = Read<AppSettings>(document.Value);
                 Require(settings.Theme is "system" or "dark" or "light" && settings.Handedness is "right" or "left" && settings.Notation is "english" or "german" && ValidId(settings.TuningId) && Unit(settings.NoiseGate) && Unit(settings.ReferenceToneVolume), "Neplatné nastavení.");
+                if(settings.ResumeTask is { } resume)WorkspaceViews.Validate(resume);
+                foreach(var plan in new[]{settings.PracticePlan,settings.AiPlanProgress}.OfType<PlanProgress>())Require(ValidId(plan.Key) && plan.Completed is not null && plan.Completed.Count<=32 && plan.Completed.All(ValidId),"Neplatný stav plánu.");
                 if(settings.ReferenceA is double referenceA)Require(double.IsFinite(referenceA) && referenceA is >=430 and <=450,"Neplatná referenční frekvence A.");
                 if(settings.AudioDevice is { } device) Require(ValidId(device.Backend) && device.Input is not null && device.Input.Length<=512 && !device.Input.Any(char.IsControl) && ValidId(device.Output) && double.IsFinite(device.SampleRate) && (device.SampleRate==0 || device.SampleRate is >=8000 and <=192000) && (device.BufferFrames==0 || device.BufferFrames is >=16 and <=8192) && device.InputChannel is >=-1 and <=63 && (device.InputChannel==-1 || device.Input.Length>0) && device.OutputFirst<=62,"Neplatné zvukové zařízení.");
                 if(settings.PalmMute is { } palm)Require(palm.Calibration is not null && ValidHash(palm.Device) && ValidId(palm.Tuning) && ValidHash(palm.Instrument) && !string.IsNullOrWhiteSpace(palm.Pickup) && palm.Pickup.Length<=64 && double.IsFinite(palm.Sensitivity) && palm.Sensitivity is >=.5 and <=1.5 && double.IsFinite(palm.Calibration.OpenMean) && double.IsFinite(palm.Calibration.MutedMean) && palm.Calibration.MutedMean>=0 && palm.Calibration.OpenMean>palm.Calibration.MutedMean && palm.Calibration.OpenMean<=100000 && Math.Abs(palm.Calibration.Threshold-(palm.Calibration.OpenMean+palm.Calibration.MutedMean)/2)<1e-6,"Neplatný profil palm mute.");

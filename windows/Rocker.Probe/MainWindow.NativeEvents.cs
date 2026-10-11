@@ -7,6 +7,9 @@ public sealed partial class MainWindow
     [DllImport("comctl32.dll",SetLastError=true)] [return:MarshalAs(UnmanagedType.Bool)]private static extern bool SetWindowSubclass(nint window,WindowSubclass callback,nuint id,nuint data);
     [DllImport("comctl32.dll")] [return:MarshalAs(UnmanagedType.Bool)]private static extern bool RemoveWindowSubclass(nint window,WindowSubclass callback,nuint id);
     [DllImport("comctl32.dll")]private static extern nint DefSubclassProc(nint window,uint message,nuint wParam,nint lParam);
+    [DllImport("kernel32.dll")]private static extern uint SetThreadExecutionState(uint flags);
+    private bool wakeLockApplied;
+    private void UpdateWakeLock(){bool wanted=appSettings.KeepAwake && practiceSession.Phase==Rocker.Domain.PracticePhase.Running && !closed && !closingWindow;if(wanted==wakeLockApplied)return;uint result=SetThreadExecutionState(wanted?0x80000003u:0x80000000u);if(result!=0)wakeLockApplied=wanted;}
     private WindowSubclass? nativeWindowCallback;private nint nativeWindow;private int timeZoneNotifications;
     private TimeZoneInfo practiceTimeZone=TimeZoneInfo.Local;
     private void InitializeNativeEvents()
@@ -26,5 +29,5 @@ public sealed partial class MainWindow
         catch(Exception){/* Never unwind a managed exception through a window procedure. */}
         return DefSubclassProc(window,message,wParam,lParam);
     }
-    private void DetachNativeEvents(){if(nativeWindowCallback is { } callback){RemoveWindowSubclass(nativeWindow,callback,0x524b);nativeWindowCallback=null;}}
+    private void DetachNativeEvents(){SetThreadExecutionState(0x80000000u);wakeLockApplied=false;if(nativeWindowCallback is { } callback){RemoveWindowSubclass(nativeWindow,callback,0x524b);nativeWindowCallback=null;}}
 }

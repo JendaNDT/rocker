@@ -62,7 +62,7 @@ public sealed partial class MainWindow
         if (AppWindow.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Restored })
             normalBounds = new(AppWindow.Position.X,AppWindow.Position.Y,AppWindow.Size.Width,AppWindow.Size.Height);
     }
-    private void Navigate(NavigationTarget target) { componentMode = false; navigation.Navigate(target); ShowWorkspace(); }
+    private void Navigate(NavigationTarget target) { componentMode = false; navigation.Navigate(target);if(persistenceReady && PracticeViews.Contains(target.ViewId)){appSettings=appSettings with{ResumeTask=target};SaveSettings();}ShowWorkspace(); }
     private void ShowWorkspace()
     {
         if (!shellReady || closed) return;
@@ -88,6 +88,7 @@ public sealed partial class MainWindow
             if (!workspaceCache.TryGetValue(target, out var page)) { page = BuildWorkspace(target); workspaceCache.Add(target,page); }
             WorkspaceContent.Content = page;
         }
+        RefreshPlanControls();
         if(aiPages.TryGetValue(view.Id,out var aiPage) && !aiBusy)RefreshAiPage(aiPage);
         if (view.Id == "08" && !videoInitializationStarted) _ = EnsureVideoAsync();
     }
@@ -117,7 +118,7 @@ public sealed partial class MainWindow
     {
         if (!shellReady) return;
         var orientation = args.NewSize.Width < 850 ? Orientation.Vertical : Orientation.Horizontal;
-        ScoreButtons.Orientation = VideoButtons.Orientation = PracticeButtons.Orientation = orientation;
+        ScoreButtons.Orientation = VideoButtons.Orientation = PlanButtons.Orientation = PracticeButtons.Orientation = orientation;
         ShellStateText.Visibility = args.NewSize.Width < 640 ? Visibility.Collapsed : Visibility.Visible;
     }
     private static StackPanel Stack() => new() { Spacing = 12, HorizontalAlignment = HorizontalAlignment.Stretch };
@@ -170,20 +171,6 @@ public sealed partial class MainWindow
             "32" => "Export nahrávky bude dostupný po dokončení nahrávání. Noty už lze uložit jako MIDI.", _ => "Tento pracovní pohled se připravuje." }));
         if (target.ViewId is "07" or "14") { var open = new Button { Content = "Otevřít nahrávku…" }; open.Click += OpenMedia_Click; panel.Children.Add(open); }
         if (target.ViewId == "32") { var notes = new Button { Content = "Otevřít noty a export MIDI" }; notes.Click += (_,_) => Navigate(new("20")); panel.Children.Add(notes); }
-        return Card(panel);
-    }
-    private FrameworkElement BuildOverview()
-    {
-        var panel = Stack(); panel.Children.Add(Text("Pojďme si zahrát."));
-        var plan = Practice.GenerateDailyPlan(catalog!,completedLessons,DateOnly.FromDateTime(DateTime.Now));
-        panel.Children.Add(Text($"Dnešní plán · {plan.TotalMinutes} minut", true));
-        foreach (var item in plan.Items)
-        {
-            var details = Stack(); details.Children.Add(Text($"{item.Title} · {item.Minutes} min")); details.Children.Add(Text(item.Detail,true));
-            var button = new Button { Content = details, HorizontalAlignment = HorizontalAlignment.Stretch, HorizontalContentAlignment = HorizontalAlignment.Left, Padding = new(16,12,16,12) };
-            button.Click += (_,_) => Navigate(item.LessonId is not null ? new("06",item.LessonId) : item.TrainerId == "surgical" ? new("09","spider") : item.TrainerId == "riff" ? new("19") : new(item.Href switch { "/tuner" => "03", "/metronome" => "04", "/youtube" => "08", _ => "05" }));
-            panel.Children.Add(button);
-        }
         return Card(panel);
     }
     private FrameworkElement BuildCatalog(string group, string? selected)
@@ -248,7 +235,7 @@ public sealed partial class MainWindow
                 if (choice == ContentDialogResult.Primary && !await guard.Save()) return;
                 if (choice == ContentDialogResult.Secondary) guard.Discard();
             }
-            practiceSession.End();FlushPractice();
+            practiceSession.End();UpdateWakeLock();FlushPractice();
             await CancelAiAsync();
             SendVideo(new{op="pause"});
             CancelPalm();await StopRhythmUiAsync();
@@ -289,6 +276,7 @@ public sealed partial class MainWindow
         await VerifyVideoPracticeAsync();
         await VerifyAiViewsAsync();
         await VerifyPracticeAndProfileAsync();
+        await VerifyOverviewLiveAsync();
         await VerifyDevicesAsync();
         VerifyComponents();
         if (Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTIC_VIEW") == "components") ShowComponents();
