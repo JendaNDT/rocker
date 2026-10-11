@@ -38,3 +38,9 @@ native tabs, legacy alias resolution and simulated native game answers. Windows
 build/form validation is pending. No physical keyboard, screen reader, guitar or
 listening acceptance has been performed. Shared native audio remains covered by
 W25/W27 callback/CLR checks; these UI checks do not imply real audio playback.
+
+Windows run 38181594614 passed build/native/CLR checks but stopped in the prior
+W27 UI assertion: adding the riff trainer made the shared editor dictionary have
+three entries, while that check required exactly two. It now requires the two
+specific power/gallop editor keys and their diagrams. Corrected Windows UI
+validation is pending; the failed run is not counted as passed.

@@ -73,7 +73,7 @@ public sealed partial class MainWindow
     }
     private async Task VerifyRhythmAndPalmAsync()
     {
-        Navigate(new("10"));Navigate(new("11"));bool controls=rhythmEditors.Count==2 && rhythmDiagrams.Count==2 && rhythmRoundBars.Count==2;
+        Navigate(new("10"));Navigate(new("11"));bool controls=rhythmEditors.ContainsKey("10") && rhythmEditors.ContainsKey("11") && rhythmDiagrams.Count==2 && rhythmRoundBars.Count==2;
         string exercise=catalog!.Items("powerChordExercises").First().GetProperty("id").GetString()!;RecordTempo(exercise,123);RecordTempo(exercise,100);Navigate(new("12"));
         var calibration=PalmMuteRules.Calibrate(new double[]{2400,2300,2500},new double[]{600,550,650})!;appSettings=appSettings with{PalmMute=new(PalmDeviceFingerprint(),appSettings.TuningId,InstrumentFingerprint(),calibration,1,palmPickup)};SaveSettings();
         var drill=UserData.Read<PalmMuteDrill>(catalog.Items("palmMuteDrills").First());palmState=PalmMuteRules.Start(drill);BaselinePalm(new AnalysisSnapshot{Epoch=88});palmListening=true;
