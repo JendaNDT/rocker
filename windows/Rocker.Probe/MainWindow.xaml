@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     Title="Rocker">
+    <ContentControl x:Name="ShellInteractionRoot" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
     <Grid x:Name="ShellRoot" Background="{ThemeResource VintageBackground}" SizeChanged="Shell_SizeChanged">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" />
@@ -150,4 +151,5 @@
             </Grid>
         </Border>
     </Grid>
+    </ContentControl>
 </Window>

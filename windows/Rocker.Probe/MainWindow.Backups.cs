@@ -44,21 +44,21 @@ public sealed partial class MainWindow
                 details.Children.Add(Text("Nahradí se jen typy zahrnuté v této záloze. Vratná kopie zachová původní databázi a soubory. AI klíč zůstává ve Windows.",true));details.Children.Add(choice);
                 var dialog=new ContentDialog {XamlRoot=ShellRoot.XamlRoot,Title="Obnovit zálohu?",Content=details,PrimaryButtonText="Obnovit",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Close};
                 if(await dialog.ShowAsync()!=ContentDialogResult.Primary)return;
-                ShellRoot.IsEnabled=false;audio?.Stop();
+                ShellInteractionRoot.IsEnabled=false;audio?.Stop();
                 var result=await service.RestoreAsync(file.Path,preview,choice.SelectedIndex==0 ? RestoreStrategy.MergeKeepCurrent:RestoreStrategy.ReplaceIncluded);
                 lessonSessions.Clear();completedLessons.Clear();savedLessonPositions.Clear();persistenceReady=false;
                 await InitializePersistenceAsync();
                 ShellNotice.IsOpen=true;ShellNotice.Severity=InfoBarSeverity.Success;ShellNotice.Title="Záloha obnovena";ShellNotice.Message=$"Převzato {result.Imported}, zachováno {result.KeptCurrent}. Vratná kopie: {result.RollbackDirectory}";
             }
             catch(Exception){status.Text="Záloha se neobnovila. Soubor může být poškozený, z novější verze nebo chybí místo. Původní data zůstávají zachovaná; případnou přerušenou obnovu Rocker vrátí při příštím spuštění.";}
-            finally{backupOperationRunning=false;if(!closed){ShellRoot.IsEnabled=true;export.IsEnabled=restore.IsEnabled=true;}}
+            finally{backupOperationRunning=false;if(!closed){ShellInteractionRoot.IsEnabled=true;export.IsEnabled=restore.IsEnabled=true;}}
         };
         undo.Click+=async (_,_)=>
         {
             if(database is null || backupOperationRunning)return;
             var dialog=new ContentDialog {XamlRoot=ShellRoot.XamlRoot,Title="Vrátit poslední obnovu?",Content="Aktuální data se odloží a obnoví se stav před posledním importem zálohy.",PrimaryButtonText="Vrátit obnovu",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Close};
             if(await dialog.ShowAsync()!=ContentDialogResult.Primary)return;
-            backupOperationRunning=true;ShellRoot.IsEnabled=false;
+            backupOperationRunning=true;ShellInteractionRoot.IsEnabled=false;
             try
             {
                 await autosave!.FlushAsync();audio?.Stop();await new BackupService(userFiles,database).UndoLastRestoreAsync();
@@ -66,7 +66,7 @@ public sealed partial class MainWindow
                 ShellNotice.IsOpen=true;ShellNotice.Severity=InfoBarSeverity.Success;ShellNotice.Title="Obnova vrácena";ShellNotice.Message="Předchozí stav dat je obnovený.";
             }
             catch(Exception){status.Text="Vratnou kopii se nepodařilo použít. Původní soubory kopie zůstávají zachované.";}
-            finally{backupOperationRunning=false;if(!closed)ShellRoot.IsEnabled=true;}
+            finally{backupOperationRunning=false;if(!closed)ShellInteractionRoot.IsEnabled=true;}
         };
         panel.Children.Add(recordings);panel.Children.Add(projects);panel.Children.Add(export);panel.Children.Add(restore);panel.Children.Add(undo);panel.Children.Add(status);
         panel.Children.Add(Text("Převod ze staré webové aplikace bude dostupný po dokončení importu. Její místní data se tímto postupem nemažou.",true));return Card(panel);
