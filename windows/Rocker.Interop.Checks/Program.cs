@@ -26,6 +26,7 @@ Check(Marshal.SizeOf<ClockSnapshot>()==72,"C# clock layout");
 Check(Marshal.SizeOf<MetronomeSnapshot>()==80,"C# metronome observation layout");
 Check(Marshal.SizeOf<AnalysisSnapshot>()==144,"C# analysis snapshot layout");
 Check(Marshal.SizeOf<LoopSnapshot>()==120,"C# looper snapshot layout");
+Check(Marshal.SizeOf<ClipInfo>()==32 && Marshal.SizeOf<RecordingAlignment>()==64,"source info and recording alignment layout");
 Check(Marshal.SizeOf<RecordingSnapshot>()==88,"C# recording snapshot layout");
 Check(Marshal.SizeOf<DiagnosticSnapshot>()==160,"C# diagnostics snapshot layout");
 if (mode == "--media")
@@ -115,6 +116,12 @@ await using(var captureAudio=new NativeAudio())
         }finally{if(File.Exists(path))File.Delete(path);}
         await captureAudio.LoopCommandAsync(1);process(672,.25f);await captureAudio.LoopCommandAsync(2);process(1,0);for(int retry=0;retry<100 && captureAudio.GetLoop().Layers!=1;++retry)await Task.Delay(5);Check(captureAudio.GetLoop().Frames==800 && captureAudio.GetLoop().Layers==1,"C# looper uses actual callback frames on the shared device");await captureAudio.StopAsync();
         var loopFile=Path.Combine(Path.GetTempPath(),"rocker-clr-loop-"+Guid.NewGuid().ToString("N")+".wav");try{await captureAudio.ExportLoopAsync(loopFile,0);await captureAudio.LoadLoopLayerAsync(loopFile,0,.3);await captureAudio.SetLoopMetadataAsync(1,true,64);var restored=captureAudio.GetLoop();Check(restored.Frames==800 && restored.State==6 && Math.Abs(restored.Gain0-.3)<1e-6 && (restored.Flags&1)!=0 && restored.Bus==1,"C# layer restoration preserves rate, gain and partial provenance without playback");}finally{if(File.Exists(loopFile))File.Delete(loopFile);}await captureAudio.LoopCommandAsync(7);
+        var studioFile=Path.Combine(Path.GetTempPath(),"rocker-clr-studio-"+Guid.NewGuid().ToString("N")+".wav");
+        try{await captureAudio.StartRecordingAsync(studioFile,0);process(960,.25f);var ending=captureAudio.StopRecordingAsync();process(1,0);await ending;await captureAudio.StopAsync();var tracks=new ProjectAudioTrack[]{new(studioFile,.5),new(studioFile,.5,-1,OffsetFrames:100,TrimStartFrames:20)};var ticket=await captureAudio.PrepareProjectAsync(tracks,48000);Check(captureAudio.GetClipInfo().Frames==1040 && (await captureAudio.GetProjectTrackInfoAsync(ticket,1)).Frames==960,"project descriptor copies UTF-8 paths and exact source frames through P/Invoke");await captureAudio.SetProjectTrackAsync(ticket,1,.25,1,false,true);
+            var mixed=studioFile+".mixed.wav";try{await ProjectExport.WavAsync(tracks,48000,mixed,.002,.01);Check(new FileInfo(mixed).Length==44+384*6,"offline stereo project range preserves exact frame extent through P/Invoke");}finally{if(File.Exists(mixed))File.Delete(mixed);}
+            var overdub=studioFile+".take.wav";try{await captureAudio.SeekAsync(0);await captureAudio.StartRecordingAsync(overdub,0,0,ticket);process(127,.125f);var finish=captureAudio.StopRecordingAsync();process(1,0);await finish;var placement=captureAudio.GetRecordingAlignment();Check(placement.Started && placement.Continuous && placement.FirstProjectFrame==0 && placement.MediaTicket==ticket,"first overdub sample records the backing source coordinate independently of UI timing");}finally{if(File.Exists(overdub))File.Delete(overdub);}
+            await captureAudio.StopAsync();await captureAudio.ClearMediaAsync();Check(captureAudio.GetTransport().Ready==0,"project switch clears the old playable source");
+        }finally{if(File.Exists(studioFile))File.Delete(studioFile);}
         var failed=captureAudio.SetAmplifierAsync(new(Drive:double.NaN));var valid=captureAudio.SetAmplifierAsync(new());try{await failed;throw new Exception("invalid amp accepted");}catch(InvalidOperationException){}await valid;Check(captureAudio.GetAmplifier()==new AmplifierConfiguration(),"a failed queued control does not poison its successor");
     }finally{NativeLibrary.Free(native);}
 }

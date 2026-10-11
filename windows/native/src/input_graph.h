@@ -31,7 +31,7 @@ public:
     AmpProcessor& amp() noexcept{return amp_;}
     SampleClock& clock() noexcept{return clock_;}
     AnalysisQueue& analysis() noexcept{return analysis_;}
-    void process(const float* input,float* const* outputs,int channels,int frames) noexcept {
+    void process(const float* input,float* const* outputs,int channels,int frames,SourceBlock source={}) noexcept {
         if(!outputs || channels<=0 || frames<=0)return;
         inputPresent_.store(input!=nullptr);
         double peaks[3]{},energy[3]{};uint64_t invalid=0,inputClips=0,outputClips=0;
@@ -56,7 +56,7 @@ public:
                 const float safe=static_cast<float>(std::clamp(mix,-1.0,1.0));outputs[c][i]=safe;if(c==0)captureLeft=safe;else if(c==1)captureRight=safe;
                 mixPeak=std::max(mixPeak,std::abs(static_cast<double>(safe)));mixEnergy+=safe*safe;++present;
             }
-            recording_.sample(raw,processed,captureLeft,captureRight,tick,input!=nullptr,dspFrames);
+            recording_.sample(raw,processed,captureLeft,captureRight,tick,input!=nullptr,dspFrames,source.at(static_cast<uint64_t>(i)));
             peaks[2]=std::max(peaks[2],mixPeak);energy[2]+=present?mixEnergy/present:0;
             if(input){block.mono[block.count++]=static_cast<float>(raw);if(block.count==block.mono.size()){analysis_.push(block);block.count=0;block.firstFrame=frame_+static_cast<uint64_t>(i)+1;}}
         }

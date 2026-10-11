@@ -4,6 +4,7 @@
 #include "control_executor.h"
 #include "analysis_worker.h"
 #include "recording_worker.h"
+#include "project_mixer.h"
 #include <algorithm>
 #include <cstring>
 #include <mutex>
@@ -25,6 +26,8 @@ static_assert(sizeof(rocker_analysis_snapshot)==144);
 static_assert(sizeof(rocker_diagnostic_snapshot)==160);
 static_assert(sizeof(rocker_recording_snapshot)==88);
 static_assert(sizeof(rocker_loop_snapshot)==120);
+static_assert(sizeof(rocker_project_track)==56);
+static_assert(sizeof(rocker_clip_info)==32);
 static rocker_metronome_config defaultMetronome(){
     rocker_metronome_config value{sizeof(value),ROCKER_AUDIO_ABI_VERSION,0,100,4,1,0,5,0,0,4,5,160,0,4,1,0,3,4,0,0.8,1,0.5,0.6,{}, {}};
     for(auto& accent:value.accents)accent=1;
@@ -35,7 +38,7 @@ static void refreshHost(rocker_audio_host&);
 struct rocker_audio_host {
     explicit rocker_audio_host(const rocker_audio_config& config)
         : tone(config.frequency_hz, config.amplitude), driver(rocker::makeAudioDriver()) {
-        recorder=std::make_unique<rocker::RecordingWorker>(tone.input().recording());tone.authority(intent);errorCache.reserve(65536);analyzer=std::make_unique<rocker::AnalysisWorker>(tone.input().analysis());publish();
+        recorder=std::make_unique<rocker::RecordingWorker>(tone.input().recording());tone.authority(intent);tone.mediaAuthority(mediaIntent);errorCache.reserve(65536);analyzer=std::make_unique<rocker::AnalysisWorker>(tone.input().analysis());publish();
         executor=std::make_unique<rocker::ControlExecutor>([this]{
             if(stopRequested.exchange(false))stopOnControl();
             refreshHost(*this);collectClips();publish();
@@ -46,15 +49,19 @@ struct rocker_audio_host {
     std::unique_ptr<rocker::AudioDriver> driver;
     std::unique_ptr<rocker::RecordingWorker> recorder;
     std::atomic<uint64_t> recordingIntent{0};
-    rocker_recording_snapshot recordingCache{};
+    rocker_recording_snapshot recordingCache{};rocker_recording_alignment alignmentCache{};
     rocker_loop_snapshot loopCache{};std::unique_ptr<rocker::LoopBuffer> loopBuffer;
+    std::shared_ptr<rocker::media::ProjectSource> projectSource;uint64_t projectTicket=0;
     std::string error;
     uint32_t state=ROCKER_STOPPED;
     std::atomic<uint64_t> intent{0},referenceIntent{0},mediaIntent{0};
-    struct StagedClip {uint64_t generation;std::unique_ptr<rocker::media::Clip> clip;};
+    struct StagedClip {uint64_t generation,mediaTicket;std::unique_ptr<rocker::media::Clip> clip;};
     std::vector<StagedClip> stagedClips;
     std::string waveformJson="[]";uint64_t clipGeneration=0,regularClipGeneration=0;
-    void collectClips(){const auto lease=tone.clipLease();if(lease.valid)std::erase_if(stagedClips,[=](const auto& item){return item.generation<=lease.consumed && item.generation!=lease.current && item.generation!=lease.pending;});}
+    void collectClips(){const auto lease=tone.clipLease();if(!lease.valid)return;
+        if(regularClipGeneration<=lease.consumed && regularClipGeneration!=lease.current && regularClipGeneration!=lease.pending){regularClipGeneration=lease.current;projectSource.reset();projectTicket=0;for(const auto& item:stagedClips)if(item.generation==lease.current){projectSource=std::dynamic_pointer_cast<rocker::media::ProjectSource>(item.clip->stream);projectTicket=projectSource?item.mediaTicket:0;}}
+        std::erase_if(stagedClips,[=](const auto& item){return item.generation<=lease.consumed && item.generation!=lease.current && item.generation!=lease.pending;});
+    }
     std::atomic<uint64_t> stopRequests{0};
     uint64_t deviceStarts=0,deviceFaults=0,mediaErrors=0,configurationFailures=0;
     int64_t driverXruns=-1;uint32_t lastFailureReason=0;
@@ -63,7 +70,7 @@ struct rocker_audio_host {
     // Only small copies hold telemetry; no driver call or graph mutation holds it.
     std::mutex telemetry;
     rocker_audio_snapshot audioCache{};
-    rocker_transport_snapshot transportCache{};
+    rocker_transport_snapshot transportCache{};rocker_clip_info clipInfoCache{};
     rocker_meter_snapshot meterCache{};
     rocker_clock_snapshot clockCache{};
     rocker_amp_config ampCache{sizeof(ampCache),ROCKER_AUDIO_ABI_VERSION,0,1,0,0,0,0.1,0.1,0,0.15,0.1,0,0,0.6};
@@ -97,7 +104,8 @@ struct rocker_audio_host {
         const rocker_recording_snapshot recording={sizeof(recording),ROCKER_AUDIO_ABI_VERSION,captured.state,captured.failure,captured.bus,captured.rate,captured.channels,captured.epoch,captured.token,captured.writtenFrames,captured.capturedFrames,captured.firstFrame,captured.droppedBlocks,captured.highWater,(captured.headerFinalized?1u:0u)|(tone.input().recording().active()?2u:0u)|(tap.state==1 && tap.token==captured.token?4u:0u)|(tap.dspChanged?16u:0u),tap.dspAtStart};
         const auto loop=tone.input().looper().observation();
         rocker_loop_snapshot loopSnapshot{sizeof(loopSnapshot),ROCKER_AUDIO_ABI_VERSION,loop.state,loop.failure,loop.layers,loop.bus,loop.rate,loop.flags,loop.frames,loop.position,loop.cycles,loop.start,loop.ack,loop.capacity,loop.delay,0,{}};std::copy(loop.gains.begin(),loop.gains.end(),loopSnapshot.gains);
-        const std::lock_guard lock(telemetry);loopCache=loopSnapshot;recordingCache=recording;diagnosticCache=diagnostic;analysisCache=analysis;metroSnapshotCache=observedMetro;clockCache=observedClock;audioCache=audio;transportCache=transport;meterCache=meter;errorCache=error;
+        const auto alignment=tone.input().recording().alignment();
+        const std::lock_guard lock(telemetry);alignmentCache={sizeof(rocker_recording_alignment),ROCKER_AUDIO_ABI_VERSION,alignment.token,alignment.ticket,alignment.frame,alignment.projectRate,alignment.captureRate,alignment.flags,alignment.failure,recording.dsp_latency_frames,0};loopCache=loopSnapshot;clipInfoCache={sizeof(rocker_clip_info),ROCKER_AUDIO_ABI_VERSION,tone.sourceRate(),tone.sourceFrames(),tone.sourceChannels(),projectSource?1u:0u};recordingCache=recording;diagnosticCache=diagnostic;analysisCache=analysis;metroSnapshotCache=observedMetro;clockCache=observedClock;audioCache=audio;transportCache=transport;meterCache=meter;errorCache=error;
     }
 };
 template<typename Operation>
@@ -127,8 +135,8 @@ static rocker_audio_result startHost(rocker_audio_host& h, uint32_t mode,uint64_
     if(mode==4 && !h.tone.input().reference().wanted())return ROCKER_NOT_READY;
     if(mode==3 && !h.metroCache.enabled)return ROCKER_NOT_READY;
     if((mode==3 || mode==4 || mode==5 || mode==6) && h.state==ROCKER_RUNNING && !h.driver->snapshot().failed){if(mode==6 && h.tone.mode()==0)h.tone.selectLooper();h.tone.authorize(intent);return ROCKER_OK;}
-    if (mode==1 && !h.tone.hasClip()) { h.error = "No prepared media is available."; return ROCKER_NOT_READY; }
-    if(h.state==ROCKER_RUNNING && !h.driver->snapshot().failed && (mode==1 || mode==2)) {
+    if ((mode==1 || mode==7) && !h.tone.hasClip()) { h.error = "No prepared media is available."; return ROCKER_NOT_READY; }
+    if(h.state==ROCKER_RUNNING && !h.driver->snapshot().failed && (mode==1 || mode==2 || mode==7)) {
         h.tone.authorize(intent);
         if(mode==1 && !h.tone.playing() && !h.tone.requestPlayback(true,false))return ROCKER_NOT_READY;
         return ROCKER_OK;
@@ -136,7 +144,7 @@ static rocker_audio_result startHost(rocker_audio_host& h, uint32_t mode,uint64_
     if (h.state == ROCKER_RUNNING && !h.driver->snapshot().failed && h.tone.mode() == mode && (mode!=1 || !h.tone.ended())) return ROCKER_OK;
     h.state=ROCKER_STARTING;h.driverXruns=-1;h.publish();h.driver->stop();
     h.error.clear();
-    if (mode==1) { h.tone.selectClip(); if (h.tone.ended()) h.tone.seek(0); }
+    if (mode==1 || mode==7) { h.tone.selectClip();if(mode==7)h.tone.requestPlayback(false,true); if (h.tone.ended()) h.tone.seek(0); }
     else if(mode==2)h.tone.selectLive();
     else if(mode==3)h.tone.selectMetronome();
     else if(mode==4)h.tone.selectReference();
@@ -250,13 +258,14 @@ rocker_audio_result ROCKER_CALL rocker_audio_reserve_recording(rocker_audio_hand
     const auto result=rocker_audio_reserve_metronome_start(host,graph);if(result!=ROCKER_OK)return result;
     *take=host->recordingIntent.fetch_add(1)+1;return ROCKER_OK;
 }
-rocker_audio_result ROCKER_CALL rocker_audio_start_recording_reserved(rocker_audio_handle host,uint64_t graph,uint64_t take,const char* path,uint32_t bus,uint32_t bars){
+static rocker_audio_result startRecordingReserved(rocker_audio_handle host,uint64_t graph,uint64_t take,const char* path,uint32_t bus,uint32_t bars,uint64_t projectTicket){
     if(!host || !graph || !take || !path || !*path || bus>2 || bars>2)return ROCKER_INVALID_ARGUMENT;
     size_t length=0;while(length<32768 && path[length])++length;if(length==32768)return ROCKER_INVALID_ARGUMENT;
     return withHost(host,[=](auto& h)->rocker_audio_result{
         if(graph!=h.intent.load() || take!=h.recordingIntent.load())return ROCKER_OK;
         if(h.recorder->active() || h.tone.input().recording().active())return ROCKER_NOT_READY;
-        const auto started=startHost(h,5,graph);if(started!=ROCKER_OK)return started;
+        if(projectTicket && (!h.projectSource || h.projectTicket!=projectTicket || !h.tone.hasClip()))return ROCKER_NOT_READY;
+        const auto started=startHost(h,projectTicket?7:5,graph);if(started!=ROCKER_OK)return started;
         const auto device=h.driver->snapshot();const auto rate=static_cast<uint32_t>(std::llround(device.sampleRate));
         if(rate<8000 || rate>192000 || std::abs(device.sampleRate-rate)>.001)return ROCKER_DEVICE_ERROR;
         try{
@@ -264,11 +273,15 @@ rocker_audio_result ROCKER_CALL rocker_audio_start_recording_reserved(rocker_aud
             if(graph!=h.intent.load() || take!=h.recordingIntent.load()){h.recorder->cancel();h.recorder->wait(std::chrono::seconds(2));return ROCKER_OK;}
             if(bars){auto config=h.metroCache;config.enabled=0;config.ramp_enabled=0;auto result=configureMetronomeHost(h,config);if(result!=ROCKER_OK){h.recorder->cancel();return result;}config.enabled=1;config.count_in=bars;result=configureMetronomeHost(h,config);if(result!=ROCKER_OK){h.recorder->cancel();return result;}}
             const auto clock=h.tone.input().clock().observation();
-            if(!h.tone.input().recording().arm({take,bus,bars*h.metroCache.beats,device.sampleRate,clock.epoch})){h.recorder->cancel();h.error="Recording command queue is full.";return ROCKER_NOT_READY;}
+            if(!h.tone.input().recording().arm({take,bus,bars*h.metroCache.beats,device.sampleRate,clock.epoch,projectTicket,projectTicket?h.tone.sourceRate():0})){h.recorder->cancel();h.error="Recording command queue is full.";return ROCKER_NOT_READY;}
+            if(projectTicket){if(!h.tone.requestCountIn(bars,h.metroCache.beats,h.metroCache.bpm)){h.recorder->cancel();return ROCKER_NOT_READY;}}
             h.error.clear();return ROCKER_OK;
         }catch(const std::exception& error){h.error=error.what();return ROCKER_MEDIA_ERROR;}
     });
 }
+rocker_audio_result ROCKER_CALL rocker_audio_start_recording_reserved(rocker_audio_handle host,uint64_t graph,uint64_t take,const char* path,uint32_t bus,uint32_t bars){return startRecordingReserved(host,graph,take,path,bus,bars,0);}
+rocker_audio_result ROCKER_CALL rocker_audio_start_project_recording_reserved(rocker_audio_handle host,uint64_t graph,uint64_t take,const char* path,uint32_t bus,uint32_t bars,uint64_t projectTicket){if(!projectTicket)return ROCKER_INVALID_ARGUMENT;return startRecordingReserved(host,graph,take,path,bus,bars,projectTicket);}
+rocker_audio_result ROCKER_CALL rocker_audio_get_recording_alignment(rocker_audio_handle host,rocker_recording_alignment* value){if(!host || !value)return ROCKER_INVALID_ARGUMENT;if(value->struct_size!=sizeof(*value)||value->abi_version!=ROCKER_AUDIO_ABI_VERSION)return ROCKER_ABI_MISMATCH;const std::lock_guard lock(host->telemetry);*value=host->alignmentCache;return ROCKER_OK;}
 rocker_audio_result ROCKER_CALL rocker_audio_request_recording_stop(rocker_audio_handle host){
     if(!host)return ROCKER_INVALID_ARGUMENT;
     host->recordingIntent.fetch_add(1);host->tone.input().recording().requestStop(host->recorder->token());return ROCKER_OK;
@@ -418,9 +431,9 @@ template <typename Decode> static rocker_audio_result prepareMedia(rocker_audio_
             if(afterCycles && (clip.sampleRate!=h.tone.sourceRate() || std::abs(clip.frames()/clip.sampleRate*speed-h.tone.duration()*h.tone.speed())>2/clip.sampleRate)){h.error="The source file changed during loop preparation.";return ROCKER_MEDIA_ERROR;}
             if(afterCycles && clip.stream){const auto start=static_cast<uint64_t>(std::llround(h.tone.loopStart()*h.tone.speed()/speed*clip.sampleRate));clip.stream->request(start);clip.stream->loopHint(start);}
             h.collectClips();if(h.stagedClips.size()>=64)return ROCKER_NOT_READY;
-            const auto id=++h.clipGeneration;h.stagedClips.push_back({id,std::make_unique<rocker::media::Clip>(std::move(clip))});
-            if(!h.tone.stage(h.stagedClips.back().clip.get(),speed,id,h.state!=ROCKER_RUNNING,afterCycles)){h.stagedClips.pop_back();--h.clipGeneration;return ROCKER_NOT_READY;}
-            if(!afterCycles){h.regularClipGeneration=id;const std::lock_guard lock(h.telemetry);h.waveformJson=json.str();}h.error.clear(); return ROCKER_OK;
+            const auto id=++h.clipGeneration;h.stagedClips.push_back({id,generation,std::make_unique<rocker::media::Clip>(std::move(clip))});
+            if(!h.tone.stage(h.stagedClips.back().clip.get(),speed,id,h.state!=ROCKER_RUNNING,afterCycles,generation)){h.stagedClips.pop_back();--h.clipGeneration;return ROCKER_NOT_READY;}
+            if(!afterCycles){h.projectSource=std::dynamic_pointer_cast<rocker::media::ProjectSource>(h.stagedClips.back().clip->stream);h.projectTicket=h.projectSource?generation:0;h.regularClipGeneration=id;const std::lock_guard lock(h.telemetry);h.waveformJson=json.str();}h.error.clear(); return ROCKER_OK;
         });
     } catch (const std::exception& error) {
         if(generation!=host->mediaIntent.load())return ROCKER_OK;
@@ -445,6 +458,7 @@ rocker_audio_result ROCKER_CALL rocker_audio_prepare_file(rocker_audio_handle ho
 rocker_audio_result ROCKER_CALL rocker_audio_prepare_file_reserved(rocker_audio_handle host,uint64_t ticket,const char* path,double speed,uint64_t cycles){if(!ticket)return ROCKER_INVALID_ARGUMENT;return prepareFileWithIntent(host,path,speed,ticket,cycles);}
 rocker_audio_result ROCKER_CALL rocker_audio_reserve_media(rocker_audio_handle host,uint64_t* ticket){if(!host || !ticket)return ROCKER_INVALID_ARGUMENT;*ticket=host->mediaIntent.fetch_add(1)+1;return ROCKER_OK;}
 rocker_audio_result ROCKER_CALL rocker_audio_prepare_file_for_loop(rocker_audio_handle host,const char* path,double speed,uint64_t afterCycles){if(!afterCycles)return ROCKER_INVALID_ARGUMENT;return prepareFileWithIntent(host,path,speed,0,afterCycles);}
+rocker_audio_result ROCKER_CALL rocker_audio_clear_media_reserved(rocker_audio_handle host,uint64_t ticket){if(!host || !ticket)return ROCKER_INVALID_ARGUMENT;return withHost(host,[=](auto& h)->rocker_audio_result{if(ticket!=h.mediaIntent.load())return ROCKER_OK;h.collectClips();if(h.stagedClips.size()>=64)return ROCKER_NOT_READY;const auto id=++h.clipGeneration;auto empty=std::make_unique<rocker::media::Clip>();empty->sampleRate=48000;h.stagedClips.push_back({id,ticket,std::move(empty)});if(!h.tone.stage(h.stagedClips.back().clip.get(),1,id,h.state!=ROCKER_RUNNING,0,ticket)){h.stagedClips.pop_back();return ROCKER_NOT_READY;}h.projectSource.reset();h.projectTicket=0;h.regularClipGeneration=id;const std::lock_guard lock(h.telemetry);h.waveformJson="[]";return ROCKER_OK;});}
 rocker_audio_result ROCKER_CALL rocker_audio_cancel_ramp(rocker_audio_handle host){return withHost(host,[](auto& h)->rocker_audio_result{return h.tone.cancelRamp(h.state!=ROCKER_RUNNING)?ROCKER_OK:ROCKER_NOT_READY;});}
 static rocker_audio_result prepareMidiWithIntent(rocker_audio_handle host,const uint8_t* data,uint32_t count,double speed,uint64_t reserved) {
     if (!host || !data || !count) return ROCKER_INVALID_ARGUMENT;
@@ -597,4 +611,39 @@ rocker_audio_result ROCKER_CALL rocker_audio_load_loop_layer(rocker_audio_handle
 rocker_audio_result ROCKER_CALL rocker_audio_set_loop_metadata(rocker_audio_handle host,uint32_t bus,uint32_t flags,uint32_t delay){
     if(!host || bus>1 || (flags&~5u) || delay>192000)return ROCKER_INVALID_ARGUMENT;
     return withHost(host,[=](auto& h)->rocker_audio_result{auto& loop=h.tone.input().looper();if(loop.active()||loop.pending())return ROCKER_NOT_READY;rocker::LoopCommand value;value.kind=10;value.bus=bus;value.flags=flags;value.delay=delay;if(!loop.command(value))return ROCKER_NOT_READY;if(h.state!=ROCKER_RUNNING)loop.beginBlock();return ROCKER_OK;});
+}
+static std::vector<rocker::media::ProjectTrackSpec> projectTracks(const rocker_project_track* tracks,uint32_t count){
+    if(!tracks || !count || count>256)throw std::invalid_argument("Invalid project track count");
+    std::vector<rocker::media::ProjectTrackSpec> result;result.reserve(count);
+    for(uint32_t i=0;i<count;++i){const auto& value=tracks[i];if(value.struct_size!=sizeof(value)||value.abi_version!=ROCKER_AUDIO_ABI_VERSION||!value.path||std::strlen(value.path)>32768||value.flags>3||value.reserved||!std::isfinite(value.gain)||value.gain<0||value.gain>1||!std::isfinite(value.pan)||value.pan< -1||value.pan>1||value.offset_frames>UINT32_MAX)throw std::invalid_argument("Invalid project track fields");result.push_back({std::filesystem::path(std::u8string(reinterpret_cast<const char8_t*>(value.path))),value.gain,value.pan,(value.flags&1)!=0,(value.flags&2)!=0,value.offset_frames,value.trim_frames});}return result;
+}
+rocker_audio_result ROCKER_CALL rocker_audio_prepare_project_reserved(rocker_audio_handle host,uint64_t ticket,uint32_t rate,const rocker_project_track* tracks,uint32_t count){
+#if ROCKER_WITH_MEDIA
+    if(!host||!ticket||rate<8000||rate>192000)return ROCKER_INVALID_ARGUMENT;
+    try{const auto owned=projectTracks(tracks,count);return prepareMedia(host,1,[&](uint64_t generation){return rocker::media::prepareProject(owned,rate,host->mediaIntent,generation);},0,ticket);}catch(...){return ROCKER_INVALID_ARGUMENT;}
+#else
+    (void)host;(void)ticket;(void)rate;(void)tracks;(void)count;return ROCKER_NOT_READY;
+#endif
+}
+rocker_audio_result ROCKER_CALL rocker_audio_project_track(rocker_audio_handle host,uint64_t ticket,uint32_t index,double gain,double pan,uint32_t flags){
+    if(!host || flags>3 || !std::isfinite(gain)||gain<0||gain>1||!std::isfinite(pan)||pan< -1||pan>1)return ROCKER_INVALID_ARGUMENT;
+    return withHost(host,[=](auto& h)->rocker_audio_result{if(!h.projectSource || ticket!=h.projectTicket)return ROCKER_NOT_READY;if(!h.projectSource->update({index,gain,pan,(flags&1)!=0,(flags&2)!=0}))return ROCKER_INVALID_ARGUMENT;if(h.state!=ROCKER_RUNNING)h.projectSource->beginBlock();return ROCKER_OK;});
+}
+rocker_audio_result ROCKER_CALL rocker_audio_export_project(const rocker_project_track* tracks,uint32_t count,uint32_t rate,const char* destination,double start,double end,rocker_export_cancel cancel,rocker_export_progress progress,void* context){
+#if ROCKER_WITH_MEDIA
+    if(!destination || std::strlen(destination)>32768 || rate<8000||rate>192000||!std::isfinite(start)||!std::isfinite(end)||start<0||(end && end<=start))return ROCKER_INVALID_ARGUMENT;
+    try{const auto owned=projectTracks(tracks,count);std::atomic<uint64_t> generation{1};std::jthread cancellation([&](std::stop_token stop){while(!stop.stop_requested()){if(cancel&&cancel(context)){generation.store(2);return;}std::this_thread::sleep_for(std::chrono::milliseconds(5));}});if(cancel && cancel(context))return ROCKER_NOT_READY;auto clip=rocker::media::prepareProject(owned,rate,generation,1);const auto first=static_cast<uint64_t>(std::llround(start*rate)),last=end?static_cast<uint64_t>(std::llround(end*rate)):static_cast<uint64_t>(clip.frames());if(first>=last||last>clip.frames())return ROCKER_INVALID_ARGUMENT;
+        rocker::WaveWriter output(std::filesystem::path(std::u8string(reinterpret_cast<const char8_t*>(destination))),rate,2);std::array<float,512> samples{};uint32_t used=0;
+        for(uint64_t frame=first;frame<last;++frame){if(generation.load()!=1 || (cancel&&cancel(context)))return ROCKER_NOT_READY;clip.stream->request(frame);std::array<float,2> value{};const auto deadline=std::chrono::steady_clock::now()+std::chrono::seconds(5);while(!clip.stream->read(frame,value)){if(generation.load()!=1)return ROCKER_NOT_READY;if(clip.stream->failed()||std::chrono::steady_clock::now()>deadline)return ROCKER_MEDIA_ERROR;std::this_thread::sleep_for(std::chrono::milliseconds(1));}samples[used*2]=value[0];samples[used*2+1]=value[1];++used;if(used==256||frame+1==last){output.append(samples.data(),used);used=0;if(progress&&((frame-first+1)%rate<256||frame+1==last))progress(context,(frame-first+1)/(double)(last-first));}}
+        output.checkpoint();return ROCKER_OK;
+    }catch(...){return ROCKER_MEDIA_ERROR;}
+#else
+    (void)tracks;(void)count;(void)rate;(void)destination;(void)start;(void)end;(void)cancel;(void)progress;(void)context;return ROCKER_NOT_READY;
+#endif
+}
+rocker_audio_result ROCKER_CALL rocker_audio_get_clip_info(rocker_audio_handle host,rocker_clip_info* value){
+    if(!host||!value)return ROCKER_INVALID_ARGUMENT;if(value->struct_size!=sizeof(*value)||value->abi_version!=ROCKER_AUDIO_ABI_VERSION)return ROCKER_ABI_MISMATCH;const std::lock_guard lock(host->telemetry);*value=host->clipInfoCache;return ROCKER_OK;
+}
+rocker_audio_result ROCKER_CALL rocker_audio_get_project_track_info(rocker_audio_handle host,uint64_t ticket,uint32_t index,rocker_clip_info* value){
+    if(!host||!value)return ROCKER_INVALID_ARGUMENT;if(value->struct_size!=sizeof(*value)||value->abi_version!=ROCKER_AUDIO_ABI_VERSION)return ROCKER_ABI_MISMATCH;return withHost(host,[=](auto& h)->rocker_audio_result{if(!h.projectSource||ticket!=h.projectTicket)return ROCKER_NOT_READY;const auto* clip=h.projectSource->trackInfo(index);if(!clip)return ROCKER_INVALID_ARGUMENT;*value={sizeof(*value),ROCKER_AUDIO_ABI_VERSION,clip->sampleRate,clip->frames(),static_cast<uint32_t>(clip->channelCount()),0};return ROCKER_OK;});
 }

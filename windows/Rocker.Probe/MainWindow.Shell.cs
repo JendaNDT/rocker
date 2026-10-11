@@ -118,6 +118,7 @@ public sealed partial class MainWindow
     private FrameworkElement BuildWorkspace(NavigationTarget target)
     {
         if (catalog is null) return Text("Výukový obsah není dostupný. Přehrávání souborů zůstává dostupné.");
+        if (target.ViewId == "15") return BuildStudio();
         if (target.ViewId == "16") return BuildLooper();
         if (target.ViewId == "14") return BuildRecordings();
         if (target.ViewId == "32") return BuildRecordingExport();
@@ -236,6 +237,7 @@ public sealed partial class MainWindow
         if (closeApproved) return;
         args.Cancel = true;
         if (closingWindow) return;
+        if (studioOperation || studioEditTask is{IsCompleted:false}) { ShowPersistenceError("Počkej na dokončení práce ve Studiu."); return; }
         if (looperOperation) { ShowPersistenceError("Počkej na dokončení práce s Looperem."); return; }
         if (exportOperation) { ShowPersistenceError("Počkej na dokončení exportu nebo jej zruš v pohledu Export."); return; }
         if (backupOperationRunning) { ShowPersistenceError("Počkej na dokončení zálohy nebo obnovy."); return; }
@@ -280,6 +282,7 @@ public sealed partial class MainWindow
         await VerifySongsAsync();
         await VerifyRecordingsAsync();
         await VerifyLooperAsync();
+        await VerifyStudioAsync();
         await VerifyDevicesAsync();
         VerifyComponents();
         if (Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTIC_VIEW") == "components") ShowComponents();

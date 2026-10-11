@@ -47,7 +47,7 @@ project hash and previous-manifest recovery mechanism from W09.
 - Allocation audit covers first capture, playback, compensated overdub and undo.
 - Relevant ASan/UBSan, C# ABI/capture/layer-export/restore, full frozen domain
   parity and 22 recording/project persistence assertions.
-- Windows build and WinUI layer/session round-trip: pending CI.
+- Windows build, both WinUI runs and layer/session round-trip: [passed](windows-validation.json).
 - Physical M-Track playback, timing/listening, manual save/close dialogs and
   sustained full-memory load: deferred to the complete candidate acceptance.
 

@@ -18,9 +18,9 @@
 extern "C" {
 #endif
 
-/* Version 13 adds the common-clock layered looper.
+/* Version 14 adds the shared multitrack project mixer.
    Reject earlier DLLs before creating a host. */
-#define ROCKER_AUDIO_ABI_VERSION 13u
+#define ROCKER_AUDIO_ABI_VERSION 14u
 typedef struct rocker_audio_host* rocker_audio_handle;
 typedef uint32_t rocker_audio_result;
 enum {
@@ -32,6 +32,11 @@ enum { ROCKER_STOPPED = 0, ROCKER_RUNNING = 1, ROCKER_FAULTED = 2,
     ROCKER_STARTING = 3, ROCKER_RECONFIGURING = 4, ROCKER_STOPPING = 5, ROCKER_CLOSING = 6 };
 
 #pragma pack(push, 8)
+typedef struct rocker_clip_info {uint32_t struct_size,abi_version;double sample_rate;uint64_t frames;uint32_t channels,flags;} rocker_clip_info;
+typedef struct rocker_project_track {
+    uint32_t struct_size,abi_version;const char* path;double gain,pan;
+    uint32_t flags,reserved;uint64_t offset_frames,trim_frames;
+} rocker_project_track;
 typedef struct rocker_loop_snapshot {
     uint32_t struct_size,abi_version,state,failure,layers,bus,sample_rate,flags;
     uint64_t frames,position,cycles,start_frame,acknowledged,capacity;
@@ -123,6 +128,9 @@ typedef struct rocker_recording_snapshot {
    Structures require the exact ABI version and size. No exception crosses ABI. */
 ROCKER_API uint32_t ROCKER_CALL rocker_audio_get_abi_version(void);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_reserve_recording(rocker_audio_handle,uint64_t*,uint64_t*);
+typedef struct rocker_recording_alignment {uint32_t struct_size,abi_version;uint64_t token,media_ticket;double first_project_frame,project_rate,capture_rate;uint32_t flags,failure,dsp_frames,reserved;} rocker_recording_alignment;
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_start_project_recording_reserved(rocker_audio_handle,uint64_t graph,uint64_t take,const char* path,uint32_t bus,uint32_t bars,uint64_t project_ticket);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_get_recording_alignment(rocker_audio_handle,rocker_recording_alignment*);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_start_recording_reserved(rocker_audio_handle,uint64_t,uint64_t,const char*,uint32_t,uint32_t);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_request_recording_stop(rocker_audio_handle);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_finish_recording(rocker_audio_handle);
@@ -182,6 +190,7 @@ ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_play(rocker_audio_handle
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_pause(rocker_audio_handle);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_play_count_in_reserved(rocker_audio_handle,uint64_t,uint32_t,uint32_t,double);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_cancel_media(rocker_audio_handle);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_clear_media_reserved(rocker_audio_handle,uint64_t ticket);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_reserve_media(rocker_audio_handle,uint64_t*);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_prepare_file_reserved(rocker_audio_handle,uint64_t,const char*,double,uint64_t);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_prepare_midi_reserved(rocker_audio_handle,uint64_t,const uint8_t*,uint32_t,double);
@@ -205,6 +214,10 @@ ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_show_control_panel(rocke
    copied, never borrowed. A short buffer is terminated and reports TOO_SMALL. */
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_copy_last_error(rocker_audio_handle, char*, uint32_t capacity, uint32_t* required);
 ROCKER_API void ROCKER_CALL rocker_audio_destroy(rocker_audio_handle);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_get_clip_info(rocker_audio_handle,rocker_clip_info*);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_get_project_track_info(rocker_audio_handle,uint64_t,uint32_t,rocker_clip_info*);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_prepare_project_reserved(rocker_audio_handle,uint64_t,uint32_t,const rocker_project_track*,uint32_t);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_project_track(rocker_audio_handle,uint64_t,uint32_t,double,double,uint32_t);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_loop_command(rocker_audio_handle,uint64_t graph_ticket,uint32_t kind,uint32_t bus,uint32_t count_in_bars,uint32_t beats,uint32_t aligned,uint32_t delay_frames,uint32_t layer,double gain);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_get_loop(rocker_audio_handle,rocker_loop_snapshot*);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_set_loop_metadata(rocker_audio_handle,uint32_t bus,uint32_t flags,uint32_t delay);
@@ -215,6 +228,7 @@ ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_export_loop(rocker_audio
    file for the caller to remove. end_seconds=0 means the source end. */
 typedef uint32_t (ROCKER_CALL *rocker_export_cancel)(void*);
 typedef void (ROCKER_CALL *rocker_export_progress)(void*,double);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_export_project(const rocker_project_track*,uint32_t,uint32_t,const char*,double,double,rocker_export_cancel,rocker_export_progress,void*);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_export_wav(const char* source,const char* destination,double start_seconds,double end_seconds,rocker_export_cancel cancel,rocker_export_progress progress,void* context);
 
 #ifdef __cplusplus

@@ -17,6 +17,7 @@ public:
         input_.prepare(rate,epoch_.fetch_add(1)+1);
     }
     void authority(const std::atomic<uint64_t>& intent) noexcept { authority_ = &intent; }
+    void mediaAuthority(const std::atomic<uint64_t>& intent) noexcept{mediaAuthority_=&intent;}
     void authorize(uint64_t ticket) noexcept { ticket_.store(ticket); }
     void enable(bool value) noexcept { enabled_.store(value); tone_.enable(value); }
     void selectTone() noexcept { clipMode_ = false;liveMode_=false;idleMode_=0; }
@@ -36,7 +37,7 @@ public:
     uint64_t acknowledgedClip() const noexcept{return clipAck_.load(std::memory_order_acquire);}
     struct ClipLease {uint64_t current,pending,consumed;bool valid;};
     ClipLease clipLease() const noexcept{const auto before=leaseSequence_.load(std::memory_order_acquire);const ClipLease result{clipAck_.load(),pendingAck_.load(),consumedAck_.load(),true};const auto after=leaseSequence_.load(std::memory_order_acquire);return {result.current,result.pending,result.consumed,before==after && !(before&1)};}
-    bool stage(const media::Clip* clip,double speed,uint64_t generation,bool joined,uint64_t afterCycles=0) noexcept{return command({afterCycles?6u:4u,generation,speed,clip,4,afterCycles},joined);}
+    bool stage(const media::Clip* clip,double speed,uint64_t generation,bool joined,uint64_t afterCycles=0,uint64_t mediaTicket=0) noexcept{return command({afterCycles?6u:4u,generation,speed,clip,4,afterCycles,mediaTicket},joined);}
     bool rampPending() const noexcept{return pendingRamp_.load();}
     double loopStart() const noexcept{return (loop_.load()&UINT32_MAX)/sourceRate();}
     bool cancelRamp(bool joined) noexcept{return command({7,0,0},joined);}
@@ -58,12 +59,15 @@ public:
     }
     bool hasClip() const noexcept { return clipFrames_.load()!=0; }
     void seek(double seconds) noexcept {
+        timelineCursor_=seconds*clip_->sampleRate;
         cursor_ = std::clamp(seconds * clip_->sampleRate, 0.0, static_cast<double>(clip_->frames()));
         const auto activeLoop=loop_.load();if(activeLoop && (cursor_<static_cast<double>(activeLoop&UINT32_MAX) || cursor_>=static_cast<double>(activeLoop>>32)))cursor_=static_cast<double>(activeLoop&UINT32_MAX);
         position_.store(clip_->sampleRate > 0 ? cursor_ / clip_->sampleRate : 0);
         ended_.store(hasClip() && !loopEnabled() && cursor_ >= static_cast<double>(clip_->frames()));
         gain_ = 0;if(clip_->stream)clip_->stream->request(static_cast<uint64_t>(cursor_));
     }
+    uint64_t sourceFrames() const noexcept{return clipFrames_.load();}
+    uint32_t sourceChannels() const noexcept{return sourceChannels_.load();}
     double sourceRate() const noexcept{return sourceRate_.load();}
     double duration() const noexcept {const auto rate=sourceRate_.load();return rate>0?clipFrames_.load()/rate:0;}
     double position() const noexcept { return position_.load(); }
@@ -76,6 +80,7 @@ public:
     void render(float* const* outputs, int channels, int count) noexcept {
         struct Acknowledge {RenderProcessor& self;~Acknowledge(){self.publishClipLease();}} acknowledge{*this};
         TransportCommand change;while(commands_.pop(change))apply(change);
+        sourceBlock_={{currentMediaTicket_,timelineCursor_,sourceRate_.load(),clipMode_.load() && mediaPlaying_.load() && enabled_.load(),!loopEnabled()},sourceRate_.load()/rate_,delayFrames_};
         // A late driver start cannot resurrect a cancelled request, even if
         // cancellation raced with enable(). The authority outlives joined callbacks.
         if (authority_ && ticket_.load() != authority_->load()) {
@@ -86,6 +91,7 @@ public:
         if(liveMode_ || idleMode_){if(outputs && count>0)for(int c=0;c<channels;++c)if(outputs[c])std::fill_n(outputs[c],count,0.0f);frames_.fetch_add(count>0?static_cast<uint64_t>(count):0);return;}
         if (!clipMode_) { tone_.render(outputs, channels, count); return; }
         if (!outputs || channels <= 0 || count <= 0) return;
+        if(clip_->stream)clip_->stream->beginBlock();
         const auto target = enabled_.load() && mediaPlaying_.load() ? volume_.load() : 0.0;
         auto increment = clip_->sampleRate / rate_;
         if(clip_->stream)clip_->stream->loopHint(loop_.load()?loop_.load()&UINT32_MAX:UINT64_MAX);
@@ -100,7 +106,7 @@ public:
             const auto fraction = cursor_ - static_cast<double>(index);
             // Fade the final 5 ms rather than jumping from a non-zero last sample.
             const auto fade=loop?std::min(clip_->sampleRate*0.005,(loopLast-loopFirst)*0.5):clip_->sampleRate*0.005;
-            const auto tail=valid?(loop?std::min({1.0,(cursor_-loopFirst)/fade,(loopLast-cursor_)/fade}):std::min(1.0,(clip_->frames()-cursor_)/fade)):0.0;
+            const auto tail=valid?(clip_->stream && clip_->stream->ownsEnvelope() && !loop?1:loop?std::min({1.0,(cursor_-loopFirst)/fade,(loopLast-cursor_)/fade}):std::min(1.0,(clip_->frames()-cursor_)/fade)):0.0;
             std::array<float,2> streamed{},streamedNext{};bool available=true;
             if(valid && clip_->stream){clip_->stream->request(index);const auto next=std::min(index+1,loop?static_cast<size_t>(loopLast)-1:clip_->frames()-1);available=clip_->stream->read(index,streamed) && clip_->stream->read(next,streamedNext);if(!available){missed=true;gain_=0;}}
             for (int c = 0; c < channels; ++c) {
@@ -119,6 +125,8 @@ public:
                 cursor_ = loop?cursor_+increment:std::min(cursor_ + increment, static_cast<double>(clip_->frames()));
         }
         if(loop && cursor_>=loopLast){cursor_=loopFirst+std::fmod(cursor_-loopLast,loopLast-loopFirst);loopCycles_.fetch_add(1);if(applyPendingLoop()){loop=loop_.load();loopFirst=static_cast<double>(loop&UINT32_MAX);loopLast=static_cast<double>(loop>>32);increment=clip_->sampleRate/rate_;}}
+        sourceBlock_.origin.valid=sourceBlock_.origin.valid && !missed;
+        if(sourceBlock_.origin.playing && !missed)timelineCursor_+=std::max<int64_t>(0,static_cast<int64_t>(count)-static_cast<int64_t>(sourceBlock_.delayed))*increment;
         waiting_.store(delayFrames_>0);buffering_.store(missed);streamFailed_.store(clip_->stream && clip_->stream->failed());
         position_.store(hasClip() ? cursor_ / clip_->sampleRate : 0);
         ended_.store(hasClip() && !loopEnabled() && cursor_ >= static_cast<double>(clip_->frames()));
@@ -127,17 +135,18 @@ public:
     void process(const float* const* inputs,int inputChannels,float* const* outputs,int channels,int count) noexcept {
         const auto before=CallbackStats::Clock::now();
         render(outputs,channels,count);
-        if(!authority_ || ticket_.load()==authority_->load())input_.process(inputs && inputChannels>0?inputs[0]:nullptr,outputs,channels,count);
+        if(!authority_ || ticket_.load()==authority_->load())input_.process(inputs && inputChannels>0?inputs[0]:nullptr,outputs,channels,count,sourceBlock_);
         callbacks_.completed(before,CallbackStats::Clock::now(),!outputs || channels<=0?0:count);
     }
 private:
-    struct TransportCommand {uint32_t kind;uint64_t bounds;double seconds;const media::Clip* clip=nullptr;uint32_t beats=4;uint64_t afterCycles=0;};
+    struct TransportCommand {uint32_t kind;uint64_t bounds;double seconds;const media::Clip* clip=nullptr;uint32_t beats=4;uint64_t afterCycles=0,mediaTicket=0;};
     bool command(TransportCommand value,bool joined) noexcept {
         if(joined){TransportCommand pending;while(commands_.pop(pending))apply(pending);apply(value);publishClipLease();return true;}
         return commands_.push(value);
     }
     void apply(TransportCommand value) noexcept {
-        if(value.kind==4){consumedClipGeneration_=std::max(consumedClipGeneration_,value.bounds);pendingClip_={};pendingRamp_.store(false);clip_=value.clip;speed_.store(value.seconds);cacheShape();loop_.store(0);loopCycles_.store(0);seek(0);mediaPlaying_.store(false);clipMode_.store(true);liveMode_.store(false);idleMode_.store(0);currentClipGeneration_=value.bounds;}
+        if((value.kind==4 || value.kind==6) && mediaAuthority_ && value.mediaTicket && value.mediaTicket!=mediaAuthority_->load()){consumedClipGeneration_=std::max(consumedClipGeneration_,value.bounds);return;}
+        if(value.kind==4){consumedClipGeneration_=std::max(consumedClipGeneration_,value.bounds);pendingClip_={};pendingRamp_.store(false);clip_=value.clip;speed_.store(value.seconds);cacheShape();loop_.store(0);loopCycles_.store(0);seek(0);mediaPlaying_.store(false);clipMode_.store(true);liveMode_.store(false);idleMode_.store(0);currentClipGeneration_=value.bounds;currentMediaTicket_=value.mediaTicket;}
         else if(value.kind==6){consumedClipGeneration_=std::max(consumedClipGeneration_,value.bounds);pendingClip_=value;pendingRamp_.store(true);}
         else if(value.kind==7){pendingClip_={};pendingRamp_.store(false);}
         else if(value.kind==5){const auto observed=input_.clock().observation();const double phase=observed.phase;delayFrames_=value.bounds?static_cast<uint64_t>(std::llround((value.bounds*value.beats+(phase>1e-10 && phase<1-1e-10?1-phase:0))*rate_*60/value.seconds)):0;waiting_.store(delayFrames_>0);mediaPlaying_.store(true);}
@@ -146,6 +155,7 @@ private:
         else if(value.kind==3){if(!value.bounds){pendingClip_={};pendingRamp_.store(false);delayFrames_=0;waiting_.store(false);}clipMode_.store(true);liveMode_.store(false);idleMode_.store(0);if(value.bounds && ended_.load())seek(0);mediaPlaying_.store(value.bounds!=0);if(value.bounds)gain_=0;}
     }
     bool applyPendingLoop() noexcept {
+        if(pendingClip_.clip && mediaAuthority_ && pendingClip_.mediaTicket && pendingClip_.mediaTicket!=mediaAuthority_->load()){pendingClip_={};pendingRamp_.store(false);return false;}
         if(!pendingClip_.clip || loopCycles_.load()<pendingClip_.afterCycles)return false;
         const auto oldBounds=loop_.load();const auto ratio=speed_.load()/pendingClip_.seconds*pendingClip_.clip->sampleRate/clip_->sampleRate;
         const auto offset=cursor_-static_cast<double>(oldBounds&UINT32_MAX);
@@ -159,15 +169,17 @@ private:
     void publishClipLease() noexcept{leaseSequence_.fetch_add(1,std::memory_order_acq_rel);clipAck_.store(currentClipGeneration_);pendingAck_.store(pendingClip_.clip?pendingClip_.bounds:0);consumedAck_.store(consumedClipGeneration_);leaseSequence_.fetch_add(1,std::memory_order_release);}
     double sourceLoopStart_=0,sourceLoopEnd_=0;uint64_t consumedClipGeneration_=0;std::atomic<uint64_t> leaseSequence_{0},pendingAck_{0},consumedAck_{0};
     TransportCommand pendingClip_{};std::atomic<bool> pendingRamp_{false};
-    void cacheShape() noexcept{clipFrames_.store(clip_->frames());sourceRate_.store(clip_->sampleRate);}
+    void cacheShape() noexcept{clipFrames_.store(clip_->frames());sourceChannels_.store(static_cast<uint32_t>(clip_->channelCount()));sourceRate_.store(clip_->sampleRate);}
     RealtimeQueue<TransportCommand,64> commands_;
+    SourceBlock sourceBlock_{};double timelineCursor_=0;uint64_t currentMediaTicket_=0;
     uint64_t currentClipGeneration_=0;
     std::atomic<uint64_t> clipAck_{0},clipFrames_{0};
-    std::atomic<double> sourceRate_{0};
+    std::atomic<uint32_t> sourceChannels_{0};std::atomic<double> sourceRate_{0};
     std::atomic<bool> buffering_{false},streamFailed_{false},waiting_{false};uint64_t delayFrames_=0;
     std::atomic<bool> mediaPlaying_{true};
     static_assert(std::atomic<double>::is_always_lock_free);
     const std::atomic<uint64_t>* authority_ = nullptr;
+    const std::atomic<uint64_t>* mediaAuthority_=nullptr;
     std::atomic<uint64_t> ticket_{0};
     InputGraph input_;CallbackStats callbacks_;
     std::atomic<uint32_t> epoch_{0};

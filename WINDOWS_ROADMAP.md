@@ -382,7 +382,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w23"></a>
 #### W23 — Looper se správným časováním a vrstvami
 
-- [ ] Rozpracováno: [nativní vzorkový Looper, vrstvy a uložené sessions](docs/windows/w23/README.md). Linux 15/15 CTest, kompenzovaný impuls, 20 000 opakování, callback audit a obnovení vrstev prošly. Windows formulář a projektová persistence se ověřují v CI; poslech je odložený. Závislosti: W16, W18, W22.
+- [ ] Rozpracováno: [nativní vzorkový Looper, vrstvy a uložené sessions](docs/windows/w23/README.md). Linux 15/15 CTest, kompenzovaný impuls, 20 000 opakování, callback audit a obnovení vrstev prošly. [Windows formulář a projektová persistence prošly](docs/windows/w23/windows-validation.json); poslech je odložený. Závislosti: W16, W18, W22.
 - Přenést první záznam určující délku, přehrávání smyčky a overdub vrstev. Určit volné versus taktově zarovnané zahájení, předtakt a pravidla zaokrouhlení hranic.
 - Vrstvy mají společnou délku v celých vzorcích, správné úrovně a přechod přes konec bez lupnutí; při nové vrstvě se využije známá kompenzace zachycení a přehrávání.
 - Doplnit návrat poslední vrstvy, bezpečné vymazání, persistenci nebo výslovné uložení session a export do nahrávek či Studia. Paměťové limity a ztráta zařízení mají viditelný stav.
@@ -391,7 +391,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w24"></a>
 #### W24 — Studio a trvalé vícestopé projekty
 
-- [ ] Čeká. Závislosti: W09, W16, W21–W23.
+- [ ] Rozpracováno. Závislosti: W09, W16, W21–W23. [Implementace Studia a zarovnaného nahrávání](docs/windows/w24/README.md) prošla 16 nativními testy, kontrolami CLR a přenosu projektu; skutečný Windows build a formulářová kontrola čekají. Fyzická zvukovka a poslech zůstávají odložené.
 - Přenést současné vrstvení stop, hlasitost, mute a WAV mixdown. Doplnit projekt na disku, relativní média, panorama, solo, časovou osu, zoom, přesný posun a návrat podporovaných editací.
 - Zavést jednotné pravidlo overdubu a kompenzace: známé vstupní a výstupní zpoždění i latence DSP se započítají jednou. Pokud nejsou změřené, rozhraní rozlišuje odhad a umožní pozdější kalibraci.
 - Offline mixdown používá stejný mix a DSP jako poslech, zohlední délku a dozvuky podle zvoleného rozsahu. Výpadek zvukovky nepoškodí projekt ani nezablokuje offline export.

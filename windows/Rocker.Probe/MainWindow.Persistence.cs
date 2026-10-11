@@ -19,6 +19,7 @@ public sealed partial class MainWindow
             database = await DataRepository.OpenAsync(userFiles);
             await InitializeRecordingsAsync();
             ResetLooperWorkspace();
+            ResetStudioWorkspace();
             var snapshot = await database.SnapshotAsync();
             if (closed) return;
             var settings = snapshot.Documents.FirstOrDefault(d=>d.Kind=="settings" && d.Id=="default");

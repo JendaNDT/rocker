@@ -98,6 +98,9 @@ Check(ProgressRules.LongestStreak(new Dictionary<string,double> { ["invalid-date
 Check(MusicShapes.GetPowerChord("e-01") is null && MusicShapes.GetPowerChord("e-13") is null, "invalid chord shape ID rejected");
 try { RhythmTrainers.Start(new PowerChordExercise("empty", "", "", [], 1, 70), true); throw new Exception("Empty sequence accepted"); }
 catch (ArgumentException) { Check(true, "invalid rhythm exercise rejected"); }
+Check(StudioRules.Place(new(4800,48,96,15,1,true),48000,48000,10000)==new TrackPlacement(4593,0),"studio accounts once for input, output, DSP and manual delay");
+Check(StudioRules.Place(new(0,48,96,0,0,true),48000,96000,10000)==new TrackPlacement(0,144),"negative compensated offset trims the source at its own sample rate");
+Check(StudioRules.Place(new(100,null,96,15,0,true),48000,48000,10000)==new TrackPlacement(100,0),"unknown driver delay is never fabricated as a measured offset");
 var navigation = new NavigationSession();
 navigation.Navigate(new("06", content.Lessons[0].Id)); navigation.Navigate(new("09", "spider")); navigation.Back();
 Check(navigation.Current == new NavigationTarget("06", content.Lessons[0].Id), "back restores specific lesson task");

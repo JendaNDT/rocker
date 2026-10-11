@@ -1,0 +1,39 @@
+{
+  "scope": "W23 shared-clock looper and native saved-session workspace before W24 project mixer",
+  "sourceCommit": "d04d84fdb0538361992455920ad6d5885dd152d5",
+  "windowsRun": "https://github.com/JendaNDT/rocker/actions/runs/38175507317",
+  "result": "passed",
+  "nativeTests": {
+    "executed": 15,
+    "failures": 0,
+    "skipped": 0
+  },
+  "looper": {
+    "result": "passed",
+    "nativeLayersLoaded": 2,
+    "exactFrames": 480,
+    "pausedWithoutAudioDevice": true,
+    "persistenceReopened": true,
+    "nativeLayerControls": 2,
+    "physicalOverdubVerified": false,
+    "manualDialogsVerified": false
+  },
+  "storage": {
+    "result": "passed",
+    "fileChecks": 11,
+    "storageChecks": 39,
+    "secretChecks": 8,
+    "backupChecks": 20,
+    "migrationChecks": 29,
+    "diagnosticChecks": 10,
+    "recordingChecks": 22,
+    "dpapiVerified": true,
+    "forcedTerminationVerified": true,
+    "manualHardwareVerified": false
+  },
+  "notPerformed": [
+    "Physical M-Track overdub or measured guitar roundtrip",
+    "Manual save/session/dialog workflow",
+    "Sustained device playback at the full layer limit"
+  ]
+}

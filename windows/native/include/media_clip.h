@@ -15,6 +15,8 @@ namespace rocker::media {
 class PcmSource {
 public:
     virtual ~PcmSource()=default;
+    virtual void beginBlock() noexcept {}
+    virtual bool ownsEnvelope() const noexcept{return false;}
     virtual bool read(uint64_t frame,std::array<float,2>& values) noexcept=0;
     virtual void request(uint64_t frame) noexcept=0;
     virtual void loopHint(uint64_t frame) noexcept=0;

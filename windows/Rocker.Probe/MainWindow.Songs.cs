@@ -83,6 +83,7 @@ public sealed partial class MainWindow
             SetBusy(true);await CancelSongRampAsync();songLoadCancelled=false;if(songCancel is not null)songCancel.IsEnabled=true;MediaStatus.Text="Připravuji skladbu a zvukovou časovou osu…";
             var existing=relocated??songs.Values.FirstOrDefault(s=>string.Equals(s.SourcePath,path,StringComparison.OrdinalIgnoreCase));var speed=existing?.Speed??currentSpeed;
             await audio.PrepareFileAsync(path,speed);if(closed || songLoadCancelled)return;await WaitForSongAsync(speed);
+            studioOwnsPlayback=false;studioTicket=0;
             var transport=audio.GetTransport();songPeaks=await audio.GetWaveformAsync();currentSpeed=speed;mediaPath=path;mediaMidi=null;
             var duration=transport.DurationSeconds*speed;
             song=SongRules.Validate((existing??new SongSession(Guid.NewGuid().ToString("D"),name,path,duration)) with{SourcePath=path,Duration=duration,Speed=speed,Position=Math.Min(existing?.Position??0,duration),Sections=(existing?.Sections??[]).Where(s=>s.End<=duration).ToArray()});

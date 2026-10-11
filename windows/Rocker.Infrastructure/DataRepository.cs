@@ -9,6 +9,7 @@ public sealed class DataRepository
     public const int SchemaVersion = 1;
     public string DatabasePath { get; }
     private readonly SemaphoreSlim writer = new(1,1);
+    internal SemaphoreSlim ProjectFilesWriter { get; } = new(1,1);
     private DataRepository(string path) => DatabasePath = path;
     public static async Task<DataRepository> OpenAsync(UserFiles files, CancellationToken cancellation = default)
     {

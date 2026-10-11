@@ -89,6 +89,10 @@ try {
     if (-not (Test-Path $tunerPath)) { throw 'Missing native tuner report.' }
     $tuner = Get-Content $tunerPath -Raw | ConvertFrom-Json
     if ($tuner.result -ne 'passed' -or $tuner.sixStringControls -ne 6 -or -not $tuner.persistenceReopened -or -not $tuner.noInputInventsNoNote) { throw 'Native tuner/persistence failed.' }
+    $studioPath = Join-Path $reportDirectory 'studio-view.json'
+    if (-not (Test-Path $studioPath)) { throw 'Studio native verification report is missing.' }
+    $studio = Get-Content $studioPath -Raw | ConvertFrom-Json
+    if ($studio.result -ne 'passed' -or $studio.nativeTrackControls -ne 2 -or $studio.timelineRegions -ne 2 -or $studio.exactFrames -ne 560 -or -not $studio.persistenceReopened) { throw "Studio form/project/source verification failed: $(Get-Content $studioPath -Raw)" }
     $looperPath = Join-Path $reportDirectory 'looper-view.json'
     if (-not (Test-Path $looperPath)) { throw 'Looper workspace report is missing.' }
     $looper = Get-Content $looperPath -Raw | ConvertFrom-Json

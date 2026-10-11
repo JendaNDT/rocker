@@ -1,0 +1,45 @@
+{
+  "domain": {
+    "result": "passed",
+    "referenceCases": 69,
+    "boundaryChecks": 76,
+    "contentGroups": 15,
+    "surgicalStatesCompared": 37,
+    "extendedReferenceCases": 372,
+    "extendedStatesCompared": 350
+  },
+  "infrastructure": {
+    "result": "passed",
+    "fileChecks": 11,
+    "storageChecks": 39,
+    "secretChecks": 2,
+    "backupChecks": 20,
+    "migrationChecks": 28,
+    "diagnosticChecks": 10,
+    "recordingChecks": 25,
+    "dpapiVerified": false,
+    "forcedTerminationVerified": true,
+    "manualHardwareVerified": false
+  },
+  "native": {
+    "result": "passed",
+    "tests": 16,
+    "callbackAllocationAudit": "passed",
+    "sanitizers": "pending"
+  },
+  "interop": {
+    "result": "passed",
+    "device": "fake",
+    "physicalOverdubVerified": false
+  },
+  "pwa": {
+    "result": "passed",
+    "tests": 567,
+    "types": "passed",
+    "lint": "passed"
+  },
+  "windows": {
+    "result": "pending",
+    "physicalAudioVerified": false
+  }
+}

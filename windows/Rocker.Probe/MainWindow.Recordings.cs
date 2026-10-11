@@ -66,7 +66,7 @@ public sealed partial class MainWindow
         var text=new TextBox{Text=current,MaxLength=256,Header="Název"};var dialog=new ContentDialog{XamlRoot=ShellRoot.XamlRoot,Title=title,Content=text,PrimaryButtonText="Uložit",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Primary};
         return await dialog.ShowAsync()==ContentDialogResult.Primary && !string.IsNullOrWhiteSpace(text.Text)?text.Text.Trim():null;
     }
-    private async Task StartCaptureAsync()
+    private async Task StartCaptureAsync(ulong projectTicket=0)
     {
         if(recordingOperation || captureDraft is not null || audio is null || recordingLibrary is null || closingWindow || busy)return;
         if(deviceSelectionUnavailable || deviceOperationRunning || (recordingBus<2 && appSettings.AudioDevice is not{InputChannel:>=0})){ShowPersistenceError("Vyber konkrétní vstup kytary v nastavení zvuku.");return;}
@@ -76,7 +76,7 @@ public sealed partial class MainWindow
             if(audio.GetSnapshot().State!=AudioState.Running)await audio.StartLiveAsync();var details=await audio.GetDeviceDetailsAsync();
             var draft=await recordingLibrary.BeginAsync(selectedName,checked((int)Math.Round(details.SampleRate)),selectedBus==2?2:1,(int)selectedBus);
             captureDraft=draft;captureMarkers.Clear();RegisterCloseGuard("recording",new(true,false),StopCaptureAsync,()=>{});
-            await audio.StartRecordingAsync(recordingLibrary.PendingPath(draft.Id),selectedBus,selectedCountIn);
+            await audio.StartRecordingAsync(recordingLibrary.PendingPath(draft.Id),selectedBus,selectedCountIn,projectTicket);
         }catch(Exception error){ShowPersistenceError("Nahrávání se nespustilo. "+error.Message);}
         finally{recordingOperation=false;RefreshRecording();}
     }
@@ -90,6 +90,7 @@ public sealed partial class MainWindow
             var result=new CaptureMetadata(draft.Rate,draft.Channels,draft.Bus,checked((long)state.WrittenFrames),checked((long)state.FirstFrame),state.Epoch,state.DspLatencyFrames,(state.Flags&16)!=0,!state.Complete,state.Complete?null:$"Nahrávání bylo přerušeno (stav {state.Failure}).");
             var recording=await recordingLibrary.FinishAsync(draft,result);
             if(recording is not null && captureMarkers.Count>0){var markers=captureMarkers.Where(m=>m.TimeSec<=recording.DurationSec).ToArray();await recordingLibrary.SaveAsync(recording with{Markers=markers});}
+            var alignment=audio.GetRecordingAlignment();if(recording is not null)await AttachStudioCaptureAsync(recording,alignment);if(studioCaptureBacking)await audio.PauseAsync();studioCaptureBacking=false;
             captureDraft=null;captureMarkers.Clear();RemoveCloseGuard("recording");await ReloadRecordingsAsync();return true;
         }catch(Exception error){ShowPersistenceError("Nahrávku nelze dokončit; rozpracovaný soubor zůstává zachovaný. "+error.Message);return false;}
         finally{recordingOperation=false;RefreshRecording();}
