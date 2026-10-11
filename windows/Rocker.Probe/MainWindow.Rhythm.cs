@@ -28,7 +28,7 @@ public sealed partial class MainWindow
     private void RecordTempo(string id,double bpm)
     {
         if(!persistenceReady || !double.IsFinite(bpm) || bpm is <40 or >240 || progressData.BpmRecords.GetValueOrDefault(id)>=bpm)return;
-        var records=new Dictionary<string,double>(progressData.BpmRecords){[id]=bpm};progressData=progressData with{BpmRecords=records};autosave!.Queue(UserData.Document("progress","default",progressData));
+        var records=new Dictionary<string,double>(progressData.BpmRecords){[id]=bpm};progressData=progressData with{BpmRecords=records};SaveProgressAndAchievements();
     }
     private FrameworkElement BuildRhythmTrainer(string view,string? id)
     {

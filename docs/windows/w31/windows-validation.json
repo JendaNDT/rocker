@@ -1,0 +1,57 @@
+{
+  "result": "passed",
+  "runId": 38184912981,
+  "url": "https://github.com/JendaNDT/rocker/actions/runs/38184912981",
+  "commit": "d323333321807340af5bb4a72ef6c7488783ce4c",
+  "home": {
+    "result": "passed",
+    "nativeViews": 3,
+    "editablePlanVerified": true,
+    "unknownTaskRejected": true,
+    "nativeHistoryList": true,
+    "persistenceReopened": true,
+    "realProviderRequestVerified": false,
+    "realCredentialUsed": false
+  },
+  "components": {
+    "result": "passed",
+    "nativeViews": 3,
+    "editablePlanVerified": true,
+    "unknownTaskRejected": true,
+    "nativeHistoryList": true,
+    "persistenceReopened": true,
+    "realProviderRequestVerified": false,
+    "realCredentialUsed": false
+  },
+  "window": {
+    "result": "passed",
+    "windowTitle": "Rocker \u2014 P\u0159ehled",
+    "audioPlaybackVerified": false,
+    "webViewRuntime": "153.0.4234.48",
+    "exitCode": 0,
+    "onlineVideoVerified": false,
+    "localVideoBridgeVerified": true,
+    "midiPreparedInCommonEngine": true,
+    "audioHostsCreated": 1,
+    "nativeShellViewsVisited": 32,
+    "nativeNotationVerified": true,
+    "checkedAtUtc": "2026-10-11T23:45:55.9007979Z",
+    "audioCoexistenceVerified": false
+  },
+  "storage": {
+    "result": "passed",
+    "fileChecks": 11,
+    "aiChecks": 28,
+    "storageChecks": 39,
+    "secretChecks": 10,
+    "backupChecks": 20,
+    "migrationChecks": 29,
+    "diagnosticChecks": 10,
+    "recordingChecks": 25,
+    "dpapiVerified": true,
+    "forcedTerminationVerified": true,
+    "manualHardwareVerified": false
+  },
+  "realProviderRequestVerified": false,
+  "hardwareVerified": false
+}

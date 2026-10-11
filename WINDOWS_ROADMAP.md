@@ -449,7 +449,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w30"></a>
 #### W30 — YouTube a nativní ovládání cvičení
 
-- [ ] Implementováno; ověření Windows čeká. [W30](docs/windows/w30/README.md): nativní URL, A/B a ukládání úseků, rychlosti skutečně nabídnuté videem, ochrana před pozdními zprávami a sdílený zvuk. Závislosti: W04, W08, W09, W14, W21.
+- [x] Implementováno; ověření Windows čeká. [W30](docs/windows/w30/README.md): nativní URL, A/B a ukládání úseků, rychlosti skutečně nabídnuté videem, ochrana před pozdními zprávami a sdílený zvuk. Závislosti: W04, W08, W09, W14, W21.
 - Vložit pouze oficiální přehrávač do omezeného WebView2. Nativní UI spravuje URL, uložené úseky, A/B body, názvy a rychlosti, které přehrávač skutečně nabízí.
 - Řešit zakázané vložení videa, smazané video, výpadek internetu, změnu stránky a chybějící WebView2 runtime. Dodržet aktuální pravidla přehrávače a nezakrývat povinné ovládání.
 - Omezit povolené navigace a zprávy webového obsahu, nevystavit mu souborový systém ani AI klíč. Ověřit souběh zvuku a srozumitelnou nabídku WASAPI, pokud ASIO konfigurace druhý výstup nepřipustí.
@@ -458,7 +458,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w31"></a>
 #### W31 — Všechny tři části AI tutora
 
-- [ ] Implementováno; ověření Windows čeká. [W31](docs/windows/w31/README.md) obsahuje tři nativní pohledy, rušitelný HTTP stream, validovaný upravitelný plán, historii a oddělené DPAPI klíče. Aktuální podmínky Gemini vyžadují změnu poskytovatele pro tuto osobní aplikaci; starý klíč se nepřenáší jinam. Závislosti: W06, W09, W10, W25, W28.
+- [x] Implementováno; ověření Windows čeká. [W31](docs/windows/w31/README.md) obsahuje tři nativní pohledy, rušitelný HTTP stream, validovaný upravitelný plán, historii a oddělené DPAPI klíče. Aktuální podmínky Gemini vyžadují změnu poskytovatele pro tuto osobní aplikaci; starý klíč se nepřenáší jinam. Závislosti: W06, W09, W10, W25, W28.
 - Přenést rozhovor, generátor plánu a zpětnou vazbu pomocí nativního HTTP klienta s rušením požadavků, streamováním, chybovými stavy a rozumným řízením opakování. Neposílat duplicitní požadavky bez vědomí uživatele.
 - Ověřit aktuálně dostupné modely, API, podmínky a limity poskytovatele. Historické údaje o bezplatných kvótách nebo názvech modelů nepřenášet jako zaručeně platné.
 - Kontext vychází z profilu, postupu a volitelných poznámek. Výstup plánu validovat proti schématu a existujícím úlohám; před přijetím jej uživatel může prohlédnout a upravit. Odpověď AI není příkaz k souborům či systému.
@@ -468,7 +468,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w32"></a>
 #### W32 — Profil, pokrok a skutečně aktivní cvičení
 
-- [ ] Čeká. Závislosti: W06, W09, W25–W28.
+- [ ] Implementace a doménové kontroly hotové, nativní Windows kontrola čeká. Závislosti: W06, W09, W25–W28.
 - Přenést profil kytary, doporučení nastavení, ladění a orientaci hráče, historii, streaky, achievementy, tempo rekordy a připomínky přestávek.
 - Zavést explicitní cvičební session se startem, pauzou a koncem. Live zahrnout do aktivního času; pouhé otevření obrazovky není důkaz hry. Poslechová cvičení a hry se započítají i bez vstupního signálu podle skutečné aktivity.
 - Zabránit dvojímu započtení při navigaci, souběhu transportů, uspání a opakovaném dokončení úlohy. Den a streak vyhodnocovat v místním čase uživatele, včetně změny pásma a půlnoci.

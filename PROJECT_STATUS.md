@@ -908,3 +908,7 @@ W31: tři části AI jsou implementované, 28 kontrol mock HTTP a všechny kontr
 aktuální podmínky Gemini neumožňují původní předpoklad pro toto použití. Starý
 klíč a historie zůstávají oddělené a neposílají se jinému poskytovateli. Žádný
 reálný klíč, účet či API kredit nebyl použit. Windows formuláře se ověřují.
+
+## W30–W32 integration
+
+W30 native saved video loops and W31 AI forms/provider-isolated DPAPI passed Windows builds 38184133502 and 38184912981. W32 implements native instrument/profile/progress screens and explicit monotonic practice sessions. Domain checks: 69 frozen + 372 PWA + 350 rhythm states + 164 additional assertions. TypeScript and 567 Vitest tests passed. Windows W32 validation pending; manual, physical audio and real online API checks remain unperformed. No partial package offered.

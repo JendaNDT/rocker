@@ -38,6 +38,5 @@ checks and frozen domain checks passed; 105 C# files parse with no syntax errors
 Mock responses deliberately fragment Czech UTF-8 and cancel mid-stream. Windows
 smoke now drives all three real native forms, edits and accepts a plan, rejects an
 unknown task, and reopens SQLite to verify plan/history/timestamps. Independent
-provider DPAPI checks are included in the Windows infrastructure suite. Windows
-validation is pending. No real provider request, credential, online quota or
+provider DPAPI checks are included in the Windows infrastructure suite. Windows run 38184912981 passed both native windows and provider-isolated DPAPI checks; see [evidence](windows-validation.json). No real provider request, credential, online quota or
 hardware/manual acceptance has been verified.

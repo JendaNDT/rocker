@@ -117,7 +117,7 @@ public sealed partial class MainWindow
     {
         if (!shellReady) return;
         var orientation = args.NewSize.Width < 850 ? Orientation.Vertical : Orientation.Horizontal;
-        ScoreButtons.Orientation = VideoButtons.Orientation = orientation;
+        ScoreButtons.Orientation = VideoButtons.Orientation = PracticeButtons.Orientation = orientation;
         ShellStateText.Visibility = args.NewSize.Width < 640 ? Visibility.Collapsed : Visibility.Visible;
     }
     private static StackPanel Stack() => new() { Spacing = 12, HorizontalAlignment = HorizontalAlignment.Stretch };
@@ -126,6 +126,8 @@ public sealed partial class MainWindow
     private FrameworkElement BuildWorkspace(NavigationTarget target)
     {
         if (catalog is null) return Text("Výukový obsah není dostupný. Přehrávání souborů zůstává dostupné.");
+        if (target.ViewId == "26")return BuildInstrument();
+        if (target.ViewId == "27")return BuildProgress();
         if (target.ViewId == "23")return BuildAiChat();
         if (target.ViewId == "24")return BuildAiPlan();
         if (target.ViewId == "25")return BuildAiFeedback();
@@ -233,6 +235,7 @@ public sealed partial class MainWindow
         if (exportOperation) { ShowPersistenceError("Počkej na dokončení exportu nebo jej zruš v pohledu Export."); return; }
         if (backupOperationRunning) { ShowPersistenceError("Počkej na dokončení zálohy nebo obnovy."); return; }
         if (deviceOperationRunning) { ShowPersistenceError("Počkej na dokončení změny zvukového zařízení."); return; }
+        if (profileOperation) { ShowPersistenceError("Počkej na dokončení uložení profilu kytary."); return; }
         if (secretOperationRunning) { ShowPersistenceError("Počkej na dokončení uložení nebo odstranění klíče."); return; }
         closingWindow = true;
         try
@@ -245,6 +248,7 @@ public sealed partial class MainWindow
                 if (choice == ContentDialogResult.Primary && !await guard.Save()) return;
                 if (choice == ContentDialogResult.Secondary) guard.Discard();
             }
+            practiceSession.End();FlushPractice();
             await CancelAiAsync();
             SendVideo(new{op="pause"});
             CancelPalm();await StopRhythmUiAsync();
@@ -284,6 +288,7 @@ public sealed partial class MainWindow
         await VerifyNotationIntegratedAsync();
         await VerifyVideoPracticeAsync();
         await VerifyAiViewsAsync();
+        await VerifyPracticeAndProfileAsync();
         await VerifyDevicesAsync();
         VerifyComponents();
         if (Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTIC_VIEW") == "components") ShowComponents();

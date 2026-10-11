@@ -1,0 +1,12 @@
+{
+  "result": "passed",
+  "domainFrozen": 69,
+  "additionalPwa": 372,
+  "rhythmPalmBreakStates": 350,
+  "additionalAssertions": 164,
+  "csharpSyntaxFiles": 113,
+  "typescript": "passed",
+  "vitestPassed": 567,
+  "windowsValidation": "pending",
+  "hardwareVerified": false
+}

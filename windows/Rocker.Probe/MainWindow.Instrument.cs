@@ -1,0 +1,31 @@
+// SPDX-License-Identifier: AGPL-3.0-only
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Rocker.Domain;
+namespace Rocker.Probe;
+public sealed partial class MainWindow
+{
+    private bool profileOperation;private readonly List<(ComboBox Position,ComboBox Type)> pickupEditors=[];
+    private TextBox? profileName,profileBody,profileScale,profileGauge,profileNotes;private ComboBox? profileTuning,profileHand;
+    private FrameworkElement BuildInstrument()
+    {
+        var panel=Stack();panel.Children.Add(Text("Moje kytara"));panel.Children.Add(Text("Profil je popis nástroje. Ladění a levá/pravá ruka se sdílejí s ladičkou, hmatníkem i diagramy; změna nastavení sama fyzicky nenaladí struny.",true));
+        TextBox Field(string label,string value,int limit){var field=new TextBox{Header=label,Text=value,MaxLength=Math.Max(limit,value.Length)};panel.Children.Add(field);return field;}
+        profileName=Field("Název kytary",instrumentProfile.Name,256);profileBody=Field("Tělo",instrumentProfile.BodyType,1024);profileScale=Field("Menzura",instrumentProfile.ScaleLength,256);profileGauge=Field("Síla strun",instrumentProfile.StringGauge,256);profileNotes=Field("Poznámky",instrumentProfile.Notes,32000);profileNotes.AcceptsReturn=true;profileNotes.TextWrapping=TextWrapping.Wrap;
+        var pickups=Stack();panel.Children.Add(Text("Snímače · od krku ke kobylce"));panel.Children.Add(pickups);pickupEditors.Clear();
+        ComboBox Choices(string label,IReadOnlyDictionary<string,string> values,string selected)=>new(){Header=label,ItemsSource=values.Select(p=>new ListEntry(p.Key,p.Value,"")).ToArray(),DisplayMemberPath="Title",SelectedValuePath="Id",SelectedValue=selected};
+        void AddPickup(Pickup pickup)
+        {
+            if(pickupEditors.Count>=6)return;var row=Stack();var position=Choices("Poloha snímače",ToneAdvisor.Positions,pickup.Position);var type=Choices("Typ snímače",ToneAdvisor.Types,pickup.Type);var remove=new Button{Content="Odstranit tento snímač"};row.Children.Add(position);row.Children.Add(type);row.Children.Add(remove);pickups.Children.Add(Card(row));pickupEditors.Add((position,type));remove.Click+=(_,_)=>{if(profileOperation)return;pickupEditors.Remove((position,type));pickups.Children.Remove(pickups.Children.First(c=>c is Border{Child:var child} && ReferenceEquals(child,row)));};
+        }
+        foreach(var pickup in instrumentProfile.Pickups)AddPickup(pickup);var add=new Button{Content="Přidat snímač (nejvýše šest)"};add.Click+=(_,_)=>{if(!profileOperation)AddPickup(new("bridge","humbucker"));};panel.Children.Add(add);
+        profileTuning=new ComboBox{Header="Ladění kytary",ItemsSource=AllTunings(),DisplayMemberPath="Label",SelectedValuePath="Id",SelectedValue=CurrentTuning().Id};profileHand=new ComboBox{Header="Orientace hráče",ItemsSource=new[]{"Pravá ruka","Levá ruka"},SelectedIndex=appSettings.Handedness=="left"?1:0};panel.Children.Add(profileTuning);panel.Children.Add(profileHand);var status=Text("Změny ulož tlačítkem. Aktuální kalibrace palm mute může po změně profilu vyžadovat opakování.",true);panel.Children.Add(status);
+        var save=new Button{Content="Uložit profil a nastavení kytary"};save.Click+=async(_,_)=>{if(profileOperation)return;profileOperation=true;save.IsEnabled=false;try{await SaveInstrumentAsync();status.Text="Profil je uložený.";}catch(Exception){status.Text="Profil se nepodařilo uložit. Zkontroluj pole, snímače a dostupnost úložiště.";}finally{profileOperation=false;save.IsEnabled=true;}};panel.Children.Add(save);
+        var revert=new Button{Content="Zahodit neuložené úpravy"};revert.Click+=(_,_)=>{if(profileOperation)return;workspaceCache.Remove(new("26"));ShowWorkspace();};panel.Children.Add(revert);
+        var style=Choices("Chci hrát tento styl",ToneAdvisor.Styles,"metal-rhythm");var advice=Text("",true);void Advice(){var result=ToneAdvisor.Recommend(instrumentProfile,(string)style.SelectedValue);advice.Text=$"Doporučený snímač: {ToneAdvisor.Positions[result.Pickup]} · gain: {result.Gain}\n{result.Eq}\n{result.Note}\nRada vychází z uloženého profilu a nastavení sama nemění.";}style.SelectionChanged+=(_,_)=>Advice();panel.Children.Add(style);panel.Children.Add(advice);Advice();var amp=new Button{Content="Otevřít aparát"};amp.Click+=(_,_)=>Navigate(new("13"));panel.Children.Add(amp);var tune=new Button{Content="Ověřit ladění skutečné kytary"};tune.Click+=(_,_)=>Navigate(new("03"));panel.Children.Add(tune);return Card(panel);
+    }
+    private async Task SaveInstrumentAsync()
+    {
+        if(!persistenceReady || database is null || profileName is null)throw new InvalidOperationException("Úložiště není dostupné.");var profile=new InstrumentProfile(profileName.Text,profileBody!.Text,pickupEditors.Select(p=>new Pickup((string)p.Position.SelectedValue,(string)p.Type.SelectedValue)).ToArray(),profileScale!.Text,profileGauge!.Text,profileNotes!.Text);var record=UserData.Document("instrument","default",profile);string tuning=(string)profileTuning!.SelectedValue;if(!AllTunings().Any(t=>t.Id==tuning))throw new InvalidDataException("Ladění neexistuje.");await CancelAiAsync();CancelPalm();surgicalListening=false;await StopRhythmUiAsync();if(audio is not null)await audio.StopPreviewAsync();instrumentProfile=profile;appSettings=appSettings with{TuningId=tuning,Handedness=profileHand!.SelectedIndex==1?"left":"right"};autosave!.Queue(record);SaveSettings();await autosave.FlushAsync();workspaceCache.Clear();RefreshTuningSelector();RebuildTunerStrings();ShowWorkspace();ShellNotice.IsOpen=true;ShellNotice.Severity=InfoBarSeverity.Informational;ShellNotice.Message="Profil a orientace jsou uložené. Fyzické struny ověř ladičkou; případnou kalibraci palm mute proveď znovu.";
+    }
+}

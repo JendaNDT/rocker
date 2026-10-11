@@ -31,3 +31,5 @@ assertions), TypeScript types and 97 C# syntax files passed. Added actual WinUI
 smoke drives the native save/rename/delete/undo controls and reopens SQLite to
 verify records. Windows form validation is pending. Online video, audible output,
 hardware coexistence and physical keyboard acceptance remain unperformed.
+
+Windows run 38184133502 passed both native windows, saved-loop editing and reopened persistence. See [evidence](windows-validation.json). Online video and driver coexistence remain unverified.

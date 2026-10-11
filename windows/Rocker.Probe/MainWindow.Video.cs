@@ -11,7 +11,7 @@ namespace Rocker.Probe;
 public sealed partial class MainWindow
 {
     private bool videoBridgeReady, videoReady, changingVideoRates;
-    private double videoPosition;
+    private double videoPosition;private DateTimeOffset videoProgressObserved;
     private readonly VideoPractice videoPractice=new();
     private readonly List<SavedVideoLoop> savedVideoLoops=[];
     private SavedVideoLoop? pendingVideoLoop,deletedVideoLoop;
@@ -70,7 +70,7 @@ public sealed partial class MainWindow
                         VideoStatus.Text = message.Code switch { 1 => "Video hraje.", 2 => "Video je pozastavené.", 3 => "Video se načítá…", 0 => "Video skončilo.", _ => "Video je připravené." };
                         break;
                     case "progress":
-                        videoPosition = message.Position;VideoSeek.Maximum=Math.Max(.01,message.Duration);if(!videoSeeking)VideoSeek.Value=message.Position;TryRestoreVideoLoop();
+                        videoPosition = message.Position;videoProgressObserved=DateTimeOffset.UtcNow;VideoSeek.Maximum=Math.Max(.01,message.Duration);if(!videoSeeking)VideoSeek.Value=message.Position;TryRestoreVideoLoop();
                         VideoPosition.Text = $"{FormatTime(message.Position)} / {FormatTime(message.Duration)} · {message.Rate:0.##}×";
                         if (VideoRates.ItemsSource is double[] values && values.Contains(message.Rate))
                         { changingVideoRates = true; VideoRates.SelectedItem = message.Rate; changingVideoRates = false; }

@@ -27,7 +27,7 @@ public sealed partial class MainWindow
         var lesson=catalog!.Lessons.FirstOrDefault(l=>l.Id==id)??LessonRules.NextIncomplete(catalog.Lessons,completedLessons)??catalog.Lessons[0];activeLessonId=lesson.Id;
         if(!lessonSessions.ContainsKey(lesson.Id))lessonSessions.Add(lesson.Id,LessonSession.Start(lesson,savedLessonPositions.GetValueOrDefault(lesson.Id)) with{Completed=completedLessons.Contains(lesson.Id)});
         var panel=Stack();
-        async Task Change(bool forward){if(audio is not null)await audio.StopPreviewAsync();var current=lessonSessions[lesson.Id];if(current.Completed)return;lessonSessions[lesson.Id]=forward?(current.IsLast?current.Finish():current.Next()):current.Previous();if(forward && current.IsLast)completedLessons.Add(lesson.Id);SaveLessonProgress();Render();}
+        async Task Change(bool forward){if(audio is not null)await audio.StopPreviewAsync();var current=lessonSessions[lesson.Id];if(current.Completed)return;lessonSessions[lesson.Id]=forward?(current.IsLast?current.Finish():current.Next()):current.Previous();if(forward && current.IsLast)completedLessons.Add(lesson.Id);SaveLessonProgress();SaveProgressAndAchievements();Render();}
         void Render()
         {
             panel.Children.Clear();lessonLastSequence=0;var session=lessonSessions[lesson.Id];var step=session.CurrentStep;string kind=step.GetProperty("kind").GetString()!;
@@ -45,7 +45,7 @@ public sealed partial class MainWindow
                 var listen=new Button{Content="Poslechnout akord"};listen.Click+=async(_,_)=>await PlayTeachingAsync(TeachingPreview.Chord(chord));panel.Children.Add(listen);var strings=new Button{Content="Poslechnout jednotlivé struny"};strings.Click+=async(_,_)=>await PlayTeachingAsync(TeachingPreview.Chord(chord,arpeggio:true));panel.Children.Add(strings);
                 panel.Children.Add(Text("Diagram a ukázka jsou pro standardní ladění. Hraj se mnou: poslechni ukázku a zkontroluj čistotu strun sluchem; tento režim nevyhodnocuje celý akord mikrofonem.",true));
             }
-            if(session.Completed){panel.Children.Add(Text("Lekce je dokončená."));var replay=new Button{Content="Projít lekci znovu"};replay.Click+=(_,_)=>{lessonSessions[lesson.Id]=LessonSession.Start(lesson);SaveLessonProgress();Render();};panel.Children.Add(replay);}
+            if(session.Completed){panel.Children.Add(Text("Lekce je dokončená."));var replay=new Button{Content="Projít lekci znovu"};replay.Click+=(_,_)=>{lessonSessions[lesson.Id]=LessonSession.Start(lesson);SaveLessonProgress();SaveProgressAndAchievements();Render();};panel.Children.Add(replay);}
             var previous=new Button{Content="Zpět",IsEnabled=!session.IsFirst && !session.Completed,AccessKey="P"};var next=new Button{Content=session.IsLast?"Dokončit lekci":"Další",IsEnabled=!session.Completed,AccessKey="D"};previous.Click+=async(_,_)=>await Change(false);next.Click+=async(_,_)=>await Change(true);
             var previousKey=new KeyboardAccelerator{Key=VirtualKey.Left,Modifiers=VirtualKeyModifiers.Control};previousKey.Invoked+=async(_,e)=>{if(navigation.Current.ViewId=="06" && previous.IsEnabled){e.Handled=true;await Change(false);}};previous.KeyboardAccelerators.Add(previousKey);
             var nextKey=new KeyboardAccelerator{Key=VirtualKey.Right,Modifiers=VirtualKeyModifiers.Control};nextKey.Invoked+=async(_,e)=>{if(navigation.Current.ViewId=="06" && next.IsEnabled){e.Handled=true;await Change(true);}};next.KeyboardAccelerators.Add(nextKey);
@@ -56,7 +56,7 @@ public sealed partial class MainWindow
     private async Task<bool> PlayTeachingAsync(IReadOnlyList<TeachingNote> notes,bool repeat=false,uint countIn=0)
     {
         if(audio is null || closingWindow || deviceOperationRunning)return false;if(deviceSelectionUnavailable){ShowPersistenceError("Vyber dostupné výstupní zařízení v nastavení zvuku.");return false;}
-        try{await audio.PlayPreviewAsync(notes.Select(n=>new PreviewNote(n.Start,n.Duration,TunerFrequency(n.Midi),n.Volume)).ToArray(),repeat,countIn);RefreshState();return true;}catch(Exception error){ShowError(error);return false;}
+        try{await audio.PlayPreviewAsync(notes.Select(n=>new PreviewNote(n.Start,n.Duration,TunerFrequency(n.Midi),n.Volume)).ToArray(),repeat,countIn);practicePreviewUntil=MonotonicMs+(notes.Max(n=>n.Start+n.Duration)+(countIn*60.0/metroConfig.Bpm))*1000;RefreshState();return true;}catch(Exception error){ShowError(error);return false;}
     }
     private void RefreshLesson(AnalysisSnapshot reading)
     {

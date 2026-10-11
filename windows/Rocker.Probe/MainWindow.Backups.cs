@@ -16,14 +16,14 @@ public sealed partial class MainWindow
         var export=new Button{Content="Vytvořit zálohu…",IsEnabled=persistenceReady};var restore=new Button{Content="Otevřít zálohu a zobrazit náhled…",IsEnabled=persistenceReady};var status=Text("Vyber export nebo obnovu. Původní data se před obnovou odloží do vratné kopie.",true);
         export.Click+=async (_,_)=>
         {
-            if(database is null || backupOperationRunning || studioOperation || studioEditTask is{IsCompleted:false} || looperOperation || exportOperation)return;
+            if(database is null || profileOperation || backupOperationRunning || studioOperation || studioEditTask is{IsCompleted:false} || looperOperation || exportOperation)return;
             var picker=new FileSavePicker {SuggestedStartLocation=PickerLocationId.DocumentsLibrary,SuggestedFileName="Rocker-zaloha-"+DateTime.Now.ToString("yyyy-MM-dd")};picker.FileTypeChoices.Add("Záloha Rockeru",[".rockerbackup"]);
             WinRT.Interop.InitializeWithWindow.Initialize(picker,WinRT.Interop.WindowNative.GetWindowHandle(this));
             var file=await picker.PickSaveFileAsync();if(file is null || closed)return;
             backupOperationRunning=true;export.IsEnabled=restore.IsEnabled=false;
             try
             {
-                await CancelAiAsync();CancelPalm();await StopRhythmUiAsync();if(!await StopCaptureAsync())return;await autosave!.FlushAsync();
+                practiceSession.Pause();FlushPractice();await CancelAiAsync();CancelPalm();await StopRhythmUiAsync();if(!await StopCaptureAsync())return;await autosave!.FlushAsync();
                 await new BackupService(userFiles,database).ExportAsync(file.Path,recordings.IsChecked==true,projects.IsChecked==true);
                 status.Text="Záloha je uložená: "+file.Path;
             }
@@ -32,13 +32,13 @@ public sealed partial class MainWindow
         };
         restore.Click+=async (_,_)=>
         {
-            if(database is null || backupOperationRunning || studioOperation || studioEditTask is{IsCompleted:false} || looperOperation || exportOperation)return;
+            if(database is null || profileOperation || backupOperationRunning || studioOperation || studioEditTask is{IsCompleted:false} || looperOperation || exportOperation)return;
             var picker=new FileOpenPicker();picker.FileTypeFilter.Add(".rockerbackup");WinRT.Interop.InitializeWithWindow.Initialize(picker,WinRT.Interop.WindowNative.GetWindowHandle(this));
             var file=await picker.PickSingleFileAsync();if(file is null || closed)return;
             backupOperationRunning=true;export.IsEnabled=restore.IsEnabled=false;
             try
             {
-                await CancelAiAsync();CancelPalm();await StopRhythmUiAsync();if(!await StopCaptureAsync())return;await autosave!.FlushAsync();var service=new BackupService(userFiles,database);var preview=await service.PreviewAsync(file.Path);
+                practiceSession.Pause();FlushPractice();await CancelAiAsync();CancelPalm();await StopRhythmUiAsync();if(!await StopCaptureAsync())return;await autosave!.FlushAsync();var service=new BackupService(userFiles,database);var preview=await service.PreviewAsync(file.Path);
                 var choice=new ComboBox {Header="Řešení konfliktů",ItemsSource=new[]{"Sloučit · existující položky zachovat","Nahradit zahrnutá data ze zálohy"},SelectedIndex=0,HorizontalAlignment=HorizontalAlignment.Stretch};
                 var details=Stack();details.Children.Add(Text($"{preview.Documents} záznamů · {preview.Recordings} nahrávek · {preview.Projects} projektů\n{preview.Bytes/1024d/1024:F1} MB · {preview.Conflicts} konfliktů"));
                 details.Children.Add(Text("Nahradí se jen typy zahrnuté v této záloze. Vratná kopie zachová původní databázi a soubory. AI klíč zůstává ve Windows.",true));details.Children.Add(choice);
@@ -55,13 +55,13 @@ public sealed partial class MainWindow
         };
         undo.Click+=async (_,_)=>
         {
-            if(database is null || backupOperationRunning || studioOperation || studioEditTask is{IsCompleted:false} || looperOperation || exportOperation)return;
+            if(database is null || profileOperation || backupOperationRunning || studioOperation || studioEditTask is{IsCompleted:false} || looperOperation || exportOperation)return;
             var dialog=new ContentDialog {XamlRoot=ShellRoot.XamlRoot,Title="Vrátit poslední obnovu?",Content="Aktuální data se odloží a obnoví se stav před posledním importem zálohy.",PrimaryButtonText="Vrátit obnovu",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Close};
             if(await dialog.ShowAsync()!=ContentDialogResult.Primary)return;
             backupOperationRunning=true;ShellInteractionRoot.IsEnabled=false;
             try
             {
-                await CancelAiAsync();CancelPalm();await StopRhythmUiAsync();if(!await StopCaptureAsync())return;await autosave!.FlushAsync();if(audio is not null)await audio.StopAsync();await new BackupService(userFiles,database).UndoLastRestoreAsync();
+                practiceSession.Pause();FlushPractice();await CancelAiAsync();CancelPalm();await StopRhythmUiAsync();if(!await StopCaptureAsync())return;await autosave!.FlushAsync();if(audio is not null)await audio.StopAsync();await new BackupService(userFiles,database).UndoLastRestoreAsync();
                 lessonSessions.Clear();completedLessons.Clear();savedLessonPositions.Clear();persistenceReady=false;await InitializePersistenceAsync();
                 ShellNotice.IsOpen=true;ShellNotice.Severity=InfoBarSeverity.Success;ShellNotice.Title="Obnova vrácena";ShellNotice.Message="Předchozí stav dat je obnovený.";
             }

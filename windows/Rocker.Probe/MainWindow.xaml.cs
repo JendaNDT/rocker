@@ -26,11 +26,12 @@ public sealed partial class MainWindow : Window
         InitializeComponent();
         AppWindow.Resize(new Windows.Graphics.SizeInt32(1280, 940));
         InitializeShell();
+        InitializeNativeEvents();InitializePracticeTracking();
         PositionSlider.AddHandler(UIElement.PointerPressedEvent, new PointerEventHandler((_, args) => { if (args.GetCurrentPoint(PositionSlider).Properties.IsLeftButtonPressed) positionDragging = true; }), true);
         PositionSlider.AddHandler(UIElement.PointerCaptureLostEvent, new PointerEventHandler(Position_Released), true);
         VideoSeek.AddHandler(UIElement.PointerPressedEvent,new PointerEventHandler((_,args)=>{if(args.GetCurrentPoint(VideoSeek).Properties.IsLeftButtonPressed)videoSeeking=true;}),true);
         VideoSeek.AddHandler(UIElement.PointerCaptureLostEvent,new PointerEventHandler(VideoSeek_Released),true);
-        Closed += (_, _) => { closed = true; timer.Stop(); audio?.Dispose(); audio = null; VideoView.Close(); };
+        Closed += (_, _) => { closed = true;DetachNativeEvents(); timer.Stop(); audio?.Dispose(); audio = null; VideoView.Close(); };
         Activated += async (_, _) =>
         {
             if (initialNotationStarted) return;
@@ -48,7 +49,7 @@ public sealed partial class MainWindow : Window
             StatusText.Text = "Připraveno. Testovací tón je vypnutý.";
             timer.Start();
         }
-        catch (Exception error) { StartButton.IsEnabled = false; ShowError(error); }
+        catch (Exception error) { StartButton.IsEnabled = false; ShowError(error);timer.Start(); }
     }
     private async void Start_Click(object sender, RoutedEventArgs e)
     {
@@ -63,7 +64,7 @@ public sealed partial class MainWindow : Window
     }
     private void RefreshState()
     {
-        if (audio is null) return;
+        if(audio is null){RefreshPracticeWithoutAudio();return;}
         try
         {
             var state = audio.GetSnapshot();
@@ -94,6 +95,7 @@ public sealed partial class MainWindow : Window
             RefreshLive(state);
             RefreshMetronome(state);
             var analysis=audio.GetAnalysis();RefreshTuner(analysis);RefreshLesson(analysis);RefreshSurgical(analysis);RefreshPalmMute(analysis);RefreshRhythm();RefreshNotation(transport);
+            RefreshPractice(audio.GetClock(),transport,analysis);
             RefreshAudioDiagnostics();
             RefreshSong(transport);
             RefreshRecording();

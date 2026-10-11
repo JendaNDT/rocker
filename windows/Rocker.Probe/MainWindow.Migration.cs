@@ -13,13 +13,13 @@ public sealed partial class MainWindow
         var import=new Button{Content="Otevřít soubor pro převod…",IsEnabled=persistenceReady};var status=Text("Podporované soubory: .rockermigration a původní .json zálohy.",true);
         import.Click+=async (_,_)=>
         {
-            if(database is null || catalog is null || backupOperationRunning)return;
+            if(database is null || catalog is null || profileOperation || backupOperationRunning)return;
             var picker=new FileOpenPicker();picker.FileTypeFilter.Add(".rockermigration");picker.FileTypeFilter.Add(".json");WinRT.Interop.InitializeWithWindow.Initialize(picker,WinRT.Interop.WindowNative.GetWindowHandle(this));
             var file=await picker.PickSingleFileAsync();if(file is null || closed)return;
             backupOperationRunning=true;import.IsEnabled=false;
             try
             {
-                await CancelAiAsync();CancelPalm();await StopRhythmUiAsync();if(!await StopCaptureAsync())return;await autosave!.FlushAsync();var service=new LegacyImport(userFiles,database,catalog);
+                practiceSession.Pause();FlushPractice();await CancelAiAsync();CancelPalm();await StopRhythmUiAsync();if(!await StopCaptureAsync())return;await autosave!.FlushAsync();var service=new LegacyImport(userFiles,database,catalog);
                 await using var migration=await service.PrepareAsync(file.Path);
                 var details=Stack();details.Children.Add(Text($"{migration.Preview.Documents} záznamů · {migration.Preview.Recordings} nahrávek · {migration.Preview.Conflicts} konfliktů"));
                 var choice=new ComboBox{Header="Řešení konfliktů",ItemsSource=new[]{"Sloučit · existující položky zachovat","Nahradit zahrnutá data"},SelectedIndex=0,HorizontalAlignment=HorizontalAlignment.Stretch};details.Children.Add(choice);
