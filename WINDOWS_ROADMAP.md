@@ -440,7 +440,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w29"></a>
 #### W29 — Nativní noty a tabulatury
 
-- [ ] Čeká. Závislosti: W04, W08, W16, W21.
+- [ ] Implementováno; ověření Windows čeká. [W29](docs/windows/w29/README.md) obsahuje skutečnou matici sedmi formátů, stopy, zoom, hranou pozici, opakované smyčky a nativní syntézu. Závislosti: W04, W08, W16, W21.
 - Implementovat zvolený nativní renderer a podporované současné formáty Guitar Pro a MusicXML. Matice formátů obsahuje skutečné testovací soubory, nikoli jen přípony v dialogu.
 - Přidat stopy, zoom, pohyb ve skladbě, zvýraznění hrané pozice, změnu tempa a smyčku taktů. Řešit fonty a soundfonty pro offline instalaci a jejich licence.
 - Přehrávání not propojit s hlavním audio grafem přes události či vzorky podle ověřené architektury W04. Nevytvořit nezávislý výstupní engine, který se pere o ASIO zařízení a nerespektuje hlavní hlasitost.

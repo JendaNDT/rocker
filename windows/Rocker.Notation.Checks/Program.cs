@@ -11,7 +11,12 @@ void Check(bool valid, string description)
 }
 var evidence = new List<object>();
 foreach (var sample in new[] { (Name: "notation-scale.musicxml", Bars: 1, Notes: 4),
-                              (Name: "notation-phrases.gp", Bars: 2, Notes: 8) })
+                              (Name: "notation-phrases.gp", Bars: 2, Notes: 8),
+                              (Name: "notation-original.gp3", Bars: 1, Notes: 4),
+                              (Name: "notation-original.gp4", Bars: 1, Notes: 4),
+                              (Name: "notation-original.gp5", Bars: 1, Notes: 4),
+                              (Name: "notation-original.gpx", Bars: 2, Notes: 8),
+                              (Name: "notation-original.mxl", Bars: 1, Notes: 4) })
 {
     var preview = ScorePreview.Load(File.ReadAllBytes(Path.Combine(args[0], sample.Name)));
     Check(preview.TrackCount == 1 && preview.BarCount == sample.Bars, "Imported structure");
@@ -39,6 +44,12 @@ foreach (var sample in new[] { (Name: "notation-scale.musicxml", Bars: 1, Notes:
     evidence.Add(new { sample.Name, preview.TrackCount, preview.BarCount, preview.NoteOnCount,
         preview.Width, preview.Height, selectedBars = found.Order().ToArray() });
 }
+var multi=ScoreDocument.Load(File.ReadAllBytes(Path.Combine(args[0],"notation-multitrack.musicxml")));Check(multi.Tracks.Count==3 && multi.BarCount==4,"authored multitrack score imports every instrument");Check(multi.Playback.Select(b=>b.Number).SequenceEqual(new[]{1,2,1,2,3,4}),"repeat expansion follows the score's actual playback order");Check(Math.Abs(multi.Playback[0].EndSeconds-2)<1e-6 && Math.Abs(multi.Playback[1].EndSeconds-14.0/3)<1e-6,"tempo map converts MIDI ticks into exact source seconds");
+Check(multi.LoopSeconds(1,2,1)==(multi.Playback[2].StartSeconds,multi.Playback[3].EndSeconds),"loop occurrence selects the second traversal of repeated bars");
+try{multi.LoopSeconds(1,3);throw new Exception("Repeat jump accepted as a contiguous range");}catch(InvalidOperationException){Check(true,"range crossing a repeat jump is explicitly rejected");}
+for(int track=0;track<3;++track){var view=multi.Render(new(Track:track,FirstBar:3,PageBars:2,Scale:1.25,Width:900));Check(view.TrackCount==3 && view.Bar(3) is not null && view.Bar(4) is not null && view.Bar(1) is null,"track selection, zoom and a later page retain only shown bar geometry");Check(view.NoteOnCount==24,"selected track MIDI retains its own expanded notes");File.WriteAllBytes(Path.Combine(args[1],$"notation-multitrack-track{track}.mid"),view.Midi);File.WriteAllBytes(Path.Combine(args[1],$"notation-multitrack-track{track}.png"),view.Png);}
+Check(multi.DescribeBar(2,3).Contains("bicí",StringComparison.Ordinal),"percussion bar has a native readable text alternative");
+var allTracks=multi.Render(new(AllTracksAudio:true));Check(allTracks.NoteOnCount==72,"all-track playback retains the complete score");File.WriteAllBytes(Path.Combine(args[1],"notation-multitrack-all.mid"),allTracks.Midi);evidence.Add(new{ name="notation-multitrack.musicxml", tracks=multi.Tracks, expandedPlayback=multi.Playback, allTrackNotes=allTracks.NoteOnCount });Check(multi.AtSeconds(multi.Playback[2].StartSeconds+.01)?.Number==1 && multi.AtSeconds(-1) is null,"source position locates repeated bars without UI clock estimates");
 foreach (var bytes in new[] { Array.Empty<byte>(), new byte[] { 1, 2, 3, 4 }, new byte[ScorePreview.MaximumFileBytes + 1] })
 {
     bool rejected = false;

@@ -35,8 +35,8 @@ public sealed partial class MainWindow : Window
             initialNotationStarted = true;
             await InitializePersistenceAsync();
             if (closed) return;
-            await LoadScoreAsync(Path.Combine(AppContext.BaseDirectory, "fixtures", "notation-phrases.gp"));
-            if (!closed && !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTICS_DIR"))) await VerifyShellAsync();
+            if (!closed && !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTICS_DIR"))) { await LoadScoreAsync(Path.Combine(AppContext.BaseDirectory, "fixtures", "notation-phrases.gp"));await VerifyShellAsync(); }
+            else NotationStatus.Text="Otevři Guitar Pro nebo MusicXML. Noty fungují bez internetu.";
         };
         timer.Tick += (_, _) => RefreshState();
         try
@@ -91,7 +91,7 @@ public sealed partial class MainWindow : Window
             };
             RefreshLive(state);
             RefreshMetronome(state);
-            var analysis=audio.GetAnalysis();RefreshTuner(analysis);RefreshLesson(analysis);RefreshSurgical(analysis);RefreshPalmMute(analysis);RefreshRhythm();
+            var analysis=audio.GetAnalysis();RefreshTuner(analysis);RefreshLesson(analysis);RefreshSurgical(analysis);RefreshPalmMute(analysis);RefreshRhythm();RefreshNotation(transport);
             RefreshAudioDiagnostics();
             RefreshSong(transport);
             RefreshRecording();
@@ -128,84 +128,20 @@ public sealed partial class MainWindow : Window
 
     private async Task LoadScoreAsync(string path)
     {
-        if (busy) return;
-        SetBusy(true);
-        ExportMidiButton.IsEnabled = ExportMidiMenu.IsEnabled = false;
-        preview = null;
-        NotationStatus.Text = "Načítám a vykresluji noty…";
+        if(busy || closed)return;SetBusy(true);var previous=preview;NotationStatus.Text="Načítám a vykresluji noty…";
         try
         {
-            var result = await Task.Run(() =>
-            {
-                using var file = File.OpenRead(path);
-                if (file.Length > ScorePreview.MaximumFileBytes) throw new InvalidDataException("Soubor přesahuje limit 4 MB prototypu.");
-                var bytes = new byte[(int)file.Length];
-                file.ReadExactly(bytes);
-                return ScorePreview.Load(bytes);
-            });
-            if (closed) return;
-            using var stream = new InMemoryRandomAccessStream();
-            using (var writer = new DataWriter(stream.GetOutputStreamAt(0)))
-            {
-                writer.WriteBytes(result.Png);
-                await writer.StoreAsync();
-                await writer.FlushAsync();
-                writer.DetachStream();
-            }
-            stream.Seek(0);
-            var bitmap = new BitmapImage();
-            await bitmap.SetSourceAsync(stream);
-            if (closed) return;
-            preview = result;
-            ScoreImage.Source = bitmap;
-            ScoreImage.Height = ScoreCanvas.Height = result.Height;
-            SelectionBox.Visibility = Visibility.Collapsed;
-            SelectionStatus.Text = "Takt zatím není vybraný. Klikni do notového řádku.";
-            NotationStatus.Text = $"{Path.GetFileName(path)} · stopy {result.TrackCount} · takty {result.BarCount} · MIDI noty {result.NoteOnCount}";
-            ExportMidiButton.IsEnabled = ExportMidiMenu.IsEnabled = true;
-            bool prepared = false;
-            if (audio is not null)
-            {
-                try
-                {
-                    await audio.PrepareMidiAsync(result.Midi, currentSpeed);
-                    if (closed) return;
-                    mediaMidi = result.Midi; mediaPath = null;
-                    MediaTitle.Text = "Noty · " + Path.GetFileName(path);
-                    MediaStatus.Text = "Noty jsou připravené. Přehrávání spustíš tlačítkem.";
-                    prepared = audio.GetTransport().Ready != 0;
-                }
-                catch (Exception error) { if (!closed) MediaStatus.Text = "Noty se zobrazily; jejich zvuk nelze připravit. " + error.Message; }
-            }
-            if (closed) return;
-            WriteNotationReport(new { result = "passed", bitmapDecoded = true, result.Width, result.Height,
-                result.BarCount, result.NoteOnCount, midiPreparedInCommonEngine = prepared, audioPlaybackVerified = false });
+            var result=await Task.Run(()=>{using var file=File.OpenRead(path);if(file.Length>ScorePreview.MaximumFileBytes)throw new InvalidDataException("Soubor přesahuje limit 4 MB.");var bytes=new byte[(int)file.Length];file.ReadExactly(bytes);return ScoreDocument.Load(bytes).Render();});if(closed)return;
+            await SetNotationImageAsync(result);SetNotationDocument(result.Document,Path.GetFileName(path));SelectionStatus.Text="Vyber takt kliknutím nebo jeho číslem.";NotationStatus.Text=$"{notationName} · stopy {result.TrackCount} · takty {result.BarCount} · zobrazená stopa {result.Options.Track+1}";ExportMidiButton.IsEnabled=ExportMidiMenu.IsEnabled=true;bool prepared=false;
+            if(audio is not null)try{if(await StopCaptureAsync()){await audio.PauseAsync();await PrepareNotationAsync(result);MediaStatus.Text="Noty jsou připravené. Přehrávání spustíš tlačítkem.";prepared=audio.GetTransport().Ready!=0;}}catch(Exception error){if(!closed)MediaStatus.Text="Noty se zobrazily; zvuk nelze připravit. "+error.Message;}
+            if(!closed)WriteNotationReport(new{result="passed",bitmapDecoded=true,result.Width,result.Height,result.BarCount,result.NoteOnCount,midiPreparedInCommonEngine=prepared,audioPlaybackVerified=false});
         }
-        catch (Exception error)
-        {
-            if (closed) return;
-            preview = null;
-            ScoreImage.Source = null;
-            SelectionBox.Visibility = Visibility.Collapsed;
-            NotationStatus.Text = "Noty nelze načíst. " + error.Message;
-            SelectionStatus.Text = "Takt zatím není vybraný.";
-            WriteNotationReport(new { result = "failed", error = error.ToString() });
-        }
-        finally
-        {
-            if (!closed) SetBusy(false);
-        }
+        catch(Exception error){if(closed)return;preview=previous;NotationStatus.Text="Noty nelze načíst; předchozí partitura je zachovaná. "+error.Message;}
+        finally{if(!closed)SetBusy(false);}
     }
-
-    private void Score_PointerPressed(object sender, PointerRoutedEventArgs e)
+    private void Score_PointerPressed(object sender,PointerRoutedEventArgs args)
     {
-        var point = e.GetCurrentPoint(ScoreCanvas).Position;
-        var bar = preview?.HitTest(point.X, point.Y);
-        if (bar is null) { SelectionBox.Visibility = Visibility.Collapsed; SelectionStatus.Text = "Takt zatím není vybraný."; return; }
-        Canvas.SetLeft(SelectionBox, bar.X); Canvas.SetTop(SelectionBox, bar.Y);
-        SelectionBox.Width = bar.Width; SelectionBox.Height = bar.Height;
-        SelectionBox.Visibility = Visibility.Visible;
-        SelectionStatus.Text = $"Takt {bar.Number} · MIDI tick {bar.StartTick:N0} až {bar.EndTick:N0}. Výběr taktu je připraven pro pozdější smyčku.";
+        var point=args.GetCurrentPoint(ScoreCanvas).Position;var bar=preview?.HitTest(point.X,point.Y);if(bar is null)return;notationUpdating=true;try{NotationBar.Value=bar.Number;}finally{notationUpdating=false;}MarkNotationBar(bar.Number);
     }
 
     private async void ExportMidi_Click(object sender, RoutedEventArgs e)
@@ -230,6 +166,7 @@ public sealed partial class MainWindow : Window
     private void SetBusy(bool value)
     {
         busy = value;
+        foreach(var control in NotationControls.Children.OfType<Control>())control.IsEnabled=!value && notationDocument is not null;
         XmlButton.IsEnabled = GpButton.IsEnabled = OpenScoreButton.IsEnabled = OpenScoreMenu.IsEnabled =
             OpenMediaButton.IsEnabled = OpenMediaMenu.IsEnabled = !value;
         if (value)
@@ -271,10 +208,9 @@ public sealed partial class MainWindow : Window
         {
             SetBusy(true);
             MediaStatus.Text = "Připravuji přehrávání not…";
-            await audio.PrepareMidiAsync(current.Midi, currentSpeed);
-            if (closed) return;
-            mediaMidi = current.Midi; mediaPath = null;song=null;songPeaks=[];workspaceCache.Remove(new("07"));
-            MediaTitle.Text = "Noty · syntetický strunný zvuk";
+            if(!await StopCaptureAsync())return;
+            await PrepareNotationAsync(current);
+            if(closed)return;
             if (intent == playbackIntent) await audio.PlayAsync();
             MediaStatus.Text = "Noty jsou připravené ve společném přehrávači.";
         }

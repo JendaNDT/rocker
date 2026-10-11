@@ -886,3 +886,9 @@ W28 přidává všechny knihovny a obě hry, s hmatníkem pro klávesnici,
 propojenými riffy a syntetickým poslechem. Doména má 136 dalších ověřených
 tvrzení nad 69 + 372 původními případy a 350 referenčními stavy; skutečné
 Windows formuláře se ověřují. Pokračuje W29 a zbývající roadmapa.
+
+W29: nativní notový pohled nyní obsahuje stopy, zoom, taktový výběr, hranou
+pozici, opakované smyčky a přehrávání jedné/všech stop přes společné jádro.
+Sedm skutečných formátů prošlo 82 kontrolami rendereru; C++ má 19/19 sad a
+změněné MIDI/transport kontroly prošly sanitizéry. Windows ověření čeká;
+reálný poslech se netvrdí a ruční test zůstává až za W43.

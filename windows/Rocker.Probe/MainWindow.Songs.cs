@@ -100,6 +100,7 @@ public sealed partial class MainWindow
             if(mediaPath is not null)await audio.PrepareFileAsync(mediaPath,speed);else await audio.PrepareMidiAsync(mediaMidi!,speed);if(closed || songLoadCancelled)return;await WaitForSongAsync(speed);currentSpeed=speed;
             await audio.SeekAsync(Math.Min(sourcePosition/speed,audio.GetTransport().DurationSeconds));songPeaks=await audio.GetWaveformAsync();
             if(song is not null && mediaPath is not null){song=song with{Speed=speed,Position=Math.Min(sourcePosition,song.Duration)};SaveSong();if((transport.Reserved&1)!=0)await ApplySongLoopAsync();}
+            if(notationLoop is { } loop && mediaMidi is not null && ReferenceEquals(mediaMidi,notationPlayingMidi))await audio.SetLoopAsync(loop.Start/speed,loop.End/speed,true);
             if(transport.Playing!=0)await audio.PlayAsync();MediaStatus.Text="Rychlost byla změněna bez změny výšky tónu.";
         }catch{currentSpeed=previous;throw;}
         finally{if(!closed){songUpdating=true;SpeedBox.SelectedIndex=Array.IndexOf(new[]{.25,.5,.75,1.0,1.5,2.0},currentSpeed);if(songSpeed is not null)songSpeed.Value=currentSpeed;songUpdating=false;SetBusy(false);if(songCancel is not null)songCancel.IsEnabled=false;DrawSongWaveform();}}

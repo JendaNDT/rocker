@@ -59,7 +59,7 @@ if (mode == "--media")
         try { await audio.PrepareFileAsync(Path.Combine(args[2], "missing.wav")); throw new Exception("Missing media accepted"); }
         catch (InvalidOperationException error) { Check(error.Message.Contains("stav 6", StringComparison.Ordinal), "Worker error copied before releasing handle"); }
         Check(audio.GetTransport().Ready == 1, "Failed load preserves PCM");
-        foreach (var file in new[] { "notation-phrases.gp.mid", "notation-scale.musicxml.mid" })
+        foreach (var file in new[] { "notation-phrases.gp.mid", "notation-scale.musicxml.mid", "notation-original.gp3.mid", "notation-original.gp4.mid", "notation-original.gp5.mid", "notation-original.gpx.mid", "notation-original.mxl.mid", "notation-multitrack-track0.mid", "notation-multitrack-track1.mid", "notation-multitrack-track2.mid", "notation-multitrack-all.mid" })
         {
             await audio.PrepareMidiAsync(File.ReadAllBytes(Path.Combine(args[2], "windows/out/reports", file)));
             Check(audio.GetTransport().DurationSeconds > 0.5, "Actual AlphaTab MIDI is synthesized by C++");

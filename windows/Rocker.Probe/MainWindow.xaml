@@ -58,7 +58,7 @@
                     <ContentControl x:Name="WorkspaceContent" HorizontalContentAlignment="Stretch" />
                     <StackPanel x:Name="NotationPanel" Visibility="Collapsed" Spacing="12">
                 <TextBlock Text="Noty a tabulatury" Style="{ThemeResource SubtitleTextBlockStyle}" />
-                <TextBlock Text="Nativní náhled první stopy, nejvýše 12 taktů. Poslech zatím používá jednoduchý syntetický strunný zvuk; bicí a ohýbání tónů vyžadují další notový modul."
+                <TextBlock Text="Nativní zobrazení a společný přehrávač. Poslech používá syntetický strunný zvuk a bicí; nejde o skutečný kytarový aparát ani zvuk původních nástrojů."
                            TextWrapping="Wrap" />
                 <StackPanel x:Name="ScoreButtons" Orientation="Horizontal" Spacing="12">
                     <Button x:Name="XmlButton" Content="Ukázka MusicXML" Click="Xml_Click" />
@@ -66,12 +66,30 @@
                     <Button x:Name="OpenScoreButton" Content="Otevřít noty…" Click="OpenScore_Click" />
                     <Button x:Name="PlayScoreButton" Content="Přehrát noty" Click="PlayScore_Click" IsEnabled="False" />
                 </StackPanel>
+                <StackPanel x:Name="NotationControls" Spacing="8">
+                    <ComboBox x:Name="NotationTrackBox" Header="Zobrazená a hraná stopa" DisplayMemberPath="Name" SelectionChanged="NotationTrack_Changed" />
+                    <CheckBox x:Name="NotationAllTracks" Content="Přehrávat všechny stopy partitury" Checked="NotationAudio_Changed" Unchecked="NotationAudio_Changed" />
+                    <ComboBox x:Name="NotationZoom" Header="Zvětšení not" SelectedIndex="2" SelectionChanged="NotationZoom_Changed">
+                        <ComboBoxItem Content="50 %" Tag="0.5" /><ComboBoxItem Content="75 %" Tag="0.75" /><ComboBoxItem Content="100 %" Tag="1" /><ComboBoxItem Content="125 %" Tag="1.25" /><ComboBoxItem Content="150 %" Tag="1.5" /><ComboBoxItem Content="200 %" Tag="2" />
+                    </ComboBox>
+                    <NumberBox x:Name="NotationBar" Header="Vybraný takt" Minimum="1" Maximum="128" Value="1" SpinButtonPlacementMode="Inline" ValueChanged="NotationBar_Changed" />
+                    <CheckBox x:Name="NotationFollow" Content="Sledovat právě hraný takt" IsChecked="True" />
+                    <NumberBox x:Name="NotationLoopFirst" Header="Smyčka od taktu" Minimum="1" Maximum="128" Value="1" SpinButtonPlacementMode="Inline" ValueChanged="NotationLoopFirst_Changed" />
+                    <NumberBox x:Name="NotationLoopLast" Header="Smyčka do taktu včetně" Minimum="1" Maximum="128" Value="1" SpinButtonPlacementMode="Inline" />
+                    <ComboBox x:Name="NotationOccurrence" Header="Průchod opakovaným taktem" />
+                    <Button Content="Použít smyčku taktů" Click="NotationLoop_Click" />
+                    <Button Content="Vypnout smyčku taktů" Click="NotationLoopOff_Click" />
+                    <Button Content="Přejít na vybraný takt" Click="NotationSeek_Click" />
+                </StackPanel>
+                <TextBlock Text="Rychlost přehrávání měň dole; výška tónů zůstává zachovaná. Zvuk je syntetická pomůcka." TextWrapping="Wrap" />
+                <TextBlock x:Name="NotationAccessible" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />
                 <TextBlock x:Name="NotationStatus" Text="Připravuji notový náhled…" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
                     <Canvas x:Name="ScoreCanvas" Width="700" Height="1" Background="White" PointerPressed="Score_PointerPressed"
                             AutomationProperties.Name="Notový náhled; výběr taktu kliknutím">
                         <Image x:Name="ScoreImage" Width="700" Stretch="Fill" />
-                        <Border x:Name="SelectionBox" BorderBrush="DarkOrange" BorderThickness="2" Visibility="Collapsed" IsHitTestVisible="False" />
+                        <Border x:Name="NotationPlayhead" BorderBrush="{ThemeResource AccentFillColorDefaultBrush}" BorderThickness="3" Visibility="Collapsed" IsHitTestVisible="False" />
+                        <Border x:Name="SelectionBox" BorderBrush="{ThemeResource VintageAccent}" BorderThickness="2" Visibility="Collapsed" IsHitTestVisible="False" />
                     </Canvas>
                 </ScrollViewer>
                 <TextBlock x:Name="SelectionStatus" Text="Takt zatím není vybraný." TextWrapping="Wrap" />

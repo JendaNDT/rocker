@@ -273,6 +273,7 @@ public sealed partial class MainWindow
         VerifySurgical();
         await VerifyRhythmAndPalmAsync();
         VerifyLibraryGames();
+        await VerifyNotationIntegratedAsync();
         await VerifyDevicesAsync();
         VerifyComponents();
         if (Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTIC_VIEW") == "components") ShowComponents();

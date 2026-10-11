@@ -1,0 +1,168 @@
+{
+  "result": "passed",
+  "notation": {
+    "result": "passed",
+    "checks": 82,
+    "os": "Debian GNU/Linux 13 (trixie)",
+    "alphaTab": "1.8.3",
+    "alphaSkia": "3.4.135",
+    "samples": [
+      {
+        "Name": "notation-scale.musicxml",
+        "TrackCount": 1,
+        "BarCount": 1,
+        "NoteOnCount": 4,
+        "Width": 700,
+        "Height": 201,
+        "selectedBars": [
+          1
+        ]
+      },
+      {
+        "Name": "notation-phrases.gp",
+        "TrackCount": 1,
+        "BarCount": 2,
+        "NoteOnCount": 8,
+        "Width": 700,
+        "Height": 379,
+        "selectedBars": [
+          1,
+          2
+        ]
+      },
+      {
+        "Name": "notation-original.gp3",
+        "TrackCount": 1,
+        "BarCount": 1,
+        "NoteOnCount": 4,
+        "Width": 700,
+        "Height": 427,
+        "selectedBars": [
+          1
+        ]
+      },
+      {
+        "Name": "notation-original.gp4",
+        "TrackCount": 1,
+        "BarCount": 1,
+        "NoteOnCount": 4,
+        "Width": 700,
+        "Height": 427,
+        "selectedBars": [
+          1
+        ]
+      },
+      {
+        "Name": "notation-original.gp5",
+        "TrackCount": 1,
+        "BarCount": 1,
+        "NoteOnCount": 4,
+        "Width": 700,
+        "Height": 330,
+        "selectedBars": [
+          1
+        ]
+      },
+      {
+        "Name": "notation-original.gpx",
+        "TrackCount": 1,
+        "BarCount": 2,
+        "NoteOnCount": 8,
+        "Width": 700,
+        "Height": 379,
+        "selectedBars": [
+          1,
+          2
+        ]
+      },
+      {
+        "Name": "notation-original.mxl",
+        "TrackCount": 1,
+        "BarCount": 1,
+        "NoteOnCount": 4,
+        "Width": 700,
+        "Height": 201,
+        "selectedBars": [
+          1
+        ]
+      },
+      {
+        "name": "notation-multitrack.musicxml",
+        "tracks": [
+          {
+            "Index": 0,
+            "Name": "Kytara",
+            "Percussion": false
+          },
+          {
+            "Index": 1,
+            "Name": "Druh\u00e1\u00a0kytara",
+            "Percussion": false
+          },
+          {
+            "Index": 2,
+            "Name": "Bic\u00ed",
+            "Percussion": true
+          }
+        ],
+        "expandedPlayback": [
+          {
+            "Number": 1,
+            "StartSeconds": 0,
+            "EndSeconds": 2,
+            "StartTick": 0,
+            "EndTick": 3840
+          },
+          {
+            "Number": 2,
+            "StartSeconds": 2,
+            "EndSeconds": 4.666666666666666,
+            "StartTick": 3840,
+            "EndTick": 7680
+          },
+          {
+            "Number": 1,
+            "StartSeconds": 4.666666666666666,
+            "EndSeconds": 6.666666666666666,
+            "StartTick": 7680,
+            "EndTick": 11520
+          },
+          {
+            "Number": 2,
+            "StartSeconds": 6.666666666666666,
+            "EndSeconds": 9.333333333333332,
+            "StartTick": 11520,
+            "EndTick": 15360
+          },
+          {
+            "Number": 3,
+            "StartSeconds": 9.333333333333332,
+            "EndSeconds": 11.333333333333332,
+            "StartTick": 15360,
+            "EndTick": 19200
+          },
+          {
+            "Number": 4,
+            "StartSeconds": 11.333333333333332,
+            "EndSeconds": 13.333333333333332,
+            "StartTick": 19200,
+            "EndTick": 23040
+          }
+        ],
+        "allTrackNotes": 72
+      }
+    ],
+    "audioPlaybackVerified": false
+  },
+  "nativeSuites": 19,
+  "nativeFailed": 0,
+  "sanitizedSuites": [
+    "midi_articulation",
+    "common_transport"
+  ],
+  "actualAlphaTabMidiPreparedThroughPInvoke": true,
+  "typescript": "passed",
+  "csharpSyntaxFiles": 95,
+  "windowsFormsVerified": false,
+  "physicalAudioVerified": false
+}

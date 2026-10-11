@@ -12,3 +12,12 @@
 Nejde o převzatou komerční skladbu. Oba vytvořené podklady jsou pod kořenovou
 MIT licencí projektu. Exportní nástroj se do aplikace nepřidává jako jiná
 závislost — používá stejný již zvolený AlphaTab.
+
+W29 adds original four-note GP3/GP4/GP5 binaries, a BCFS GPX container with
+the same original GPIF phrases, compressed MusicXML and a three-track MusicXML
+score with two guitars, percussion, repeat traversal, a bend and tempo changes.
+`scripts/create-windows-notation-fixtures.py` reproducibly generates the legacy
+binaries/GPX/MXL. Their format bytes follow AlphaTab's pinned importers; they are
+not renamed files or third-party songs. New authored fixtures use AGPL-3.0-only.
+The existing GP7 ZIP was repackaged with valid CRC-32 fields; its score XML is
+unchanged. No copyrighted artist recordings or external soundfonts are bundled.
