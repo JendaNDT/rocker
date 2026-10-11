@@ -73,14 +73,14 @@ public sealed partial class MainWindow
     }
     private async Task VerifyRhythmAndPalmAsync()
     {
-        Navigate(new("10"));Navigate(new("11"));bool controls=rhythmEditors.ContainsKey("10") && rhythmEditors.ContainsKey("11") && rhythmDiagrams.Count==2 && rhythmRoundBars.Count==2;
+        Navigate(new("10"));Navigate(new("11"));bool controls=rhythmEditors.ContainsKey("10") && rhythmEditors.ContainsKey("11") && rhythmDiagrams.Count==2 && rhythmRoundBars.ContainsKey("10") && rhythmRoundBars.ContainsKey("11");
         string exercise=catalog!.Items("powerChordExercises").First().GetProperty("id").GetString()!;RecordTempo(exercise,123);RecordTempo(exercise,100);Navigate(new("12"));
         var calibration=PalmMuteRules.Calibrate(new double[]{2400,2300,2500},new double[]{600,550,650})!;appSettings=appSettings with{PalmMute=new(PalmDeviceFingerprint(),appSettings.TuningId,InstrumentFingerprint(),calibration,1,palmPickup)};SaveSettings();
         var drill=UserData.Read<PalmMuteDrill>(catalog.Items("palmMuteDrills").First());palmState=PalmMuteRules.Start(drill);BaselinePalm(new AnalysisSnapshot{Epoch=88});palmListening=true;
         ulong count=0;foreach(string technique in drill.Pattern){++count;RefreshPalmMute(new AnalysisSnapshot{Epoch=88,Flags=4,SampleRate=48000,HitCount=count,OnsetFrame=count*24000,Frame=count*24000+12000,HitCentroid=technique=="muted"?600:2400});}
         bool score=palmState is not null && PalmMuteRules.IsComplete(palmState) && PalmMuteRules.Score(palmState)==drill.Pattern.Count && !palmListening && palmResults?.Items.Count==drill.Pattern.Count;
         await autosave!.FlushAsync();var snapshot=await (await Rocker.Infrastructure.DataRepository.OpenAsync(userFiles)).SnapshotAsync();bool persisted=UserData.Read<AppSettings>(snapshot.Documents.Single(d=>d.Kind=="settings").Value).PalmMute==appSettings.PalmMute && UserData.Read<ProgressData>(snapshot.Documents.Single(d=>d.Kind=="progress").Value).BpmRecords[exercise]==123;
-        bool pass=controls && score && persisted;WriteShellDiagnostic("rhythm-palm-views.json",new{result=pass?"passed":"failed",nativeTrainers=3,nativeDiagrams=2,simulatedUiHits=drill.Pattern.Count,persistenceReopened=persisted,hardwareVerified=false,physicalPalmMuteVerified=false});Navigate(new("01"));if(!pass)throw new InvalidOperationException("Native rhythm/palm view check failed.");
+        bool pass=controls && score && persisted;WriteShellDiagnostic("rhythm-palm-views.json",new{result=pass?"passed":"failed",nativeTrainers=3,nativeDiagrams=rhythmDiagrams.Count,nativeControlsVerified=controls,roundBarKeys=rhythmRoundBars.Keys.Order().ToArray(),simulatedUiHits=drill.Pattern.Count,persistenceReopened=persisted,hardwareVerified=false,physicalPalmMuteVerified=false});Navigate(new("01"));if(!pass)throw new InvalidOperationException("Native rhythm/palm view check failed.");
     }
 
 }

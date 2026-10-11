@@ -44,3 +44,9 @@ W27 UI assertion: adding the riff trainer made the shared editor dictionary have
 three entries, while that check required exactly two. It now requires the two
 specific power/gallop editor keys and their diagrams. Corrected Windows UI
 validation is pending; the failed run is not counted as passed.
+
+Corrected run 38182383504 still failed the same W27 form check: the shared
+round-progress dictionary also gained the riff entry. Its assertion now checks
+the specific power/gallop progress controls and records keys/control success
+in the report. Both dictionaries are scoped by trainer identity. The failure
+occurred before library/game validation, so those Windows checks remain pending.
