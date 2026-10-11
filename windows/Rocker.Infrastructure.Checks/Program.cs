@@ -34,6 +34,10 @@ try
     await UserFiles.WriteTextAsync(Path.Combine(files.DirectoryFor("settings"),"window.json"), "{\"SchemaVersion\":99,\"Bounds\":null}");
     try { windowStore.Load(); throw new Exception("Corrupt window state accepted"); }
     catch (InvalidDataException) { Check(true, "future or incomplete geometry rejected"); }
+    var recentStore=new RecentFiles(files);string unicode=Path.Combine(directory,"žluťoučká skladba.WAV");await recentStore.SaveAsync([new(unicode,DateTimeOffset.UtcNow),new(unicode,DateTimeOffset.UtcNow)]);Check(recentStore.Load().Count==1 && RecentFiles.Kind(unicode)==WorkspaceFileKind.Audio,"Unicode paths and case-insensitive extensions survive de-duplicated recent files");
+    Check(RecentFiles.Kind("partitura.gp5")==WorkspaceFileKind.Score && RecentFiles.Kind("project.rockerproj")==WorkspaceFileKind.Project,"typed file commands never execute a file extension");bool invalidRecent=false;try{RecentFiles.ValidatePath("relative.wav");}catch(InvalidDataException){invalidRecent=true;}Check(invalidRecent,"relative activation path rejected");
+    using var recentCancel=new CancellationTokenSource();recentCancel.Cancel();try{await recentStore.SaveAsync([],recentCancel.Token);}catch(OperationCanceledException){}Check(recentStore.Load().Count==1,"cancelled recent-file replacement preserves the last list");
+    string channel="rocker-check-"+Guid.NewGuid().ToString("N");using var channelCancel=new CancellationTokenSource(TimeSpan.FromSeconds(10));var requests=new List<string>();var listener=InstanceChannel.ListenAsync(channel,v=>{lock(requests)requests.Add(v);},channelCancel.Token);await InstanceChannel.SendAsync(channel,unicode,channelCancel.Token);lock(requests)Check(requests.SequenceEqual(new[]{unicode}),"current-user instance channel forwards a bounded UTF-8 path once");channelCancel.Cancel();await listener;Check(listener.IsCompletedSuccessfully,"instance listener cancels without a stranded wait");
     Console.WriteLine($"PASS: {checks} file ownership/replacement assertions.");
     int aiChecks=await AiChecks.RunAsync();
     int storageChecks = await StorageChecks.RunAsync(files);

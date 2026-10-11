@@ -99,7 +99,7 @@ try {
     if (-not (Test-Path $aiViewsPath)) { throw 'Native AI workspace report is missing.' }
     $aiViews = Get-Content $aiViewsPath -Raw | ConvertFrom-Json
     if ($aiViews.result -ne 'passed' -or $aiViews.nativeViews -ne 3 -or -not $aiViews.persistenceReopened -or -not $aiViews.unknownTaskRejected) { throw 'Native AI form/plan/history checks failed.' }
-    foreach ($integratedName in @('practice-profile.json','overview-live.json','first-run.json')) {
+    foreach ($integratedName in @('practice-profile.json','overview-live.json','first-run.json','file-commands.json')) {
         $integratedPath = Join-Path $reportDirectory $integratedName
         if (-not (Test-Path $integratedPath)) { throw "Missing integrated native report: $integratedName" }
         $integrated = Get-Content $integratedPath -Raw | ConvertFrom-Json
@@ -146,6 +146,11 @@ try {
     if (-not (Test-Path (Join-Path $reportDirectory 'native-content.png'))) { throw 'Native content capture is missing.' }
     try { & (Join-Path $PSScriptRoot 'capture-window.ps1') -WindowHandle $process.MainWindowHandle.ToInt64() -Path (Join-Path $reportDirectory 'native-shell.png') }
     catch { $_ | Out-String | Set-Content (Join-Path $reportDirectory 'desktop-capture-unavailable.txt') }
+    $secondary = Start-Process -FilePath $executable -WorkingDirectory $PublishDirectory -PassThru
+    if (-not $secondary.WaitForExit(10000) -or $secondary.ExitCode -ne 0) { throw 'Secondary launch was not handed to the existing instance.' }
+    $process.Refresh()
+    if ($process.HasExited -or $process.MainWindowHandle -eq 0) { throw 'Primary window was lost during secondary launch.' }
+    @{ result='passed'; secondaryExitCode=$secondary.ExitCode; existingWindowPreserved=$true; fileAssociationVerified=$false } | ConvertTo-Json | Set-Content (Join-Path $reportDirectory 'instance-handoff.json')
     if (-not $process.CloseMainWindow()) { throw 'The application rejected a normal window close.' }
     if (-not $process.WaitForExit(15000)) { throw 'The application did not exit after closing its window.' }
     if ($process.ExitCode -ne 0) { throw "Application exited with code $($process.ExitCode)." }

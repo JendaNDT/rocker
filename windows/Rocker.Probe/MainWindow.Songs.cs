@@ -35,7 +35,7 @@ public sealed partial class MainWindow
         songUpdating=true;
         var panel=Stack();panel.AllowDrop=true;
         panel.DragOver+=(_,e)=>{if(e.DataView.Contains(StandardDataFormats.StorageItems))e.AcceptedOperation=DataPackageOperation.Copy;};
-        panel.Drop+=async(_,e)=>{try{if(e.DataView.Contains(StandardDataFormats.StorageItems) && (await e.DataView.GetStorageItemsAsync()).OfType<StorageFile>().FirstOrDefault() is { } file)await OpenSongFileAsync(file.Path,file.Name);}catch(Exception error){ShowError(error);}};
+        panel.Drop+=async(_,e)=>{e.Handled=true;try{if(e.DataView.Contains(StandardDataFormats.StorageItems) && (await e.DataView.GetStorageItemsAsync()).OfType<StorageFile>().FirstOrDefault() is { } file)await OpenSongFileAsync(file.Path,file.Name);}catch(Exception error){ShowError(error);}};
         var open=new Button{Content="Otevřít skladbu…"};open.Click+=OpenMedia_Click;panel.Children.Add(open);
         songCancel=new Button{Content="Zrušit načítání",IsEnabled=busy};songCancel.Click+=(_,_)=>{songLoadCancelled=true;audio?.CancelMediaPreparation();MediaStatus.Text="Načítání bylo zrušeno. Předchozí skladba zůstává dostupná.";};panel.Children.Add(songCancel);
         songSelector=new ComboBox{Header="Naposledy otevřené skladby",DisplayMemberPath="Name",ItemsSource=songs.Values.OrderBy(s=>s.Name).ToArray(),HorizontalAlignment=HorizontalAlignment.Stretch};
@@ -62,7 +62,7 @@ public sealed partial class MainWindow
         ramp.Toggled+=async(_,_)=>{SaveRamp();if(!ramp.IsOn){try{await CancelSongRampAsync();}catch(Exception error){ShowError(error);}}};rampStep.ValueChanged+=(_,_)=>SaveRamp();rampEvery.ValueChanged+=(_,_)=>SaveRamp();rampTarget.ValueChanged+=(_,_)=>SaveRamp();panel.Children.Add(ramp);panel.Children.Add(rampStep);panel.Children.Add(rampEvery);panel.Children.Add(rampTarget);
         var play=new Button{Content="Přehrát s předtaktem"};play.Click+=async(_,_)=>{if(song is null || audio is null || busy)return;try{SavePractice();var config=audio.GetMetronome() with{Enabled=false,Ramp=false};await audio.SetMetronomeAsync(config);await audio.SetMetronomeAsync(config with{Enabled=true,Bpm=(uint)song.Bpm,Beats=song.Beats,CountIn=song.CountInBars});await audio.PlayWithCountInAsync(song.CountInBars,song.Beats,song.Bpm);}catch(Exception error){ShowError(error);}};panel.Children.Add(play);
         var pause=new Button{Content="Pozastavit skladbu"};pause.Click+=async(_,_)=>{try{if(audio is not null)await audio.PauseAsync();}catch(Exception error){ShowError(error);}};panel.Children.Add(pause);
-        panel.Children.Add(Text("Skladba a monitoring kytary mají samostatné ovládání. Escape zastaví všechny zdroje. Soubory zůstávají na původním místě; záloha uchová jejich pozice a úseky, původní zvuk připojené skladby zálohuj zvlášť.",true));
+        panel.Children.Add(Text("Skladba a monitoring kytary mají samostatné ovládání. Tlačítko Zastavit ve spodním panelu zastaví všechny zdroje. Soubory zůstávají na původním místě; záloha uchová jejich pozice a úseky, původní zvuk připojené skladby zálohuj zvlášť.",true));
         songUpdating=false;DrawSongWaveform();return panel;
     }
     private static NumberBox SongNumber(string label,double value,double minimum,double maximum,double step)=>new(){Header=label,Minimum=minimum,Maximum=maximum,Value=value,SmallChange=step,LargeChange=step*10,SpinButtonPlacementMode=NumberBoxSpinButtonPlacementMode.Compact};
@@ -87,7 +87,7 @@ public sealed partial class MainWindow
             var transport=audio.GetTransport();songPeaks=await audio.GetWaveformAsync();currentSpeed=speed;mediaPath=path;mediaMidi=null;
             var duration=transport.DurationSeconds*speed;
             song=SongRules.Validate((existing??new SongSession(Guid.NewGuid().ToString("D"),name,path,duration)) with{SourcePath=path,Duration=duration,Speed=speed,Position=Math.Min(existing?.Position??0,duration),Sections=(existing?.Sections??[]).Where(s=>s.End<=duration).ToArray()});
-            await audio.SeekAsync(song.Position/speed);MediaTitle.Text=song.Name;SaveSong();workspaceCache.Remove(new("07"));ShowWorkspace();MediaStatus.Text="Skladba je připravená; monitoring zůstal samostatný. Přehrávání spustíš tlačítkem.";
+            await audio.SeekAsync(song.Position/speed);RememberFile(path);MediaTitle.Text=song.Name;SaveSong();workspaceCache.Remove(new("07"));ShowWorkspace();MediaStatus.Text="Skladba je připravená; monitoring zůstal samostatný. Přehrávání spustíš tlačítkem.";
         }catch(OperationCanceledException){song=previous;}
         finally{if(!closed){SetBusy(false);if(songCancel is not null)songCancel.IsEnabled=false;}}
     }

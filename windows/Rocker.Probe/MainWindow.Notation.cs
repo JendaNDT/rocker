@@ -9,7 +9,7 @@ namespace Rocker.Probe;
 public sealed partial class MainWindow
 {
     private ScoreDocument? notationDocument;private NotationOptions notationOptions=new();
-    private string notationName="";private byte[]? notationPlayingMidi;private bool notationUpdating;private int notationFollowBar;
+    private string? notationSourcePath;private string notationName="";private byte[]? notationPlayingMidi;private bool notationUpdating;private int notationFollowBar;
     private (double Start,double End)? notationLoop;private DateTime nextNotationFollowRender;
     private async Task SetNotationImageAsync(ScorePreview result)
     {

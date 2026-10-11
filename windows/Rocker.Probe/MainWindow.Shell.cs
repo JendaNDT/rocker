@@ -208,6 +208,7 @@ public sealed partial class MainWindow
         if (exportOperation) { ShowPersistenceError("Počkej na dokončení exportu nebo jej zruš v pohledu Export."); return; }
         if (backupOperationRunning) { ShowPersistenceError("Počkej na dokončení zálohy nebo obnovy."); return; }
         if (deviceOperationRunning) { ShowPersistenceError("Počkej na dokončení změny zvukového zařízení."); return; }
+        if(fileOperation){ShowPersistenceError("Počkej na otevření souboru nebo načítání zruš.");return;}
         if (profileOperation) { ShowPersistenceError("Počkej na dokončení uložení profilu kytary."); return; }
         if (secretOperationRunning) { ShowPersistenceError("Počkej na dokončení uložení nebo odstranění klíče."); return; }
         closingWindow = true;
@@ -222,7 +223,7 @@ public sealed partial class MainWindow
                 if (choice == ContentDialogResult.Secondary) guard.Discard();
             }
             practiceSession.End();UpdateWakeLock();FlushPractice();
-            await CancelAiAsync();
+            await CancelAiAsync();await recentSaveTask;
             SendVideo(new{op="pause"});
             CancelPalm();await StopRhythmUiAsync();
             if (autosave is not null) await autosave.FlushAsync();
@@ -264,6 +265,7 @@ public sealed partial class MainWindow
         await VerifyPracticeAndProfileAsync();
         await VerifyOverviewLiveAsync();
         await VerifyFirstRunAsync();
+        await VerifyFileCommandsAsync();
         await VerifyDevicesAsync();
         VerifyComponents();
         if (Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTIC_VIEW") == "components") ShowComponents();

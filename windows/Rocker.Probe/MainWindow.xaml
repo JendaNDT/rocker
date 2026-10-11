@@ -10,8 +10,18 @@
         </Grid.RowDefinitions>
         <MenuBar>
             <MenuBarItem Title="Soubor">
-                <MenuFlyoutItem x:Name="OpenMediaMenu" Text="Otevřít nahrávku…" Click="OpenMedia_Click">
+                <MenuFlyoutItem Text="Otevřít soubor…" Click="OpenFile_Click">
                     <MenuFlyoutItem.KeyboardAccelerators><KeyboardAccelerator Key="O" Modifiers="Control" /></MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutSubItem x:Name="RecentFilesMenu" Text="Poslední soubory" />
+                <MenuFlyoutItem Text="Uložit aktuální práci" Click="SaveCurrent_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators><KeyboardAccelerator Key="S" Modifiers="Control" /></MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="Vrátit editaci Studia" Click="UndoCurrent_Click" />
+                <MenuFlyoutItem Text="Zobrazit soubor ve složce" Click="RevealFile_Click" />
+                <MenuFlyoutItem x:Name="CancelFileMenu" Text="Zrušit načítání" Click="CancelFile_Click" IsEnabled="False" />
+                <MenuFlyoutSeparator />
+                <MenuFlyoutItem x:Name="OpenMediaMenu" Text="Otevřít nahrávku…" Click="OpenMedia_Click">
                 </MenuFlyoutItem>
                 <MenuFlyoutItem x:Name="OpenScoreMenu" Text="Otevřít noty…" Click="OpenScore_Click">
                     <MenuFlyoutItem.KeyboardAccelerators><KeyboardAccelerator Key="O" Modifiers="Control,Shift" /></MenuFlyoutItem.KeyboardAccelerators>
@@ -22,9 +32,7 @@
             </MenuBarItem>
             <MenuBarItem Title="Přehrávání">
                 <MenuFlyoutItem x:Name="PlayMenu" Text="Přehrát" Click="PlayMedia_Click" IsEnabled="False" />
-                <MenuFlyoutItem Text="Zastavit" Click="Stop_Click">
-                    <MenuFlyoutItem.KeyboardAccelerators><KeyboardAccelerator Key="Escape" /></MenuFlyoutItem.KeyboardAccelerators>
-                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="Zastavit všechny zdroje" Click="Stop_Click" />
             </MenuBarItem>
             <MenuBarItem Title="Zobrazení">
                 <MenuFlyoutItem x:Name="BackMenu" Text="Zpět" Click="Back_Click" IsEnabled="False">

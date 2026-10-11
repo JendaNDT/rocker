@@ -26,7 +26,7 @@ public sealed partial class MainWindow : Window
         InitializeComponent();
         AppWindow.Resize(new Windows.Graphics.SizeInt32(1280, 940));
         InitializeShell();
-        InitializeNativeEvents();InitializePracticeTracking();
+        InitializeNativeEvents();InitializePracticeTracking();InitializeFileCommands();
         PositionSlider.AddHandler(UIElement.PointerPressedEvent, new PointerEventHandler((_, args) => { if (args.GetCurrentPoint(PositionSlider).Properties.IsLeftButtonPressed) positionDragging = true; }), true);
         PositionSlider.AddHandler(UIElement.PointerCaptureLostEvent, new PointerEventHandler(Position_Released), true);
         VideoSeek.AddHandler(UIElement.PointerPressedEvent,new PointerEventHandler((_,args)=>{if(args.GetCurrentPoint(VideoSeek).Properties.IsLeftButtonPressed)videoSeeking=true;}),true);
@@ -59,11 +59,12 @@ public sealed partial class MainWindow : Window
     }
     private async void Stop_Click(object sender, RoutedEventArgs e)
     {
-        try { ++playbackIntent; metroEnabled=false;++metroRevision;metroApplyTimer.Stop();if(audio is not null){await audio.StopAsync();await StopCaptureAsync();await ApplyMetronomeAsync();} if(!closingWindow && !closed)RefreshState(); }
+        try { SendVideo(new{op="pause"});++playbackIntent; metroEnabled=false;++metroRevision;metroApplyTimer.Stop();if(audio is not null){await audio.StopAsync();await StopCaptureAsync();await ApplyMetronomeAsync();} if(!closingWindow && !closed)RefreshState(); }
         catch (Exception error) { ShowError(error); }
     }
     private void RefreshState()
     {
+        ProcessFileActivation();
         if(audio is null){RefreshPracticeWithoutAudio();return;}
         try
         {
@@ -125,7 +126,7 @@ public sealed partial class MainWindow : Window
             foreach (var extension in new[] { ".gp", ".gp3", ".gp4", ".gp5", ".gpx", ".musicxml", ".xml", ".mxl" })
                 picker.FileTypeFilter.Add(extension);
             var file = await picker.PickSingleFileAsync();
-            if (file is not null && !closed) { Navigate(new("20")); await LoadScoreAsync(file.Path); }
+            if (file is not null && !closed) { await OpenWorkspaceFileAsync(file.Path); }
         }
         catch (Exception error) { if (!closed) NotationStatus.Text = "Soubor nelze otevřít. " + error.Message; }
     }
@@ -136,7 +137,7 @@ public sealed partial class MainWindow : Window
         try
         {
             var result=await Task.Run(()=>{using var file=File.OpenRead(path);if(file.Length>ScorePreview.MaximumFileBytes)throw new InvalidDataException("Soubor přesahuje limit 4 MB.");var bytes=new byte[(int)file.Length];file.ReadExactly(bytes);return ScoreDocument.Load(bytes).Render();});if(closed)return;
-            await SetNotationImageAsync(result);SetNotationDocument(result.Document,Path.GetFileName(path));SelectionStatus.Text="Vyber takt kliknutím nebo jeho číslem.";NotationStatus.Text=$"{notationName} · stopy {result.TrackCount} · takty {result.BarCount} · zobrazená stopa {result.Options.Track+1}";ExportMidiButton.IsEnabled=ExportMidiMenu.IsEnabled=true;bool prepared=false;
+            await SetNotationImageAsync(result);notationSourcePath=path;RememberFile(path);SetNotationDocument(result.Document,Path.GetFileName(path));SelectionStatus.Text="Vyber takt kliknutím nebo jeho číslem.";NotationStatus.Text=$"{notationName} · stopy {result.TrackCount} · takty {result.BarCount} · zobrazená stopa {result.Options.Track+1}";ExportMidiButton.IsEnabled=ExportMidiMenu.IsEnabled=true;bool prepared=false;
             if(audio is not null)try{if(await StopCaptureAsync()){await audio.PauseAsync();await PrepareNotationAsync(result);MediaStatus.Text="Noty jsou připravené. Přehrávání spustíš tlačítkem.";prepared=audio.GetTransport().Ready!=0;}}catch(Exception error){if(!closed)MediaStatus.Text="Noty se zobrazily; zvuk nelze připravit. "+error.Message;}
             if(!closed)WriteNotationReport(new{result="passed",bitmapDecoded=true,result.Width,result.Height,result.BarCount,result.NoteOnCount,midiPreparedInCommonEngine=prepared,audioPlaybackVerified=false});
         }

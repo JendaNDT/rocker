@@ -497,7 +497,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w35"></a>
 #### W35 — Dokončit práci se soubory a příkazy Windows
 
-- [ ] Čeká. Závislosti: W07, W11, W21–W24, W29, W34.
+- [ ] Implementováno: [W35](docs/windows/w35/README.md); asociace naváže v instalátoru W41, Windows kontrola čeká. Závislosti: W07, W11, W21–W24, W29, W34.
 - Skutečné dialogy Otevřít/Uložit, podporované přetažení, poslední soubory, „Zobrazit ve složce“, kontextové nabídky, schránka a asociace vlastního projektového formátu. Otevření souboru z Průzkumníka předat správné instanci.
 - Zkratky svázat s jednotnými příkazy a jejich dostupností. Mezerník ovládá příslušný transport mimo psaní textu, Escape zavře vhodný dialog, Ctrl+Z vrací jen definované editace a nemá fingovanou univerzální funkci.
 - Ošetřit české a dlouhé cesty, read-only složky, odpojené disky, přepsání souboru, chybějící médium a změnu názvu projektu. Souborové operace jsou zrušitelné a ponechají konzistentní stav.
