@@ -1,5 +1,11 @@
 # Roadmapa — Rocker
 
+**Aktuální směr od 10. 10. 2026:** přepis do nativní Windows aplikace podle
+[WINDOWS_ROADMAP.md](WINDOWS_ROADMAP.md). Nová roadmapa zahrnuje všechny
+současné funkce, design Vintage, nativní audio, převod dat a distribuci.
+W01 (inventura) a W02 (platforma, licence a předání) jsou hotové; W03 je rozpracovaný a čeká na Windows ověření. Tento soubor zůstává
+historií PWA; její nedokončený Bod 22 není nyní automaticky dalším úkolem.
+
 Číslovaná roadmapa stavby aplikace. Technické pozadí je v `ARCHITECTURE.md`.
 
 ## Jak roadmapu číst

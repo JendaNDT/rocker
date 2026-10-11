@@ -1,0 +1,308 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-10",
+  "roadmapStep": "W02",
+  "decisionStatus": "accepted",
+  "purpose": "Version selection and license evidence, not a restored dependency graph or proof of a Windows build.",
+  "distribution": {
+    "audience": "private handoff to the brother",
+    "application": "ready-to-install binary",
+    "sourceDelivery": "separate equivalent download alongside installer, AGPLv3 section 6(d)",
+    "sourceBundledInInstaller": false,
+    "publicReleaseRequired": false,
+    "updates": "manual",
+    "packageModel": "unpackaged WinUI with per-user installer; validate deployment at W03/W05/W41",
+    "paidSigningRequiredForFirstVersion": false
+  },
+  "platform": {
+    "architecture": "x64",
+    "runtimeIdentifier": "win-x64",
+    "os": "Windows 11",
+    "minimumRelease": "24H2",
+    "minimumBuild": "10.0.26100.0",
+    "brotherOsVerified": false,
+    "nativeBuildVerified": false,
+    "hardwareVerified": false
+  },
+  "toolchain": {
+    "dotnet": {
+      "sdk": "10.0.401",
+      "runtime": "10.0.12",
+      "channel": "10.0 LTS",
+      "sdkWinX64Zip": {
+        "url": "https://builds.dotnet.microsoft.com/dotnet/Sdk/10.0.401/dotnet-sdk-10.0.401-win-x64.zip",
+        "sha512": "24b670ad3d923bfcf47df6c3b034152398b42f6dbc388e10d783aee1cfb5e5817d399fc0ae2a12cfa822a55e61d34830ccb15c50ef6efee437ab874bb7c79430"
+      },
+      "downloadVerified": false,
+      "sourceId": "dotnet-release"
+    },
+    "visualStudio": {
+      "version": "18.10.0",
+      "compiler": "MSVC",
+      "languageStandard": "C++20",
+      "versionEvidence": "dotnet-release sdk.vs-version",
+      "installedCompilerVersion": null,
+      "componentManifest": "to be captured on Windows at W03/W05"
+    },
+    "windowsSdk": {
+      "apiVersion": "10.0.26100.0",
+      "packageVersion": "10.0.26100.9169",
+      "packages": [
+        "Microsoft.Windows.SDK.CPP",
+        "Microsoft.Windows.SDK.CPP.x64"
+      ]
+    },
+    "cmake": {
+      "name": "CMake",
+      "version": "3.31.10",
+      "repository": "https://github.com/Kitware/CMake",
+      "commit": "ca626022f51036b22550bce91b2149547645e101",
+      "status": "selected"
+    }
+  },
+  "components": [
+    {
+      "name": "Microsoft.WindowsAppSDK",
+      "version": "2.5.1",
+      "status": "selected",
+      "sourceId": "windowsapp-metadata",
+      "repository": "https://github.com/microsoft/WindowsAppSDK",
+      "commit": "13160d542e410f826b524ffa6bdbb7700db9fb40",
+      "binaryLicenseSourceId": "windowsapp-license"
+    },
+    {
+      "name": "JUCE",
+      "version": "9.0.3",
+      "repository": "https://github.com/juce-framework/JUCE",
+      "commit": "be29c81492b6151c8ea8d14c840e1311963b3a83",
+      "status": "selected",
+      "licenseChoice": "AGPL-3.0-only"
+    },
+    {
+      "name": "ASIO SDK headers bundled with JUCE",
+      "version": "2.3",
+      "status": "selected",
+      "sourceId": "asio-license",
+      "licenseChoice": "GPL-3.0-only",
+      "plannedBuildFlags": {
+        "JUCE_ASIO": 1,
+        "JUCE_ASIO_USE_EXTERNAL_SDK": 0,
+        "JUCE_WASAPI": 1
+      },
+      "manufacturerDriverBundled": false
+    },
+    {
+      "name": "AlphaTab",
+      "version": "1.8.3",
+      "repository": "https://github.com/CoderLine/alphaTab",
+      "commit": "9d0142eee2b1175dfd36e839ddbd867aed9e454e",
+      "status": "candidate-for-W04",
+      "licenseChoice": "MPL-2.0"
+    },
+    {
+      "name": "AlphaSkia",
+      "version": "3.4.135",
+      "repository": "https://github.com/CoderLine/alphaSkia",
+      "commit": "c82e319faeba4155b45664766e9badf528c0fc49",
+      "status": "candidate-for-W04",
+      "licenseChoice": "BSD-3-Clause"
+    },
+    {
+      "name": "Signalsmith Stretch",
+      "version": "1.4.0",
+      "repository": "https://github.com/Signalsmith-Audio/signalsmith-stretch",
+      "commit": "a670068d9aeb64913331d5cc29337b19a457a7df",
+      "status": "candidate-for-W04",
+      "licenseChoice": "MIT"
+    },
+    {
+      "name": "Signalsmith Linear",
+      "version": "0.6.4",
+      "repository": "https://github.com/Signalsmith-Audio/linear",
+      "commit": "de55e6a50ffcf6f8f43f649692d94691c7025151",
+      "status": "candidate-for-W04",
+      "licenseChoice": "MIT"
+    },
+    {
+      "name": "libwebm",
+      "version": "1.0.0.31",
+      "repository": "https://github.com/webmproject/libwebm",
+      "commit": "6745fd29e0245fc584b0bb9f65018ea2366fe7fb",
+      "status": "candidate-for-W04",
+      "licenseChoice": "BSD-3-Clause with bundled patent grant"
+    },
+    {
+      "name": "Microsoft.Web.WebView2 SDK",
+      "version": "1.0.3719.77",
+      "status": "candidate-for-W04",
+      "sourceId": "webview-sdk-license",
+      "runtime": "Evergreen, independently updated; capture actual tested version",
+      "runtimeLicenseVerified": false
+    }
+  ],
+  "dependencyAdmission": {
+    "restored": false,
+    "transitiveLockComplete": false,
+    "futureSteps": [
+      "W03",
+      "W04",
+      "W05"
+    ],
+    "policy": "Pin concrete package versions and git commits; capture full restored graph, checksums and licenses before admitting implementation dependencies. Record and review version changes."
+  },
+  "deferredChecks": [
+    {
+      "step": "W03",
+      "check": "Windows build, exact MSVC inventory, native C ABI and lifecycle proof"
+    },
+    {
+      "step": "W04",
+      "check": "Notation renderer, codecs including WebM demux plus Opus decode, time stretch and YouTube coexistence"
+    },
+    {
+      "step": "W05",
+      "check": "Full package lock graph, SBOM, pinned Windows runner image and repeatable build"
+    },
+    {
+      "step": "W06",
+      "check": "Original replacements proposed for two riffs with unresolved rights, with explicit content/ID review"
+    },
+    {
+      "step": "W41",
+      "check": "Brother OS compatibility, runtimes and actual installer, binary license texts and distribution terms"
+    },
+    {
+      "step": "W43",
+      "check": "Matching source download, notices and source availability for all selected dependencies"
+    },
+    {
+      "step": "W44",
+      "check": "Manufacturer driver, channel selection, stability and actual round-trip latency"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "juce-license",
+      "url": "https://raw.githubusercontent.com/juce-framework/JUCE/9.0.3/LICENSE.md",
+      "snapshot": "evidence/juce-license.txt",
+      "sha256": "6318e8f9bfcd5471de3608ea1ed10953279e912b9c76b78d55575b90f6bf1bf2"
+    },
+    {
+      "id": "asio-license",
+      "url": "https://raw.githubusercontent.com/juce-framework/JUCE/9.0.3/modules/juce_audio_devices/native/asio/LICENSE.txt",
+      "snapshot": "evidence/asio-license.txt",
+      "sha256": "61e56814f24b32216884b2db0b4dcc317111a5ab354d54d19dd9fc13d71b1c7a"
+    },
+    {
+      "id": "juce-sbom",
+      "url": "https://raw.githubusercontent.com/juce-framework/JUCE/9.0.3/JUCE.spdx.json",
+      "snapshot": "evidence/juce.spdx.json",
+      "sha256": "5f6b74afe06a089426b7747e05c2a57ac7c328d04d19df1de83b997ae1ebd51f"
+    },
+    {
+      "id": "agpl",
+      "url": "https://raw.githubusercontent.com/spdx/license-list-data/main/text/AGPL-3.0-only.txt",
+      "snapshot": "evidence/AGPL-3.0-only.txt",
+      "sha256": "d8a6cc31abc16b6748c7a21f21611f5a1ec33f67d22ca23d7da1c19b95496bee"
+    },
+    {
+      "id": "gpl",
+      "url": "https://raw.githubusercontent.com/spdx/license-list-data/main/text/GPL-3.0-only.txt",
+      "snapshot": "evidence/GPL-3.0-only.txt",
+      "sha256": "fb981668c18a279e285fc4d83fba1e836cc84dd4daa73c9697d3cfd2d8aca6e0"
+    },
+    {
+      "id": "windowsapp-license",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.windowsappsdk/2.5.1/microsoft.windowsappsdk.2.5.1.nupkg",
+      "snapshot": "evidence/windowsapp-license.txt",
+      "sha256": "5b11e6347756e40fe0274bc08c97f89201b94f0d50181a09a00f1f4740840501",
+      "archiveEntry": "LICENSE.txt"
+    },
+    {
+      "id": "webview-sdk-license",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.web.webview2/1.0.3719.77/microsoft.web.webview2.1.0.3719.77.nupkg",
+      "snapshot": "evidence/webview-sdk-license.txt",
+      "sha256": "0af8f1b807512aae39c2ac1aa4d0cae65cabecb6fd554b8439a5162a0d6eca55",
+      "archiveEntry": "LICENSE.txt"
+    },
+    {
+      "id": "alphatab-metadata",
+      "url": "https://api.nuget.org/v3-flatcontainer/alphatab/1.8.3/alphatab.nuspec",
+      "snapshot": "evidence/alphatab.nuspec",
+      "sha256": "d39289e0efe1ed6eabd830edd1635ec24de088363007748eb0362377ab5fb22e"
+    },
+    {
+      "id": "alphaskia-metadata",
+      "url": "https://api.nuget.org/v3-flatcontainer/alphaskia/3.4.135/alphaskia.nuspec",
+      "snapshot": "evidence/alphaskia.nuspec",
+      "sha256": "731aeeec8d80392d96313d8fc45e1caedd11a3a13a7dffd1536da1cce95ae1c5"
+    },
+    {
+      "id": "stretch-license",
+      "url": "https://raw.githubusercontent.com/Signalsmith-Audio/signalsmith-stretch/1.4.0/LICENSE.txt",
+      "snapshot": "evidence/signalsmith-stretch-license.txt",
+      "sha256": "ee2ef82481ffb445ecdd4b3a4c1f82c0cddb2da8fe39d8e8dc384fffb3e7f06f"
+    },
+    {
+      "id": "linear-license",
+      "url": "https://raw.githubusercontent.com/Signalsmith-Audio/linear/0.6.4/LICENSE.txt",
+      "snapshot": "evidence/signalsmith-linear-license.txt",
+      "sha256": "072b5e9eb5b22880bdf6256324654cf3ce53dba828edb911921121e1be09d9c3"
+    },
+    {
+      "id": "webm-license",
+      "url": "https://raw.githubusercontent.com/webmproject/libwebm/libwebm-1.0.0.31/LICENSE.TXT",
+      "snapshot": "evidence/libwebm-license.txt",
+      "sha256": "5aec868f669e384a22372a4e8a1a6cd7d44c64cd451f960ca69cc170d1e13acf"
+    },
+    {
+      "id": "webm-patents",
+      "url": "https://raw.githubusercontent.com/webmproject/libwebm/libwebm-1.0.0.31/PATENTS.TXT",
+      "snapshot": "evidence/libwebm-patents.txt",
+      "sha256": "cc3273e0694ea5896145e0677699b53471b03ea43021ddc50e7923fbb9f5023c"
+    },
+    {
+      "id": "dotnet-supported-os",
+      "url": "https://raw.githubusercontent.com/dotnet/core/main/release-notes/10.0/supported-os.md",
+      "snapshot": "evidence/dotnet-supported-os.md",
+      "sha256": "168f8bf76fdcaad9a1083ce5a96329291c17ef4c51e850b99c83f6e0457963f7"
+    },
+    {
+      "id": "windowsapp-metadata",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.windowsappsdk/2.5.1/microsoft.windowsappsdk.nuspec",
+      "snapshot": "evidence/windowsapp.nuspec",
+      "sha256": "57d7747385e9405349e401eb52c4548e1148f311cc638b99d609683ac4470bc8"
+    },
+    {
+      "id": "windowsapp-winui-metadata",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.windowsappsdk.winui/2.3.9/microsoft.windowsappsdk.winui.nuspec",
+      "snapshot": "evidence/windowsapp-winui.nuspec",
+      "sha256": "8a4a2e8c9a9dd6bf3d385dd5152ca4ba7f9ed5aae4c8f51a79675ad4d70d0c49"
+    },
+    {
+      "id": "windows-sdk-metadata",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.windows.sdk.cpp/10.0.26100.9169/microsoft.windows.sdk.cpp.nuspec",
+      "snapshot": "evidence/windows-sdk.nuspec",
+      "sha256": "8331b1e361bd2864c26c36fc4379ac12f67a92cbf9eee26656fc715582ccc6d7"
+    },
+    {
+      "id": "windows-sdk-x64-metadata",
+      "url": "https://api.nuget.org/v3-flatcontainer/microsoft.windows.sdk.cpp.x64/10.0.26100.9169/microsoft.windows.sdk.cpp.x64.nuspec",
+      "snapshot": "evidence/windows-sdk-x64.nuspec",
+      "sha256": "1d6789c60acd59ca00ad3bbb71a86971aed486b132a629f0ff964952793c188f"
+    },
+    {
+      "id": "stretch-cmake",
+      "url": "https://raw.githubusercontent.com/Signalsmith-Audio/signalsmith-stretch/1.4.0/CMakeLists.txt",
+      "snapshot": "evidence/signalsmith-stretch-cmake.txt",
+      "sha256": "2c6ada4752690efac4bbd2c263dfebeccd7d3bc941efbb615944fc6a88a5d2dd"
+    },
+    {
+      "id": "dotnet-release",
+      "url": "https://raw.githubusercontent.com/dotnet/core/main/release-notes/10.0/releases.json",
+      "snapshot": "evidence/dotnet-release-selection.json",
+      "sha256": "f43ce46b03578a8d947149a062e277f492c7077135d6b1768d64a0f0058fac89",
+      "transformation": "Selected release date, runtime version and complete SDK object for 10.0.401; not a verbatim copy of the release index."
+    }
+  ]
+}

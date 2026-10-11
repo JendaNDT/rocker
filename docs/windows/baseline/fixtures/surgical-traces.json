@@ -1,0 +1,1281 @@
+[
+  {
+    "id": "clean",
+    "notes": [
+      41,
+      42,
+      43,
+      44,
+      46,
+      47,
+      48,
+      49
+    ],
+    "exerciseId": "spider",
+    "states": [
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "run",
+        "position": 0,
+        "errorCounts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 0,
+        "drillPosition": 0,
+        "cleanReps": 0
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "run",
+        "position": 1,
+        "errorCounts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 0,
+        "drillPosition": 0,
+        "cleanReps": 0
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "run",
+        "position": 2,
+        "errorCounts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 0,
+        "drillPosition": 0,
+        "cleanReps": 0
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "run",
+        "position": 3,
+        "errorCounts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 0,
+        "drillPosition": 0,
+        "cleanReps": 0
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "run",
+        "position": 4,
+        "errorCounts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 0,
+        "drillPosition": 0,
+        "cleanReps": 0
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "run",
+        "position": 5,
+        "errorCounts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 0,
+        "drillPosition": 0,
+        "cleanReps": 0
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "run",
+        "position": 6,
+        "errorCounts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 0,
+        "drillPosition": 0,
+        "cleanReps": 0
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "run",
+        "position": 7,
+        "errorCounts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 0,
+        "drillPosition": 0,
+        "cleanReps": 0
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "complete",
+        "position": 8,
+        "errorCounts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 0,
+        "drillPosition": 0,
+        "cleanReps": 0
+      }
+    ]
+  },
+  {
+    "id": "pitch-class-octave",
+    "notes": [
+      53,
+      54,
+      55,
+      56,
+      58,
+      59,
+      60,
+      61
+    ],
+    "exerciseId": "spider",
+    "states": [
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "run",
+        "position": 0,
+        "errorCounts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 0,
+        "drillPosition": 0,
+        "cleanReps": 0
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "run",
+        "position": 1,
+        "errorCounts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 0,
+        "drillPosition": 0,
+        "cleanReps": 0
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "run",
+        "position": 2,
+        "errorCounts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 0,
+        "drillPosition": 0,
+        "cleanReps": 0
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "run",
+        "position": 3,
+        "errorCounts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 0,
+        "drillPosition": 0,
+        "cleanReps": 0
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "run",
+        "position": 4,
+        "errorCounts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 0,
+        "drillPosition": 0,
+        "cleanReps": 0
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "run",
+        "position": 5,
+        "errorCounts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 0,
+        "drillPosition": 0,
+        "cleanReps": 0
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "run",
+        "position": 6,
+        "errorCounts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 0,
+        "drillPosition": 0,
+        "cleanReps": 0
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "run",
+        "position": 7,
+        "errorCounts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 0,
+        "drillPosition": 0,
+        "cleanReps": 0
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "complete",
+        "position": 8,
+        "errorCounts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 0,
+        "drillPosition": 0,
+        "cleanReps": 0
+      }
+    ]
+  },
+  {
+    "id": "mistake-then-three-drills",
+    "notes": [
+      42,
+      41,
+      42,
+      43,
+      44,
+      46,
+      47,
+      48,
+      49,
+      41,
+      42,
+      43,
+      41,
+      42,
+      43,
+      41,
+      42,
+      43
+    ],
+    "exerciseId": "spider",
+    "states": [
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "run",
+        "position": 0,
+        "errorCounts": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 0,
+        "drillPosition": 0,
+        "cleanReps": 0
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "run",
+        "position": 0,
+        "errorCounts": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 0,
+        "drillPosition": 0,
+        "cleanReps": 0
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "run",
+        "position": 1,
+        "errorCounts": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 0,
+        "drillPosition": 0,
+        "cleanReps": 0
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "run",
+        "position": 2,
+        "errorCounts": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 0,
+        "drillPosition": 0,
+        "cleanReps": 0
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "run",
+        "position": 3,
+        "errorCounts": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 0,
+        "drillPosition": 0,
+        "cleanReps": 0
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "run",
+        "position": 4,
+        "errorCounts": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 0,
+        "drillPosition": 0,
+        "cleanReps": 0
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "run",
+        "position": 5,
+        "errorCounts": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 0,
+        "drillPosition": 0,
+        "cleanReps": 0
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "run",
+        "position": 6,
+        "errorCounts": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 0,
+        "drillPosition": 0,
+        "cleanReps": 0
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "run",
+        "position": 7,
+        "errorCounts": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 0,
+        "drillPosition": 0,
+        "cleanReps": 0
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "drill",
+        "position": 8,
+        "errorCounts": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 3,
+        "drillPosition": 0,
+        "cleanReps": 0
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "drill",
+        "position": 8,
+        "errorCounts": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 3,
+        "drillPosition": 1,
+        "cleanReps": 0
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "drill",
+        "position": 8,
+        "errorCounts": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 3,
+        "drillPosition": 2,
+        "cleanReps": 0
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "drill",
+        "position": 8,
+        "errorCounts": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 3,
+        "drillPosition": 0,
+        "cleanReps": 1
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "drill",
+        "position": 8,
+        "errorCounts": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 3,
+        "drillPosition": 1,
+        "cleanReps": 1
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "drill",
+        "position": 8,
+        "errorCounts": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 3,
+        "drillPosition": 2,
+        "cleanReps": 1
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "drill",
+        "position": 8,
+        "errorCounts": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 3,
+        "drillPosition": 0,
+        "cleanReps": 2
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "drill",
+        "position": 8,
+        "errorCounts": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 3,
+        "drillPosition": 1,
+        "cleanReps": 2
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "drill",
+        "position": 8,
+        "errorCounts": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 3,
+        "drillPosition": 2,
+        "cleanReps": 2
+      },
+      {
+        "exercise": {
+          "id": "spider",
+          "name": "Pavoučí cvičení 1-2-3-4",
+          "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+          "notes": [
+            41,
+            42,
+            43,
+            44,
+            46,
+            47,
+            48,
+            49
+          ]
+        },
+        "phase": "complete",
+        "position": 8,
+        "errorCounts": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "drillStart": 0,
+        "drillLength": 3,
+        "drillPosition": 0,
+        "cleanReps": 3
+      }
+    ]
+  }
+]

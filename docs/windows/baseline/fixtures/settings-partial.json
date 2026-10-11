@@ -1,0 +1,9 @@
+{
+  "app": "rocker",
+  "kind": "settings-backup",
+  "version": 2,
+  "exportedAt": "2026-10-10T00:00:00.000Z",
+  "data": {
+    "rocker-settings": "{\"state\":{\"layoutMode\":\"auto\",\"theme\":\"vintage\",\"colorMode\":\"dark\",\"tuningId\":\"custom-w01\",\"handedness\":\"left\",\"zenMode\":true,\"notation\":\"german\",\"noiseGate\":0.06,\"referenceToneVolume\":0.3,\"tunerConfirmSound\":true,\"tunerConfirmHaptic\":false,\"onboarded\":true},\"version\":0}"
+  }
+}

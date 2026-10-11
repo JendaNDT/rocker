@@ -1,0 +1,77 @@
+[
+  {
+    "id": "w01-recording-2",
+    "name": "Zkušební nahrávka .wav",
+    "createdAt": 1791590402000,
+    "durationSec": 2,
+    "mimeType": "audio/wav",
+    "markers": [
+      {
+        "id": "w01-marker-2",
+        "timeSec": 0.25,
+        "label": "Zkušební značka"
+      }
+    ],
+    "file": "audio/low-e2.wav"
+  },
+  {
+    "id": "w01-recording-7",
+    "name": "Zkušební nahrávka .webm",
+    "createdAt": 1791590407000,
+    "durationSec": 1,
+    "mimeType": "audio/webm;codecs=opus",
+    "markers": [
+      {
+        "id": "w01-marker-7",
+        "timeSec": 0.25,
+        "label": "Zkušební značka"
+      }
+    ],
+    "file": "audio/a4-440.webm"
+  },
+  {
+    "id": "w01-recording-8",
+    "name": "Zkušební nahrávka .ogg",
+    "createdAt": 1791590408000,
+    "durationSec": 1,
+    "mimeType": "audio/ogg;codecs=opus",
+    "markers": [
+      {
+        "id": "w01-marker-8",
+        "timeSec": 0.25,
+        "label": "Zkušební značka"
+      }
+    ],
+    "file": "audio/a4-440.ogg"
+  },
+  {
+    "id": "w01-recording-9",
+    "name": "Zkušební nahrávka .m4a",
+    "createdAt": 1791590409000,
+    "durationSec": 1,
+    "mimeType": "audio/mp4",
+    "markers": [
+      {
+        "id": "w01-marker-9",
+        "timeSec": 0.25,
+        "label": "Zkušební značka"
+      }
+    ],
+    "file": "audio/a4-440.m4a"
+  },
+  {
+    "id": "w01-recording-10",
+    "name": "Zkušební nahrávka .mp3",
+    "createdAt": 1791590410000,
+    "durationSec": 1,
+    "mimeType": "audio/mpeg",
+    "markers": [
+      {
+        "id": "w01-marker-10",
+        "timeSec": 0.25,
+        "label": "Zkušební značka"
+      }
+    ],
+    "file": "audio/a4-440.mp3"
+  }
+]

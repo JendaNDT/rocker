@@ -1,0 +1,3294 @@
+{
+  "stages": {
+    "source": "src/lib/lessons.ts",
+    "symbol": "STAGES",
+    "items": [
+      {
+        "id": "stage-1",
+        "title": "Stage 1 — Začínáme",
+        "description": "Prázdné struny, otevřené akordy a první rytmika.",
+        "lessons": [
+          {
+            "id": "drzeni",
+            "title": "Držení kytary a trsátka",
+            "estimatedMinutes": 4,
+            "steps": [
+              {
+                "kind": "text",
+                "title": "Posaď se rovně",
+                "body": "Sedni si rovně, kytaru opři o pravé stehno a tělo lehce přitiskni k hrudníku. Krk kytary míří mírně vzhůru. Nehrb se — záda i ramena uvolni."
+              },
+              {
+                "kind": "text",
+                "title": "Jak držet trsátko",
+                "body": "Trsátko polož na bříško ukazováčku a shora ho přidrž palcem. Vyčnívat má jen malý kousek hrotu. Drž ho pevně, ale ne křečovitě."
+              },
+              {
+                "kind": "text",
+                "title": "Levá ruka",
+                "body": "Palec levé ruky je vzadu za krkem, zhruba proti prostředníčku. Prsty tlač na struny špičkami, těsně za pražcem — ne přímo na něj."
+              }
+            ]
+          },
+          {
+            "id": "prazdne-struny",
+            "title": "Prázdné struny",
+            "estimatedMinutes": 6,
+            "steps": [
+              {
+                "kind": "text",
+                "title": "Šest strun",
+                "body": "Kytara má šest strun. Nejsilnější je spodní E, nejtenčí horní e. Teď si zkusíš zahrát tři z nich naprázdno — bez tlačení prstů."
+              },
+              {
+                "kind": "note",
+                "title": "Spodní struna E",
+                "body": "Zahraj nejsilnější (nejtlustší) strunu naprázdno. Aplikace poslouchá a potvrdí správný tón.",
+                "targetMidi": 40,
+                "targetLabel": "E (6. struna)"
+              },
+              {
+                "kind": "note",
+                "title": "Struna D",
+                "body": "Zahraj naprázdno čtvrtou strunu odshora — strunu D.",
+                "targetMidi": 50,
+                "targetLabel": "D (4. struna)"
+              },
+              {
+                "kind": "note",
+                "title": "Horní struna e",
+                "body": "Zahraj nejtenčí strunu naprázdno — horní e.",
+                "targetMidi": 64,
+                "targetLabel": "e (1. struna)"
+              }
+            ]
+          },
+          {
+            "id": "akord-em",
+            "title": "První akord: Em",
+            "estimatedMinutes": 7,
+            "steps": [
+              {
+                "kind": "text",
+                "title": "Proč zrovna Em",
+                "body": "Em je nejjednodušší akord — potřebuješ jen dva prsty a zní plně. Je skvělý start pro rock i metal."
+              },
+              {
+                "kind": "chord",
+                "title": "Zahraj Em",
+                "body": "Polož prsty podle diagramu a pomalu přejeď přes všechny struny. Každý tón má znít čistě. Když to drhne, přitlač víc a zkontroluj, že se prsty nedotýkají sousedních strun.",
+                "chordId": "Em"
+              }
+            ]
+          },
+          {
+            "id": "akord-e",
+            "title": "Akord E",
+            "estimatedMinutes": 7,
+            "steps": [
+              {
+                "kind": "text",
+                "title": "Z Em do E",
+                "body": "Akord E je Em plus jeden prst navíc. Přidáš prst na třetí strunu a získáš jasnější, durový zvuk."
+              },
+              {
+                "kind": "chord",
+                "title": "Zahraj E",
+                "body": "Drž tvar z diagramu a brnkni přes všech šest strun. Zkus přepínat mezi Em a E — to je tvůj první přechod mezi akordy.",
+                "chordId": "E"
+              }
+            ]
+          },
+          {
+            "id": "akordy-am-a",
+            "title": "Akordy Am a A",
+            "estimatedMinutes": 9,
+            "steps": [
+              {
+                "kind": "text",
+                "title": "Druhá dvojice",
+                "body": "Am a A fungují podobně jako Em a E, jen začínají na páté struně. Spodní E strunu v nich nehraješ."
+              },
+              {
+                "kind": "chord",
+                "title": "Zahraj Am",
+                "body": "Tři prsty podle diagramu. Brnkni od páté struny dolů — spodní E vynech.",
+                "chordId": "Am"
+              },
+              {
+                "kind": "chord",
+                "title": "Zahraj A",
+                "body": "Všechny tři prsty jsou na druhém pražci vedle sebe. Je to stísněné — dej prstům čas si na to zvyknout.",
+                "chordId": "A"
+              }
+            ]
+          },
+          {
+            "id": "prechody",
+            "title": "Přechody mezi akordy",
+            "estimatedMinutes": 10,
+            "steps": [
+              {
+                "kind": "text",
+                "title": "Pomalu a čistě",
+                "body": "Přechod mezi akordy je o svalové paměti. Cvič pomalu — radši čistě a beze spěchu než rychle a zmateně. Rychlost přijde sama."
+              },
+              {
+                "kind": "chord",
+                "title": "Akord Em",
+                "body": "Postav Em a nech ho znít.",
+                "chordId": "Em"
+              },
+              {
+                "kind": "chord",
+                "title": "Přejdi na E",
+                "body": "Plynule přidej prst a přejdi na E. Pak zpátky na Em. Opakuj klidně desetkrát v pomalém tempu.",
+                "chordId": "E"
+              }
+            ]
+          },
+          {
+            "id": "akordy-d-g",
+            "title": "Akordy D a G",
+            "estimatedMinutes": 10,
+            "steps": [
+              {
+                "kind": "text",
+                "title": "Poslední dvojice Stage 1",
+                "body": "D a G ti spolu s předchozími akordy otevřou stovky písní. G se zpočátku zdá těžký — chce roztažené prsty."
+              },
+              {
+                "kind": "chord",
+                "title": "Zahraj D",
+                "body": "D se hraje od čtvrté struny. Tři prsty tvoří malý trojúhelník.",
+                "chordId": "D"
+              },
+              {
+                "kind": "chord",
+                "title": "Zahraj G",
+                "body": "G používá všechny struny a roztažené prsty. Dej tomu čas, je to běh na delší trať.",
+                "chordId": "G"
+              }
+            ]
+          },
+          {
+            "id": "strumming",
+            "title": "Strumming — rytmika pravé ruky",
+            "estimatedMinutes": 7,
+            "steps": [
+              {
+                "kind": "text",
+                "title": "Pohyb z lokte a zápěstí",
+                "body": "Brnkání vychází z uvolněného zápěstí, ne z prstů. Pohyb je plynulý shora dolů přes struny. Zapni si metronom na pomalé tempo a hraj jeden úder dolů na každou dobu."
+              },
+              {
+                "kind": "text",
+                "title": "Údery dolů i nahoru",
+                "body": "Až ti jdou údery dolů, přidej mezi ně údery nahoru. Ruka se hýbe pořád stejně, jen občas struny zasáhne i při cestě zpět. Drž tempo, ne sílu."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "stage-2",
+        "title": "Stage 2 — Power chordy a palm mute",
+        "description": "Stavební kameny rockových a metalových riffů.",
+        "lessons": [
+          {
+            "id": "power-chord",
+            "title": "Co je power chord",
+            "estimatedMinutes": 7,
+            "steps": [
+              {
+                "kind": "text",
+                "title": "Dva tóny, plný zvuk",
+                "body": "Power chord není dur ani moll — jsou to jen dva nebo tři tóny. Proto zní skvěle se zkreslením a je základem rocku a metalu. Značí se číslem 5, třeba E5."
+              },
+              {
+                "kind": "chord",
+                "title": "Zahraj E5",
+                "body": "E5 zahraješ na spodních strunách. Brnkni jen struny z diagramu — ostatní nech být.",
+                "chordId": "E5"
+              }
+            ]
+          },
+          {
+            "id": "power-a5-d5",
+            "title": "Power chordy A5 a D5",
+            "estimatedMinutes": 8,
+            "steps": [
+              {
+                "kind": "text",
+                "title": "Stejný princip, jiná struna",
+                "body": "A5 a D5 fungují jako E5, jen začínají na jiné struně. Pravá ruka musí trefit jen ty správné struny — to chce cvik."
+              },
+              {
+                "kind": "chord",
+                "title": "Zahraj A5",
+                "body": "Power chord s kořenem na páté struně.",
+                "chordId": "A5"
+              },
+              {
+                "kind": "chord",
+                "title": "Zahraj D5",
+                "body": "Power chord s kořenem na čtvrté struně.",
+                "chordId": "D5"
+              }
+            ]
+          },
+          {
+            "id": "pohyblivy-power",
+            "title": "Pohyblivý power chord",
+            "estimatedMinutes": 10,
+            "steps": [
+              {
+                "kind": "text",
+                "title": "Jeden tvar, celý krk",
+                "body": "Power chord má pořád stejný tvar — stačí ho posunout po krku a získáš jiný akord. Když umíš F5, umíš i G5, A5 a další; jen posuneš ruku."
+              },
+              {
+                "kind": "chord",
+                "title": "Zahraj F5",
+                "body": "Tvar power chordu na prvním pražci. Ukazováček je kořen.",
+                "chordId": "F5"
+              },
+              {
+                "kind": "chord",
+                "title": "Posuň na G5",
+                "body": "Stejný tvar posunutý o dva pražce výš je G5. Zkus mezi F5 a G5 přepínat.",
+                "chordId": "G5"
+              }
+            ]
+          },
+          {
+            "id": "palm-mute",
+            "title": "Palm mute",
+            "estimatedMinutes": 8,
+            "steps": [
+              {
+                "kind": "text",
+                "title": "Tlumení hranou dlaně",
+                "body": "Palm mute je tlumený, dunivý zvuk typický pro metal. Polož hranu pravé dlaně lehce na struny těsně u kobylky a brnkni. Struny mají znít přidušeně, ne úplně hluše."
+              },
+              {
+                "kind": "text",
+                "title": "Cvič na power chordu",
+                "body": "Zahraj E5 s palm mutem a pravidelně opakuj jeden tón — to je základ metalového rytmu. Zapni metronom a drž stálé tempo. Síla je v pravidelnosti, ne v rychlosti."
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "stage-3",
+        "title": "Stage 3 — Rytmika a metalové riffy",
+        "description": "Stavební techniky pro hratelné rockové a metalové riffy.",
+        "lessons": [
+          {
+            "id": "downstroke",
+            "title": "Pravidelný downstroke",
+            "estimatedMinutes": 5,
+            "steps": [
+              {
+                "kind": "text",
+                "title": "Jen dolů",
+                "body": "Downstroke je úhoz pouze směrem dolů. Zní rovně a pevně — proto ho rockové a metalové kapely používají na chugging riffy. Cena za tu sílu je vyšší únava ruky, takže drž zápěstí uvolněné."
+              },
+              {
+                "kind": "text",
+                "title": "Drž tempo",
+                "body": "Zapni metronom na 90 BPM a hraj na prázdné spodní E struně jeden tón na každou dobu, vždy směrem dolů. Důležitější než rychlost je rovnoměrnost — každý úhoz stejně silný, stejně přesný v čase."
+              },
+              {
+                "kind": "chord",
+                "title": "Downstroke na E5",
+                "body": "Teď zkus to samé na E5. Hraj rovnoměrné čtvrťové úhozy dolů. Když ti začne tuhnout zápěstí, zpomal — síla je ve výdrži, ne v rychlosti.",
+                "chordId": "E5"
+              }
+            ]
+          },
+          {
+            "id": "alternate-picking",
+            "title": "Střídavý úhoz",
+            "estimatedMinutes": 6,
+            "steps": [
+              {
+                "kind": "text",
+                "title": "Dolů, nahoru, dolů, nahoru",
+                "body": "Střídavý úhoz znamená pravidelné střídání úhozů dolů a nahoru. Dovolí ti hrát dvakrát rychleji než downstroke, aniž bys ruku přetížil. Je to základ rychlejších rytmů i sól."
+              },
+              {
+                "kind": "text",
+                "title": "Zápěstí, ne loket",
+                "body": "Pohyb musí jít ze zápěstí, ne z lokte. Předloktí drž v klidu, trsátko houpej krátkými kmity zápěstí. Když zatočíš celou paží, ztratíš přesnost i rychlost."
+              },
+              {
+                "kind": "text",
+                "title": "Cvič naprázdno",
+                "body": "Polož ruku přes struny, ať nic nezní, a jen na zatlumených strunách cvič rytmus dolů-nahoru-dolů-nahoru. Metronom na 80 BPM, dva úhozy na dobu (osminky). Soustřeď se na to, aby šly nahoru i dolů stejně hlasitě."
+              }
+            ]
+          },
+          {
+            "id": "chugging",
+            "title": "Chugging — palm mute v rytmu",
+            "estimatedMinutes": 7,
+            "steps": [
+              {
+                "kind": "text",
+                "title": "Spojení dvou věcí, co už znáš",
+                "body": "Chugging je palm mute hraný rovnoměrnými downstroky na power chordu. Tlumený, úderný zvuk — slyšíš ho v každé druhé metalové skladbě. Spojí ti dohromady palm mute ze Stage 2 a downstroke z první lekce této stage."
+              },
+              {
+                "kind": "text",
+                "title": "Jak na to",
+                "body": "Polož hranu pravé dlaně lehce na struny u kobylky (palm mute). Levou ruku drž na E5. Hraj rovnoměrné osminkové úhozy dolů — dva na každou dobu metronomu. Tempo začni na 80 BPM."
+              },
+              {
+                "kind": "chord",
+                "title": "Chug na E5",
+                "body": "Zkus to. Drž palm mute pevně, ať zvuk drnčí krátkými údery, ne dlouhými tóny. Až ti to půjde, otevři Metal → Power Chord Trainer a vydrilluj to v tempu.",
+                "chordId": "E5"
+              }
+            ]
+          },
+          {
+            "id": "gallop",
+            "title": "Šestnáctky a gallop",
+            "estimatedMinutes": 7,
+            "steps": [
+              {
+                "kind": "text",
+                "title": "Galopový rytmus",
+                "body": "Gallop je rytmický vzor osminka + dvě šestnáctky (zní jako daa-da-da, daa-da-da). Iron Maiden ho zvedli na ikonu — slyšíš ho v The Trooper i v desítkách dalších riffů. Funguje skvěle s palm mutem a power chordem."
+              },
+              {
+                "kind": "text",
+                "title": "Vzorec úhozu",
+                "body": "Hraj střídavě dolů-dolů-nahoru: první úhoz je delší (osminka), druhý a třetí jsou kratší (dvě šestnáctky). Začni opravdu pomalu — 60 BPM — a soustřeď se na to, aby každá nota zazněla stejně."
+              },
+              {
+                "kind": "chord",
+                "title": "Gallop na E5",
+                "body": "Hraj gallop na E5 s palm mutem. Až ti to půjde čistě, otevři Metal → Gallop Trainer — vizualizace rytmu ti pomůže udržet vzorec a postupně si přidávat tempo.",
+                "chordId": "E5"
+              }
+            ]
+          },
+          {
+            "id": "hammer-pull",
+            "title": "Hammer-on a pull-off",
+            "estimatedMinutes": 7,
+            "steps": [
+              {
+                "kind": "text",
+                "title": "Tón bez trsátka",
+                "body": "Hammer-on (příklep) znamená, že druhý tón zahraješ čistě prstem levé ruky — bez úhozu pravou. Pull-off (strhnutí) je obrácený proces: zahraješ úhozem vyšší tón a stáhnutím prstu necháš znít nižší. Otevírají dveře k plynulým sólům a riffům."
+              },
+              {
+                "kind": "text",
+                "title": "Hammer-on krok za krokem",
+                "body": "Zahraj prázdnou spodní E strunu úhozem. Pak rychle a pevně dopadni ukazováčkem na druhý pražec téže struny — bez dalšího úhozu pravou. Druhý tón musí zaznít jen díky dopadu prstu. Síla je v rychlém, jistém dopadu, ne v tlaku."
+              },
+              {
+                "kind": "text",
+                "title": "Pull-off krok za krokem",
+                "body": "Stiskni druhý pražec E struny ukazováčkem a zahraj úhozem. Pak prst rychle strhni stranou (mírně do strany, ne přímo nahoru) — prázdná struna doznění převezme. Pull-off je o stržení, ne o pouhém zvednutí."
+              },
+              {
+                "kind": "text",
+                "title": "Cvič střídavě",
+                "body": "Spoj obojí: úhoz na prázdnou strunu → hammer na 2. pražec → pull-off zpět. Cvič pomalu a jen na jedné struně. Až to půjde plynule, máš první stavební kámen sól, na který se podíváme v další stage."
+              }
+            ]
+          },
+          {
+            "id": "mini-riff",
+            "title": "Mini-riff: dej to dohromady",
+            "estimatedMinutes": 8,
+            "steps": [
+              {
+                "kind": "text",
+                "title": "Krátký riff ze všeho",
+                "body": "Postavíme krátký riff, který spojí chugging, gallop i power chordy. Vzorec: čtyři chugnutí na E5 → gallop na E5 → krátké přesuny na A5 a D5 → zpět na E5. Není to konkrétní skladba, je to cvičení, které dá dohromady všechny techniky této stage."
+              },
+              {
+                "kind": "chord",
+                "title": "Část 1 — chugging na E5",
+                "body": "Začni metronom na 90 BPM. Hraj osm osminek na E5 s palm mutem, samé downstroky. Dva takty.",
+                "chordId": "E5"
+              },
+              {
+                "kind": "chord",
+                "title": "Část 2 — gallop na E5",
+                "body": "Bez přestávky pokračuj galopem na E5 (osminka + dvě šestnáctky), pořád s palm mutem. Dva takty.",
+                "chordId": "E5"
+              },
+              {
+                "kind": "chord",
+                "title": "Část 3 — přesun na A5",
+                "body": "Přesuň ruku na A5 a zahraj čtyři chugnutí (osminky, palm mute, downstroke). Jeden takt.",
+                "chordId": "A5"
+              },
+              {
+                "kind": "chord",
+                "title": "Část 4 — přesun na D5 a zpět",
+                "body": "Stejné jako předtím, ale na D5 (jeden takt), pak se vrať na E5 a zakonči jedním delším chugnutím. Až ti to půjde, zrychli tempo. Toto je tvůj první kompletní metalový riff.",
+                "chordId": "D5"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "chords": {
+    "source": "src/lib/chords.ts",
+    "symbol": "CHORDS",
+    "items": [
+      {
+        "id": "E",
+        "name": "E",
+        "category": "open",
+        "baseFret": 1,
+        "frets": [
+          0,
+          2,
+          2,
+          1,
+          0,
+          0
+        ],
+        "fingers": [
+          null,
+          2,
+          3,
+          1,
+          null,
+          null
+        ],
+        "barre": null
+      },
+      {
+        "id": "Em",
+        "name": "Em",
+        "category": "open",
+        "baseFret": 1,
+        "frets": [
+          0,
+          2,
+          2,
+          0,
+          0,
+          0
+        ],
+        "fingers": [
+          null,
+          2,
+          3,
+          null,
+          null,
+          null
+        ],
+        "barre": null
+      },
+      {
+        "id": "E7",
+        "name": "E7",
+        "category": "open",
+        "baseFret": 1,
+        "frets": [
+          0,
+          2,
+          0,
+          1,
+          0,
+          0
+        ],
+        "fingers": [
+          null,
+          2,
+          null,
+          1,
+          null,
+          null
+        ],
+        "barre": null
+      },
+      {
+        "id": "A",
+        "name": "A",
+        "category": "open",
+        "baseFret": 1,
+        "frets": [
+          "x",
+          0,
+          2,
+          2,
+          2,
+          0
+        ],
+        "fingers": [
+          null,
+          null,
+          1,
+          2,
+          3,
+          null
+        ],
+        "barre": null
+      },
+      {
+        "id": "Am",
+        "name": "Am",
+        "category": "open",
+        "baseFret": 1,
+        "frets": [
+          "x",
+          0,
+          2,
+          2,
+          1,
+          0
+        ],
+        "fingers": [
+          null,
+          null,
+          2,
+          3,
+          1,
+          null
+        ],
+        "barre": null
+      },
+      {
+        "id": "A7",
+        "name": "A7",
+        "category": "open",
+        "baseFret": 1,
+        "frets": [
+          "x",
+          0,
+          2,
+          0,
+          2,
+          0
+        ],
+        "fingers": [
+          null,
+          null,
+          2,
+          null,
+          3,
+          null
+        ],
+        "barre": null
+      },
+      {
+        "id": "D",
+        "name": "D",
+        "category": "open",
+        "baseFret": 1,
+        "frets": [
+          "x",
+          "x",
+          0,
+          2,
+          3,
+          2
+        ],
+        "fingers": [
+          null,
+          null,
+          null,
+          1,
+          3,
+          2
+        ],
+        "barre": null
+      },
+      {
+        "id": "Dm",
+        "name": "Dm",
+        "category": "open",
+        "baseFret": 1,
+        "frets": [
+          "x",
+          "x",
+          0,
+          2,
+          3,
+          1
+        ],
+        "fingers": [
+          null,
+          null,
+          null,
+          2,
+          3,
+          1
+        ],
+        "barre": null
+      },
+      {
+        "id": "D7",
+        "name": "D7",
+        "category": "open",
+        "baseFret": 1,
+        "frets": [
+          "x",
+          "x",
+          0,
+          2,
+          1,
+          2
+        ],
+        "fingers": [
+          null,
+          null,
+          null,
+          2,
+          1,
+          3
+        ],
+        "barre": null
+      },
+      {
+        "id": "G",
+        "name": "G",
+        "category": "open",
+        "baseFret": 1,
+        "frets": [
+          3,
+          2,
+          0,
+          0,
+          0,
+          3
+        ],
+        "fingers": [
+          3,
+          2,
+          null,
+          null,
+          null,
+          4
+        ],
+        "barre": null
+      },
+      {
+        "id": "G7",
+        "name": "G7",
+        "category": "open",
+        "baseFret": 1,
+        "frets": [
+          3,
+          2,
+          0,
+          0,
+          0,
+          1
+        ],
+        "fingers": [
+          3,
+          2,
+          null,
+          null,
+          null,
+          1
+        ],
+        "barre": null
+      },
+      {
+        "id": "C",
+        "name": "C",
+        "category": "open",
+        "baseFret": 1,
+        "frets": [
+          "x",
+          3,
+          2,
+          0,
+          1,
+          0
+        ],
+        "fingers": [
+          null,
+          3,
+          2,
+          null,
+          1,
+          null
+        ],
+        "barre": null
+      },
+      {
+        "id": "F",
+        "name": "F",
+        "category": "barre",
+        "baseFret": 1,
+        "frets": [
+          1,
+          3,
+          3,
+          2,
+          1,
+          1
+        ],
+        "fingers": [
+          1,
+          3,
+          4,
+          2,
+          1,
+          1
+        ],
+        "barre": {
+          "fret": 1,
+          "fromString": 0,
+          "toString": 5
+        }
+      },
+      {
+        "id": "Fm",
+        "name": "Fm",
+        "category": "barre",
+        "baseFret": 1,
+        "frets": [
+          1,
+          3,
+          3,
+          1,
+          1,
+          1
+        ],
+        "fingers": [
+          1,
+          3,
+          4,
+          1,
+          1,
+          1
+        ],
+        "barre": {
+          "fret": 1,
+          "fromString": 0,
+          "toString": 5
+        }
+      },
+      {
+        "id": "F#m",
+        "name": "F#m",
+        "category": "barre",
+        "baseFret": 1,
+        "frets": [
+          2,
+          4,
+          4,
+          2,
+          2,
+          2
+        ],
+        "fingers": [
+          1,
+          3,
+          4,
+          1,
+          1,
+          1
+        ],
+        "barre": {
+          "fret": 2,
+          "fromString": 0,
+          "toString": 5
+        }
+      },
+      {
+        "id": "Bb",
+        "name": "Bb",
+        "category": "barre",
+        "baseFret": 1,
+        "frets": [
+          "x",
+          1,
+          3,
+          3,
+          3,
+          1
+        ],
+        "fingers": [
+          null,
+          1,
+          2,
+          3,
+          4,
+          1
+        ],
+        "barre": {
+          "fret": 1,
+          "fromString": 1,
+          "toString": 5
+        }
+      },
+      {
+        "id": "Bm",
+        "name": "Bm",
+        "category": "barre",
+        "baseFret": 1,
+        "frets": [
+          "x",
+          2,
+          4,
+          4,
+          3,
+          2
+        ],
+        "fingers": [
+          null,
+          1,
+          3,
+          4,
+          2,
+          1
+        ],
+        "barre": {
+          "fret": 2,
+          "fromString": 1,
+          "toString": 5
+        }
+      },
+      {
+        "id": "B",
+        "name": "B",
+        "category": "barre",
+        "baseFret": 1,
+        "frets": [
+          "x",
+          2,
+          4,
+          4,
+          4,
+          2
+        ],
+        "fingers": [
+          null,
+          1,
+          2,
+          3,
+          4,
+          1
+        ],
+        "barre": {
+          "fret": 2,
+          "fromString": 1,
+          "toString": 5
+        }
+      },
+      {
+        "id": "E5",
+        "name": "E5",
+        "category": "power",
+        "baseFret": 1,
+        "frets": [
+          0,
+          2,
+          2,
+          "x",
+          "x",
+          "x"
+        ],
+        "fingers": [
+          null,
+          1,
+          3,
+          null,
+          null,
+          null
+        ],
+        "barre": null
+      },
+      {
+        "id": "F5",
+        "name": "F5",
+        "category": "power",
+        "baseFret": 1,
+        "frets": [
+          1,
+          3,
+          3,
+          "x",
+          "x",
+          "x"
+        ],
+        "fingers": [
+          1,
+          3,
+          4,
+          null,
+          null,
+          null
+        ],
+        "barre": null
+      },
+      {
+        "id": "F#5",
+        "name": "F#5",
+        "category": "power",
+        "baseFret": 1,
+        "frets": [
+          2,
+          4,
+          4,
+          "x",
+          "x",
+          "x"
+        ],
+        "fingers": [
+          1,
+          3,
+          4,
+          null,
+          null,
+          null
+        ],
+        "barre": null
+      },
+      {
+        "id": "G5",
+        "name": "G5",
+        "category": "power",
+        "baseFret": 1,
+        "frets": [
+          3,
+          5,
+          5,
+          "x",
+          "x",
+          "x"
+        ],
+        "fingers": [
+          1,
+          3,
+          4,
+          null,
+          null,
+          null
+        ],
+        "barre": null
+      },
+      {
+        "id": "A5",
+        "name": "A5",
+        "category": "power",
+        "baseFret": 1,
+        "frets": [
+          "x",
+          0,
+          2,
+          2,
+          "x",
+          "x"
+        ],
+        "fingers": [
+          null,
+          null,
+          1,
+          3,
+          null,
+          null
+        ],
+        "barre": null
+      },
+      {
+        "id": "B5",
+        "name": "B5",
+        "category": "power",
+        "baseFret": 1,
+        "frets": [
+          "x",
+          2,
+          4,
+          4,
+          "x",
+          "x"
+        ],
+        "fingers": [
+          null,
+          1,
+          3,
+          4,
+          null,
+          null
+        ],
+        "barre": null
+      },
+      {
+        "id": "C5",
+        "name": "C5",
+        "category": "power",
+        "baseFret": 1,
+        "frets": [
+          "x",
+          3,
+          5,
+          5,
+          "x",
+          "x"
+        ],
+        "fingers": [
+          null,
+          1,
+          3,
+          4,
+          null,
+          null
+        ],
+        "barre": null
+      },
+      {
+        "id": "D5",
+        "name": "D5",
+        "category": "power",
+        "baseFret": 1,
+        "frets": [
+          "x",
+          "x",
+          0,
+          2,
+          3,
+          "x"
+        ],
+        "fingers": [
+          null,
+          null,
+          null,
+          1,
+          3,
+          null
+        ],
+        "barre": null
+      }
+    ]
+  },
+  "scales": {
+    "source": "src/lib/scales.ts",
+    "symbol": "SCALES",
+    "items": [
+      {
+        "id": "minor-pentatonic",
+        "name": "Pentatonika moll",
+        "intervals": [
+          0,
+          3,
+          5,
+          7,
+          10
+        ]
+      },
+      {
+        "id": "major-pentatonic",
+        "name": "Pentatonika dur",
+        "intervals": [
+          0,
+          2,
+          4,
+          7,
+          9
+        ]
+      },
+      {
+        "id": "major",
+        "name": "Dur",
+        "intervals": [
+          0,
+          2,
+          4,
+          5,
+          7,
+          9,
+          11
+        ]
+      },
+      {
+        "id": "minor",
+        "name": "Moll",
+        "intervals": [
+          0,
+          2,
+          3,
+          5,
+          7,
+          8,
+          10
+        ]
+      },
+      {
+        "id": "harmonic-minor",
+        "name": "Harmonická moll",
+        "intervals": [
+          0,
+          2,
+          3,
+          5,
+          7,
+          8,
+          11
+        ]
+      },
+      {
+        "id": "phrygian-dominant",
+        "name": "Frygická dominantní",
+        "intervals": [
+          0,
+          1,
+          4,
+          5,
+          7,
+          8,
+          10
+        ]
+      }
+    ]
+  },
+  "riffs": {
+    "source": "src/lib/metalRiffs.ts",
+    "symbol": "METAL_RIFFS",
+    "items": [
+      {
+        "id": "smoke-on-the-water",
+        "title": "Smoke on the Water",
+        "artist": "Deep Purple",
+        "style": "Hard rock",
+        "focus": "Riff na jedné struně",
+        "tuning": "standard",
+        "bpm": 113,
+        "difficulty": "beginner",
+        "notes": [
+          {
+            "stringIndex": 2,
+            "fret": 0,
+            "start": 0,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 2,
+            "fret": 3,
+            "start": 0.5,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 2,
+            "fret": 5,
+            "start": 1,
+            "duration": 1,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 2,
+            "fret": 0,
+            "start": 2.5,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 2,
+            "fret": 3,
+            "start": 3,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 2,
+            "fret": 6,
+            "start": 3.5,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 2,
+            "fret": 5,
+            "start": 4,
+            "duration": 1,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 2,
+            "fret": 0,
+            "start": 5.5,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 2,
+            "fret": 3,
+            "start": 6,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 2,
+            "fret": 5,
+            "start": 6.5,
+            "duration": 1,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 2,
+            "fret": 3,
+            "start": 8,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 2,
+            "fret": 0,
+            "start": 8.5,
+            "duration": 1,
+            "technique": "normal"
+          }
+        ]
+      },
+      {
+        "id": "seven-nation-army",
+        "title": "Seven Nation Army",
+        "artist": "The White Stripes",
+        "style": "Rock",
+        "focus": "Riff na jedné struně",
+        "tuning": "standard",
+        "bpm": 124,
+        "difficulty": "beginner",
+        "notes": [
+          {
+            "stringIndex": 1,
+            "fret": 7,
+            "start": 0,
+            "duration": 1.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 7,
+            "start": 1.5,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 10,
+            "start": 2,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 7,
+            "start": 2.5,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 5,
+            "start": 3,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 3,
+            "start": 3.5,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 2,
+            "start": 4,
+            "duration": 1,
+            "technique": "normal"
+          }
+        ]
+      },
+      {
+        "id": "metal-chug-e",
+        "title": "Temný chug v E",
+        "style": "Heavy metal",
+        "focus": "Palm mute",
+        "tuning": "standard",
+        "bpm": 100,
+        "difficulty": "beginner",
+        "notes": [
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 0,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 2,
+            "start": 0,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 0.5,
+            "duration": 0.5,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 1,
+            "duration": 0.5,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 1.5,
+            "duration": 0.5,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 2,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 2,
+            "start": 2,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 2.5,
+            "duration": 0.5,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 3,
+            "duration": 0.5,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 3.5,
+            "duration": 0.5,
+            "technique": "palm-mute"
+          }
+        ]
+      },
+      {
+        "id": "first-power-chords",
+        "title": "První power chordy",
+        "style": "Hard rock",
+        "focus": "Přechody power chordů",
+        "tuning": "standard",
+        "bpm": 110,
+        "difficulty": "beginner",
+        "notes": [
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 0,
+            "duration": 1,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 2,
+            "start": 0,
+            "duration": 1,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 3,
+            "start": 1,
+            "duration": 1,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 5,
+            "start": 1,
+            "duration": 1,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 5,
+            "start": 2,
+            "duration": 1,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 7,
+            "start": 2,
+            "duration": 1,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 3,
+            "start": 3,
+            "duration": 1,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 5,
+            "start": 3,
+            "duration": 1,
+            "technique": "normal"
+          }
+        ]
+      },
+      {
+        "id": "open-e-rocker",
+        "title": "Otevřená E jízda",
+        "style": "Rock",
+        "focus": "Otevřené struny",
+        "tuning": "standard",
+        "bpm": 120,
+        "difficulty": "beginner",
+        "notes": [
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 0,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 0.5,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 3,
+            "start": 1,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 1.5,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 0,
+            "start": 2,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 3,
+            "start": 2.5,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 3,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 3.5,
+            "duration": 0.5,
+            "technique": "normal"
+          }
+        ]
+      },
+      {
+        "id": "pentatonic-warmup",
+        "title": "Pentatonický rozjezd",
+        "style": "Rock",
+        "focus": "Pentatonika",
+        "tuning": "standard",
+        "bpm": 100,
+        "difficulty": "beginner",
+        "notes": [
+          {
+            "stringIndex": 0,
+            "fret": 5,
+            "start": 0,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 8,
+            "start": 0.5,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 5,
+            "start": 1,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 7,
+            "start": 1.5,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 2,
+            "fret": 5,
+            "start": 2,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 2,
+            "fret": 7,
+            "start": 2.5,
+            "duration": 1,
+            "technique": "normal"
+          }
+        ]
+      },
+      {
+        "id": "two-string-stomp",
+        "title": "Dvě struny",
+        "style": "Heavy metal",
+        "focus": "Palm mute",
+        "tuning": "standard",
+        "bpm": 110,
+        "difficulty": "beginner",
+        "notes": [
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 0,
+            "duration": 0.5,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 0.5,
+            "duration": 0.5,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 0,
+            "start": 1,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 2,
+            "fret": 2,
+            "start": 1,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 1.5,
+            "duration": 0.5,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 2,
+            "duration": 0.5,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 2.5,
+            "duration": 0.5,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 0,
+            "start": 3,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 2,
+            "fret": 2,
+            "start": 3,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 3.5,
+            "duration": 0.5,
+            "technique": "palm-mute"
+          }
+        ]
+      },
+      {
+        "id": "slow-d-riff",
+        "title": "Pomalý riff v D",
+        "style": "Hard rock",
+        "focus": "Přechody power chordů",
+        "tuning": "standard",
+        "bpm": 90,
+        "difficulty": "beginner",
+        "notes": [
+          {
+            "stringIndex": 1,
+            "fret": 5,
+            "start": 0,
+            "duration": 2,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 2,
+            "fret": 7,
+            "start": 0,
+            "duration": 2,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 3,
+            "start": 2,
+            "duration": 1,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 2,
+            "fret": 5,
+            "start": 2,
+            "duration": 1,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 3,
+            "start": 3,
+            "duration": 1,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 5,
+            "start": 3,
+            "duration": 1,
+            "technique": "normal"
+          }
+        ]
+      },
+      {
+        "id": "gallop-march",
+        "title": "Gallopový pochod",
+        "style": "Heavy metal",
+        "focus": "Gallop",
+        "tuning": "standard",
+        "bpm": 130,
+        "difficulty": "intermediate",
+        "notes": [
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 0,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 2,
+            "start": 0,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 0.5,
+            "duration": 0.25,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 0.75,
+            "duration": 0.25,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 1,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 2,
+            "start": 1,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 1.5,
+            "duration": 0.25,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 1.75,
+            "duration": 0.25,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 2,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 2,
+            "start": 2,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 2.5,
+            "duration": 0.25,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 2.75,
+            "duration": 0.25,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 3,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 2,
+            "start": 3,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 3.5,
+            "duration": 0.25,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 3.75,
+            "duration": 0.25,
+            "technique": "palm-mute"
+          }
+        ]
+      },
+      {
+        "id": "drop-d-crusher",
+        "title": "Drop D drtič",
+        "style": "Drop D metal",
+        "focus": "Palm mute",
+        "tuning": "drop-d",
+        "bpm": 120,
+        "difficulty": "intermediate",
+        "notes": [
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 0,
+            "duration": 0.5,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 0.5,
+            "duration": 0.5,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 3,
+            "start": 1,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 3,
+            "start": 1,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 1.5,
+            "duration": 0.5,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 2,
+            "duration": 0.5,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 2.5,
+            "duration": 0.5,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 5,
+            "start": 3,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 5,
+            "start": 3,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 3.5,
+            "duration": 0.5,
+            "technique": "palm-mute"
+          }
+        ]
+      },
+      {
+        "id": "drop-d-gallop",
+        "title": "Gallop v Drop D",
+        "style": "Drop D metal",
+        "focus": "Gallop",
+        "tuning": "drop-d",
+        "bpm": 140,
+        "difficulty": "intermediate",
+        "notes": [
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 0,
+            "duration": 0.5,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 0.5,
+            "duration": 0.25,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 0.75,
+            "duration": 0.25,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 1,
+            "duration": 0.5,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 1.5,
+            "duration": 0.25,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 1.75,
+            "duration": 0.25,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 3,
+            "start": 2,
+            "duration": 0.5,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 3,
+            "start": 2.5,
+            "duration": 0.25,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 3,
+            "start": 2.75,
+            "duration": 0.25,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 3,
+            "duration": 0.5,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 3.5,
+            "duration": 0.25,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 3.75,
+            "duration": 0.25,
+            "technique": "palm-mute"
+          }
+        ]
+      },
+      {
+        "id": "pentatonic-lick",
+        "title": "Pentatonický lick",
+        "style": "Rock",
+        "focus": "Pentatonika",
+        "tuning": "standard",
+        "bpm": 110,
+        "difficulty": "intermediate",
+        "notes": [
+          {
+            "stringIndex": 2,
+            "fret": 5,
+            "start": 0,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 2,
+            "fret": 7,
+            "start": 0.5,
+            "duration": 0.5,
+            "technique": "hammer-on"
+          },
+          {
+            "stringIndex": 4,
+            "fret": 5,
+            "start": 1,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 4,
+            "fret": 8,
+            "start": 1.5,
+            "duration": 1,
+            "technique": "bend"
+          },
+          {
+            "stringIndex": 5,
+            "fret": 5,
+            "start": 2.5,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 4,
+            "fret": 5,
+            "start": 3,
+            "duration": 1,
+            "technique": "normal"
+          }
+        ]
+      },
+      {
+        "id": "jumping-power-chords",
+        "title": "Skákavé power chordy",
+        "style": "Heavy metal",
+        "focus": "Přechody power chordů",
+        "tuning": "standard",
+        "bpm": 140,
+        "difficulty": "intermediate",
+        "notes": [
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 0,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 2,
+            "start": 0,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 0.5,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 2,
+            "start": 0.5,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 3,
+            "start": 1,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 2,
+            "fret": 5,
+            "start": 1,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 3,
+            "start": 1.5,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 5,
+            "start": 1.5,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 5,
+            "start": 2,
+            "duration": 1,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 7,
+            "start": 2,
+            "duration": 1,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 3,
+            "start": 3,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 5,
+            "start": 3,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 3.5,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 2,
+            "start": 3.5,
+            "duration": 0.5,
+            "technique": "normal"
+          }
+        ]
+      },
+      {
+        "id": "syncopated-metal",
+        "title": "Synkopovaný riff",
+        "style": "Heavy metal",
+        "focus": "Palm mute",
+        "tuning": "standard",
+        "bpm": 130,
+        "difficulty": "intermediate",
+        "notes": [
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 0,
+            "duration": 0.5,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 0.5,
+            "duration": 0.5,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 1,
+            "duration": 0.25,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 1.25,
+            "duration": 0.25,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 3,
+            "start": 1.5,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 5,
+            "start": 1.5,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 2,
+            "duration": 0.5,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 2.5,
+            "duration": 0.5,
+            "technique": "palm-mute"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 5,
+            "start": 3,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 1,
+            "fret": 7,
+            "start": 3,
+            "duration": 0.5,
+            "technique": "normal"
+          },
+          {
+            "stringIndex": 0,
+            "fret": 0,
+            "start": 3.5,
+            "duration": 0.5,
+            "technique": "palm-mute"
+          }
+        ]
+      }
+    ]
+  },
+  "achievements": {
+    "source": "src/lib/achievements.ts",
+    "symbol": "ACHIEVEMENTS",
+    "items": [
+      {
+        "id": "first-practice",
+        "title": "První cvičení",
+        "description": "Odcvič svůj první den."
+      },
+      {
+        "id": "streak-3",
+        "title": "Tři dny v řadě",
+        "description": "Cvič tři dny po sobě."
+      },
+      {
+        "id": "streak-7",
+        "title": "Týden v řadě",
+        "description": "Cvič sedm dní po sobě."
+      },
+      {
+        "id": "streak-30",
+        "title": "Měsíc v řadě",
+        "description": "Cvič třicet dní po sobě."
+      },
+      {
+        "id": "minutes-60",
+        "title": "Hodina cvičení",
+        "description": "Nacvič dohromady 60 minut."
+      },
+      {
+        "id": "minutes-600",
+        "title": "Deset hodin",
+        "description": "Nacvič dohromady 600 minut."
+      },
+      {
+        "id": "first-lesson",
+        "title": "První lekce",
+        "description": "Dokonči svou první lekci."
+      },
+      {
+        "id": "first-power-chord",
+        "title": "První power chord",
+        "description": "Dokonči lekci o power chordech."
+      },
+      {
+        "id": "stage-1-done",
+        "title": "Stage 1 hotová",
+        "description": "Dokonči všechny lekce Stage 1."
+      },
+      {
+        "id": "all-lessons",
+        "title": "Všechny lekce",
+        "description": "Dokonči všech 18 lekcí."
+      },
+      {
+        "id": "tempo-120",
+        "title": "Rychlé prsty",
+        "description": "Zvládni cvičení na 120 BPM."
+      }
+    ]
+  },
+  "tunings": {
+    "source": "src/audio/tunings.ts",
+    "symbol": "TUNINGS",
+    "items": [
+      {
+        "id": "standard",
+        "label": "Standardní (E A D G B E)",
+        "strings": [
+          {
+            "note": "E2",
+            "midi": 40
+          },
+          {
+            "note": "A2",
+            "midi": 45
+          },
+          {
+            "note": "D3",
+            "midi": 50
+          },
+          {
+            "note": "G3",
+            "midi": 55
+          },
+          {
+            "note": "B3",
+            "midi": 59
+          },
+          {
+            "note": "E4",
+            "midi": 64
+          }
+        ]
+      },
+      {
+        "id": "drop-d",
+        "label": "Drop D (D A D G B E)",
+        "strings": [
+          {
+            "note": "D2",
+            "midi": 38
+          },
+          {
+            "note": "A2",
+            "midi": 45
+          },
+          {
+            "note": "D3",
+            "midi": 50
+          },
+          {
+            "note": "G3",
+            "midi": 55
+          },
+          {
+            "note": "B3",
+            "midi": 59
+          },
+          {
+            "note": "E4",
+            "midi": 64
+          }
+        ]
+      },
+      {
+        "id": "eb-standard",
+        "label": "Eb standard (Eb Ab Db Gb Bb Eb)",
+        "strings": [
+          {
+            "note": "D#2",
+            "midi": 39
+          },
+          {
+            "note": "G#2",
+            "midi": 44
+          },
+          {
+            "note": "C#3",
+            "midi": 49
+          },
+          {
+            "note": "F#3",
+            "midi": 54
+          },
+          {
+            "note": "A#3",
+            "midi": 58
+          },
+          {
+            "note": "D#4",
+            "midi": 63
+          }
+        ]
+      },
+      {
+        "id": "d-standard",
+        "label": "D standard (D G C F A D)",
+        "strings": [
+          {
+            "note": "D2",
+            "midi": 38
+          },
+          {
+            "note": "G2",
+            "midi": 43
+          },
+          {
+            "note": "C3",
+            "midi": 48
+          },
+          {
+            "note": "F3",
+            "midi": 53
+          },
+          {
+            "note": "A3",
+            "midi": 57
+          },
+          {
+            "note": "D4",
+            "midi": 62
+          }
+        ]
+      },
+      {
+        "id": "drop-c",
+        "label": "Drop C (C G C F A D)",
+        "strings": [
+          {
+            "note": "C2",
+            "midi": 36
+          },
+          {
+            "note": "G2",
+            "midi": 43
+          },
+          {
+            "note": "C3",
+            "midi": 48
+          },
+          {
+            "note": "F3",
+            "midi": 53
+          },
+          {
+            "note": "A3",
+            "midi": 57
+          },
+          {
+            "note": "D4",
+            "midi": 62
+          }
+        ]
+      },
+      {
+        "id": "drop-b",
+        "label": "Drop B (B F# B E G# C#)",
+        "strings": [
+          {
+            "note": "B1",
+            "midi": 35
+          },
+          {
+            "note": "F#2",
+            "midi": 42
+          },
+          {
+            "note": "B2",
+            "midi": 47
+          },
+          {
+            "note": "E3",
+            "midi": 52
+          },
+          {
+            "note": "G#3",
+            "midi": 56
+          },
+          {
+            "note": "C#4",
+            "midi": 61
+          }
+        ]
+      },
+      {
+        "id": "open-g",
+        "label": "Open G (D G D G B D)",
+        "strings": [
+          {
+            "note": "D2",
+            "midi": 38
+          },
+          {
+            "note": "G2",
+            "midi": 43
+          },
+          {
+            "note": "D3",
+            "midi": 50
+          },
+          {
+            "note": "G3",
+            "midi": 55
+          },
+          {
+            "note": "B3",
+            "midi": 59
+          },
+          {
+            "note": "D4",
+            "midi": 62
+          }
+        ]
+      },
+      {
+        "id": "open-d",
+        "label": "Open D (D A D F# A D)",
+        "strings": [
+          {
+            "note": "D2",
+            "midi": 38
+          },
+          {
+            "note": "A2",
+            "midi": 45
+          },
+          {
+            "note": "D3",
+            "midi": 50
+          },
+          {
+            "note": "F#3",
+            "midi": 54
+          },
+          {
+            "note": "A3",
+            "midi": 57
+          },
+          {
+            "note": "D4",
+            "midi": 62
+          }
+        ]
+      },
+      {
+        "id": "dadgad",
+        "label": "DADGAD (D A D G A D)",
+        "strings": [
+          {
+            "note": "D2",
+            "midi": 38
+          },
+          {
+            "note": "A2",
+            "midi": 45
+          },
+          {
+            "note": "D3",
+            "midi": 50
+          },
+          {
+            "note": "G3",
+            "midi": 55
+          },
+          {
+            "note": "A3",
+            "midi": 57
+          },
+          {
+            "note": "D4",
+            "midi": 62
+          }
+        ]
+      }
+    ]
+  },
+  "ampPresets": {
+    "source": "src/lib/ampPresets.ts",
+    "symbol": "AMP_PRESETS",
+    "items": [
+      {
+        "id": "clean",
+        "name": "Čistý",
+        "settings": {
+          "compression": 0,
+          "drive": 0.1,
+          "distortion": "distortion",
+          "bass": 0.1,
+          "mid": 0,
+          "treble": 0.15,
+          "cabinet": "modern",
+          "delay": 0.1,
+          "reverb": 0,
+          "chorus": 0,
+          "level": 0.6
+        }
+      },
+      {
+        "id": "crunch",
+        "name": "Crunch",
+        "settings": {
+          "compression": 0,
+          "drive": 0.45,
+          "distortion": "distortion",
+          "bass": 0.1,
+          "mid": 0.2,
+          "treble": 0.1,
+          "cabinet": "modern",
+          "delay": 0,
+          "reverb": 0,
+          "chorus": 0,
+          "level": 0.5
+        }
+      },
+      {
+        "id": "lead",
+        "name": "Lead",
+        "settings": {
+          "compression": 0,
+          "drive": 0.7,
+          "distortion": "distortion",
+          "bass": 0,
+          "mid": 0.35,
+          "treble": 0.2,
+          "cabinet": "modern",
+          "delay": 0.35,
+          "reverb": 0,
+          "chorus": 0,
+          "level": 0.5
+        }
+      },
+      {
+        "id": "metal",
+        "name": "Metal",
+        "settings": {
+          "compression": 0,
+          "drive": 0.92,
+          "distortion": "distortion",
+          "bass": 0.35,
+          "mid": -0.3,
+          "treble": 0.3,
+          "cabinet": "modern",
+          "delay": 0,
+          "reverb": 0,
+          "chorus": 0,
+          "level": 0.45
+        }
+      }
+    ]
+  },
+  "metronomePresets": {
+    "source": "src/lib/metronomePresets.ts",
+    "symbol": "FACTORY_PRESETS",
+    "items": [
+      {
+        "id": "factory-blues-shuffle",
+        "name": "Blues shuffle",
+        "bpm": 90,
+        "beatsPerBar": 4,
+        "subdivision": 2,
+        "accentPattern": [
+          "accent",
+          "normal",
+          "accent",
+          "normal"
+        ],
+        "sound": "wood",
+        "volume": 0.8,
+        "accentVolume": 1,
+        "ramp": {
+          "enabled": false,
+          "everyBars": 4,
+          "stepBpm": 5,
+          "targetBpm": 160
+        },
+        "gap": {
+          "enabled": false,
+          "audibleBars": 4,
+          "silentBars": 1
+        },
+        "swing": 0.6666666666666666,
+        "countInBars": 0,
+        "polyrhythm": {
+          "enabled": false,
+          "ticksPerBeat": 3,
+          "sound": "hihat",
+          "volume": 0.6
+        },
+        "soundPattern": [
+          "click",
+          "wood",
+          "click",
+          "wood"
+        ],
+        "subdivisionSound": "hihat"
+      },
+      {
+        "id": "factory-metal-gallop",
+        "name": "Metal gallop",
+        "bpm": 130,
+        "beatsPerBar": 4,
+        "subdivision": 4,
+        "accentPattern": [
+          "accent",
+          "normal",
+          "accent",
+          "normal"
+        ],
+        "sound": "click",
+        "volume": 0.8,
+        "accentVolume": 1,
+        "ramp": {
+          "enabled": true,
+          "everyBars": 8,
+          "stepBpm": 5,
+          "targetBpm": 200
+        },
+        "gap": {
+          "enabled": false,
+          "audibleBars": 4,
+          "silentBars": 1
+        },
+        "swing": 0.5,
+        "countInBars": 0,
+        "polyrhythm": {
+          "enabled": false,
+          "ticksPerBeat": 3,
+          "sound": "hihat",
+          "volume": 0.6
+        },
+        "soundPattern": [
+          "click",
+          "wood",
+          "click",
+          "wood"
+        ]
+      },
+      {
+        "id": "factory-funk-groove",
+        "name": "Funk groove",
+        "bpm": 100,
+        "beatsPerBar": 4,
+        "subdivision": 4,
+        "accentPattern": [
+          "normal",
+          "accent",
+          "normal",
+          "accent"
+        ],
+        "sound": "wood",
+        "volume": 0.8,
+        "accentVolume": 1,
+        "ramp": {
+          "enabled": false,
+          "everyBars": 4,
+          "stepBpm": 5,
+          "targetBpm": 160
+        },
+        "gap": {
+          "enabled": false,
+          "audibleBars": 4,
+          "silentBars": 1
+        },
+        "swing": 0.5,
+        "countInBars": 0,
+        "polyrhythm": {
+          "enabled": false,
+          "ticksPerBeat": 3,
+          "sound": "hihat",
+          "volume": 0.6
+        },
+        "soundPattern": [
+          "click",
+          "wood",
+          "click",
+          "wood"
+        ],
+        "subdivisionSound": "hihat"
+      },
+      {
+        "id": "factory-waltz-3-4",
+        "name": "Waltz 3/4",
+        "bpm": 110,
+        "beatsPerBar": 3,
+        "subdivision": 1,
+        "accentPattern": [
+          "accent",
+          "normal",
+          "normal"
+        ],
+        "sound": "classic",
+        "volume": 0.8,
+        "accentVolume": 1,
+        "ramp": {
+          "enabled": false,
+          "everyBars": 4,
+          "stepBpm": 5,
+          "targetBpm": 160
+        },
+        "gap": {
+          "enabled": false,
+          "audibleBars": 4,
+          "silentBars": 1
+        },
+        "swing": 0.5,
+        "countInBars": 0,
+        "polyrhythm": {
+          "enabled": false,
+          "ticksPerBeat": 3,
+          "sound": "hihat",
+          "volume": 0.6
+        }
+      },
+      {
+        "id": "factory-jazz-swing",
+        "name": "Jazz swing",
+        "bpm": 120,
+        "beatsPerBar": 4,
+        "subdivision": 2,
+        "accentPattern": [
+          "normal",
+          "accent",
+          "normal",
+          "accent"
+        ],
+        "sound": "classic",
+        "volume": 0.8,
+        "accentVolume": 1,
+        "ramp": {
+          "enabled": false,
+          "everyBars": 4,
+          "stepBpm": 5,
+          "targetBpm": 160
+        },
+        "gap": {
+          "enabled": false,
+          "audibleBars": 4,
+          "silentBars": 1
+        },
+        "swing": 0.6666666666666666,
+        "countInBars": 0,
+        "polyrhythm": {
+          "enabled": false,
+          "ticksPerBeat": 3,
+          "sound": "hihat",
+          "volume": 0.6
+        },
+        "subdivisionSound": "hihat"
+      },
+      {
+        "id": "factory-polyrhythm-3-4",
+        "name": "Polyrytmus 3 proti 4",
+        "bpm": 80,
+        "beatsPerBar": 4,
+        "subdivision": 4,
+        "accentPattern": [
+          "accent",
+          "normal",
+          "normal",
+          "normal"
+        ],
+        "sound": "click",
+        "volume": 0.8,
+        "accentVolume": 1,
+        "ramp": {
+          "enabled": false,
+          "everyBars": 4,
+          "stepBpm": 5,
+          "targetBpm": 160
+        },
+        "gap": {
+          "enabled": false,
+          "audibleBars": 4,
+          "silentBars": 1
+        },
+        "swing": 0.5,
+        "countInBars": 0,
+        "polyrhythm": {
+          "enabled": true,
+          "ticksPerBeat": 3,
+          "sound": "hihat",
+          "volume": 0.6
+        }
+      }
+    ]
+  },
+  "timeSignatures": {
+    "source": "src/lib/metronomeConfig.ts",
+    "symbol": "TIME_SIGNATURES",
+    "items": [
+      {
+        "id": "2/4",
+        "label": "2/4",
+        "beatsPerBar": 2,
+        "defaultAccents": [
+          "accent",
+          "normal"
+        ]
+      },
+      {
+        "id": "3/4",
+        "label": "3/4",
+        "beatsPerBar": 3,
+        "defaultAccents": [
+          "accent",
+          "normal",
+          "normal"
+        ]
+      },
+      {
+        "id": "4/4",
+        "label": "4/4",
+        "beatsPerBar": 4,
+        "defaultAccents": [
+          "accent",
+          "normal",
+          "normal",
+          "normal"
+        ]
+      },
+      {
+        "id": "5/4",
+        "label": "5/4",
+        "beatsPerBar": 5,
+        "defaultAccents": [
+          "accent",
+          "normal",
+          "normal",
+          "accent",
+          "normal"
+        ]
+      },
+      {
+        "id": "6/8",
+        "label": "6/8",
+        "beatsPerBar": 6,
+        "defaultAccents": [
+          "accent",
+          "normal",
+          "normal",
+          "accent",
+          "normal",
+          "normal"
+        ]
+      },
+      {
+        "id": "7/8",
+        "label": "7/8",
+        "beatsPerBar": 7,
+        "defaultAccents": [
+          "accent",
+          "normal",
+          "accent",
+          "normal",
+          "accent",
+          "normal",
+          "normal"
+        ]
+      },
+      {
+        "id": "12/8",
+        "label": "12/8",
+        "beatsPerBar": 12,
+        "defaultAccents": [
+          "accent",
+          "normal",
+          "normal",
+          "accent",
+          "normal",
+          "normal",
+          "accent",
+          "normal",
+          "normal",
+          "accent",
+          "normal",
+          "normal"
+        ]
+      }
+    ]
+  },
+  "clickSounds": {
+    "source": "src/lib/metronomeConfig.ts",
+    "symbol": "CLICK_SOUNDS",
+    "items": [
+      {
+        "id": "classic",
+        "label": "Klasik"
+      },
+      {
+        "id": "wood",
+        "label": "Dřevo"
+      },
+      {
+        "id": "beep",
+        "label": "Pípnutí"
+      },
+      {
+        "id": "click",
+        "label": "Cvak"
+      },
+      {
+        "id": "hihat",
+        "label": "Hi-hat"
+      }
+    ]
+  },
+  "surgicalExercises": {
+    "source": "src/lib/exercises.ts",
+    "symbol": "EXERCISES",
+    "items": [
+      {
+        "id": "spider",
+        "name": "Pavoučí cvičení 1-2-3-4",
+        "description": "Rozehřátí prstů — pražce 1 až 4 na dvou strunách.",
+        "notes": [
+          41,
+          42,
+          43,
+          44,
+          46,
+          47,
+          48,
+          49
+        ]
+      },
+      {
+        "id": "pentatonika-nahoru",
+        "name": "A moll pentatonika nahoru",
+        "description": "Pentatonická stupnice vzestupně — základ rockových sól.",
+        "notes": [
+          45,
+          48,
+          50,
+          52,
+          55,
+          57
+        ]
+      },
+      {
+        "id": "pentatonika-dolu",
+        "name": "A moll pentatonika dolů",
+        "description": "Pentatonická stupnice sestupně.",
+        "notes": [
+          57,
+          55,
+          52,
+          50,
+          48,
+          45
+        ]
+      },
+      {
+        "id": "dur-stupnice",
+        "name": "C dur stupnice",
+        "description": "Durová stupnice přes celou oktávu.",
+        "notes": [
+          48,
+          50,
+          52,
+          53,
+          55,
+          57,
+          59,
+          60
+        ]
+      },
+      {
+        "id": "melodicky-rif",
+        "name": "Melodický riff",
+        "description": "Krátká fráze na procvičení přechodů mezi tóny.",
+        "notes": [
+          40,
+          43,
+          45,
+          43,
+          40,
+          45
+        ]
+      }
+    ]
+  },
+  "powerChordExercises": {
+    "source": "src/lib/metalExercises.ts",
+    "symbol": "POWER_CHORD_EXERCISES",
+    "items": [
+      {
+        "id": "adjacent-frets",
+        "name": "Sousední pražce",
+        "description": "E5, F5, F#5, G5 po nízké E struně — čistý přesun o jeden pražec.",
+        "sequence": [
+          "e-0",
+          "e-1",
+          "e-2",
+          "e-3"
+        ],
+        "beatsPerChord": 2,
+        "startBpm": 70
+      },
+      {
+        "id": "string-switch",
+        "name": "Přechod mezi strunami",
+        "description": "Střídání kořene na E a A struně — E5, A5, G5, C5.",
+        "sequence": [
+          "e-0",
+          "a-0",
+          "e-3",
+          "a-3"
+        ],
+        "beatsPerChord": 2,
+        "startBpm": 70
+      },
+      {
+        "id": "power-jumps",
+        "name": "Přeskoky pozic",
+        "description": "Větší skoky po hmatníku — E5, G5, A5, C5 a zpět.",
+        "sequence": [
+          "e-0",
+          "e-3",
+          "e-5",
+          "e-8",
+          "e-5",
+          "e-3"
+        ],
+        "beatsPerChord": 1,
+        "startBpm": 80
+      }
+    ]
+  },
+  "gallopExercises": {
+    "source": "src/lib/metalExercises.ts",
+    "symbol": "GALLOP_EXERCISES",
+    "items": [
+      {
+        "id": "basic-gallop",
+        "name": "Základní gallop",
+        "description": "Klasický gallop (osminka plus dvě šestnáctky) na E5 — rytmus Iron Maiden.",
+        "cell": [
+          0.5,
+          0.25,
+          0.25
+        ],
+        "chordId": "e-0",
+        "startBpm": 90
+      },
+      {
+        "id": "reverse-gallop",
+        "name": "Reverzní gallop",
+        "description": "Obrácený gallop (dvě šestnáctky plus osminka) na E5.",
+        "cell": [
+          0.25,
+          0.25,
+          0.5
+        ],
+        "chordId": "e-0",
+        "startBpm": 90
+      }
+    ]
+  },
+  "palmMuteDrills": {
+    "source": "src/lib/palmMute.ts",
+    "symbol": "PALM_MUTE_DRILLS",
+    "items": [
+      {
+        "id": "eight-muted",
+        "name": "Osm utlumených",
+        "description": "Zahraj osm utlumených úderů za sebou.",
+        "pattern": [
+          "muted",
+          "muted",
+          "muted",
+          "muted",
+          "muted",
+          "muted",
+          "muted",
+          "muted"
+        ]
+      },
+      {
+        "id": "alternating",
+        "name": "Střídání",
+        "description": "Střídej utlumený a otevřený úder — celkem osm úderů.",
+        "pattern": [
+          "muted",
+          "open",
+          "muted",
+          "open",
+          "muted",
+          "open",
+          "muted",
+          "open"
+        ]
+      }
+    ]
+  },
+  "screens": {
+    "source": "src/lib/screens.ts",
+    "symbol": "SCREENS",
+    "items": [
+      {
+        "href": "/",
+        "label": "Domů",
+        "description": "Denní plán a rychlý přehled."
+      },
+      {
+        "href": "/live",
+        "label": "Live",
+        "description": "Hraní s kytarou v ruce — ladička, metronom, nahrávání."
+      },
+      {
+        "href": "/tuner",
+        "label": "Ladička",
+        "description": "Naladění kytary v centech."
+      },
+      {
+        "href": "/metronome",
+        "label": "Metronom",
+        "description": "Tempo, takty, akcenty."
+      },
+      {
+        "href": "/practice",
+        "label": "Cvičení",
+        "description": "Lekce a riff trainer."
+      },
+      {
+        "href": "/tutor",
+        "label": "AI tutor",
+        "description": "Zeptej se na cokoliv o hraní."
+      },
+      {
+        "href": "/games",
+        "label": "Hry",
+        "description": "Hmatníkové hry a ear training."
+      },
+      {
+        "href": "/metal",
+        "label": "Metal",
+        "description": "Trenažéry pro rock a metal."
+      },
+      {
+        "href": "/amp",
+        "label": "Aparát",
+        "description": "Efekty a simulace aparátu."
+      },
+      {
+        "href": "/library",
+        "label": "Knihovna",
+        "description": "Akordy, stupnice, riffy."
+      },
+      {
+        "href": "/notation",
+        "label": "Noty",
+        "description": "Prohlížeč tabulatur a not."
+      },
+      {
+        "href": "/recorder",
+        "label": "Nahrávání",
+        "description": "Nahrávky, Studio a Looper na jednom místě."
+      },
+      {
+        "href": "/profile",
+        "label": "Profil",
+        "description": "Nastavení a tvoje data."
+      }
+    ]
+  }
+}

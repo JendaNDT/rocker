@@ -1,0 +1,891 @@
+{
+  "schemaVersion": 1,
+  "views": [
+    {
+      "id": "01",
+      "title": "Přehled",
+      "route": "/",
+      "sources": [
+        "src/components/dashboard/Dashboard.tsx",
+        "src/lib/dailyPlan.ts",
+        "src/lib/achievements.ts"
+      ],
+      "tests": [
+        "src/lib/dailyPlan.test.ts",
+        "src/lib/achievements.test.ts"
+      ],
+      "data": "rocker-progress,rocker-lesson-progress,rocker-settings",
+      "current": [
+        "Denní plán o 17 minutách, další nedokončená lekce, rotace hlavního cvičení, statistiky, série a odměny; Zen skrývá gamifikaci."
+      ],
+      "acceptance": [
+        "Z profilu se dvěma dokončenými lekcemi nabídnout správnou následující lekci; ověřit součet minut a režim Zen."
+      ],
+      "difference": "Odkaz plánu dnes vede pouze na obecnou obrazovku; přímé otevření konkrétní úlohy je plánovaná oprava.",
+      "steps": [
+        "W32",
+        "W33"
+      ],
+      "evidence": "source-inspected; automated references where listed; UI/hardware acceptance not executed"
+    },
+    {
+      "id": "02",
+      "title": "Live",
+      "route": "/live",
+      "sources": [
+        "src/app/live/page.tsx",
+        "src/hooks/useWakeLock.ts",
+        "src/audio/ampEngine.ts"
+      ],
+      "tests": [
+        "src/audio/ampEngine.test.ts"
+      ],
+      "data": "rocker-settings,rocker-metronome,rocker-amp; transport a záznam v paměti",
+      "current": [
+        "Velká ladička, metronom, nahrávání a wake lock při aktivním používání; sdílený aparát."
+      ],
+      "acceptance": [
+        "Změnit tempo, spustit/zastavit záznam, odejít a vrátit se bez zdvojení audio hostu; ověřit platný uložený take."
+      ],
+      "difference": "Live se dnes nezapočítává do practiceTime; skutečný hardware ani odezva nejsou ověřené tímto baseline.",
+      "steps": [
+        "W33"
+      ],
+      "evidence": "source-inspected; automated references where listed; UI/hardware acceptance not executed"
+    },
+    {
+      "id": "03",
+      "title": "Ladička",
+      "route": "/tuner",
+      "sources": [
+        "src/components/tuner/GuidedTuner.tsx",
+        "src/components/tuner/TunerSettings.tsx",
+        "src/audio/pitchDetector.ts",
+        "src/audio/tunings.ts",
+        "src/components/tuner/CustomTuningEditor.tsx"
+      ],
+      "tests": [
+        "src/audio/pitchDetector.test.ts",
+        "src/audio/tunings.test.ts",
+        "src/audio/referenceTone.test.ts",
+        "src/stores/customTuningsStore.test.ts"
+      ],
+      "data": "rocker-settings,rocker-custom-tunings",
+      "current": [
+        "Vedený/chromatický režim, 9 továrních a nejvýše 20 vlastních šestistrunných ladění, centy, confidence a šumová brána s kalibrací; referenční tón struny, jeho hlasitost a volitelná zvuková/haptická konfirmace; značení H/B."
+      ],
+      "acceptance": [
+        "Přehrát syntetické E2 a A4, ověřit tóny a ticho; obnovit vlastní ladění a H/B; referenční tón zastavit při uvolnění tlačítka."
+      ],
+      "difference": "Frekvenční výpočty mají pevnou referenci A4=440 Hz; nastavitelná reference by byla nová funkce. Detekce běží na hlavním vlákně, ne v AudioWorkletu.",
+      "steps": [
+        "W19"
+      ],
+      "evidence": "source-inspected; automated references where listed; UI/hardware acceptance not executed"
+    },
+    {
+      "id": "04",
+      "title": "Metronom",
+      "route": "/metronome",
+      "sources": [
+        "src/components/metronome/MetronomeWidget.tsx",
+        "src/components/metronome/TrainerPanel.tsx",
+        "src/components/metronome/PolyrhythmPanel.tsx",
+        "src/audio/metronome.ts",
+        "src/lib/metronomeConfig.ts"
+      ],
+      "tests": [
+        "src/lib/metronomeConfig.test.ts",
+        "src/lib/metronomePresets.test.ts",
+        "src/audio/metronome.test.ts"
+      ],
+      "data": "rocker-metronome; runtime transport",
+      "current": [
+        "40–240 BPM, tap, 7 taktových měr, subdivize, akcent/mute a zvuky jednotlivých dob, 5 kliků, drum mode, swing, předtakt, rampy, tiché takty, polyrytmus, 6 továrních a vlastní presety, kyvadlo nebo tečky."
+      ],
+      "acceptance": [
+        "Znovu načíst vlastní preset; ověřit hranice předtaktu, rampy a ticha i součet swingových dob; přepnutí vizualizace nemění časování."
+      ],
+      "difference": "Zvukové události používají Web Audio clock; nativní callback, výpadky a společný transport vyžadují novou implementaci.",
+      "steps": [
+        "W18"
+      ],
+      "evidence": "source-inspected; automated references where listed; UI/hardware acceptance not executed"
+    },
+    {
+      "id": "05",
+      "title": "Výběr lekce",
+      "route": "/practice",
+      "sources": [
+        "src/app/practice/page.tsx",
+        "src/lib/lessons.ts",
+        "src/lib/lessonEngine.ts"
+      ],
+      "tests": [
+        "src/lib/lessonEngine.test.ts",
+        "src/lib/lessonProgress.test.ts"
+      ],
+      "data": "rocker-lesson-progress",
+      "current": [
+        "3 etapy, 18 lekcí, dokončení, další nedokončená lekce."
+      ],
+      "acceptance": [
+        "Každou lekci najít podle stabilního ID; po importu jsou stejné dokončené lekce."
+      ],
+      "difference": "Uložen je seznam dokončených ID, ne pozice uvnitř lekce.",
+      "steps": [
+        "W06",
+        "W25"
+      ],
+      "evidence": "source-inspected; automated references where listed; UI/hardware acceptance not executed"
+    },
+    {
+      "id": "06",
+      "title": "Průběh lekce",
+      "route": "/practice",
+      "sources": [
+        "src/components/practice/LessonPlayer.tsx",
+        "src/components/practice/StepView.tsx",
+        "src/components/practice/NoteCheck.tsx"
+      ],
+      "tests": [
+        "src/lib/lessonEngine.test.ts"
+      ],
+      "data": "rocker-lesson-progress; aktuální krok v paměti",
+      "current": [
+        "Textové, akordové a tónové kroky; kontrola tónu; dokončení lekce."
+      ],
+      "acceptance": [
+        "Projít každý typ kroku, opakovaným potvrzením nevytvořit duplicitu dokončení; bez vstupu se tónová kontrola netváří úspěšně."
+      ],
+      "difference": "Monofonní detekce nevyhodnocuje celý akord; obnovení rozpracovaného kroku je desktopové doplnění.",
+      "steps": [
+        "W25"
+      ],
+      "evidence": "source-inspected; automated references where listed; UI/hardware acceptance not executed"
+    },
+    {
+      "id": "07",
+      "title": "Vlastní skladba",
+      "route": "/practice",
+      "sources": [
+        "src/components/practice/RiffTrainer.tsx",
+        "src/components/practice/Waveform.tsx",
+        "src/audio/riffPlayer.ts"
+      ],
+      "tests": [
+        "src/audio/riffPlayer.test.ts",
+        "src/lib/waveform.test.ts"
+      ],
+      "data": "Soubor, A/B a transport v paměti",
+      "current": [
+        "MP3/WAV a prohlížečem podporovaný zvuk, waveform, A/B, zpomalení bez změny výšky, předtakt a postupné zrychlení."
+      ],
+      "acceptance": [
+        "Otevřít referenční WAV/MP3, nastavit A/B a rychlost, opakovaně seekovat; ověřit délku a ukončení starého přehrávání."
+      ],
+      "difference": "Přehrávač využívá browser preservesPitch; trvalé pojmenované lokální úseky je třeba doplnit.",
+      "steps": [
+        "W21"
+      ],
+      "evidence": "source-inspected; automated references where listed; UI/hardware acceptance not executed"
+    },
+    {
+      "id": "08",
+      "title": "YouTube cvičení",
+      "route": "/practice",
+      "sources": [
+        "src/components/youtube/YouTubePlayer.tsx",
+        "src/components/youtube/useYouTubePlayer.ts",
+        "src/lib/youtube.ts",
+        "src/lib/youtubeApi.ts"
+      ],
+      "tests": [
+        "src/lib/youtube.test.ts",
+        "src/lib/ytLoops.test.ts"
+      ],
+      "data": "rocker-yt-loops",
+      "current": [
+        "Oficiální iframe, URL/video ID, A/B a dostupné rychlosti, pojmenování a uložení smyček."
+      ],
+      "acceptance": [
+        "Obnovit zkušební smyčku bez síťového požadavku; samostatně ověřit povolené živé video, chybu vložení a offline stav."
+      ],
+      "difference": "Syntetické video ID není reálné video. Souběh s ASIO a aktuální pravidla embedu čekají na W04/W30.",
+      "steps": [
+        "W04",
+        "W30"
+      ],
+      "evidence": "source-inspected; automated references where listed; UI/hardware acceptance not executed"
+    },
+    {
+      "id": "09",
+      "title": "Přesný trénink",
+      "route": "/practice",
+      "sources": [
+        "src/components/practice/SurgicalTrainer.tsx",
+        "src/lib/surgicalEngine.ts",
+        "src/lib/exercises.ts"
+      ],
+      "tests": [
+        "src/lib/surgicalEngine.test.ts"
+      ],
+      "data": "5 cvičení; stav drillu v paměti",
+      "current": [
+        "Průchod po tónech podle pitch class, chyby na pozicích, nejhorší okno nejvýše 3 tónů, 3 čisté repetice; chyba v drillu resetuje sérii."
+      ],
+      "acceptance": [
+        "Přehrát zaznamenané stopy čistého průchodu, chyby a tří drillů; ověřit i tón o oktávu výše."
+      ],
+      "difference": "UI neumí rozlišit sousední stejné tóny; cvičení se tomu vyhýbají. Waveforma v návrhu je druhý režim, ne náhrada stávajícího.",
+      "steps": [
+        "W26"
+      ],
+      "evidence": "source-inspected; automated references where listed; UI/hardware acceptance not executed"
+    },
+    {
+      "id": "10",
+      "title": "Power chordy",
+      "route": "/metal",
+      "sources": [
+        "src/components/metal/PowerChordTrainer.tsx",
+        "src/lib/powerChordTrainer.ts",
+        "src/lib/metalExercises.ts"
+      ],
+      "tests": [
+        "src/lib/powerChordTrainer.test.ts",
+        "src/lib/powerChords.test.ts"
+      ],
+      "data": "rocker-progress; trénink v paměti",
+      "current": [
+        "3 cvičení, diagramy, změny poloh, další akord, metronom, kola, zrychlování a BPM rekordy."
+      ],
+      "acceptance": [
+        "Projít kolo proti metronomu, správně změnit akord i tempo a uložit pouze lepší rekord."
+      ],
+      "difference": "Automatické hodnocení správnosti celého akordu není doložené; nevytvářet takový slib.",
+      "steps": [
+        "W27"
+      ],
+      "evidence": "source-inspected; automated references where listed; UI/hardware acceptance not executed"
+    },
+    {
+      "id": "11",
+      "title": "Gallop",
+      "route": "/metal",
+      "sources": [
+        "src/components/metal/GallopTrainer.tsx",
+        "src/audio/gallopPlayer.ts",
+        "src/lib/gallopTrainer.ts"
+      ],
+      "tests": [
+        "src/lib/gallopTrainer.test.ts",
+        "src/audio/gallopPlayer.test.ts"
+      ],
+      "data": "rocker-progress; transport v paměti",
+      "current": [
+        "2 vzory včetně reverzního, synchronní náhled, kola a zrychlování, tempo rekordy."
+      ],
+      "acceptance": [
+        "Ověřit časové pozice patternu a změnu kola/tempa; zastavení ukončí všechny naplánované události."
+      ],
+      "difference": "Pocit rytmu při skutečné kytaře čeká na hardware.",
+      "steps": [
+        "W27"
+      ],
+      "evidence": "source-inspected; automated references where listed; UI/hardware acceptance not executed"
+    },
+    {
+      "id": "12",
+      "title": "Palm mute",
+      "route": "/metal",
+      "sources": [
+        "src/components/metal/PalmMuteStudio.tsx",
+        "src/audio/muteAnalyzer.ts",
+        "src/lib/palmMute.ts"
+      ],
+      "tests": [
+        "src/lib/palmMute.test.ts"
+      ],
+      "data": "Kalibrace a drill v paměti; sdílené nastavení vstupu",
+      "current": [
+        "Centroid a onset, kalibrace tlumeného/otevřeného úhozu, 2 drilly a skóre."
+      ],
+      "acceptance": [
+        "Ověřit čistou logiku kalibrace a skóre, ticho a nedostatečnou kalibraci; konečné rozlišení na konkrétní kytaře."
+      ],
+      "difference": "Syntetický tón nepotvrzuje rozpoznání techniky; úspěšný klasifikátor nelze prohlásit bez kytary.",
+      "steps": [
+        "W19",
+        "W27"
+      ],
+      "evidence": "source-inspected; automated references where listed; UI/hardware acceptance not executed"
+    },
+    {
+      "id": "13",
+      "title": "Aparát",
+      "route": "/amp",
+      "sources": [
+        "src/components/amp/AmpStudio.tsx",
+        "src/components/amp/AmpHost.tsx",
+        "src/audio/ampChain.ts",
+        "src/audio/ampEngine.ts",
+        "src/lib/ampPresets.ts"
+      ],
+      "tests": [
+        "src/audio/ampEngine.test.ts",
+        "src/lib/ampPresets.test.ts"
+      ],
+      "data": "rocker-amp,rocker-amp-presets",
+      "current": [
+        "4 tovární a vlastní presety, compression, drive, 3 typy zkreslení, 3 pásma EQ, 3 charaktery kabinetu, delay/reverb/chorus/level, scope/metr, singleton napříč navigací a záznam po efektech."
+      ],
+      "acceptance": [
+        "Obnovit vlastní preset, změnit parametr, přejít do jiné obrazovky a zaznamenat zaaparátovaný zvuk."
+      ],
+      "difference": "Kompresor zůstává v řetězci i při nulové intenzitě. Nativní bypass a nová DSP nejsou součástí W01.",
+      "steps": [
+        "W17"
+      ],
+      "evidence": "source-inspected; automated references where listed; UI/hardware acceptance not executed"
+    },
+    {
+      "id": "14",
+      "title": "Nahrávky",
+      "route": "/recorder",
+      "sources": [
+        "src/components/recorder/RecordingItem.tsx",
+        "src/components/recorder/AbCompare.tsx",
+        "src/audio/recorder.ts",
+        "src/lib/recordingsDb.ts"
+      ],
+      "tests": [
+        "src/lib/recordings.test.ts",
+        "src/lib/recordingsDb.test.ts"
+      ],
+      "data": "IndexedDB rocker/recordings v1",
+      "current": [
+        "MediaRecorder, seznam/přejmenování/mazání, poslech, A/B dvou take-ů, pojmenované časové značky, skok na značku, export původního kodeku."
+      ],
+      "acceptance": [
+        "Načíst všech 5 referenčních záznamů, obnovit značku a přehrát; názvy souborů a MIME souhlasí; export není přejmenovaný blob."
+      ],
+      "difference": "Délka se dnes měří nástěnným časem; desktop potřebuje počet vzorků a průběžný bezpečný zápis.",
+      "steps": [
+        "W22"
+      ],
+      "evidence": "source-inspected; automated references where listed; UI/hardware acceptance not executed"
+    },
+    {
+      "id": "15",
+      "title": "Studio",
+      "route": "/recorder",
+      "sources": [
+        "src/components/studio/Studio.tsx",
+        "src/audio/multitrackEngine.ts",
+        "src/lib/multitrack.ts"
+      ],
+      "tests": [
+        "src/audio/multitrackEngine.test.ts",
+        "src/lib/multitrack.test.ts",
+        "src/lib/wav.test.ts"
+      ],
+      "data": "Projekt a stopy pouze v paměti",
+      "current": [
+        "Záznam dalších stop při přehrávání projektu, gain/mute, odstranění stopy a WAV mixdown."
+      ],
+      "acceptance": [
+        "Vrstvit známé signály, ztlumit jednu stopu, exportovat mix a ověřit délku a kanály."
+      ],
+      "difference": "Trvalé projekty, pan, solo, přesný posun, undo a kompenzace latence jsou nové desktopové části.",
+      "steps": [
+        "W24"
+      ],
+      "evidence": "source-inspected; automated references where listed; UI/hardware acceptance not executed"
+    },
+    {
+      "id": "16",
+      "title": "Looper",
+      "route": "/recorder",
+      "sources": [
+        "src/components/looper/LoopPedal.tsx",
+        "src/audio/loopPedal.ts",
+        "src/lib/loopMix.ts"
+      ],
+      "tests": [
+        "src/audio/loopPedal.test.ts",
+        "src/lib/loopMix.test.ts"
+      ],
+      "data": "Smyčka a vrstvy v paměti",
+      "current": [
+        "První záznam určí délku; přehrávání, overdub, mix vrstev a vymazání."
+      ],
+      "acceptance": [
+        "Ověřit délku první smyčky a opakované vrstvení, zastavení a reset; posun vrstev přiznat."
+      ],
+      "difference": "Dnešní vrstvy mohou být posunuté o audio latenci. Undo samostatné vrstvy a trvalá session jsou nové.",
+      "steps": [
+        "W23"
+      ],
+      "evidence": "source-inspected; automated references where listed; UI/hardware acceptance not executed"
+    },
+    {
+      "id": "17",
+      "title": "Akordy",
+      "route": "/library",
+      "sources": [
+        "src/components/library/ChordCard.tsx",
+        "src/components/library/ChordDiagram.tsx",
+        "src/audio/chordPlayer.ts",
+        "src/lib/chords.ts"
+      ],
+      "tests": [
+        "src/lib/chords.test.ts"
+      ],
+      "data": "rocker-settings; 26 akordů",
+      "current": [
+        "Kategorie open/barré/power, prstoklad, barré, poslech, levá ruka a notace."
+      ],
+      "acceptance": [
+        "Zkontrolovat všechny diagramy a MIDI tóny, zrcadlení pro leváka a české H."
+      ],
+      "difference": "Nativní kreslení a přístupná textová alternativa čekají na implementaci.",
+      "steps": [
+        "W28"
+      ],
+      "evidence": "source-inspected; automated references where listed; UI/hardware acceptance not executed"
+    },
+    {
+      "id": "18",
+      "title": "Stupnice",
+      "route": "/library",
+      "sources": [
+        "src/components/library/ScaleExplorer.tsx",
+        "src/components/library/Fretboard.tsx",
+        "src/lib/scales.ts",
+        "src/lib/resolveTuning.ts"
+      ],
+      "tests": [
+        "src/lib/scales.test.ts",
+        "src/lib/resolveTuning.test.ts"
+      ],
+      "data": "rocker-settings,rocker-custom-tunings; 6 stupnic",
+      "current": [
+        "Tonika, typ, hmatník, kořenové tóny, vybrané ladění."
+      ],
+      "acceptance": [
+        "Změnit toniku a vlastní ladění; zkontrolovat polohy v pravé i levé orientaci."
+      ],
+      "difference": "Další polohy či rozsahy z návrhu nejsou automaticky nynější schopnost.",
+      "steps": [
+        "W28"
+      ],
+      "evidence": "source-inspected; automated references where listed; UI/hardware acceptance not executed"
+    },
+    {
+      "id": "19",
+      "title": "Riffy",
+      "route": "/library",
+      "sources": [
+        "src/components/library/RiffLibrary.tsx",
+        "src/lib/metalRiffs.ts",
+        "src/audio/riffPlayer.ts"
+      ],
+      "tests": [
+        "src/lib/metalRiffs.test.ts"
+      ],
+      "data": "14 datových riffů; volba v paměti",
+      "current": [
+        "Tabulatura, tempo, ladění, technika, obtížnost a náhled; 2 pojmenované skladby a 12 riffů označených jako původní."
+      ],
+      "acceptance": [
+        "Zkontrolovat ID, noty a časování všech riffů; samostatně prověřit distribuční práva k pojmenovaným skladbám."
+      ],
+      "difference": "Licence repozitáře sama nedokládá práva k oběma cizím skladbám; zařazeno do rozhodnutí W02.",
+      "steps": [
+        "W28"
+      ],
+      "evidence": "source-inspected; automated references where listed; UI/hardware acceptance not executed"
+    },
+    {
+      "id": "20",
+      "title": "Noty a tabulatury",
+      "route": "/notation",
+      "sources": [
+        "src/components/notation/NotationViewer.tsx"
+      ],
+      "tests": [],
+      "data": "Soubor a přehrávání v paměti; public/alphatab",
+      "current": [
+        "Webový AlphaTab, Guitar Pro a MusicXML, stopy, zoom, přehrávání/tempo, lokální Bravura a SONiVOX."
+      ],
+      "acceptance": [
+        "Importovat vlastní MusicXML a samostatně vzorky GP formátů; správně zobrazit tóny a přehrát zvolenou stopu."
+      ],
+      "difference": "Nativní renderer a jeden společný audio výstup nejsou ověřené; skutečné GP vzorky je třeba doplnit ve W04.",
+      "steps": [
+        "W04",
+        "W29"
+      ],
+      "evidence": "source-inspected; automated references where listed; UI/hardware acceptance not executed"
+    },
+    {
+      "id": "21",
+      "title": "Hmatník",
+      "route": "/games",
+      "sources": [
+        "src/components/games/FretboardGame.tsx",
+        "src/lib/fretboardGame.ts"
+      ],
+      "tests": [
+        "src/lib/fretboardGame.test.ts"
+      ],
+      "data": "Volba a skóre v paměti; rocker-settings",
+      "current": [
+        "Hledání tónů, otázky, odpovědi, skóre, vybrané ladění a notace."
+      ],
+      "acceptance": [
+        "Správná i chybná odpověď mění skóre podle současné logiky; vlastní ladění odpovídá hmatníku."
+      ],
+      "difference": "Nativní klávesnice/UI Automation se teprve doplní.",
+      "steps": [
+        "W28"
+      ],
+      "evidence": "source-inspected; automated references where listed; UI/hardware acceptance not executed"
+    },
+    {
+      "id": "22",
+      "title": "Sluch",
+      "route": "/games",
+      "sources": [
+        "src/components/games/EarTraining.tsx",
+        "src/lib/earTraining.ts"
+      ],
+      "tests": [
+        "src/lib/earTraining.test.ts"
+      ],
+      "data": "Otázka a skóre v paměti",
+      "current": [
+        "Přehrání intervalů, opakování, volba odpovědi, skóre."
+      ],
+      "acceptance": [
+        "Ověřit intervaly a vyhodnocení odpovědí; fungovat jen s výstupním zařízením."
+      ],
+      "difference": "Sluchový a hardwarový poslech zůstává ruční kontrolou.",
+      "steps": [
+        "W28"
+      ],
+      "evidence": "source-inspected; automated references where listed; UI/hardware acceptance not executed"
+    },
+    {
+      "id": "23",
+      "title": "AI — rozhovor",
+      "route": "/tutor",
+      "sources": [
+        "src/components/tutor/ChatPanel.tsx",
+        "src/lib/ai/geminiClient.ts",
+        "src/lib/ai/context.ts",
+        "src/stores/chatStore.ts"
+      ],
+      "tests": [
+        "src/lib/ai/geminiClient.test.ts",
+        "src/lib/ai/context.test.ts",
+        "src/lib/ai/types.test.ts"
+      ],
+      "data": "rocker-ai,rocker-chat",
+      "current": [
+        "BYOK Gemini, stream odpovědi, kontext kytary, historie a nová konverzace; chyby a zrušení."
+      ],
+      "acceptance": [
+        "Mock server: úspěch, zrušení, síť a neplatný klíč; obnovit stejné role/texty z referenční zálohy."
+      ],
+      "difference": "Historie nemá ID ani čas zprávy. Klíč je nyní v localStorage a exportu; native jej musí oddělit.",
+      "steps": [
+        "W10",
+        "W31"
+      ],
+      "evidence": "source-inspected; automated references where listed; UI/hardware acceptance not executed"
+    },
+    {
+      "id": "24",
+      "title": "AI — plán",
+      "route": "/tutor",
+      "sources": [
+        "src/components/tutor/PlanPanel.tsx",
+        "src/lib/ai/planGenerator.ts"
+      ],
+      "tests": [
+        "src/lib/ai/planGenerator.test.ts"
+      ],
+      "data": "rocker-ai; vygenerovaný plán v paměti",
+      "current": [
+        "Doba a zaměření, validace JSON odpovědi, přehled bloků a odkazy na sekce."
+      ],
+      "acceptance": [
+        "Odmítnout neplatné JSON a neznámé cíle; součet minut odpovídá blokům."
+      ],
+      "difference": "Trvalé uložení, editace před přijetím a odkazy do konkrétních úloh jsou desktopová doplnění.",
+      "steps": [
+        "W31",
+        "W33"
+      ],
+      "evidence": "source-inspected; automated references where listed; UI/hardware acceptance not executed"
+    },
+    {
+      "id": "25",
+      "title": "AI — zpětná vazba",
+      "route": "/tutor",
+      "sources": [
+        "src/components/tutor/FeedbackPanel.tsx",
+        "src/lib/ai/feedback.ts"
+      ],
+      "tests": [
+        "src/lib/ai/feedback.test.ts"
+      ],
+      "data": "rocker-progress,rocker-lesson-progress,rocker-ai",
+      "current": [
+        "Souhrn statistik, sérií, minut a rekordů pro AI; rady k dalšímu cvičení."
+      ],
+      "acceptance": [
+        "Vstupní text musí odpovídat testovací historii a nesmí tvrdit, že byly analyzované audio vzorky."
+      ],
+      "difference": "Není to rozbor skutečného zvuku. Dostupnost/kvóty aktuální služby nebyly v W01 online ověřené.",
+      "steps": [
+        "W31"
+      ],
+      "evidence": "source-inspected; automated references where listed; UI/hardware acceptance not executed"
+    },
+    {
+      "id": "26",
+      "title": "Moje kytara",
+      "route": "/profile",
+      "sources": [
+        "src/components/instrument/ProfileCard.tsx",
+        "src/components/instrument/ToneAdvisor.tsx",
+        "src/lib/instrument.ts"
+      ],
+      "tests": [
+        "src/lib/instrument.test.ts"
+      ],
+      "data": "rocker-instrument,rocker-settings",
+      "current": [
+        "Jméno, tělo, snímače, menzura, struny, poznámky; 7 stylů doporučení zvuku; ladění sdílené přes settings."
+      ],
+      "acceptance": [
+        "Obnovit umělý profil, změnit snímače a ověřit doporučení; ladění nesmí mít dvě různé uložené hodnoty."
+      ],
+      "difference": "Není potřeba sbírat skutečné osobní údaje pro baseline.",
+      "steps": [
+        "W32"
+      ],
+      "evidence": "source-inspected; automated references where listed; UI/hardware acceptance not executed"
+    },
+    {
+      "id": "27",
+      "title": "Pokrok",
+      "route": "/profile",
+      "sources": [
+        "src/components/profile/ProgressDetail.tsx",
+        "src/components/PracticeTimeTracker.tsx",
+        "src/components/AchievementWatcher.tsx",
+        "src/components/BreakReminder.tsx",
+        "src/lib/progress.ts"
+      ],
+      "tests": [
+        "src/lib/progress.test.ts",
+        "src/lib/practiceTime.test.ts",
+        "src/lib/breakReminder.test.ts"
+      ],
+      "data": "rocker-progress,rocker-lesson-progress",
+      "current": [
+        "Denní minuty, aktuální/nejdelší série, 11 odměn, BPM rekordy, přestávky, reset; počítá se čas viditelné cvičební stránky."
+      ],
+      "acceptance": [
+        "Ověřit půlnoc, sérii do včerejška, deduplikaci odměn a zachování historie po importu."
+      ],
+      "difference": "Staré /studio a /looper jsou v seznamu, ale přesměrují na nezapočítávaný /recorder. Nová session musí zahrnout Live.",
+      "steps": [
+        "W32"
+      ],
+      "evidence": "source-inspected; automated references where listed; UI/hardware acceptance not executed"
+    },
+    {
+      "id": "28",
+      "title": "Nastavení",
+      "route": "/profile",
+      "sources": [
+        "src/app/profile/page.tsx",
+        "src/components/ThemePicker.tsx",
+        "src/components/LayoutModeSwitcher.tsx",
+        "src/components/AiSettings.tsx",
+        "src/stores/settingsStore.ts"
+      ],
+      "tests": [
+        "src/stores/customTuningsStore.test.ts",
+        "src/stores/metronomeSettingsStore.test.ts"
+      ],
+      "data": "Všech 11 perzistentních stores dle oblasti",
+      "current": [
+        "Téma Studio/Vintage/Glassy, light/dark/auto, desktop/mobile/auto, levá ruka, H/B, Zen, zvuk, AI a zálohy."
+      ],
+      "acceptance": [
+        "Obnovit všechny smysluplné preference; Zen a notace přežijí restart, neplatná data se opraví."
+      ],
+      "difference": "Native má Vintage a systémové rozložení; mobilní přepínač a haptika nejsou povinná shoda.",
+      "steps": [
+        "W34"
+      ],
+      "evidence": "source-inspected; automated references where listed; UI/hardware acceptance not executed"
+    },
+    {
+      "id": "29",
+      "title": "Zvuková zařízení",
+      "route": "/profile",
+      "sources": [
+        "src/components/AudioInputSettings.tsx",
+        "src/audio/audioEngine.ts",
+        "src/stores/audioStore.ts"
+      ],
+      "tests": [
+        "src/audio/audioEngine.test.ts"
+      ],
+      "data": "Vybrané zařízení a AudioContext v paměti",
+      "current": [
+        "getUserMedia bez echo/noise/AGC, zařízení, měřič, šumová kalibrace; mono nahrávací větev sčítá dostupné vstupní kanály; ukazatel latence je baseLatency + outputLatency."
+      ],
+      "acceptance": [
+        "Ověřit start/stop/závody a chyby oprávnění; referenční dvoukanálové WAV rozlišují každý vstup."
+      ],
+      "difference": "Vstupní kanál se dnes nevolí samostatně. Ukazatel nezahrnuje celý vstup; ASIO a jeho konfigurace jsou nové.",
+      "steps": [
+        "W14",
+        "W15",
+        "W16",
+        "W20"
+      ],
+      "evidence": "source-inspected; automated references where listed; UI/hardware acceptance not executed"
+    },
+    {
+      "id": "30",
+      "title": "Zálohy a soubory",
+      "route": "/profile",
+      "sources": [
+        "src/components/DataBackup.tsx",
+        "src/lib/backup.ts",
+        "src/lib/download.ts"
+      ],
+      "tests": [
+        "src/lib/backup.test.ts"
+      ],
+      "data": "settings-backup v2; 11 JSON stringů; IndexedDB zvlášť",
+      "current": [
+        "Export a obnova nastavení přes soubor, podpora částečných/starších sad, omezení známých klíčů."
+      ],
+      "acceptance": [
+        "Prohlédnout úplnou, starší, částečnou i chybnou umělou zálohu; samostatně ověřit nahrávky a markery."
+      ],
+      "difference": "Export vynechává audio a obsahuje AI klíč, pokud je vyplněný. Kompletní přenosový archiv dosud neexistuje.",
+      "steps": [
+        "W09",
+        "W10",
+        "W11",
+        "W12",
+        "W37"
+      ],
+      "evidence": "source-inspected; automated references where listed; UI/hardware acceptance not executed"
+    },
+    {
+      "id": "31",
+      "title": "První spuštění",
+      "route": "AppShell",
+      "sources": [
+        "src/components/Onboarding.tsx",
+        "src/components/AppShell.tsx"
+      ],
+      "tests": [],
+      "data": "rocker-settings.onboarded",
+      "current": [
+        "Průvodce vzhledem, zapojením/nástroji; dokončení nebo přeskočení se uloží."
+      ],
+      "acceptance": [
+        "Spustit čistý profil i profil s onboarded=true; další start nesmí znovu vynutit průvodce."
+      ],
+      "difference": "Nativní import a výběr ASIO/vstupního kanálu jsou nové kroky; musí jít pokračovat bez kytary.",
+      "steps": [
+        "W34"
+      ],
+      "evidence": "source-inspected; automated references where listed; UI/hardware acceptance not executed"
+    },
+    {
+      "id": "32",
+      "title": "Export nahrávky",
+      "route": "/recorder",
+      "sources": [
+        "src/components/recorder/RecordingItem.tsx",
+        "src/lib/download.ts",
+        "src/lib/wav.ts",
+        "src/components/studio/Studio.tsx"
+      ],
+      "tests": [
+        "src/lib/recordings.test.ts",
+        "src/lib/wav.test.ts"
+      ],
+      "data": "Nahrávka z IndexedDB nebo mix projektu v paměti",
+      "current": [
+        "Stažení originálního blobu se správnou příponou; Studio exportuje WAV mix; řízené uvolnění URL."
+      ],
+      "acceptance": [
+        "Zkontrolovat MIME, skutečný obsah souboru, diakritiku a zakázané znaky; WAV má správné kanály/délku."
+      ],
+      "difference": "Nativní systémový dialog, výběr formátu/rozsahu, zrušení a přepsání jsou desktopové úkoly.",
+      "steps": [
+        "W22",
+        "W24",
+        "W35"
+      ],
+      "evidence": "source-inspected; automated references where listed; UI/hardware acceptance not executed"
+    }
+  ],
+  "crossCutting": [
+    {
+      "id": "navigation",
+      "sources": [
+        "src/components/AppShell.tsx",
+        "src/lib/screens.ts"
+      ],
+      "current": "13 hlavních sekcí, 4 historická přesměrování, centrální AmpHost a nastavení.",
+      "acceptance": "Žádná sekce ani podsekce se neztratí; navigace nesmí restartovat host."
+    },
+    {
+      "id": "offline-pwa",
+      "sources": [
+        "public/sw.js",
+        "scripts/stamp-sw.mjs",
+        "src/components/ServiceWorkerRegister.tsx"
+      ],
+      "current": "Statický export, service worker, instalace PWA, oznámení aktualizace.",
+      "acceptance": "Desktopovou náhradou je instalátor, aktualizace a offline obsah, nikoli přenos service workeru."
+    },
+    {
+      "id": "appearance-accessibility",
+      "sources": [
+        "src/app/theme-tokens.css",
+        "src/components/widgets/KnobControl.tsx"
+      ],
+      "current": "Tři vzhledy, barevné režimy, responzivita, focus-visible a reduced motion.",
+      "acceptance": "Vintage, systémové DPI/vysoký kontrast, klávesnice a skutečné Windows prvky."
+    },
+    {
+      "id": "runtime-only-state",
+      "sources": [
+        "src/stores/audioStore.ts",
+        "src/stores/metronomeStore.ts",
+        "src/stores/riffPlayerStore.ts",
+        "src/stores/gallopPlayerStore.ts",
+        "src/stores/ampEngineStore.ts"
+      ],
+      "current": "Transporty, zařízení a pracovní stav nejsou v záloze localStorage.",
+      "acceptance": "Import nevymýšlí chybějící sessions; native zavede perzistenci projektů výslovně."
+    }
+  ]
+}

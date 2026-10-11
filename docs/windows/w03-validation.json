@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 1,
+  "step": "W03",
+  "checkedDate": "2026-10-10",
+  "status": "implementation-tested-on-linux-awaiting-windows",
+  "environment": {
+    "os": "Debian 13 Linux x64",
+    "cxx": "GNU 14.2.0",
+    "cmake": "3.31.10",
+    "dotnetSdk": "10.0.401",
+    "dotnetRuntime": "10.0.12",
+    "juceVersion": "9.0.3",
+    "juceCommit": "be29c81492b6151c8ea8d14c840e1311963b3a83"
+  },
+  "checks": {
+    "nativeContract": {
+      "result": "passed",
+      "ctestPassed": 1,
+      "ctestFailed": 0,
+      "coverage": [
+        "ABI version and struct sizes",
+        "null and nonfinite input rejection",
+        "amplitude bound",
+        "truncated error buffer termination and boundary",
+        "20 repeated start/stop cycles",
+        "concurrent control calls",
+        "destruction while running",
+        "stereo 440 Hz tone, finite samples, output limit and silence"
+      ],
+      "device": "fake"
+    },
+    "managedNativeInterop": {
+      "result": "passed",
+      "coverage": [
+        "actual P/Invoke into the built C++ library",
+        "40-byte snapshot layout",
+        "UTF-8 error copy",
+        "device failure and recovery",
+        "20 create/start/stop/dispose cycles",
+        "disposed handle rejection"
+      ],
+      "device": "fake"
+    },
+    "incompatibleLibrary": {
+      "result": "passed",
+      "coverage": [
+        "managed rejection before handle creation against a separate ABI-2 test binary"
+      ]
+    },
+    "juceBuildAndLifecycle": {
+      "result": "passed",
+      "audioBackends": {
+        "JUCE_ALSA": 0,
+        "JUCE_JACK": 0
+      },
+      "coverage": [
+        "actual JUCE module compilation and linking",
+        "C# to JUCE host through C ABI",
+        "own JUCE message thread",
+        "no-device error",
+        "5 repeated host lifecycles",
+        "SafeHandle finalization followed by successful new host creation"
+      ],
+      "audioPlaybackVerified": false
+    },
+    "winuiDependencyRestore": {
+      "result": "passed",
+      "packages": [
+        "Microsoft.Web.WebView2/1.0.3719.77",
+        "Microsoft.WindowsAppSDK.WinUI/2.3.9",
+        "Microsoft.WindowsAppSDK/2.5.1"
+      ],
+      "compilationVerified": false
+    },
+    "xmlWellFormed": {
+      "result": "passed",
+      "files": 6,
+      "xamlSemanticsVerified": false
+    },
+    "pwaTypeScript": {
+      "result": "passed",
+      "command": "npx tsc --noEmit"
+    },
+    "pwaVitest": {
+      "result": "passed",
+      "files": 54,
+      "tests": 561,
+      "failed": 0,
+      "command": "npx vitest run"
+    },
+    "pwaLint": {
+      "result": "passed",
+      "command": "npm run lint"
+    }
+  },
+  "notPerformed": [
+    "Windows/MSVC build",
+    "XAML compilation",
+    "PowerShell build script execution",
+    "WinUI launch and accessibility checks",
+    "actual audio playback or device disconnect",
+    "ASIO driver tests",
+    "M-Track Solo or round-trip latency measurements",
+    "installer and release-package license audit"
+  ],
+  "completionRequirement": "Run windows/build.ps1 on the selected Windows toolchain, resolve any build findings, and complete all manual acceptance scenarios in windows/README.md. Keep W03 unchecked until recorded.",
+  "sourceSha256": {
+    "windows/.gitignore": "2cf06bc72ad189ff4daad305132f2e4614f212c1438e142776f75b7bd7f4b9cb",
+    "windows/CMakeLists.txt": "786d9ff118aee6ce699c4ac527af9f12855d6ce1ebeabcf3822b0d080f45fbd0",
+    "windows/LICENSE": "d8a6cc31abc16b6748c7a21f21611f5a1ec33f67d22ca23d7da1c19b95496bee",
+    "windows/README.md": "6e8674af22fa8b1e252a35190de097759b22d8c805c6afbe2881562d54d9c10a",
+    "windows/Rocker.Interop/NativeAudio.cs": "de87289b66713b645a2d00768b6f1bc1e09dcb3e60462b44a23eb5186bf6f10d",
+    "windows/Rocker.Interop/Rocker.Interop.csproj": "e69683a96bea2f059e0846b14b349d1b7d064241dcdc6ba0b3f0330e2d9d14fa",
+    "windows/Rocker.Interop.Checks/Program.cs": "87debc47340b05c02808c7401b63a654d663e66f49cac576a6c70647259df925",
+    "windows/Rocker.Interop.Checks/Rocker.Interop.Checks.csproj": "deaa9ddfbbb7cf595e8ebd1e318f5771846be7233943d4071dfb872cee94050a",
+    "windows/Rocker.Probe/App.xaml": "8fb2a3c472e5537abd7d163aa410d0d2e311e9592023319578b8b78cb60fa964",
+    "windows/Rocker.Probe/App.xaml.cs": "5c67d008045ed14b0482121b409fc6af5d8654d9ec41f085a6e7e62319be4d06",
+    "windows/Rocker.Probe/MainWindow.xaml": "efaa51955a6d825fce57740583ce80a72f597c202fc31e386e6749e1bb856819",
+    "windows/Rocker.Probe/MainWindow.xaml.cs": "506e9369742eb2cced174c9cccaf04b3a7a8dcc8e2448a1a51d623efc7929c5c",
+    "windows/Rocker.Probe/Rocker.Probe.csproj": "0fbce7ac88c7e91c985bfd5c0902551d1fa28c51a690bd957d6e1fa8a8546312",
+    "windows/Rocker.Probe/app.manifest": "64c9b3dd6ae13276a2c29d8ca33c9c4c9072df914590d506f1ce4bfec717a149",
+    "windows/THIRD_PARTY_NOTICES.md": "016339dfb5f4a4b898d5fff20dfbce3bbd4dfa689727f874f18471afcb357612",
+    "windows/build.ps1": "4ce660a7119565ad6209cb49ef3676b9719f5f0af25304f838867305baca8158",
+    "windows/global.json": "69554709212a18360c02a61d973cf9c1713f3725286ff237546b9909fc85d7da",
+    "windows/native/include/rocker_audio.h": "84a4611d408e508e03f30e900ca2a156310d6dadd2e796645cd3a01d2fea011b",
+    "windows/native/src/audio_driver.h": "0360d5f3f5c5bfa6b2504bddf6f8b463f580327fd049fcf8ff27fa57ec142d99",
+    "windows/native/src/audio_host.cpp": "e5f09b9dd385c3303315e053568cb81be3bf20633112a1dcfa8f220db18e521a",
+    "windows/native/src/juce_driver.cpp": "3627c12cabb40a9843a97c6148bb713347624db7705402ac4b7f32f6536387b6",
+    "windows/native/src/tone_processor.h": "72290de49a397becb96055ea1189446eec324ca6d256fa2de85cb23816800a74",
+    "windows/native/tests/audio_contract_tests.cpp": "5e24c3ae6128bbb9693371942a77ed26732caffe3101b791e58a0a8721e4c21c",
+    "windows/native/tests/fake_driver.cpp": "4a574f4a2b5c94eb208600e0f5a0b0b9d1151878958e38b0768ffe3fbe3eb374",
+    "windows/native/tests/incompatible_abi.c": "884aba91850c064d0b3e75c9c9aeb86569278abe8537ee2f922cd43e5800e93a"
+  }
+}

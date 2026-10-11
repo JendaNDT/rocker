@@ -1,0 +1,1548 @@
+[
+  {
+    "id": "pitch-24",
+    "source": "src/lib/pitch.ts",
+    "function": "midiToFrequency",
+    "args": [
+      24
+    ],
+    "expected": 32.70319566257483
+  },
+  {
+    "id": "pitch-36",
+    "source": "src/lib/pitch.ts",
+    "function": "midiToFrequency",
+    "args": [
+      36
+    ],
+    "expected": 65.40639132514966
+  },
+  {
+    "id": "pitch-40",
+    "source": "src/lib/pitch.ts",
+    "function": "midiToFrequency",
+    "args": [
+      40
+    ],
+    "expected": 82.4068892282175
+  },
+  {
+    "id": "pitch-45",
+    "source": "src/lib/pitch.ts",
+    "function": "midiToFrequency",
+    "args": [
+      45
+    ],
+    "expected": 110
+  },
+  {
+    "id": "pitch-50",
+    "source": "src/lib/pitch.ts",
+    "function": "midiToFrequency",
+    "args": [
+      50
+    ],
+    "expected": 146.8323839587038
+  },
+  {
+    "id": "pitch-55",
+    "source": "src/lib/pitch.ts",
+    "function": "midiToFrequency",
+    "args": [
+      55
+    ],
+    "expected": 195.99771799087463
+  },
+  {
+    "id": "pitch-59",
+    "source": "src/lib/pitch.ts",
+    "function": "midiToFrequency",
+    "args": [
+      59
+    ],
+    "expected": 246.94165062806206
+  },
+  {
+    "id": "pitch-64",
+    "source": "src/lib/pitch.ts",
+    "function": "midiToFrequency",
+    "args": [
+      64
+    ],
+    "expected": 329.6275569128699
+  },
+  {
+    "id": "pitch-69",
+    "source": "src/lib/pitch.ts",
+    "function": "midiToFrequency",
+    "args": [
+      69
+    ],
+    "expected": 440
+  },
+  {
+    "id": "pitch-84",
+    "source": "src/lib/pitch.ts",
+    "function": "midiToFrequency",
+    "args": [
+      84
+    ],
+    "expected": 1046.5022612023945
+  },
+  {
+    "id": "frequency-0",
+    "source": "src/lib/pitch.ts",
+    "function": "frequencyToNote",
+    "args": [
+      0
+    ],
+    "expected": null
+  },
+  {
+    "id": "frequency--1",
+    "source": "src/lib/pitch.ts",
+    "function": "frequencyToNote",
+    "args": [
+      -1
+    ],
+    "expected": null
+  },
+  {
+    "id": "frequency-82.4068892282175",
+    "source": "src/lib/pitch.ts",
+    "function": "frequencyToNote",
+    "args": [
+      82.4068892282175
+    ],
+    "expected": {
+      "midi": 40,
+      "name": "E",
+      "octave": 2,
+      "label": "E2",
+      "cents": 0
+    }
+  },
+  {
+    "id": "frequency-110",
+    "source": "src/lib/pitch.ts",
+    "function": "frequencyToNote",
+    "args": [
+      110
+    ],
+    "expected": {
+      "midi": 45,
+      "name": "A",
+      "octave": 2,
+      "label": "A2",
+      "cents": 0
+    }
+  },
+  {
+    "id": "frequency-440",
+    "source": "src/lib/pitch.ts",
+    "function": "frequencyToNote",
+    "args": [
+      440
+    ],
+    "expected": {
+      "midi": 69,
+      "name": "A",
+      "octave": 4,
+      "label": "A4",
+      "cents": 0
+    }
+  },
+  {
+    "id": "frequency-445",
+    "source": "src/lib/pitch.ts",
+    "function": "frequencyToNote",
+    "args": [
+      445
+    ],
+    "expected": {
+      "midi": 69,
+      "name": "A",
+      "octave": 4,
+      "label": "A4",
+      "cents": 20
+    }
+  },
+  {
+    "id": "notation-english",
+    "source": "src/lib/pitch.ts",
+    "function": "midiToLabelIn",
+    "args": [
+      59,
+      "english"
+    ],
+    "expected": "B3"
+  },
+  {
+    "id": "notation-german",
+    "source": "src/lib/pitch.ts",
+    "function": "midiToLabelIn",
+    "args": [
+      59,
+      "german"
+    ],
+    "expected": "H3"
+  },
+  {
+    "id": "bpm-12",
+    "source": "src/lib/tempo.ts",
+    "function": "clampBpm",
+    "args": [
+      12
+    ],
+    "expected": 40
+  },
+  {
+    "id": "bpm-40",
+    "source": "src/lib/tempo.ts",
+    "function": "clampBpm",
+    "args": [
+      40
+    ],
+    "expected": 40
+  },
+  {
+    "id": "bpm-119.6",
+    "source": "src/lib/tempo.ts",
+    "function": "clampBpm",
+    "args": [
+      119.6
+    ],
+    "expected": 120
+  },
+  {
+    "id": "bpm-240",
+    "source": "src/lib/tempo.ts",
+    "function": "clampBpm",
+    "args": [
+      240
+    ],
+    "expected": 240
+  },
+  {
+    "id": "bpm-999",
+    "source": "src/lib/tempo.ts",
+    "function": "clampBpm",
+    "args": [
+      999
+    ],
+    "expected": 240
+  },
+  {
+    "id": "tap-120",
+    "source": "src/lib/tempo.ts",
+    "function": "bpmFromTaps",
+    "args": [
+      [
+        0,
+        500,
+        1000,
+        1500
+      ]
+    ],
+    "expected": 120
+  },
+  {
+    "id": "tap-empty",
+    "source": "src/lib/tempo.ts",
+    "function": "bpmFromTaps",
+    "args": [
+      []
+    ],
+    "expected": null
+  },
+  {
+    "id": "swing-0",
+    "source": "src/lib/metronomeConfig.ts",
+    "function": "swingedTickDuration",
+    "args": [
+      0,
+      0.25,
+      2,
+      0.6666666666666666
+    ],
+    "expected": 0.3333333333333333
+  },
+  {
+    "id": "swing-1",
+    "source": "src/lib/metronomeConfig.ts",
+    "function": "swingedTickDuration",
+    "args": [
+      1,
+      0.25,
+      2,
+      0.6666666666666666
+    ],
+    "expected": 0.16666666666666669
+  },
+  {
+    "id": "swing-2",
+    "source": "src/lib/metronomeConfig.ts",
+    "function": "swingedTickDuration",
+    "args": [
+      2,
+      0.25,
+      2,
+      0.6666666666666666
+    ],
+    "expected": 0.3333333333333333
+  },
+  {
+    "id": "swing-3",
+    "source": "src/lib/metronomeConfig.ts",
+    "function": "swingedTickDuration",
+    "args": [
+      3,
+      0.25,
+      2,
+      0.6666666666666666
+    ],
+    "expected": 0.16666666666666669
+  },
+  {
+    "id": "route-/live",
+    "source": "src/lib/practiceTime.ts",
+    "function": "isPracticeRoute",
+    "args": [
+      "/live"
+    ],
+    "expected": false
+  },
+  {
+    "id": "route-/recorder",
+    "source": "src/lib/practiceTime.ts",
+    "function": "isPracticeRoute",
+    "args": [
+      "/recorder"
+    ],
+    "expected": false
+  },
+  {
+    "id": "route-/studio",
+    "source": "src/lib/practiceTime.ts",
+    "function": "isPracticeRoute",
+    "args": [
+      "/studio"
+    ],
+    "expected": true
+  },
+  {
+    "id": "route-/practice/",
+    "source": "src/lib/practiceTime.ts",
+    "function": "isPracticeRoute",
+    "args": [
+      "/practice/"
+    ],
+    "expected": true
+  },
+  {
+    "id": "route-/notation",
+    "source": "src/lib/practiceTime.ts",
+    "function": "isPracticeRoute",
+    "args": [
+      "/notation"
+    ],
+    "expected": false
+  },
+  {
+    "id": "chord-E",
+    "source": "src/lib/chords.ts",
+    "function": "chordMidiNotes",
+    "args": [
+      {
+        "id": "E",
+        "name": "E",
+        "category": "open",
+        "baseFret": 1,
+        "frets": [
+          0,
+          2,
+          2,
+          1,
+          0,
+          0
+        ],
+        "fingers": [
+          null,
+          2,
+          3,
+          1,
+          null,
+          null
+        ],
+        "barre": null
+      }
+    ],
+    "expected": [
+      40,
+      47,
+      52,
+      56,
+      59,
+      64
+    ]
+  },
+  {
+    "id": "chord-Em",
+    "source": "src/lib/chords.ts",
+    "function": "chordMidiNotes",
+    "args": [
+      {
+        "id": "Em",
+        "name": "Em",
+        "category": "open",
+        "baseFret": 1,
+        "frets": [
+          0,
+          2,
+          2,
+          0,
+          0,
+          0
+        ],
+        "fingers": [
+          null,
+          2,
+          3,
+          null,
+          null,
+          null
+        ],
+        "barre": null
+      }
+    ],
+    "expected": [
+      40,
+      47,
+      52,
+      55,
+      59,
+      64
+    ]
+  },
+  {
+    "id": "chord-E7",
+    "source": "src/lib/chords.ts",
+    "function": "chordMidiNotes",
+    "args": [
+      {
+        "id": "E7",
+        "name": "E7",
+        "category": "open",
+        "baseFret": 1,
+        "frets": [
+          0,
+          2,
+          0,
+          1,
+          0,
+          0
+        ],
+        "fingers": [
+          null,
+          2,
+          null,
+          1,
+          null,
+          null
+        ],
+        "barre": null
+      }
+    ],
+    "expected": [
+      40,
+      47,
+      50,
+      56,
+      59,
+      64
+    ]
+  },
+  {
+    "id": "chord-A",
+    "source": "src/lib/chords.ts",
+    "function": "chordMidiNotes",
+    "args": [
+      {
+        "id": "A",
+        "name": "A",
+        "category": "open",
+        "baseFret": 1,
+        "frets": [
+          "x",
+          0,
+          2,
+          2,
+          2,
+          0
+        ],
+        "fingers": [
+          null,
+          null,
+          1,
+          2,
+          3,
+          null
+        ],
+        "barre": null
+      }
+    ],
+    "expected": [
+      45,
+      52,
+      57,
+      61,
+      64
+    ]
+  },
+  {
+    "id": "chord-Am",
+    "source": "src/lib/chords.ts",
+    "function": "chordMidiNotes",
+    "args": [
+      {
+        "id": "Am",
+        "name": "Am",
+        "category": "open",
+        "baseFret": 1,
+        "frets": [
+          "x",
+          0,
+          2,
+          2,
+          1,
+          0
+        ],
+        "fingers": [
+          null,
+          null,
+          2,
+          3,
+          1,
+          null
+        ],
+        "barre": null
+      }
+    ],
+    "expected": [
+      45,
+      52,
+      57,
+      60,
+      64
+    ]
+  },
+  {
+    "id": "chord-A7",
+    "source": "src/lib/chords.ts",
+    "function": "chordMidiNotes",
+    "args": [
+      {
+        "id": "A7",
+        "name": "A7",
+        "category": "open",
+        "baseFret": 1,
+        "frets": [
+          "x",
+          0,
+          2,
+          0,
+          2,
+          0
+        ],
+        "fingers": [
+          null,
+          null,
+          2,
+          null,
+          3,
+          null
+        ],
+        "barre": null
+      }
+    ],
+    "expected": [
+      45,
+      52,
+      55,
+      61,
+      64
+    ]
+  },
+  {
+    "id": "chord-D",
+    "source": "src/lib/chords.ts",
+    "function": "chordMidiNotes",
+    "args": [
+      {
+        "id": "D",
+        "name": "D",
+        "category": "open",
+        "baseFret": 1,
+        "frets": [
+          "x",
+          "x",
+          0,
+          2,
+          3,
+          2
+        ],
+        "fingers": [
+          null,
+          null,
+          null,
+          1,
+          3,
+          2
+        ],
+        "barre": null
+      }
+    ],
+    "expected": [
+      50,
+      57,
+      62,
+      66
+    ]
+  },
+  {
+    "id": "chord-Dm",
+    "source": "src/lib/chords.ts",
+    "function": "chordMidiNotes",
+    "args": [
+      {
+        "id": "Dm",
+        "name": "Dm",
+        "category": "open",
+        "baseFret": 1,
+        "frets": [
+          "x",
+          "x",
+          0,
+          2,
+          3,
+          1
+        ],
+        "fingers": [
+          null,
+          null,
+          null,
+          2,
+          3,
+          1
+        ],
+        "barre": null
+      }
+    ],
+    "expected": [
+      50,
+      57,
+      62,
+      65
+    ]
+  },
+  {
+    "id": "chord-D7",
+    "source": "src/lib/chords.ts",
+    "function": "chordMidiNotes",
+    "args": [
+      {
+        "id": "D7",
+        "name": "D7",
+        "category": "open",
+        "baseFret": 1,
+        "frets": [
+          "x",
+          "x",
+          0,
+          2,
+          1,
+          2
+        ],
+        "fingers": [
+          null,
+          null,
+          null,
+          2,
+          1,
+          3
+        ],
+        "barre": null
+      }
+    ],
+    "expected": [
+      50,
+      57,
+      60,
+      66
+    ]
+  },
+  {
+    "id": "chord-G",
+    "source": "src/lib/chords.ts",
+    "function": "chordMidiNotes",
+    "args": [
+      {
+        "id": "G",
+        "name": "G",
+        "category": "open",
+        "baseFret": 1,
+        "frets": [
+          3,
+          2,
+          0,
+          0,
+          0,
+          3
+        ],
+        "fingers": [
+          3,
+          2,
+          null,
+          null,
+          null,
+          4
+        ],
+        "barre": null
+      }
+    ],
+    "expected": [
+      43,
+      47,
+      50,
+      55,
+      59,
+      67
+    ]
+  },
+  {
+    "id": "chord-G7",
+    "source": "src/lib/chords.ts",
+    "function": "chordMidiNotes",
+    "args": [
+      {
+        "id": "G7",
+        "name": "G7",
+        "category": "open",
+        "baseFret": 1,
+        "frets": [
+          3,
+          2,
+          0,
+          0,
+          0,
+          1
+        ],
+        "fingers": [
+          3,
+          2,
+          null,
+          null,
+          null,
+          1
+        ],
+        "barre": null
+      }
+    ],
+    "expected": [
+      43,
+      47,
+      50,
+      55,
+      59,
+      65
+    ]
+  },
+  {
+    "id": "chord-C",
+    "source": "src/lib/chords.ts",
+    "function": "chordMidiNotes",
+    "args": [
+      {
+        "id": "C",
+        "name": "C",
+        "category": "open",
+        "baseFret": 1,
+        "frets": [
+          "x",
+          3,
+          2,
+          0,
+          1,
+          0
+        ],
+        "fingers": [
+          null,
+          3,
+          2,
+          null,
+          1,
+          null
+        ],
+        "barre": null
+      }
+    ],
+    "expected": [
+      48,
+      52,
+      55,
+      60,
+      64
+    ]
+  },
+  {
+    "id": "chord-F",
+    "source": "src/lib/chords.ts",
+    "function": "chordMidiNotes",
+    "args": [
+      {
+        "id": "F",
+        "name": "F",
+        "category": "barre",
+        "baseFret": 1,
+        "frets": [
+          1,
+          3,
+          3,
+          2,
+          1,
+          1
+        ],
+        "fingers": [
+          1,
+          3,
+          4,
+          2,
+          1,
+          1
+        ],
+        "barre": {
+          "fret": 1,
+          "fromString": 0,
+          "toString": 5
+        }
+      }
+    ],
+    "expected": [
+      41,
+      48,
+      53,
+      57,
+      60,
+      65
+    ]
+  },
+  {
+    "id": "chord-Fm",
+    "source": "src/lib/chords.ts",
+    "function": "chordMidiNotes",
+    "args": [
+      {
+        "id": "Fm",
+        "name": "Fm",
+        "category": "barre",
+        "baseFret": 1,
+        "frets": [
+          1,
+          3,
+          3,
+          1,
+          1,
+          1
+        ],
+        "fingers": [
+          1,
+          3,
+          4,
+          1,
+          1,
+          1
+        ],
+        "barre": {
+          "fret": 1,
+          "fromString": 0,
+          "toString": 5
+        }
+      }
+    ],
+    "expected": [
+      41,
+      48,
+      53,
+      56,
+      60,
+      65
+    ]
+  },
+  {
+    "id": "chord-F#m",
+    "source": "src/lib/chords.ts",
+    "function": "chordMidiNotes",
+    "args": [
+      {
+        "id": "F#m",
+        "name": "F#m",
+        "category": "barre",
+        "baseFret": 1,
+        "frets": [
+          2,
+          4,
+          4,
+          2,
+          2,
+          2
+        ],
+        "fingers": [
+          1,
+          3,
+          4,
+          1,
+          1,
+          1
+        ],
+        "barre": {
+          "fret": 2,
+          "fromString": 0,
+          "toString": 5
+        }
+      }
+    ],
+    "expected": [
+      42,
+      49,
+      54,
+      57,
+      61,
+      66
+    ]
+  },
+  {
+    "id": "chord-Bb",
+    "source": "src/lib/chords.ts",
+    "function": "chordMidiNotes",
+    "args": [
+      {
+        "id": "Bb",
+        "name": "Bb",
+        "category": "barre",
+        "baseFret": 1,
+        "frets": [
+          "x",
+          1,
+          3,
+          3,
+          3,
+          1
+        ],
+        "fingers": [
+          null,
+          1,
+          2,
+          3,
+          4,
+          1
+        ],
+        "barre": {
+          "fret": 1,
+          "fromString": 1,
+          "toString": 5
+        }
+      }
+    ],
+    "expected": [
+      46,
+      53,
+      58,
+      62,
+      65
+    ]
+  },
+  {
+    "id": "chord-Bm",
+    "source": "src/lib/chords.ts",
+    "function": "chordMidiNotes",
+    "args": [
+      {
+        "id": "Bm",
+        "name": "Bm",
+        "category": "barre",
+        "baseFret": 1,
+        "frets": [
+          "x",
+          2,
+          4,
+          4,
+          3,
+          2
+        ],
+        "fingers": [
+          null,
+          1,
+          3,
+          4,
+          2,
+          1
+        ],
+        "barre": {
+          "fret": 2,
+          "fromString": 1,
+          "toString": 5
+        }
+      }
+    ],
+    "expected": [
+      47,
+      54,
+      59,
+      62,
+      66
+    ]
+  },
+  {
+    "id": "chord-B",
+    "source": "src/lib/chords.ts",
+    "function": "chordMidiNotes",
+    "args": [
+      {
+        "id": "B",
+        "name": "B",
+        "category": "barre",
+        "baseFret": 1,
+        "frets": [
+          "x",
+          2,
+          4,
+          4,
+          4,
+          2
+        ],
+        "fingers": [
+          null,
+          1,
+          2,
+          3,
+          4,
+          1
+        ],
+        "barre": {
+          "fret": 2,
+          "fromString": 1,
+          "toString": 5
+        }
+      }
+    ],
+    "expected": [
+      47,
+      54,
+      59,
+      63,
+      66
+    ]
+  },
+  {
+    "id": "chord-E5",
+    "source": "src/lib/chords.ts",
+    "function": "chordMidiNotes",
+    "args": [
+      {
+        "id": "E5",
+        "name": "E5",
+        "category": "power",
+        "baseFret": 1,
+        "frets": [
+          0,
+          2,
+          2,
+          "x",
+          "x",
+          "x"
+        ],
+        "fingers": [
+          null,
+          1,
+          3,
+          null,
+          null,
+          null
+        ],
+        "barre": null
+      }
+    ],
+    "expected": [
+      40,
+      47,
+      52
+    ]
+  },
+  {
+    "id": "chord-F5",
+    "source": "src/lib/chords.ts",
+    "function": "chordMidiNotes",
+    "args": [
+      {
+        "id": "F5",
+        "name": "F5",
+        "category": "power",
+        "baseFret": 1,
+        "frets": [
+          1,
+          3,
+          3,
+          "x",
+          "x",
+          "x"
+        ],
+        "fingers": [
+          1,
+          3,
+          4,
+          null,
+          null,
+          null
+        ],
+        "barre": null
+      }
+    ],
+    "expected": [
+      41,
+      48,
+      53
+    ]
+  },
+  {
+    "id": "chord-F#5",
+    "source": "src/lib/chords.ts",
+    "function": "chordMidiNotes",
+    "args": [
+      {
+        "id": "F#5",
+        "name": "F#5",
+        "category": "power",
+        "baseFret": 1,
+        "frets": [
+          2,
+          4,
+          4,
+          "x",
+          "x",
+          "x"
+        ],
+        "fingers": [
+          1,
+          3,
+          4,
+          null,
+          null,
+          null
+        ],
+        "barre": null
+      }
+    ],
+    "expected": [
+      42,
+      49,
+      54
+    ]
+  },
+  {
+    "id": "chord-G5",
+    "source": "src/lib/chords.ts",
+    "function": "chordMidiNotes",
+    "args": [
+      {
+        "id": "G5",
+        "name": "G5",
+        "category": "power",
+        "baseFret": 1,
+        "frets": [
+          3,
+          5,
+          5,
+          "x",
+          "x",
+          "x"
+        ],
+        "fingers": [
+          1,
+          3,
+          4,
+          null,
+          null,
+          null
+        ],
+        "barre": null
+      }
+    ],
+    "expected": [
+      43,
+      50,
+      55
+    ]
+  },
+  {
+    "id": "chord-A5",
+    "source": "src/lib/chords.ts",
+    "function": "chordMidiNotes",
+    "args": [
+      {
+        "id": "A5",
+        "name": "A5",
+        "category": "power",
+        "baseFret": 1,
+        "frets": [
+          "x",
+          0,
+          2,
+          2,
+          "x",
+          "x"
+        ],
+        "fingers": [
+          null,
+          null,
+          1,
+          3,
+          null,
+          null
+        ],
+        "barre": null
+      }
+    ],
+    "expected": [
+      45,
+      52,
+      57
+    ]
+  },
+  {
+    "id": "chord-B5",
+    "source": "src/lib/chords.ts",
+    "function": "chordMidiNotes",
+    "args": [
+      {
+        "id": "B5",
+        "name": "B5",
+        "category": "power",
+        "baseFret": 1,
+        "frets": [
+          "x",
+          2,
+          4,
+          4,
+          "x",
+          "x"
+        ],
+        "fingers": [
+          null,
+          1,
+          3,
+          4,
+          null,
+          null
+        ],
+        "barre": null
+      }
+    ],
+    "expected": [
+      47,
+      54,
+      59
+    ]
+  },
+  {
+    "id": "chord-C5",
+    "source": "src/lib/chords.ts",
+    "function": "chordMidiNotes",
+    "args": [
+      {
+        "id": "C5",
+        "name": "C5",
+        "category": "power",
+        "baseFret": 1,
+        "frets": [
+          "x",
+          3,
+          5,
+          5,
+          "x",
+          "x"
+        ],
+        "fingers": [
+          null,
+          1,
+          3,
+          4,
+          null,
+          null
+        ],
+        "barre": null
+      }
+    ],
+    "expected": [
+      48,
+      55,
+      60
+    ]
+  },
+  {
+    "id": "chord-D5",
+    "source": "src/lib/chords.ts",
+    "function": "chordMidiNotes",
+    "args": [
+      {
+        "id": "D5",
+        "name": "D5",
+        "category": "power",
+        "baseFret": 1,
+        "frets": [
+          "x",
+          "x",
+          0,
+          2,
+          3,
+          "x"
+        ],
+        "fingers": [
+          null,
+          null,
+          null,
+          1,
+          3,
+          null
+        ],
+        "barre": null
+      }
+    ],
+    "expected": [
+      50,
+      57,
+      62
+    ]
+  },
+  {
+    "id": "streak-yesterday",
+    "source": "src/lib/progress.ts",
+    "function": "currentStreak",
+    "args": [
+      {
+        "2026-10-07": 15,
+        "2026-10-08": 20,
+        "2026-10-09": 10
+      },
+      "2026-10-10"
+    ],
+    "expected": 3
+  },
+  {
+    "id": "streak-broken",
+    "source": "src/lib/progress.ts",
+    "function": "currentStreak",
+    "args": [
+      {
+        "2026-10-07": 15,
+        "2026-10-08": 20,
+        "2026-10-09": 10
+      },
+      "2026-10-11"
+    ],
+    "expected": 0
+  },
+  {
+    "id": "minutes",
+    "source": "src/lib/progress.ts",
+    "function": "totalMinutes",
+    "args": [
+      {
+        "2026-10-07": 15,
+        "2026-10-08": 20,
+        "2026-10-09": 10
+      }
+    ],
+    "expected": 45
+  },
+  {
+    "id": "daily-plan-new",
+    "source": "src/lib/dailyPlan.ts",
+    "function": "generateDailyPlan",
+    "args": [
+      {
+        "completedLessonIds": [],
+        "dayKey": "2026-10-10"
+      }
+    ],
+    "expected": {
+      "items": [
+        {
+          "id": "tune",
+          "title": "Naladění",
+          "detail": "Nalaď kytaru, ať cvičíš na čistém zvuku.",
+          "minutes": 2,
+          "href": "/tuner"
+        },
+        {
+          "id": "warmup",
+          "title": "Rozehřátí",
+          "detail": "Chromatika přes všechny prsty v pomalém tempu s metronomem.",
+          "minutes": 3,
+          "href": "/metronome"
+        },
+        {
+          "id": "lesson",
+          "title": "Lekce",
+          "detail": "Pokračuj lekcí „Držení kytary a trsátka\".",
+          "minutes": 7,
+          "href": "/practice"
+        },
+        {
+          "id": "focus",
+          "title": "Riff trainer",
+          "detail": "Vyber si riff a projeď ho zpomalený, pak přidej tempo.",
+          "minutes": 5,
+          "href": "/practice"
+        }
+      ],
+      "totalMinutes": 17
+    }
+  },
+  {
+    "id": "daily-plan-progress",
+    "source": "src/lib/dailyPlan.ts",
+    "function": "generateDailyPlan",
+    "args": [
+      {
+        "completedLessonIds": [
+          "drzeni",
+          "prazdne-struny"
+        ],
+        "dayKey": "2026-10-10"
+      }
+    ],
+    "expected": {
+      "items": [
+        {
+          "id": "tune",
+          "title": "Naladění",
+          "detail": "Nalaď kytaru, ať cvičíš na čistém zvuku.",
+          "minutes": 2,
+          "href": "/tuner"
+        },
+        {
+          "id": "warmup",
+          "title": "Rozehřátí",
+          "detail": "Chromatika přes všechny prsty v pomalém tempu s metronomem.",
+          "minutes": 3,
+          "href": "/metronome"
+        },
+        {
+          "id": "lesson",
+          "title": "Lekce",
+          "detail": "Pokračuj lekcí „První akord: Em\".",
+          "minutes": 7,
+          "href": "/practice"
+        },
+        {
+          "id": "focus",
+          "title": "Riff trainer",
+          "detail": "Vyber si riff a projeď ho zpomalený, pak přidej tempo.",
+          "minutes": 5,
+          "href": "/practice"
+        }
+      ],
+      "totalMinutes": 17
+    }
+  },
+  {
+    "id": "recording-name",
+    "source": "src/lib/recordings.ts",
+    "function": "recordingFileName",
+    "args": [
+      "Můj take / A:B",
+      "audio/webm;codecs=opus"
+    ],
+    "expected": "Můj take _ A_B.webm"
+  },
+  {
+    "id": "markers-sort",
+    "source": "src/lib/recordings.ts",
+    "function": "sortMarkers",
+    "args": [
+      [
+        {
+          "id": "b",
+          "timeSec": 1,
+          "label": "Konec"
+        },
+        {
+          "id": "a",
+          "timeSec": 0.25,
+          "label": "Začátek"
+        }
+      ]
+    ],
+    "expected": [
+      {
+        "id": "a",
+        "timeSec": 0.25,
+        "label": "Začátek"
+      },
+      {
+        "id": "b",
+        "timeSec": 1,
+        "label": "Konec"
+      }
+    ]
+  },
+  {
+    "id": "chat-validation",
+    "source": "src/lib/ai/types.ts",
+    "function": "sanitizeChatHistory",
+    "args": [
+      [
+        {
+          "role": "user",
+          "text": "Zkušební dotaz"
+        },
+        {
+          "role": "model",
+          "text": "Zkušební odpověď"
+        },
+        {
+          "role": "invalid",
+          "text": "bad"
+        }
+      ]
+    ],
+    "expected": [
+      {
+        "role": "user",
+        "text": "Zkušební dotaz"
+      },
+      {
+        "role": "model",
+        "text": "Zkušební odpověď"
+      }
+    ]
+  },
+  {
+    "id": "gallop-onsets",
+    "source": "src/lib/gallopTrainer.ts",
+    "function": "cellOnsetsSeconds",
+    "args": [
+      [
+        0.5,
+        0.25,
+        0.25
+      ],
+      120
+    ],
+    "expected": [
+      0,
+      0.25,
+      0.375
+    ]
+  }
+]

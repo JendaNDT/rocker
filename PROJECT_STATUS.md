@@ -1,5 +1,36 @@
 # Rocker – Project Status
-*Naposled aktualizováno: 03. 06. 2026*
+*Naposled aktualizováno: 10. 10. 2026 — nový směr Windows; historický stav PWA níže pochází z 03. 06. 2026.*
+
+## Aktuální směr: nativní Rocker pro Windows
+
+Uživatel zvolil skutečné nativní ovládání Windows a vzhled Vintage. Zvuková
+cesta má používat samostatné nativní jádro; ve W02 bylo vybráno WinUI 3 / C#
+a C++ / JUCE s bezplatnou AGPL/GPL cestou. Integrace ještě není ověřená. Cílové zařízení pro závěrečný
+test je uživatelem potvrzený M-Audio M-Track Solo s kytarou v jednom vstupu.
+
+Uložený podklad: [úplná roadmapa W01–W48](WINDOWS_ROADMAP.md),
+[32 návrhů obrazovek](docs/windows/design/vsechny-navrhy.md) a jejich
+[specifikace](docs/windows/design/README.md). Vedle plánu a konceptů už existuje
+[technický řez W03](windows/README.md); kompletní nativní aplikace a její
+produkční zvukové jádro zatím hotové nejsou.
+
+W01 je dokončený: [inventura a referenční podklady](docs/windows/baseline/README.md)
+zachycují všech 32 pohledů, 11 stores, obsah a umělé nahrávky. Kontrola
+source hashů, referenční logiky a obnovy dat prošla. W02 je dokončený:
+[platforma, licence a předání](docs/windows/decisions/0001-platform-and-distribution.md)
+a [výběr verzí s podklady](docs/windows/decisions/platform-selection.json).
+Bratr stáhne jen instalátor; zdroje budou dostupné samostatným odkazem, bez
+povinného stažení. Veřejné vydání ani placená licence pro tuto cestu nejsou potřeba.
+W03 (WinUI, C++ a testovací tón) je rozpracovaný: implementace je připravená,
+C++ a C# integrační kontroly i JUCE bez zařízení prošly v Linuxu. Pro dokončení zbývá Windows
+build a přejímka okna a skutečného přehrávání; [protokol](docs/windows/w03-validation.json)
+tyto výsledky rozlišuje. Vývoj a průběžné
+kontroly proběhnou bez kytary; bratr dostane až funkčně kompletní testovací
+Windows verzi po W43. Skutečná odezva a stabilita jeho zařízení se ověří
+ve W44. První nativní implementace je technický prototyp, ne hotová aplikace pro bratra.
+
+Při W03 znovu prošlo 561/561 testů v 54 souborech, kontrola
+TypeScriptu a lint. To je výsledek současné PWA, nikoli ověření Windows verze.
 
 ## 🎯 Co to je
 PWA kytarový asistent pro učení a hraní na elektrickou kytaru. Funguje na PC
@@ -12,7 +43,7 @@ Zustand, Web Audio API + getUserMedia, Vitest, ručně psaný service worker.
 Perzistence: localStorage (přes Zustand persist) pro malá data včetně pokroku;
 IndexedDB (přes `idb`) pro velké bloby — nahrávky.
 
-## ⏭️ Příští krok
+## Historický plán PWA před změnou směru
 Roadmapa je prakticky hotová — body 1–21 dokončené (18 a 20 vědomě
 vynechané), zbývá poslední **Bod 22 (sdílení a organizace)**. Před ním
 proběhl komplexní 28krokový **FIX_PLAN refactor** (2026-06-03), všech

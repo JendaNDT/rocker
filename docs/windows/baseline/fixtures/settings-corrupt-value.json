@@ -1,0 +1,19 @@
+{
+  "app": "rocker",
+  "kind": "settings-backup",
+  "version": 2,
+  "exportedAt": "2026-10-10T00:00:00.000Z",
+  "data": {
+    "rocker-settings": "{\"state\":{\"layoutMode\":\"auto\",\"theme\":\"vintage\",\"colorMode\":\"dark\",\"tuningId\":\"custom-w01\",\"handedness\":\"left\",\"zenMode\":true,\"notation\":\"german\",\"noiseGate\":0.06,\"referenceToneVolume\":0.3,\"tunerConfirmSound\":true,\"tunerConfirmHaptic\":false,\"onboarded\":true},\"version\":0}",
+    "rocker-progress": "{invalid-json",
+    "rocker-instrument": "{\"state\":{\"profile\":{\"name\":\"Referenční kytara W01\",\"bodyType\":\"Double cut, masivní tělo\",\"pickups\":[{\"position\":\"neck\",\"type\":\"humbucker\"},{\"position\":\"bridge\",\"type\":\"humbucker\"}],\"scaleLength\":\"25,5\\\"\",\"stringGauge\":\".010-.046\",\"notes\":\"Umělý profil pro kontrolu migrace, bez osobních údajů.\"}},\"version\":0}",
+    "rocker-lesson-progress": "{\"state\":{\"completedLessonIds\":[\"drzeni\",\"prazdne-struny\"]},\"version\":0}",
+    "rocker-yt-loops": "{\"state\":{\"loops\":[{\"id\":\"w01-loop\",\"videoId\":\"W01TEST0001\",\"label\":\"Zkušební úsek\",\"start\":10,\"end\":20,\"rate\":0.75}]},\"version\":0}",
+    "rocker-ai": "{\"state\":{\"apiKey\":\"\",\"model\":\"gemini-2.5-flash\"},\"version\":0}",
+    "rocker-chat": "{\"state\":{\"messages\":[{\"role\":\"user\",\"text\":\"Zkušební dotaz k metronomu.\"},{\"role\":\"model\",\"text\":\"Ukázková odpověď pro migraci historie.\"}]},\"version\":0}",
+    "rocker-amp": "{\"state\":{\"settings\":{\"compression\":0,\"drive\":0.45,\"distortion\":\"distortion\",\"bass\":0.1,\"mid\":0.2,\"treble\":0.1,\"cabinet\":\"modern\",\"delay\":0,\"reverb\":0,\"chorus\":0,\"level\":0.5},\"presetId\":\"user-w01\"},\"version\":0}",
+    "rocker-amp-presets": "{\"state\":{\"presets\":[{\"id\":\"user-w01\",\"name\":\"Vlastní zkušební zvuk\",\"settings\":{\"compression\":0,\"drive\":0.45,\"distortion\":\"distortion\",\"bass\":0.1,\"mid\":0.2,\"treble\":0.1,\"cabinet\":\"modern\",\"delay\":0,\"reverb\":0,\"chorus\":0,\"level\":0.5}}]},\"version\":0}",
+    "rocker-metronome": "{\"state\":{\"config\":{\"bpm\":90,\"beatsPerBar\":4,\"subdivision\":2,\"accentPattern\":[\"accent\",\"normal\",\"accent\",\"normal\"],\"sound\":\"wood\",\"volume\":0.8,\"accentVolume\":1,\"ramp\":{\"enabled\":false,\"everyBars\":4,\"stepBpm\":5,\"targetBpm\":160},\"gap\":{\"enabled\":false,\"audibleBars\":4,\"silentBars\":1},\"swing\":0.6666666666666666,\"countInBars\":0,\"polyrhythm\":{\"enabled\":false,\"ticksPerBeat\":3,\"sound\":\"hihat\",\"volume\":0.6},\"soundPattern\":[\"click\",\"wood\",\"click\",\"wood\"],\"subdivisionSound\":\"hihat\"},\"presets\":[{\"bpm\":90,\"beatsPerBar\":4,\"subdivision\":2,\"accentPattern\":[\"accent\",\"normal\",\"accent\",\"normal\"],\"sound\":\"wood\",\"volume\":0.8,\"accentVolume\":1,\"ramp\":{\"enabled\":false,\"everyBars\":4,\"stepBpm\":5,\"targetBpm\":160},\"gap\":{\"enabled\":false,\"audibleBars\":4,\"silentBars\":1},\"swing\":0.6666666666666666,\"countInBars\":0,\"polyrhythm\":{\"enabled\":false,\"ticksPerBeat\":3,\"sound\":\"hihat\",\"volume\":0.6},\"soundPattern\":[\"click\",\"wood\",\"click\",\"wood\"],\"subdivisionSound\":\"hihat\",\"id\":\"w01-metronome\",\"name\":\"Vlastní rytmus\"}],\"visualMode\":\"pendulum\"},\"version\":0}",
+    "rocker-custom-tunings": "{\"state\":{\"tunings\":[{\"id\":\"custom-w01\",\"label\":\"Zkušební ladění\",\"strings\":[{\"note\":\"D2\",\"midi\":38},{\"note\":\"A2\",\"midi\":45},{\"note\":\"D3\",\"midi\":50},{\"note\":\"G3\",\"midi\":55},{\"note\":\"B3\",\"midi\":59},{\"note\":\"E4\",\"midi\":64}]}]},\"version\":0}"
+  }
+}

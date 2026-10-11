@@ -1,0 +1,15 @@
+{
+  "app": "rocker",
+  "kind": "settings-backup",
+  "version": 1,
+  "exportedAt": "2026-10-10T00:00:00.000Z",
+  "data": {
+    "rocker-settings": "{\"state\":{\"layoutMode\":\"auto\",\"theme\":\"vintage\",\"colorMode\":\"dark\",\"tuningId\":\"custom-w01\",\"handedness\":\"left\",\"zenMode\":true,\"notation\":\"german\",\"noiseGate\":0.06,\"referenceToneVolume\":0.3,\"tunerConfirmSound\":true,\"tunerConfirmHaptic\":false,\"onboarded\":true},\"version\":0}",
+    "rocker-progress": "{\"state\":{\"dailyMinutes\":{\"2026-10-07\":15,\"2026-10-08\":20,\"2026-10-09\":10},\"bpmRecords\":{\"gallop-basic\":120},\"unlockedAchievements\":[\"first-practice\",\"streak-3\"]},\"version\":0}",
+    "rocker-instrument": "{\"state\":{\"profile\":{\"name\":\"Referenční kytara W01\",\"bodyType\":\"Double cut, masivní tělo\",\"pickups\":[{\"position\":\"neck\",\"type\":\"humbucker\"},{\"position\":\"bridge\",\"type\":\"humbucker\"}],\"scaleLength\":\"25,5\\\"\",\"stringGauge\":\".010-.046\",\"notes\":\"Umělý profil pro kontrolu migrace, bez osobních údajů.\"}},\"version\":0}",
+    "rocker-lesson-progress": "{\"state\":{\"completedLessonIds\":[\"drzeni\",\"prazdne-struny\"]},\"version\":0}",
+    "rocker-yt-loops": "{\"state\":{\"loops\":[{\"id\":\"w01-loop\",\"videoId\":\"W01TEST0001\",\"label\":\"Zkušební úsek\",\"start\":10,\"end\":20,\"rate\":0.75}]},\"version\":0}",
+    "rocker-ai": "{\"state\":{\"apiKey\":\"\",\"model\":\"gemini-2.5-flash\"},\"version\":0}",
+    "rocker-chat": "{\"state\":{\"messages\":[{\"role\":\"user\",\"text\":\"Zkušební dotaz k metronomu.\"},{\"role\":\"model\",\"text\":\"Ukázková odpověď pro migraci historie.\"}]},\"version\":0}"
+  }
+}

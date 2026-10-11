@@ -1,0 +1,330 @@
+{
+  "capturedOn": "2026-10-10",
+  "sourceRevision": "77df8e37e318e01d0d135db3a8640cf046d64fa5",
+  "checks": [
+    {
+      "command": "npm test -- --reporter=json --outputFile=/tmp/rocker-w01-vitest.json",
+      "exitCode": 0,
+      "passed": 561,
+      "failed": 0,
+      "skipped": 0,
+      "files": 54,
+      "testFiles": [
+        {
+          "path": "src/audio/ampEngine.test.ts",
+          "status": "passed",
+          "assertions": 6
+        },
+        {
+          "path": "src/audio/audioEngine.test.ts",
+          "status": "passed",
+          "assertions": 3
+        },
+        {
+          "path": "src/audio/confirmationSound.test.ts",
+          "status": "passed",
+          "assertions": 7
+        },
+        {
+          "path": "src/audio/gallopPlayer.test.ts",
+          "status": "passed",
+          "assertions": 4
+        },
+        {
+          "path": "src/audio/loopPedal.test.ts",
+          "status": "passed",
+          "assertions": 3
+        },
+        {
+          "path": "src/audio/loopRunner.test.ts",
+          "status": "passed",
+          "assertions": 15
+        },
+        {
+          "path": "src/audio/metronome.test.ts",
+          "status": "passed",
+          "assertions": 4
+        },
+        {
+          "path": "src/audio/multitrackEngine.test.ts",
+          "status": "passed",
+          "assertions": 9
+        },
+        {
+          "path": "src/audio/pitchDetector.test.ts",
+          "status": "passed",
+          "assertions": 10
+        },
+        {
+          "path": "src/audio/referenceTone.test.ts",
+          "status": "passed",
+          "assertions": 6
+        },
+        {
+          "path": "src/audio/riffPlayer.test.ts",
+          "status": "passed",
+          "assertions": 5
+        },
+        {
+          "path": "src/audio/tunings.test.ts",
+          "status": "passed",
+          "assertions": 12
+        },
+        {
+          "path": "src/stores/customTuningsStore.test.ts",
+          "status": "passed",
+          "assertions": 15
+        },
+        {
+          "path": "src/stores/metronomeSettingsStore.test.ts",
+          "status": "passed",
+          "assertions": 3
+        },
+        {
+          "path": "src/lib/achievements.test.ts",
+          "status": "passed",
+          "assertions": 16
+        },
+        {
+          "path": "src/lib/ampPresets.test.ts",
+          "status": "passed",
+          "assertions": 13
+        },
+        {
+          "path": "src/lib/backup.test.ts",
+          "status": "passed",
+          "assertions": 15
+        },
+        {
+          "path": "src/lib/breakReminder.test.ts",
+          "status": "passed",
+          "assertions": 7
+        },
+        {
+          "path": "src/lib/chords.test.ts",
+          "status": "passed",
+          "assertions": 5
+        },
+        {
+          "path": "src/lib/dailyPlan.test.ts",
+          "status": "passed",
+          "assertions": 7
+        },
+        {
+          "path": "src/lib/earTraining.test.ts",
+          "status": "passed",
+          "assertions": 5
+        },
+        {
+          "path": "src/lib/fretboardGame.test.ts",
+          "status": "passed",
+          "assertions": 4
+        },
+        {
+          "path": "src/lib/gallopTrainer.test.ts",
+          "status": "passed",
+          "assertions": 13
+        },
+        {
+          "path": "src/lib/instrument.test.ts",
+          "status": "passed",
+          "assertions": 11
+        },
+        {
+          "path": "src/lib/lessonEngine.test.ts",
+          "status": "passed",
+          "assertions": 8
+        },
+        {
+          "path": "src/lib/lessonProgress.test.ts",
+          "status": "passed",
+          "assertions": 4
+        },
+        {
+          "path": "src/lib/loopMix.test.ts",
+          "status": "passed",
+          "assertions": 4
+        },
+        {
+          "path": "src/lib/math.test.ts",
+          "status": "passed",
+          "assertions": 7
+        },
+        {
+          "path": "src/lib/metalExercises.test.ts",
+          "status": "passed",
+          "assertions": 8
+        },
+        {
+          "path": "src/lib/metalRiffs.test.ts",
+          "status": "passed",
+          "assertions": 13
+        },
+        {
+          "path": "src/lib/metronomeConfig.test.ts",
+          "status": "passed",
+          "assertions": 77
+        },
+        {
+          "path": "src/lib/metronomePresets.test.ts",
+          "status": "passed",
+          "assertions": 14
+        },
+        {
+          "path": "src/lib/multitrack.test.ts",
+          "status": "passed",
+          "assertions": 9
+        },
+        {
+          "path": "src/lib/palmMute.test.ts",
+          "status": "passed",
+          "assertions": 21
+        },
+        {
+          "path": "src/lib/pitch.test.ts",
+          "status": "passed",
+          "assertions": 21
+        },
+        {
+          "path": "src/lib/powerChordTrainer.test.ts",
+          "status": "passed",
+          "assertions": 13
+        },
+        {
+          "path": "src/lib/powerChords.test.ts",
+          "status": "passed",
+          "assertions": 11
+        },
+        {
+          "path": "src/lib/practiceTime.test.ts",
+          "status": "passed",
+          "assertions": 6
+        },
+        {
+          "path": "src/lib/progress.test.ts",
+          "status": "passed",
+          "assertions": 25
+        },
+        {
+          "path": "src/lib/recordings.test.ts",
+          "status": "passed",
+          "assertions": 19
+        },
+        {
+          "path": "src/lib/recordingsDb.test.ts",
+          "status": "passed",
+          "assertions": 9
+        },
+        {
+          "path": "src/lib/resolveTuning.test.ts",
+          "status": "passed",
+          "assertions": 7
+        },
+        {
+          "path": "src/lib/scales.test.ts",
+          "status": "passed",
+          "assertions": 6
+        },
+        {
+          "path": "src/lib/surgicalEngine.test.ts",
+          "status": "passed",
+          "assertions": 8
+        },
+        {
+          "path": "src/lib/tempo.test.ts",
+          "status": "passed",
+          "assertions": 9
+        },
+        {
+          "path": "src/lib/wav.test.ts",
+          "status": "passed",
+          "assertions": 3
+        },
+        {
+          "path": "src/lib/waveform.test.ts",
+          "status": "passed",
+          "assertions": 4
+        },
+        {
+          "path": "src/lib/youtube.test.ts",
+          "status": "passed",
+          "assertions": 6
+        },
+        {
+          "path": "src/lib/ytLoops.test.ts",
+          "status": "passed",
+          "assertions": 3
+        },
+        {
+          "path": "src/lib/ai/context.test.ts",
+          "status": "passed",
+          "assertions": 7
+        },
+        {
+          "path": "src/lib/ai/feedback.test.ts",
+          "status": "passed",
+          "assertions": 5
+        },
+        {
+          "path": "src/lib/ai/geminiClient.test.ts",
+          "status": "passed",
+          "assertions": 18
+        },
+        {
+          "path": "src/lib/ai/planGenerator.test.ts",
+          "status": "passed",
+          "assertions": 11
+        },
+        {
+          "path": "src/lib/ai/types.test.ts",
+          "status": "passed",
+          "assertions": 7
+        }
+      ]
+    },
+    {
+      "command": "npx tsc --noEmit",
+      "exitCode": 0
+    },
+    {
+      "command": "npm run lint",
+      "exitCode": 0
+    },
+    {
+      "command": "node scripts/verify-windows-baseline.mjs",
+      "exitCode": 0,
+      "views": 32,
+      "storesHydrated": 11,
+      "domainCases": 69,
+      "surgicalTraces": 3,
+      "mediaFiles": 12,
+      "sourceHashes": 259,
+      "musicXml": {
+        "tracks": 1,
+        "bars": 1,
+        "notes": 4
+      }
+    },
+    {
+      "command": "ffmpeg decode to null output for each of four encoded audio fixtures",
+      "exitCode": 0,
+      "files": 4,
+      "scope": "Reference-file validity only; does not validate a future native decoder."
+    }
+  ],
+  "notRun": [
+    {
+      "check": "production Next.js build",
+      "reason": "AGENTS.md prescribes type checking instead of production build in this sandbox."
+    },
+    {
+      "check": "Windows native UI, ASIO, M-Track Solo and end-to-end latency",
+      "reason": "Native application does not exist; Windows/hardware validation is scheduled separately."
+    },
+    {
+      "check": "live AI and YouTube service",
+      "reason": "No real credentials or live network behavior required for the offline baseline."
+    }
+  ],
+  "sonivoxMatchesInstalledPackage": true
+}

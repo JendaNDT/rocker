@@ -1,0 +1,51 @@
+cmake_minimum_required(VERSION 3.31)
+project(RockerAudioProbe VERSION 0.1.0 LANGUAGES C CXX)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+if(MSVC)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+endif()
+include(CTest)
+option(ROCKER_WITH_JUCE "Build the real device DLL (requires JUCE dependencies)" ON)
+
+function(rocker_audio_target target driver)
+    add_library(${target} SHARED native/src/audio_host.cpp ${driver})
+    target_include_directories(${target} PUBLIC native/include PRIVATE native/src)
+    target_compile_definitions(${target} PRIVATE ROCKER_AUDIO_EXPORTS)
+    set_target_properties(${target} PROPERTIES CXX_VISIBILITY_PRESET hidden VISIBILITY_INLINES_HIDDEN YES)
+    if(MSVC)
+        target_compile_options(${target} PRIVATE /W4 /permissive- /utf-8)
+    else()
+        target_compile_options(${target} PRIVATE -Wall -Wextra -Wpedantic)
+    endif()
+endfunction()
+
+if(ROCKER_WITH_JUCE)
+    include(FetchContent)
+    # WinUI owns the UI and packaging; no JUCE app/plugin helper executable is needed.
+    set(JUCE_MODULES_ONLY ON CACHE BOOL "Configure JUCE modules for the standalone DLL" FORCE)
+    FetchContent_Declare(JUCE
+        GIT_REPOSITORY https://github.com/juce-framework/JUCE.git
+        GIT_TAG be29c81492b6151c8ea8d14c840e1311963b3a83)
+    FetchContent_MakeAvailable(JUCE)
+    rocker_audio_target(rocker_audio native/src/juce_driver.cpp)
+    target_compile_definitions(rocker_audio PRIVATE
+        JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED=1 JUCE_STANDALONE_APPLICATION=1
+        JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0 JUCE_ASIO_USE_EXTERNAL_SDK=0
+        JUCE_ASIO=$<BOOL:${WIN32}> JUCE_WASAPI=$<BOOL:${WIN32}>)
+    target_link_libraries(rocker_audio PRIVATE juce::juce_audio_devices)
+endif()
+
+if(BUILD_TESTING)
+    # This different library name prevents a fake backend from shipping as the device DLL.
+    rocker_audio_target(rocker_audio_test native/tests/fake_driver.cpp)
+    add_executable(rocker_audio_contract_tests native/tests/audio_contract_tests.cpp)
+    target_include_directories(rocker_audio_contract_tests PRIVATE native/src)
+    target_link_libraries(rocker_audio_contract_tests PRIVATE rocker_audio_test)
+    add_test(NAME audio_contract COMMAND rocker_audio_contract_tests)
+    add_library(rocker_audio_test_incompatible SHARED native/tests/incompatible_abi.c)
+    target_include_directories(rocker_audio_test_incompatible PRIVATE native/include)
+    target_compile_definitions(rocker_audio_test_incompatible PRIVATE ROCKER_AUDIO_EXPORTS)
+endif()

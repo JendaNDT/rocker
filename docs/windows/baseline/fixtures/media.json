@@ -1,0 +1,172 @@
+{
+  "provenance": "Deterministic synthetic signals and an authored scale, created for W01. No user recordings or commercial song audio. Project MIT license applies to these authored fixtures.",
+  "ffmpegVersion": "ffmpeg version 7.1.5-0+deb13u1 Copyright (c) 2000-2026 the FFmpeg developers",
+  "files": [
+    {
+      "path": "audio/silence.wav",
+      "kind": "generated-pcm",
+      "channels": 1,
+      "sampleRate": 48000,
+      "frames": 48000,
+      "durationSec": 1,
+      "expected": {
+        "purpose": "Ticho; detektor nesmí zobrazit platný tón."
+      },
+      "sha256": "0a8f76d89c709043814cb74f331a4578d17ff61256303bd0019a263d053f86e8"
+    },
+    {
+      "path": "audio/a4-440.wav",
+      "kind": "generated-pcm",
+      "channels": 1,
+      "sampleRate": 48000,
+      "frames": 48000,
+      "durationSec": 1,
+      "expected": {
+        "frequencyHz": 440,
+        "midi": 69,
+        "peakAmplitude": 0.2
+      },
+      "sha256": "e4df7c1075940a8d01285505c96e080a5adae2c819ae7f16a0e9338e6a228110"
+    },
+    {
+      "path": "audio/low-e2.wav",
+      "kind": "generated-pcm",
+      "channels": 1,
+      "sampleRate": 48000,
+      "frames": 96000,
+      "durationSec": 2,
+      "expected": {
+        "frequencyHz": 82.4068892282175,
+        "midi": 40,
+        "peakAmplitude": 0.2
+      },
+      "sha256": "0cfbc70ddd6bd9ee368716d57c47dde704665fcfbbe4b98c6e748f5edf86d057"
+    },
+    {
+      "path": "audio/input-1-only.wav",
+      "kind": "generated-pcm",
+      "channels": 2,
+      "sampleRate": 48000,
+      "frames": 48000,
+      "durationSec": 1,
+      "expected": {
+        "activeChannel": 0,
+        "frequencyHz": 110,
+        "silentChannel": 1
+      },
+      "sha256": "d811d847a53db5b52a23bbcf0d7d3f91cc1e592d31ba3c64e1738bcbeaa64c10"
+    },
+    {
+      "path": "audio/input-2-only.wav",
+      "kind": "generated-pcm",
+      "channels": 2,
+      "sampleRate": 48000,
+      "frames": 48000,
+      "durationSec": 1,
+      "expected": {
+        "activeChannel": 1,
+        "frequencyHz": 220,
+        "silentChannel": 0
+      },
+      "sha256": "77b5633afefcc460d7cd6b414bfb9bc47183cdcc7d091451fa205fe1ce173a14"
+    },
+    {
+      "path": "audio/impulses.wav",
+      "kind": "generated-pcm",
+      "channels": 1,
+      "sampleRate": 48000,
+      "frames": 48000,
+      "durationSec": 1,
+      "expected": {
+        "impulseFrames": [
+          4800,
+          24000,
+          43200
+        ],
+        "purpose": "Přesnost časování, délky a softwarového zarovnání."
+      },
+      "sha256": "21adc968f23a4834137a37f570316df3b476b88979a0b6a01cbe428bfd009116"
+    },
+    {
+      "path": "audio/repeated-e2.wav",
+      "kind": "generated-pcm",
+      "channels": 1,
+      "sampleRate": 48000,
+      "frames": 96000,
+      "durationSec": 2,
+      "expected": {
+        "onsetFrames": [
+          0,
+          24000,
+          48000,
+          72000
+        ],
+        "midi": 40,
+        "purpose": "Čtyři oddělené stejné tóny; ne nahrávka skutečné kytary."
+      },
+      "sha256": "76a1005bddaa84068ef8d9e702c518660956a2089de89821a1e13f7dd1465c0b"
+    },
+    {
+      "path": "audio/a4-440.webm",
+      "kind": "transcoded-synthetic",
+      "source": "audio/a4-440.wav",
+      "mimeType": "audio/webm;codecs=opus",
+      "channels": 1,
+      "sampleRate": 48000,
+      "containerDurationSec": 1.008,
+      "decodedSignalDurationSec": 1,
+      "durationToleranceSec": 0.05,
+      "codec": "opus",
+      "sha256": "09d831260c9720d715af19efcc98e7680f87dc876490cc32e427d45d70f3d837"
+    },
+    {
+      "path": "audio/a4-440.ogg",
+      "kind": "transcoded-synthetic",
+      "source": "audio/a4-440.wav",
+      "mimeType": "audio/ogg;codecs=opus",
+      "channels": 1,
+      "sampleRate": 48000,
+      "containerDurationSec": 1.0065,
+      "decodedSignalDurationSec": 1,
+      "durationToleranceSec": 0.05,
+      "codec": "opus",
+      "sha256": "64461bfebd3729dbf85b4f532eefdd960a1eb89a011002da341f061ef8a37b5d"
+    },
+    {
+      "path": "audio/a4-440.m4a",
+      "kind": "transcoded-synthetic",
+      "source": "audio/a4-440.wav",
+      "mimeType": "audio/mp4",
+      "channels": 1,
+      "sampleRate": 48000,
+      "containerDurationSec": 1.0,
+      "decodedSignalDurationSec": 1,
+      "durationToleranceSec": 0.05,
+      "codec": "aac",
+      "sha256": "bbdcfe15bc9ebb4ee17e0482c10b49269af7cc42aea3a4d0cf5617935f9c9c1b"
+    },
+    {
+      "path": "audio/a4-440.mp3",
+      "kind": "transcoded-synthetic",
+      "source": "audio/a4-440.wav",
+      "mimeType": "audio/mpeg",
+      "channels": 1,
+      "sampleRate": 48000,
+      "containerDurationSec": 1.032,
+      "decodedSignalDurationSec": 1,
+      "durationToleranceSec": 0.05,
+      "codec": "mp3",
+      "sha256": "1045356442dad96d3f600464b61462ff348c5546e27749e89f1b6c6b4b8247ce"
+    },
+    {
+      "path": "notation-scale.musicxml",
+      "kind": "authored-musicxml",
+      "expected": {
+        "bars": 1,
+        "tracks": 1,
+        "notes": 4
+      },
+      "sha256": "1bed9d642bd4d9581a4b1abfa9ead772d36f61bfbaa6591aad89e92fa4dc4b90"
+    }
+  ]
+}
