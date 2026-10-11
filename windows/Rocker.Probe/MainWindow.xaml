@@ -36,6 +36,7 @@
                 <MenuFlyoutItem Text="Světlý Vintage" Tag="light" Click="Theme_Click" />
             </MenuBarItem>
             <MenuBarItem Title="Nástroje">
+                <MenuFlyoutItem Text="Komponenty Vintage" Click="Components_Click" />
                 <MenuFlyoutItem Text="Zvuková zařízení" Tag="29" Click="NavigateMenu_Click" />
                 <MenuFlyoutItem Text="Nastavení" Tag="28" Click="NavigateMenu_Click" />
                 <MenuFlyoutItem Text="Zálohy a soubory" Tag="30" Click="NavigateMenu_Click" />
@@ -105,16 +106,20 @@
                 </StackPanel>
             </ScrollViewer>
         </NavigationView>
-                <Border x:Name="MediaPanel" Grid.Row="2" Background="{ThemeResource VintagePanel}" Padding="16,10" CornerRadius="4">
-                    <ScrollViewer MaxHeight="245" VerticalScrollBarVisibility="Auto"><StackPanel Spacing="8">
-                        <TextBlock x:Name="MediaTitle" Text="Připrav nahrávku nebo noty" FontSize="16" />
-                        <StackPanel x:Name="MediaButtons" Orientation="Horizontal" Spacing="12">
-                            <Button x:Name="OpenMediaButton" Content="Otevřít nahrávku…" Click="OpenMedia_Click" />
-                            <Button x:Name="PlayMediaButton" Content="Přehrát" Click="PlayMedia_Click" IsEnabled="False" />
-                            <Button x:Name="StopButton" Content="Zastavit" AccessKey="Z" Click="Stop_Click" IsEnabled="False" />
-                            <Button x:Name="RewindButton" Content="Na začátek" Click="Rewind_Click" IsEnabled="False" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" Spacing="16">
+        <Border x:Name="MediaPanel" Grid.Row="2" Background="{ThemeResource VintagePanel}" Padding="16,8">
+            <StackPanel Spacing="4">
+                <Grid>
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="120" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                    <TextBlock x:Name="MediaTitle" Text="Připrav nahrávku nebo noty" FontSize="16" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                    <Slider x:Name="VolumeSlider" Grid.Column="1" Minimum="0" Maximum="100" Value="15" ValueChanged="Volume_Changed"
+                            AutomationProperties.Name="Hlasitost přehrávání" ToolTipService.ToolTip="Hlasitost přehrávání" />
+                    <CommandBar x:Name="MediaButtons" Grid.Column="2" DefaultLabelPosition="Collapsed" ClosedDisplayMode="Compact" Background="{ThemeResource VintagePanel}">
+                        <AppBarButton x:Name="OpenMediaButton" Label="Otevřít nahrávku" Icon="OpenFile" Click="OpenMedia_Click" />
+                        <AppBarButton x:Name="PlayMediaButton" Label="Přehrát" Icon="Play" Click="PlayMedia_Click" IsEnabled="False" />
+                        <AppBarButton x:Name="StopButton" Label="Zastavit" Icon="Stop" AccessKey="Z" Click="Stop_Click" IsEnabled="False" />
+                        <AppBarButton x:Name="RewindButton" Label="Na začátek" Icon="Previous" Click="Rewind_Click" IsEnabled="False" />
+                        <AppBarButton Label="Rychlost přehrávání" Icon="Setting">
+                            <AppBarButton.Flyout><Flyout><StackPanel Spacing="12" Width="220">
                             <ComboBox x:Name="SpeedBox" Header="Rychlost" Width="150" SelectedIndex="3" SelectionChanged="Speed_Changed">
                                 <ComboBoxItem Content="0,25×" Tag="0.25" />
                                 <ComboBoxItem Content="0,5×" Tag="0.5" />
@@ -123,21 +128,21 @@
                                 <ComboBoxItem Content="1,5×" Tag="1.5" />
                                 <ComboBoxItem Content="2×" Tag="2" />
                             </ComboBox>
-                            <StackPanel Width="180" Spacing="4">
-                                <TextBlock Text="Hlasitost přehrávání" />
-                                <Slider x:Name="VolumeSlider" Minimum="0" Maximum="100" Value="15" ValueChanged="Volume_Changed"
-                                        AutomationProperties.Name="Hlasitost přehrávání" />
-                            </StackPanel>
-                        </StackPanel>
-                        <Slider x:Name="PositionSlider" Minimum="0" Maximum="1" Value="0" IsEnabled="False"
-                                KeyDown="Position_KeyDown" KeyUp="Position_KeyUp"
-                                AutomationProperties.Name="Pozice přehrávání; změna zastaví zvuk" />
-                        <TextBlock x:Name="PositionText" Text="0:00 / 0:00" />
-                        <TextBlock x:Name="MediaStatus" Text="Zvuk se spustí až tlačítkem. WAV, MP3, Ogg/Opus, WebM/Opus a Windows MP4/AAC."
-                                   TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />
-                    </StackPanel></ScrollViewer>
-                </Border>
-
+                                <TextBlock Text="Změna rychlosti zastaví zvuk a připraví nový poslech." TextWrapping="Wrap" />
+                            </StackPanel></Flyout></AppBarButton.Flyout>
+                        </AppBarButton>
+                    </CommandBar>
+                </Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                    <Slider x:Name="PositionSlider" Minimum="0" Maximum="1" Value="0" IsEnabled="False"
+                            KeyDown="Position_KeyDown" KeyUp="Position_KeyUp" AutomationProperties.Name="Pozice přehrávání; změna zastaví zvuk" />
+                    <TextBlock x:Name="PositionText" Grid.Column="1" Text="0:00 / 0:00" VerticalAlignment="Center" Margin="16,0,0,0" />
+                </Grid>
+                <TextBlock x:Name="MediaStatus" Text="Zvuk se spustí až tlačítkem. WAV, MP3, Ogg/Opus, WebM/Opus a Windows MP4/AAC."
+                           TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />
+            </StackPanel>
+        </Border>
         <Border Grid.Row="3" Padding="16,8" Background="{ThemeResource VintagePanel}">
             <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
                 <TextBlock x:Name="StatusText" Text="Připravuji zvukovou knihovnu…" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />

@@ -17,7 +17,10 @@ případů a 350 stavů s původním TS. Windows build 38151654548 jej potvrdil.
 Navazuje [W07 shell](docs/windows/w07/README.md): 32 navigačních cílů, společný
 transport, zachování rozpracované lekce, systémové vzhledy a obnova okna. Dvě
 nové vlastní riffové náhrady jsou v distribučním katalogu s převodem starých ID.
-Windows ověření tohoto řezu navazuje. Kompletní Vintage design, persistence
+Windows běh 38152583162 potvrdil všech 32 pohledů, jeden host a návrat úlohy;
+je uložený skutečný snímek okna. [W08](docs/windows/w08/README.md) nyní přidává
+společné přístrojové komponenty a kompaktní transport. Jejich Windows ověření
+navazuje. Kompletní Vintage design, persistence
 a produktové funkce ještě hotové nejsou; ruční přejímka zůstává až po W43.
 
 ## Aktuální směr: nativní Rocker pro Windows

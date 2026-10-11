@@ -51,7 +51,9 @@ jobs:
       - name: Ensure the official WebView2 runtime for the UI check
         run: ./windows/ensure-webview-runtime.ps1
       - name: Check the published application opens and closes
-        run: ./windows/smoke.ps1
+        run: |
+          ./windows/smoke.ps1
+          ./windows/smoke.ps1 -WorkspaceView components -ReportDirectory (Join-Path $PWD 'windows/out/reports/components')
       - name: Package application and corresponding sources separately
         run: ./windows/package.ps1
       - name: Upload runnable prototype

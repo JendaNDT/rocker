@@ -55,6 +55,6 @@ dotnet run --project windows/Rocker.Domain.Checks -c Release -- \
 ```
 
 Linux kontroly prošly. [Windows běh 38151654548](windows-validation.json)
-potvrdil všech 69 + 372 případů a 37 + 350 stavů. Runtime náhrady riffů a nová
-navigace W07 mají navazující Windows build; protokol je nevydává za dříve
-ověřenou implementaci.
+potvrdil všech 69 + 372 případů a 37 + 350 stavů. Runtime náhrady riffů, mapování ID a nová navigace W07 byly také ověřené
+v běhu 38152583162. [Protokol shellu](../w07/windows-validation.json) zachycuje
+navazující rozsah; starší protokoly zůstávají historickými důkazy.

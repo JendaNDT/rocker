@@ -1,0 +1,90 @@
+{
+  "scope": "W07 native shell before the component catalog and compact transport",
+  "sourceCommit": "1c20d14322f42d181112b2cb8f19e069d0ab354d",
+  "windowsRun": "https://github.com/JendaNDT/rocker/actions/runs/38152583162",
+  "result": "passed",
+  "navigation": {
+    "result": "passed",
+    "viewsVisited": 32,
+    "views": [
+      "01",
+      "02",
+      "03",
+      "04",
+      "05",
+      "06",
+      "07",
+      "08",
+      "09",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "18",
+      "19",
+      "20",
+      "21",
+      "22",
+      "23",
+      "24",
+      "25",
+      "26",
+      "27",
+      "28",
+      "29",
+      "30",
+      "31",
+      "32"
+    ],
+    "backRestoredTask": true,
+    "audioHostsCreated": 1,
+    "cachedNativePages": 30,
+    "manualInteractionsVerified": false,
+    "completeFeaturesVerified": false
+  },
+  "domain": {
+    "result": "passed",
+    "referenceCases": 69,
+    "boundaryChecks": 73,
+    "contentGroups": 15,
+    "surgicalStatesCompared": 37,
+    "extendedReferenceCases": 372,
+    "extendedStatesCompared": 350
+  },
+  "window": {
+    "windowTitle": "Rocker — Přehled",
+    "audioPlaybackVerified": false,
+    "audioCoexistenceVerified": false,
+    "exitCode": 0,
+    "nativeNotationVerified": true,
+    "localVideoBridgeVerified": true,
+    "onlineVideoVerified": false,
+    "midiPreparedInCommonEngine": true,
+    "nativeShellViewsVisited": 32,
+    "webViewRuntime": "153.0.4234.48",
+    "result": "passed",
+    "audioHostsCreated": 1,
+    "checkedAtUtc": "2026-10-11T15:52:20.7686541Z"
+  },
+  "savedWindowPreferences": {
+    "SchemaVersion": 1,
+    "Bounds": {
+      "X": 0,
+      "Y": 0,
+      "Width": 1024,
+      "Height": 720
+    },
+    "Maximized": false,
+    "Theme": "system"
+  },
+  "screenshot": "windows-shell.png",
+  "notPerformed": [
+    "Manual keyboard/screen-reader/DPI acceptance",
+    "Live input and physical M-Track Solo latency",
+    "Complete product features"
+  ]
+}

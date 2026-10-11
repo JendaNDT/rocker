@@ -1,0 +1,11 @@
+<UserControl x:Class="Rocker.Probe.Controls.FretboardDiagram"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel Spacing="8">
+        <TextBlock Text="Hmatník · šipky mění pozici, Enter vybírá tón" Style="{StaticResource VintageBodyTextStyle}" />
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+            <Grid x:Name="Board" KeyDown="Board_KeyDown" />
+        </ScrollViewer>
+        <TextBlock x:Name="SelectedNote" Text="Vyber tón." Style="{StaticResource VintageSecondaryTextStyle}" AutomationProperties.LiveSetting="Polite" />
+    </StackPanel>
+</UserControl>

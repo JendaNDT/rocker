@@ -62,7 +62,7 @@ public sealed partial class MainWindow
         if (AppWindow.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Restored })
             normalBounds = new(AppWindow.Position.X,AppWindow.Position.Y,AppWindow.Size.Width,AppWindow.Size.Height);
     }
-    private void Navigate(NavigationTarget target) { navigation.Navigate(target); ShowWorkspace(); }
+    private void Navigate(NavigationTarget target) { componentMode = false; navigation.Navigate(target); ShowWorkspace(); }
     private void ShowWorkspace()
     {
         if (!shellReady || closed) return;
@@ -93,8 +93,9 @@ public sealed partial class MainWindow
     {
         if (!selectingNavigation && args.SelectedItem is NavigationViewItem { Tag: string id }) Navigate(new(id));
     }
-    private void Navigation_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args) { navigation.Back(); ShowWorkspace(); }
-    private void Back_Click(object sender, RoutedEventArgs args) { navigation.Back(); ShowWorkspace(); }
+    private void Navigation_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args) { GoBack(); }
+    private void Back_Click(object sender, RoutedEventArgs args) { GoBack(); }
+    private void GoBack() { if (componentMode) componentMode = false; else navigation.Back(); ShowWorkspace(); }
     private void Forward_Click(object sender, RoutedEventArgs args) { navigation.Forward(); ShowWorkspace(); }
     private void NavigateMenu_Click(object sender, RoutedEventArgs args) { if (sender is MenuFlyoutItem { Tag: string id }) Navigate(new(id)); }
     private void Theme_Click(object sender, RoutedEventArgs args) { if (sender is MenuFlyoutItem { Tag: string theme }) ApplyTheme(theme); }
@@ -107,7 +108,7 @@ public sealed partial class MainWindow
     {
         if (!shellReady) return;
         var orientation = args.NewSize.Width < 850 ? Orientation.Vertical : Orientation.Horizontal;
-        MediaButtons.Orientation = ScoreButtons.Orientation = VideoButtons.Orientation = orientation;
+        ScoreButtons.Orientation = VideoButtons.Orientation = orientation;
         ShellStateText.Visibility = args.NewSize.Width < 640 ? Visibility.Collapsed : Visibility.Visible;
     }
     private static StackPanel Stack() => new() { Spacing = 12, HorizontalAlignment = HorizontalAlignment.Stretch };
@@ -251,6 +252,9 @@ public sealed partial class MainWindow
         bool restoredTask = navigation.Current == task;
         Navigate(new("08")); await EnsureVideoAsync();
         Navigate(new("01"));
+        VerifyComponents();
+        if (Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTIC_VIEW") == "components") ShowComponents();
+        await CaptureNativeViewAsync();
         WriteShellDiagnostic("shell-navigation.json",new { result = visitedViews.Count == 32 && restoredTask && audioHostsCreated == 1 ? "passed" : "failed", viewsVisited = visitedViews.Count, views = visitedViews.Order().ToArray(), backRestoredTask = restoredTask, audioHostsCreated, cachedNativePages = workspaceCache.Count, manualInteractionsVerified = false, completeFeaturesVerified = false });
     }
     private static void WriteShellDiagnostic(string name, object value)

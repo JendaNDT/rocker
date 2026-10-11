@@ -219,7 +219,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w06"></a>
 #### W06 — Přenést obsah a čistou doménovou logiku
 
-- [ ] Rozpracováno: verzovaný export všech 15 skupin a všech 69 referenčních případů W01 je přenesený. [Doménový přenos](docs/windows/w06/README.md) dále porovnává 372 případů a 350 rytmických/palm-mute/přestávkových stavů. Windows běh 38151654548 potvrdil všech 69 + 372 případů a 37 + 350 stavů. Navazující build ověřuje distribuční náhrady dvou riffů a parametry shellu. Závislosti: W01, W05.
+- [x] Dokončeno v rozsahu společné čisté domény: verzovaný export všech 15 skupin a všech 69 referenčních případů W01 je přenesený. [Doménový přenos](docs/windows/w06/README.md) dále porovnává 372 případů a 350 rytmických/palm-mute/přestávkových stavů. Windows běh 38151654548 potvrdil všech 69 + 372 případů a 37 + 350 stavů. Navazující Windows běh 38152583162 potvrdil i distribuční náhrady dvou riffů a parametry shellu; specifické doménové moduly dalších funkcí navazují v jejich krocích. Závislosti: W01, W05.
 - Zavést verzovaný společný formát obsahu, stabilní ID a validační schéma. Exportovat lekce, akordy, stupnice, riffy, cvičení, ladění a presety z existujících dat bez ručního přepisování stovek hodnot.
 - Portovat hudební výpočty, lekční automaty, tempo, pravidla pokroku a validaci do čistých C# modulů. Algoritmy DSP zůstávají v C++; nesmí vzniknout druhá nesynchronizovaná kopie pravidel.
 - Přenést relevantní scénáře existujících testů a porovnávat shodné vstupy a výstupy přes referenční JSON. Počet testů není cílem; zachování chování ano.
@@ -228,7 +228,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w07"></a>
 #### W07 — Postavit nativní shell a navigaci
 
-- [ ] Rozpracováno: [nativní shell](docs/windows/w07/README.md) otevírá 32 pohledů, drží jediný host a kontext úloh, ukládá okno a vzhled. Linux kontrakty prošly; skutečný Windows build navazuje. Závislosti: W05.
+- [x] Dokončeno v rozsahu shellu: [nativní shell](docs/windows/w07/README.md) otevírá 32 pohledů, drží jediný host a kontext úloh, ukládá okno a vzhled. Windows běh 38152583162 prošel; stránky s nedokončenými funkcemi jsou jasně označené. Závislosti: W05.
 - Vytvořit hlavní okno, systémové chování titulku a změny velikosti, menu, navigaci podle pracovních skupin, stavový řádek a prostor pro transport. Obnovovat velikost a polohu bezpečně i po odpojení monitoru.
 - Zavést příkazy, kontextové nabídky, navigaci s parametry úlohy a návrat do předchozího místa. Zabránit násobným instancím audio hostu při navigaci nebo opětovném otevření souboru.
 - Definovat chování zavření okna při nahrávání a neuložené práci; žádné skryté ukončení záznamu. Zkratky nepřebírají psaní v textových polích.
@@ -237,7 +237,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w08"></a>
 #### W08 — Implementovat Vintage designový systém
 
-- [ ] Čeká. Závislosti: W07.
+- [ ] Rozpracováno: [společné Vintage komponenty](docs/windows/w08/README.md), nativní ovladače, diagramy, měřák a kompaktní transport. Konkrétní Windows build a snímky navazují. Závislosti: W07.
 - Převést návrhy do tokenů barev, typografie, rozestupů, hran a stavů. Preferovat Segoe/system fonty pro ovládání; dekorativní písmo a materiály jen tam, kde pomáhají hudebnímu přístroji.
 - Připravit společné seznamy, formuláře, panely, transport, level metr, knoby se zadáním čísla, diagramy a chybové stavy. Každý vlastní widget musí mít klávesnici a UI Automation reprezentaci.
 - Rozpracovat stavové specifikace všech 32 pohledů, včetně malého okna, vysokého DPI, vysokého kontrastu, offline režimu a prázdných dat. Systémový dialog nereplikovat obrázkem nebo vlastním webovým formulářem.

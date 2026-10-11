@@ -38,4 +38,4 @@ skutečně vytvoří/přepne všech 32 pohledů, ověří návrat ke konkrétní
 počet vytvořených audio hostů; výstup je `shell-navigation.json`. Následně
 smoke vyžaduje skutečný notový renderer, lokální WebView2 bridge a běžné
 ukončení procesu. Neprohlašuje tím fyzické ovládání myší/klávesnicí nebo zvuk
-za ručně ověřený. Windows sestavení tohoto navazujícího řezu právě probíhá.
+za ručně ověřený. [Windows běh 38152583162](windows-validation.json) prošel všemi 32 pohledy, návratem úlohy a jedním audio hostem; uložil také skutečný [snímek okna](windows-shell.png).

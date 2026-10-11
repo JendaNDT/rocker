@@ -1,10 +1,12 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 # Exercises the published WinUI executable, without starting sound.
 [CmdletBinding()]
-param([string]$PublishDirectory = (Join-Path $PSScriptRoot 'out/probe'))
+param([string]$PublishDirectory = (Join-Path $PSScriptRoot 'out/probe'),
+      [ValidateSet('home','components')][string]$WorkspaceView = 'home',
+      [string]$ReportDirectory = (Join-Path $PSScriptRoot 'out/reports'))
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
-$reportDirectory = Join-Path $PSScriptRoot 'out/reports'
+$reportDirectory = $ReportDirectory
 New-Item -ItemType Directory -Force -Path $reportDirectory | Out-Null
 $executable = Join-Path $PublishDirectory 'Rocker.Probe.exe'
 if (-not (Test-Path $executable)) { throw "Missing published executable: $executable" }
@@ -13,6 +15,8 @@ if (Get-ChildItem $PublishDirectory -Filter 'rocker_audio_test*' -Recurse) {
 }
 $process = $null
 $started = Get-Date
+$previousView = $env:ROCKER_DIAGNOSTIC_VIEW
+$env:ROCKER_DIAGNOSTIC_VIEW = $WorkspaceView
 $previousDiagnostics = $env:ROCKER_DIAGNOSTICS_DIR
 $previousUserData = $env:ROCKER_USER_DATA_DIR
 $env:ROCKER_USER_DATA_DIR = Join-Path $reportDirectory "isolated-shell-data"
@@ -20,6 +24,8 @@ $env:ROCKER_DIAGNOSTICS_DIR = $reportDirectory
 $notationReport = Join-Path $reportDirectory 'notation-view.json'
 $videoReport = Join-Path $reportDirectory 'video-bridge.json'
 $shellReport = Join-Path $reportDirectory 'shell-navigation.json'
+$componentsReport = Join-Path $reportDirectory 'native-components.json'
+foreach ($stale in @($shellReport,$componentsReport)) { if (Test-Path $stale) { Remove-Item $stale } }
 if (Test-Path $notationReport) { Remove-Item $notationReport }
 if (Test-Path $videoReport) { Remove-Item $videoReport }
 try {
@@ -54,12 +60,22 @@ try {
     if ($video.result -ne 'passed' -or -not $video.localBridgeVerified -or -not $video.runtimeVersion) {
         throw "Local WebView2 bridge failed: $(Get-Content $videoReport -Raw)"
     }
+    do {
+        Start-Sleep -Milliseconds 250
+        $process.Refresh()
+        if ($process.HasExited) { throw 'Application exited before native shell checks finished.' }
+    } while (-not (Test-Path $shellReport) -and (Get-Date) -lt $deadline)
     if (-not (Test-Path $shellReport)) { throw 'Native shell navigation report is missing.' }
     $shell = Get-Content $shellReport -Raw | ConvertFrom-Json
     if ($shell.result -ne 'passed' -or $shell.viewsVisited -ne 32 -or -not $shell.backRestoredTask -or $shell.audioHostsCreated -ne 1) {
         throw "Native shell navigation failed: $(Get-Content $shellReport -Raw)"
     }
-    & (Join-Path $PSScriptRoot 'capture-window.ps1') -WindowHandle $process.MainWindowHandle.ToInt64() -Path (Join-Path $reportDirectory 'native-shell.png')
+    if (-not (Test-Path $componentsReport)) { throw 'Native components report is missing.' }
+    $components = Get-Content $componentsReport -Raw | ConvertFrom-Json
+    if ($components.result -ne 'passed' -or $components.checks -lt 31) { throw 'Native components failed.' }
+    if (-not (Test-Path (Join-Path $reportDirectory 'native-content.png'))) { throw 'Native content capture is missing.' }
+    try { & (Join-Path $PSScriptRoot 'capture-window.ps1') -WindowHandle $process.MainWindowHandle.ToInt64() -Path (Join-Path $reportDirectory 'native-shell.png') }
+    catch { $_ | Out-String | Set-Content (Join-Path $reportDirectory 'desktop-capture-unavailable.txt') }
     if (-not $process.CloseMainWindow()) { throw 'The application rejected a normal window close.' }
     if (-not $process.WaitForExit(15000)) { throw 'The application did not exit after closing its window.' }
     if ($process.ExitCode -ne 0) { throw "Application exited with code $($process.ExitCode)." }
@@ -89,6 +105,7 @@ catch {
     throw
 }
 finally {
+    $env:ROCKER_DIAGNOSTIC_VIEW = $previousView
     $env:ROCKER_DIAGNOSTICS_DIR = $previousDiagnostics
     $env:ROCKER_USER_DATA_DIR = $previousUserData
     if ($null -ne $process) {

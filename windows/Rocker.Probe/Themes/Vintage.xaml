@@ -6,16 +6,25 @@
             <SolidColorBrush x:Key="VintageBackground" Color="#211E1A" />
             <SolidColorBrush x:Key="VintagePanel" Color="#302B25" />
             <SolidColorBrush x:Key="VintageAccent" Color="#C78C50" />
+            <SolidColorBrush x:Key="VintageAccentForeground" Color="#211E1A" />
+            <SolidColorBrush x:Key="VintageInstrumentFace" Color="#F1DFC1" />
+            <SolidColorBrush x:Key="VintageInstrumentInk" Color="#211E1A" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="Light">
             <SolidColorBrush x:Key="VintageBackground" Color="#FAF6F0" />
             <SolidColorBrush x:Key="VintagePanel" Color="#F0E7DA" />
             <SolidColorBrush x:Key="VintageAccent" Color="#905622" />
+            <SolidColorBrush x:Key="VintageAccentForeground" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="VintageInstrumentFace" Color="#F4E5CC" />
+            <SolidColorBrush x:Key="VintageInstrumentInk" Color="#211E1A" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="HighContrast">
             <SolidColorBrush x:Key="VintageBackground" Color="{ThemeResource SystemColorWindowColor}" />
             <SolidColorBrush x:Key="VintagePanel" Color="{ThemeResource SystemColorWindowColor}" />
             <SolidColorBrush x:Key="VintageAccent" Color="{ThemeResource SystemColorHighlightColor}" />
+            <SolidColorBrush x:Key="VintageAccentForeground" Color="{ThemeResource SystemColorHighlightTextColor}" />
+            <SolidColorBrush x:Key="VintageInstrumentFace" Color="{ThemeResource SystemColorWindowColor}" />
+            <SolidColorBrush x:Key="VintageInstrumentInk" Color="{ThemeResource SystemColorWindowTextColor}" />
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
     <Style x:Key="VintageCardStyle" TargetType="Border">
@@ -33,5 +42,32 @@
     </Style>
     <Style x:Key="VintageSecondaryTextStyle" TargetType="TextBlock" BasedOn="{StaticResource VintageBodyTextStyle}">
         <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
+    </Style>
+    <Style x:Key="VintageInstrumentTextStyle" TargetType="TextBlock" BasedOn="{StaticResource VintageBodyTextStyle}">
+        <Setter Property="Foreground" Value="{ThemeResource VintageInstrumentInk}" />
+    </Style>
+    <Style x:Key="VintageAccentTextStyle" TargetType="TextBlock" BasedOn="{StaticResource VintageBodyTextStyle}">
+        <Setter Property="Foreground" Value="{ThemeResource VintageAccentForeground}" />
+    </Style>
+    <Style x:Key="VintageDialFaceStyle" TargetType="Ellipse">
+        <Setter Property="Fill" Value="{ThemeResource VintageInstrumentFace}" />
+        <Setter Property="Stroke" Value="{ThemeResource VintageAccent}" /><Setter Property="StrokeThickness" Value="2" />
+    </Style>
+    <Style x:Key="VintageFretDotStyle" TargetType="Ellipse">
+        <Setter Property="Fill" Value="{ThemeResource VintageAccent}" />
+    </Style>
+    <Style x:Key="VintageInstrumentLineStyle" TargetType="Line">
+        <Setter Property="Stroke" Value="{ThemeResource VintageInstrumentInk}" /><Setter Property="StrokeThickness" Value="1" />
+    </Style>
+    <Style x:Key="VintageNeedleStyle" TargetType="Line">
+        <Setter Property="Stroke" Value="{ThemeResource VintageInstrumentInk}" /><Setter Property="StrokeThickness" Value="3" />
+    </Style>
+    <Style x:Key="VintageBarreStyle" TargetType="Line">
+        <Setter Property="Stroke" Value="{ThemeResource VintageAccent}" /><Setter Property="StrokeThickness" Value="14" />
+    </Style>
+    <Style x:Key="VintageRootButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="{ThemeResource VintageAccent}" />
+        <Setter Property="Foreground" Value="{ThemeResource VintageAccentForeground}" />
+        <Setter Property="BorderThickness" Value="2" /><Setter Property="FontWeight" Value="SemiBold" />
     </Style>
 </ResourceDictionary>
