@@ -15,7 +15,7 @@ public sealed partial class MainWindow
         try
         {
             var profile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Rocker", "WebView2");
-            var environment = await CoreWebView2Environment.CreateAsync(null, profile);
+            var environment = await CoreWebView2Environment.CreateWithOptionsAsync(null, profile, null);
             if (closed) return;
             await VideoView.EnsureCoreWebView2Async(environment);
             if (closed) return;
