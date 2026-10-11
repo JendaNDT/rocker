@@ -1,0 +1,41 @@
+{
+  "result": "passed",
+  "runId": 38180951366,
+  "url": "https://github.com/JendaNDT/rocker/actions/runs/38180951366",
+  "commit": "a44ba19f952fc0f77568f191dfd54c0c49d88796",
+  "nativeTests": 18,
+  "home": {
+    "result": "passed",
+    "nativeTrainers": 3,
+    "nativeDiagrams": 2,
+    "simulatedUiHits": 8,
+    "persistenceReopened": true,
+    "hardwareVerified": false,
+    "physicalPalmMuteVerified": false
+  },
+  "components": {
+    "result": "passed",
+    "nativeTrainers": 3,
+    "nativeDiagrams": 2,
+    "simulatedUiHits": 8,
+    "persistenceReopened": true,
+    "hardwareVerified": false,
+    "physicalPalmMuteVerified": false
+  },
+  "window": {
+    "onlineVideoVerified": false,
+    "checkedAtUtc": "2026-10-11T22:42:16.1953104Z",
+    "webViewRuntime": "153.0.4234.48",
+    "audioCoexistenceVerified": false,
+    "audioPlaybackVerified": false,
+    "audioHostsCreated": 1,
+    "windowTitle": "Rocker \u2014 P\u0159ehled",
+    "result": "passed",
+    "midiPreparedInCommonEngine": true,
+    "exitCode": 0,
+    "nativeNotationVerified": true,
+    "nativeShellViewsVisited": 32,
+    "localVideoBridgeVerified": true
+  },
+  "hardwareVerified": false
+}

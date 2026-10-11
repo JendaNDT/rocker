@@ -32,6 +32,6 @@ the native off-thread analyzer into calibration/classification. The PCM signals
 are contrasting 2400 Hz / 600 Hz synthetic tones, **not evidence of accurate real
 guitar palm-mute recognition**. WinUI smoke constructs all three views and uses
 explicitly simulated observations to check rendered hit results and reopened
-settings/tempo records. Windows build/form verification is pending. Physical
+settings/tempo records. [Windows run 38180951366](windows-validation.json) passed all 18 native suites, CLR calls and both actual WinUI instances. Physical
 M-Track Solo, listening, pickup/gain calibration and keyboard/manual checks remain
 unperformed until the complete candidate.

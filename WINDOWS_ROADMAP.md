@@ -420,7 +420,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w27"></a>
 #### W27 — Power chord, Gallop a Palm mute
 
-- [ ] Rozpracováno. Závislosti: W06, W08, W18, W19, W25. [Tři nativní trenažéry](docs/windows/w27/README.md) mají hudební doprovod ve společném jádru, předtakt, 5% zrychlování, rekordy a profil kalibrace palm mute. Linux prošel 18 nativními testy, CLR a kalibrací ze skutečných umělých PCM; Windows formuláře čekají na sestavení.
+- [x] Dokončeno v automaticky ověřitelném rozsahu. Závislosti: W06, W08, W18, W19, W25. [Tři nativní trenažéry](docs/windows/w27/README.md) mají hudební doprovod ve společném jádru, předtakt, 5% zrychlování, rekordy a profil kalibrace palm mute. Linux prošel 18 nativními testy, CLR a kalibrací ze skutečných umělých PCM; [Windows 38180951366](docs/windows/w27/windows-validation.json) prošel i oběma skutečnými WinUI instancemi. Hardware a poslech zůstávají neověřené.
 - Přenést výběr cvičení, polohy a zobrazení power chordů, gallop vzory, doprovod, předtakt, změny tempa a záznam rekordů. Hudební náhledy používají společný engine.
 - Palm mute má kalibraci, citlivost, skutečnou analýzu vstupu a čitelnou míru jistoty. Nastavení může vyžadovat úpravu pro jinou kytaru, snímač či úroveň; ukládat relevantní profil.
 - Nahrávání a kompaktní aparát jsou dostupné přes společné služby, bez druhého spuštěného řetězce. Výsledky se propisují do jednotného pokroku.

@@ -880,7 +880,7 @@ W24–W26 mají automaticky ověřené Studio, lekce a přesný trénink; Window
 38178598242 a 38179590084 prošly i skutečnými WinUI formuláři.
 W27 přidává power chord, gallop a palm mute, hudební kola v jediném jádru,
 5% zrychlování a profil kalibrace. ABI je 15. Linux 18/18 CTest, sanitizery,
-CLR a připravené PCM prošly; Windows formuláře se ověřují.
+CLR a připravené PCM prošly; Windows 38180951366 ověřil i skutečné formuláře.
 Funkčně kompletní kandidát ani fyzická přejímka zatím nejsou hotové;
 W28 přidává všechny knihovny a obě hry, s hmatníkem pro klávesnici,
 propojenými riffy a syntetickým poslechem. Doména má 136 dalších ověřených
