@@ -16,11 +16,11 @@ public sealed partial class PitchGauge : UserControl
         for(int i=0;i<=20;++i)
         {
             double x=24+i*13.6;
-            Scale.Children.Add(new Line {X1=x,X2=x,Y1=i%5==0?32:42,Y2=57,Style=(Style)Application.Current.Resources["VintageInstrumentLineStyle"]});
+            GaugeCanvas.Children.Add(new Line {X1=x,X2=x,Y1=i%5==0?32:42,Y2=57,Style=(Style)Application.Current.Resources["VintageInstrumentLineStyle"]});
             if(i%5!=0)continue;
             int cents=i*5-50;
             var label=new TextBlock{Text=cents.ToString("+0;-0;0"),FontSize=12,Width=40,TextAlignment=TextAlignment.Center,Style=(Style)Application.Current.Resources["VintageInstrumentTextStyle"]};
-            Canvas.SetLeft(label,x-20);Canvas.SetTop(label,72);Scale.Children.Add(label);
+            Canvas.SetLeft(label,x-20);Canvas.SetTop(label,72);GaugeCanvas.Children.Add(label);
         }
         UpdatePointer();
     }
