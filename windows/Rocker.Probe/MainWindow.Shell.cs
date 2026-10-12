@@ -79,9 +79,10 @@ public sealed partial class MainWindow
         if(target.ViewId!="09" && surgicalListening){surgicalListening=false;UpdateSurgical();}
         visitedViews.Add(view.Id); Title = "Rocker — " + view.Title;
         WorkspaceTitle.Text = view.Title; WorkspaceTrail.Text = WorkspaceDescription(target);
+        selectingNavigation = true;
         foreach (var parent in navigationParents.Values.Distinct()) if (parent != navigationParents[view.Id]) parent.IsExpanded = false;
         if (navigationItems[view.Id] != navigationParents[view.Id]) navigationParents[view.Id].IsExpanded = true;
-        selectingNavigation = true; Navigation.SelectedItem = navigationItems[view.Id]; selectingNavigation = false;
+        Navigation.SelectedItem = navigationItems[view.Id]; selectingNavigation = false;
         Navigation.IsBackEnabled = BackMenu.IsEnabled = navigation.CanGoBack; ForwardMenu.IsEnabled = navigation.CanGoForward;
         NotationPanel.Visibility = view.Id == "20" ? Visibility.Visible : Visibility.Collapsed;
         if(view.Id!="08")SendVideo(new{op="pause"});

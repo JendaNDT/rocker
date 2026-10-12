@@ -22,7 +22,7 @@ public sealed partial class MainWindow
         var buttons=new StackPanel{Orientation=Orientation.Horizontal,Spacing=8};buttons.Children.Add(liveStart);buttons.Children.Add(liveStop);panel.Children.Add(buttons);panel.Children.Add(liveDevice);
         var left=Stack();var right=Stack();
         var monitoring=Stack();
-        liveMonitor=new CheckBox{Content="Poslouchat kytaru ve sluchátkách",IsChecked=false};liveMonitor.Checked+=LiveMonitoring_Changed;liveMonitor.Unchecked+=LiveMonitoring_Changed;monitoring.Children.Add(liveMonitor);
+        liveMonitor=new CheckBox{Content="Poslouchat kytaru ve sluchátkách",IsChecked=false,IsEnabled=false};liveMonitor.Checked+=LiveMonitoring_Changed;liveMonitor.Unchecked+=LiveMonitoring_Changed;monitoring.Children.Add(liveMonitor);
         var level=new Slider{Header="Hlasitost monitoringu",Minimum=0,Maximum=100,Value=liveGain*100};Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(level,"Hlasitost monitoringu");level.ValueChanged+=(_,args)=>{liveGain=args.NewValue/100;ApplyLiveMonitoring();};monitoring.Children.Add(level);
         liveInputMeter=new(){Label="Vstup kytary"};monitoring.Children.Add(liveInputMeter);
         liveState=Text("Spusť Live a potom zapni poslech kytary.",true);monitoring.Children.Add(liveState);left.Children.Add(Card(monitoring));
