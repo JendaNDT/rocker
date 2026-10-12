@@ -1,0 +1,23 @@
+{
+  "result": "passed",
+  "recordedAtUtc": "2026-10-12T14:22:32.030574+00:00",
+  "sourceCommit": "601af35834c05921f811f216169ed411d61f32f0",
+  "scope": "Native UI/UX; C++ graph, persistence schemas and PWA sources unchanged.",
+  "csharpSemantic": {
+    "files": 51,
+    "errors": 0,
+    "xamlFieldsStubbed": true,
+    "windowsRuntimeVerified": false
+  },
+  "domain": {
+    "result": "passed",
+    "referenceCases": 69,
+    "boundaryChecks": 168,
+    "contentGroups": 15,
+    "surgicalStatesCompared": 37,
+    "extendedReferenceCases": 372,
+    "extendedStatesCompared": 350
+  },
+  "windowsLayoutVerified": false,
+  "manualUsabilityVerified": false
+}

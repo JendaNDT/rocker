@@ -2,7 +2,7 @@
 
 Rozsah W04–W43 je nativní přepis současného Rockeru, nikoli další rozšiřování původního nedokončeného backlogu. Celkem 32 pracovních pohledů používá WinUI 3 a společný Vintage systém. YouTube je jediný vyhrazený webový přehrávač. Zvuk běží v odděleném C++20/JUCE jádru; cvičení a vlastní soubory fungují místně.
 
-`windows/verify-candidate.ps1` uspěl nad skutečným Windows sestavením revize `1ce23b7` v [běhu 38196070619](https://github.com/JendaNDT/rocker/actions/runs/38196070619): nativní testy, doménové a datové kontroly, převod PWA v Chromium, všech 32 skutečných pohledů/35 snímků, UI Automation, instalační cyklus a oddělené odpovídající zdroje. Konkrétní testovanou revizi, běh a výsledek obsahuje `windows-validation.json`; chybějící protokol není úspěšné ověření. Instalační EXE i oba ZIPy mají SHA256. [Soukromé vydání s hotovým instalátorem](https://github.com/JendaNDT/rocker/releases/tag/windows-0.2.0-rc1-20261012).
+`windows/verify-candidate.ps1` uspěl nad skutečným Windows sestavením revize `601af35` v [běhu 38262050417](https://github.com/JendaNDT/rocker/actions/runs/38262050417): nativní testy, doménové a datové kontroly, převod PWA v Chromium, všech 32 skutečných pohledů/35 snímků, UI Automation, instalační cyklus a oddělené odpovídající zdroje. Konkrétní testovanou revizi, běh a výsledek obsahuje `windows-validation.json`; chybějící protokol není úspěšné ověření. Instalační EXE i oba ZIPy mají SHA256. [Soukromé vydání s hotovým instalátorem](https://github.com/JendaNDT/rocker/releases/tag/windows-0.2.0-rc2-20261012).
 
 - [Návod ke spuštění a běžnému používání](user-guide.md)
 - [Matice implementace a přejímky](completeness.md)

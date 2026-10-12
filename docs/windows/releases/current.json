@@ -1,6 +1,6 @@
 {
-  "runId": 38196070619,
-  "commit": "1ce23b74c86fe6106ae14cc95fe9b13d6d94c5f6",
-  "tag": "windows-0.2.0-rc1-20261012",
-  "title": "Rocker 0.2.0 — kompletní nativní Windows kandidát"
+  "runId": 38262050417,
+  "commit": "601af35834c05921f811f216169ed411d61f32f0",
+  "tag": "windows-0.2.0-rc2-20261012",
+  "title": "Rocker 0.2.0 RC2 — přehlednější UI a UX"
 }
