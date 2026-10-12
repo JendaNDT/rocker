@@ -8,6 +8,7 @@
 #include <thread>
 extern "C" void ROCKER_CALL rocker_test_set_frames(uint32_t frames);
 extern "C" uint64_t ROCKER_CALL rocker_test_start_count();
+extern "C" void ROCKER_CALL rocker_test_process(uint32_t frames,float value);
 
 namespace {
 int checks = 0;
@@ -93,6 +94,16 @@ int main(int argc, char** argv) {
         check(rocker_audio_get_transport(host, &transport) == ROCKER_OK && std::abs(transport.duration_seconds - 2) < 0.001 && transport.speed == 0.5, "stretched file duration");
         check(rocker_audio_prepare_file(host, "missing-file.wav", 1) == ROCKER_MEDIA_ERROR, "decode error crosses ABI safely");
         check(rocker_audio_get_transport(host, &transport) == ROCKER_OK && transport.ready && transport.speed == 0.5, "failed preparation retains previous clip");
+        auto readWaveform=[&]{uint32_t bytes=0;check(rocker_audio_copy_waveform(host,nullptr,0,&bytes)==ROCKER_OK,"waveform size query");std::vector<char> data(bytes);check(rocker_audio_copy_waveform(host,data.data(),bytes,&bytes)==ROCKER_OK,"waveform copy");return std::string(data.data());};
+        const auto oldWaveform=readWaveform();
+        check(rocker_audio_start(host)==ROCKER_OK,"keep a callback active during replacement cancellation");
+        check(rocker_audio_prepare_midi(host,midi.data(),static_cast<uint32_t>(midi.size()),1)==ROCKER_OK,"stage different source before callback publication");
+        check(readWaveform()!=oldWaveform,"pending source has distinct waveform");
+        check(rocker_audio_cancel_media(host)==ROCKER_OK,"cancel staged source before callback accepts it");
+        rocker_test_process(64,0);
+        for(int i=0;i<100 && readWaveform()!=oldWaveform;++i)std::this_thread::sleep_for(std::chrono::milliseconds(5));
+        check(readWaveform()==oldWaveform,"cancelled source restores the current source waveform");
+        check(rocker_audio_stop(host)==ROCKER_OK,"stop after cancellation without discarding current source");
         check(rocker_audio_seek(host, transport.duration_seconds) == ROCKER_OK, "seek EOF");
         check(rocker_audio_play(host) == ROCKER_OK, "restart EOF begins again");
         check(rocker_audio_get_transport(host, &transport) == ROCKER_OK && transport.position_seconds < 0.1, "restart resets cursor");

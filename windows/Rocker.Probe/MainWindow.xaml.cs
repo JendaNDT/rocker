@@ -53,6 +53,7 @@ public sealed partial class MainWindow : Window
     }
     private async void Start_Click(object sender, RoutedEventArgs e)
     {
+        if(powerTransition)return;
         try { ++playbackIntent; SetBusy(true); if(audio is not null)await audio.StartAsync(); if(!closingWindow && !closed)RefreshState(); }
         catch (Exception error) { ShowError(error); }
         finally { if(!closed)SetBusy(false); }
@@ -70,11 +71,11 @@ public sealed partial class MainWindow : Window
         {
             var state = audio.GetSnapshot();
             var transport = audio.GetTransport();
-            StartButton.IsEnabled = !deviceSelectionUnavailable && !deviceOperationRunning && !busy && state.State != AudioState.Running;
-            PlayMediaButton.IsEnabled = PlayMenu.IsEnabled = !deviceSelectionUnavailable && !deviceOperationRunning && !busy && transport.Ready != 0 && transport.Playing == 0;
+            StartButton.IsEnabled = !deviceSelectionUnavailable && !deviceOperationRunning && !powerTransition && !busy && state.State != AudioState.Running;
+            PlayMediaButton.IsEnabled = PlayMenu.IsEnabled = !deviceSelectionUnavailable && !deviceOperationRunning && !powerTransition && !busy && transport.Ready != 0 && transport.Playing == 0;
             RewindButton.IsEnabled = PositionSlider.IsEnabled = !busy && transport.Ready != 0;
             SpeedBox.IsEnabled = !studioOwnsPlayback && !busy && transport.Ready != 0;
-            PlayScoreButton.IsEnabled = !deviceSelectionUnavailable && !deviceOperationRunning && !busy && preview is not null;
+            PlayScoreButton.IsEnabled = !deviceSelectionUnavailable && !deviceOperationRunning && !powerTransition && !busy && preview is not null;
             if (!positionDragging)
             {
                 updatingPosition = true;

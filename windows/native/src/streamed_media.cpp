@@ -1,5 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 #include "media_clip.h"
+#include "media_decoders.h"
+#include <cstring>
 #include <juce_audio_formats/juce_audio_formats.h>
 #include <signalsmith-stretch/signalsmith-stretch.h>
 #include <algorithm>
@@ -75,6 +77,14 @@ struct CacheFile {
     bool transferred=false;
     ~CacheFile(){if(!transferred){std::error_code ignored;std::filesystem::remove(path,ignored);}}
 };
+class DiskPcmReader final:public juce::AudioFormatReader {
+public:
+    DiskPcmReader(juce::InputStream* input,const detail::PcmShape& shape):juce::AudioFormatReader(input,"Rocker decoded PCM"){sampleRate=shape.sampleRate;numChannels=shape.channels;lengthInSamples=static_cast<juce::int64>(shape.frames);bitsPerSample=32;usesFloatingPointData=true;}
+    bool readSamples(int* const* destination,int destinationChannels,int offset,juce::int64 start,int count) override {
+        if(start<0 || count<0 || start>lengthInSamples || count>lengthInSamples-start || !input->setPosition(start*numChannels*sizeof(float)))return false;
+        std::array<float,4096*2> scratch{};int done=0;while(done<count){int n=std::min(4096,count-done);int bytes=static_cast<int>(n*numChannels*sizeof(float));if(input->read(scratch.data(),bytes)!=bytes)return false;for(int c=0;c<destinationChannels;++c)if(destination[c]){auto* target=reinterpret_cast<float*>(destination[c])+offset+done;for(int i=0;i<n;++i)target[i]=c<static_cast<int>(numChannels)?scratch[static_cast<size_t>(i)*numChannels+c]:0;}done+=n;}return true;
+    }
+};
 void cancelled(const std::atomic<uint64_t>& generation,uint64_t expected){if(generation.load()!=expected)throw Failure(Error::decodeFailed,"Media preparation was superseded or cancelled");}
 }
 std::vector<float> waveform(const Clip& clip,size_t bins){
@@ -97,9 +107,20 @@ Clip prepareFile(const std::filesystem::path& path,double speed,const std::atomi
     juce::AudioFormatManager formats;formats.registerBasicFormats();
     auto encoded=file.createInputStream();if(!encoded)throw Failure(Error::decodeFailed,"Cannot open the encoded audio stream");
     if(encoded->getTotalLength()>1024ll*1024*1024)throw Failure(Error::limitExceeded,"Opened audio exceeds 1 GiB limit");
+    CacheFile decodedCache;
     std::unique_ptr<juce::AudioFormatReader> reader(formats.createReaderFor(std::move(encoded)));
-    // Legacy WebM/MP4 decoders retain their explicitly bounded offline fallback.
-    if(!reader){auto original=decode(path);cancelled(generation,expected);return speed==1?std::move(original):stretch(original,speed);}
+    if(!reader){
+        unsigned char signature[12]{};auto probe=file.createInputStream();if(!probe)throw Failure(Error::decodeFailed,"Cannot reopen encoded audio");int bytes=probe->read(signature,sizeof(signature));bool webm=bytes>=4 && signature[0]==0x1a && signature[1]==0x45 && signature[2]==0xdf && signature[3]==0xa3;bool mp4=bytes>=8 && std::memcmp(signature+4,"ftyp",4)==0;if(!webm && !mp4)throw Failure(Error::unsupportedFormat,"No decoder recognized audio content");
+        std::ofstream decoded(decodedCache.path,std::ios::binary|std::ios::trunc);if(!decoded)throw Failure(Error::decodeFailed,"Cannot create decoded container cache");uint64_t frames=0;uint32_t channels=0;double rate=0;
+        auto check=[&]{cancelled(generation,expected);};detail::ChunkSink sink=[&](const float* data,size_t count,uint32_t ch,double hz){check();if(ch<1 || ch>2 || count>maximumCacheBytes/(ch*sizeof(float))-frames || (channels && (channels!=ch || rate!=hz)))throw Failure(Error::limitExceeded,"Container PCM exceeds cache budget or changed shape");channels=ch;rate=hz;decoded.write(reinterpret_cast<const char*>(data),static_cast<std::streamsize>(count*ch*sizeof(float)));if(!decoded)throw Failure(Error::decodeFailed,"Container cache write failed; check disk space");frames+=count;};
+        Limits limits{1024ull*1024*1024,maximumCacheBytes,maximumCacheBytes};auto shape=webm?detail::decodeWebmChunks(path,limits,sink,check):detail::decodeMp4Chunks(path,limits,sink,check);decoded.flush();if(!decoded || shape.frames!=frames || shape.channels!=channels || shape.sampleRate!=rate)throw Failure(Error::decodeFailed,"Incomplete decoded container cache");decoded.close();check();
+#ifdef _WIN32
+        juce::File cacheFile(juce::String(decodedCache.path.c_str()));
+#else
+        juce::File cacheFile(juce::String::fromUTF8(decodedCache.path.c_str()));
+#endif
+        auto input=cacheFile.createInputStream();if(!input)throw Failure(Error::decodeFailed,"Cannot reopen container PCM cache");reader=std::make_unique<DiskPcmReader>(input.release(),shape);
+    }
     if(reader->lengthInSamples<=0 || reader->numChannels<1 || reader->numChannels>2 || !std::isfinite(reader->sampleRate) || reader->sampleRate<8000 || reader->sampleRate>192000)throw Failure(Error::invalidInput,"Unsupported PCM shape");
     const auto sourceFrames=static_cast<uint64_t>(reader->lengthInSamples);
     const auto total=static_cast<uint64_t>(std::llround(sourceFrames/speed));const auto channels=reader->numChannels;

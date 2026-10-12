@@ -14,7 +14,7 @@ public sealed partial class MainWindow
         var import=new Button{Content="Otevřít soubor pro převod…",IsEnabled=persistenceReady};var status=Text("Podporované soubory: .rockermigration a původní .json zálohy.",true);
         import.Click+=async (_,_)=>
         {
-            if(database is null || catalog is null || profileOperation || backupOperationRunning)return;
+            if(powerTransition || fileOperation || busy || deviceOperationRunning || database is null || catalog is null || profileOperation || backupOperationRunning)return;
             var picker=new FileOpenPicker();picker.FileTypeFilter.Add(".rockermigration");picker.FileTypeFilter.Add(".json");WinRT.Interop.InitializeWithWindow.Initialize(picker,WinRT.Interop.WindowNative.GetWindowHandle(this));
             var file=await picker.PickSingleFileAsync();if(file is null || closed)return;
             backupOperationRunning=true;import.IsEnabled=false;

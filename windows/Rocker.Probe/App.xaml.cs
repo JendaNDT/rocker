@@ -25,10 +25,16 @@ public partial class App : Application
             string request=Environment.GetCommandLineArgs().Skip(1).FirstOrDefault(v=>v!="--")??"";
             if(!ownsInstance){using var timeout=new CancellationTokenSource(TimeSpan.FromSeconds(5));await InstanceChannel.SendAsync(name,request,timeout.Token);instanceMutex.Dispose();Exit();return;}
             Marshal.ThrowExceptionForHR(SetCurrentProcessExplicitAppUserModelID(VideoProtocol.AppId));
-            var main=new MainWindow();window=main;main.QueueFileActivation(request);main.Activate();instanceCancellation=new();instanceListener=InstanceChannel.ListenAsync(name,received=>main.DispatcherQueue.TryEnqueue(()=>main.QueueFileActivation(received)),instanceCancellation.Token);
+            var main=new MainWindow();window=main;main.QueueFileActivation(request);main.Activate();instanceCancellation=new();instanceListener=ObserveInstanceListenerAsync(name,main,instanceCancellation.Token);
             main.Closed+=(_,_)=>{instanceCancellation.Cancel();if(ownsInstance){instanceMutex.ReleaseMutex();ownsInstance=false;}instanceMutex.Dispose();};
         }
         catch (Exception error) { LogStartupFailure(error); throw; }
+    }
+    private static async Task ObserveInstanceListenerAsync(string name,MainWindow main,CancellationToken cancellation)
+    {
+        try{await InstanceChannel.ListenAsync(name,received=>main.DispatcherQueue.TryEnqueue(()=>main.QueueFileActivation(received)),cancellation);}
+        catch(OperationCanceledException)when(cancellation.IsCancellationRequested){}
+        catch(Exception error){LogStartupFailure(error,"Instance channel failed; the existing workspace remains available.");}
     }
     private static void LogStartupFailure(Exception error, string? context = null)
     {

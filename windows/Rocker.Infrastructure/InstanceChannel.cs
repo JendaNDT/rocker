@@ -13,10 +13,9 @@ public static class InstanceChannel
     {
         while(!cancellation.IsCancellationRequested)
         {
-            using var pipe=new NamedPipeServerStream(name,PipeDirection.InOut,1,PipeTransmissionMode.Byte,PipeOptions.Asynchronous | PipeOptions.CurrentUserOnly);
-            try{await pipe.WaitForConnectionAsync(cancellation).ConfigureAwait(false);using var timeout=CancellationTokenSource.CreateLinkedTokenSource(cancellation);timeout.CancelAfter(TimeSpan.FromSeconds(5));byte[] size=new byte[4];await pipe.ReadExactlyAsync(size,timeout.Token).ConfigureAwait(false);int count=BitConverter.ToInt32(size);if(count<0 || count>MaximumBytes)continue;byte[] bytes=new byte[count];await pipe.ReadExactlyAsync(bytes,timeout.Token).ConfigureAwait(false);string request=new UTF8Encoding(false,true).GetString(bytes);if(request.Any(char.IsControl) || request.Length>32767)continue;receive(request);await pipe.WriteAsync(new byte[]{1},timeout.Token).ConfigureAwait(false);await pipe.FlushAsync(timeout.Token).ConfigureAwait(false);}
+            try{using var pipe=new NamedPipeServerStream(name,PipeDirection.InOut,1,PipeTransmissionMode.Byte,PipeOptions.Asynchronous | PipeOptions.CurrentUserOnly);await pipe.WaitForConnectionAsync(cancellation).ConfigureAwait(false);using var timeout=CancellationTokenSource.CreateLinkedTokenSource(cancellation);timeout.CancelAfter(TimeSpan.FromSeconds(5));byte[] size=new byte[4];await pipe.ReadExactlyAsync(size,timeout.Token).ConfigureAwait(false);int count=BitConverter.ToInt32(size);if(count<0 || count>MaximumBytes)continue;byte[] bytes=new byte[count];await pipe.ReadExactlyAsync(bytes,timeout.Token).ConfigureAwait(false);string request=new UTF8Encoding(false,true).GetString(bytes);if(request.Any(char.IsControl) || request.Length>32767)continue;receive(request);await pipe.WriteAsync(new byte[]{1},timeout.Token).ConfigureAwait(false);await pipe.FlushAsync(timeout.Token).ConfigureAwait(false);}
             catch(OperationCanceledException)when(cancellation.IsCancellationRequested){break;}
-            catch(Exception error)when(error is IOException or OperationCanceledException or DecoderFallbackException){/* One broken client must not terminate the existing window. */}
+            catch(Exception error)when(error is IOException or OperationCanceledException or DecoderFallbackException){/* One broken client must not terminate the existing window. */try{await Task.Delay(25,cancellation).ConfigureAwait(false);}catch(OperationCanceledException)when(cancellation.IsCancellationRequested){break;}}
         }
     }
 }

@@ -1,0 +1,12 @@
+{
+  "result": "passed",
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "nativeSuites": 20,
+  "longWebmContainerAssertions": 21,
+  "longFixtureSeconds": 400,
+  "minimumDecodedBytes": 76800000,
+  "storageReport": "/tmp/rocker-w38-storage.json",
+  "windowsPowerMessages": "pending",
+  "windowsAac": "pending",
+  "physicalHardwareVerified": false
+}

@@ -526,7 +526,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w38"></a>
 #### W38 — Chyby, přerušení a obnova práce
 
-- [ ] Čeká. Závislosti: W20, W22–W24, W30, W31, W36, W37.
+- [ ] Implementováno: [W38](docs/windows/w38/README.md); místní automatické kontroly prošly, Windows zprávy a AAC čekají na build. Závislosti: W20, W22–W24, W30, W31, W36, W37.
 - Simulovat odpojení zařízení a disku, obsazený ovladač, plný disk, chybějící práva, uspání a probuzení, síťový výpadek a ukončení během záznamu, exportu, importu a autosave.
 - Ověřit, že se neobnoví nechtěný hlasitý monitoring, nesmaže poslední platný projekt a chyba jednoho online nástroje nevyřadí lekce ani nahrávky.
 - Zotavení musí nabídnout konkrétní akci: vybrat zařízení, dohledat médium, obnovit take, uložit jinam nebo operaci zrušit. Log nesmí přehlušit původní chybu dalšími selháními.

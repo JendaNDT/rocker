@@ -64,7 +64,9 @@ struct BufferLock {
     DWORD length = 0;
 };
 }
-Clip decodeMp4(const std::filesystem::path& path, Limits limits) {
+PcmShape decodeMp4Chunks(const std::filesystem::path& path, Limits limits,const ChunkSink& sink,const CancelCheck& cancellation) {
+    if(cancellation)cancellation();
+    if(std::filesystem::file_size(path)>limits.encodedBytes)throw Failure(Error::limitExceeded,"MP4 exceeds encoded budget");
     // No eager mfplat/mfreadwrite imports: optional Windows N components may be
     // absent, without preventing the native host/window from loading.
     Foundation system;
@@ -86,9 +88,10 @@ Clip decodeMp4(const std::filesystem::path& path, Limits limits) {
     checked(actual->GetUINT32(MF_MT_AUDIO_BLOCK_ALIGNMENT, &alignment), "Missing AAC PCM alignment");
     if (channels < 1 || channels > 2 || rate < 8000 || rate > 192000 || bits != 32 || alignment != channels * sizeof(float))
         throw Failure(Error::unsupportedFormat, "Unsupported decoded AAC shape");
-    Clip clip{static_cast<double>(rate), std::vector<std::vector<float>>(channels)};
+    uint64_t totalFrames=0;
     unsigned noProgress = 0;
     while (true) {
+        if(cancellation)cancellation();
         DWORD flags = 0;
         ComPtr<IMFSample> sample;
         checked(reader->ReadSample(MF_SOURCE_READER_FIRST_AUDIO_STREAM, 0, nullptr, &flags, nullptr, &sample), "AAC read failed");
@@ -100,27 +103,30 @@ Clip decodeMp4(const std::filesystem::path& path, Limits limits) {
             BufferLock locked(buffer.Get());
             if (locked.length % alignment != 0) throw Failure(Error::decodeFailed, "Misaligned AAC PCM");
             const std::size_t count = locked.length / alignment;
-            if (clip.frames() + count > limits.pcmBytes / alignment || clip.frames() + count > static_cast<std::size_t>(std::numeric_limits<int>::max()))
+            if (totalFrames + count > limits.pcmBytes / alignment || totalFrames + count > static_cast<std::size_t>(std::numeric_limits<uint32_t>::max()))
                 throw Failure(Error::limitExceeded, "AAC PCM exceeds budget");
-            for (UINT32 c = 0; c < channels; ++c) {
-                for (std::size_t n = 0; n < count; ++n) {
-                    float value;
-                    std::memcpy(&value, locked.data + n * alignment + c * sizeof(float), sizeof(float));
-                    if (!std::isfinite(value)) throw Failure(Error::decodeFailed, "Non-finite AAC PCM");
-                    clip.channels[c].push_back(value);
-                }
-            }
+            if(count>262144)throw Failure(Error::limitExceeded,"AAC chunk exceeds bounded worker budget");
+            std::vector<float> chunk(count*channels);std::memcpy(chunk.data(),locked.data,locked.length);const auto* pcm=chunk.data();
+            for(size_t n=0;n<count*channels;++n)if(!std::isfinite(pcm[n]))throw Failure(Error::decodeFailed,"Non-finite AAC PCM");
+            if(cancellation)cancellation();if(count)sink(pcm,count,channels,rate);totalFrames+=count;
             noProgress = count ? 0 : noProgress + 1;
         } else ++noProgress;
         if (flags & MF_SOURCE_READERF_ENDOFSTREAM) break;
         if (noProgress > 1024) throw Failure(Error::decodeFailed, "AAC decoder made no progress");
     }
-    if (clip.frames() == 0) throw Failure(Error::decodeFailed, "Empty AAC stream");
-    return clip;
+    if (totalFrames == 0) throw Failure(Error::decodeFailed, "Empty AAC stream");
+    return {static_cast<double>(rate),channels,totalFrames};
 }
+Clip decodeMp4(const std::filesystem::path& path,Limits limits){
+    Clip clip;auto shape=decodeMp4Chunks(path,limits,[&](const float* data,size_t count,uint32_t channels,double rate){clip.sampleRate=rate;if(clip.channels.empty())clip.channels.resize(channels);for(uint32_t c=0;c<channels;++c)for(size_t n=0;n<count;++n)clip.channels[c].push_back(data[n*channels+c]);},{});(void)shape;return clip;
+}
+
 }
 #else
 namespace rocker::media::detail {
+PcmShape decodeMp4Chunks(const std::filesystem::path&,Limits,const ChunkSink&,const CancelCheck&) {
+    throw Failure(Error::platformUnavailable,"MP4/AAC requires Windows Media Foundation");
+}
 Clip decodeMp4(const std::filesystem::path&, Limits) {
     throw Failure(Error::platformUnavailable, "MP4/AAC requires Windows Media Foundation");
 }

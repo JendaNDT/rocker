@@ -37,7 +37,7 @@ public sealed partial class MainWindow
         panel.DragOver+=(_,e)=>{if(e.DataView.Contains(StandardDataFormats.StorageItems))e.AcceptedOperation=DataPackageOperation.Copy;};
         panel.Drop+=async(_,e)=>{e.Handled=true;try{if(e.DataView.Contains(StandardDataFormats.StorageItems) && (await e.DataView.GetStorageItemsAsync()).OfType<StorageFile>().FirstOrDefault() is { } file)await OpenSongFileAsync(file.Path,file.Name);}catch(Exception error){ShowError(error);}};
         var open=new Button{Content="Otevřít skladbu…"};open.Click+=OpenMedia_Click;panel.Children.Add(open);
-        songCancel=new Button{Content="Zrušit načítání",IsEnabled=busy};songCancel.Click+=(_,_)=>{songLoadCancelled=true;audio?.CancelMediaPreparation();MediaStatus.Text="Načítání bylo zrušeno. Předchozí skladba zůstává dostupná.";};panel.Children.Add(songCancel);
+        songCancel=new Button{Content="Zrušit načítání",IsEnabled=busy};songCancel.Click+=(_,_)=>{songLoadCancelled=true;audio?.CancelMediaPreparation();MediaStatus.Text="Ruším načítání a obnovuji předchozí zdroj…";};panel.Children.Add(songCancel);
         songSelector=new ComboBox{Header="Naposledy otevřené skladby",DisplayMemberPath="Name",ItemsSource=songs.Values.OrderBy(s=>s.Name).ToArray(),HorizontalAlignment=HorizontalAlignment.Stretch};
         songSelector.SelectionChanged+=async(_,_)=>{if(!songUpdating && !busy && songSelector.SelectedItem is SongSession selected){try{if(File.Exists(selected.SourcePath))await OpenSongFileAsync(selected.SourcePath,selected.Name);else await RelocateSongAsync(selected);}catch(Exception error){ShowError(error);}}};panel.Children.Add(songSelector);
         songReading=Text(song is null?"Vyber skladbu nebo sem přetáhni zvukový soubor.":song.Name,true);panel.Children.Add(songReading);
@@ -76,33 +76,49 @@ public sealed partial class MainWindow
         for(int i=0;i<200;++i){if(closed || songLoadCancelled)throw new OperationCanceledException();var transport=audio!.GetTransport();if(transport.Ready!=0 && (transport.Reserved&16)==0 && Math.Abs(transport.Speed-speed)<1e-8)return;await Task.Delay(10);}
         throw new InvalidOperationException("Přehrávač zatím nepřevzal novou skladbu.");
     }
+    private async Task RestoreSongPlaybackAsync(string? path,byte[]? midi,double speed,Rocker.Interop.TransportSnapshot state,bool project)
+    {
+        if(audio is null || closed || powerTransition)return;
+        // Restore the source as well as the labels after a cancellation that
+        // races publication. A restored source remains paused deliberately.
+        await audio.PauseAsync();songLoadCancelled=false;
+        if(project && studioProject is not null)await PrepareStudioAsync();
+        else if(path is not null)await audio.PrepareFileAsync(path,speed);
+        else if(midi is not null)await audio.PrepareMidiAsync(midi,speed);
+        else{await audio.ClearMediaAsync();return;}
+        await WaitForSongAsync(project?1:speed);
+        await audio.SeekAsync(Math.Min(state.PositionSeconds,audio.GetTransport().DurationSeconds));
+        if((state.Reserved&1)!=0){if(path is not null && song is not null)await ApplySongLoopAsync();else if(midi is not null && notationLoop is { } loop)await audio.SetLoopAsync(loop.Start/speed,loop.End/speed,true);}
+    }
     private async Task OpenSongFileAsync(string path,string name,SongSession? relocated=null)
     {
-        if(busy || audio is null)return;var previous=song;
+        if(busy || powerTransition || audio is null)return;var previous=song;var oldPath=mediaPath;var oldMidi=mediaMidi;var oldSpeed=currentSpeed;var oldState=audio.GetTransport();bool oldStudio=studioOwnsPlayback;
         try{
             SetBusy(true);await CancelSongRampAsync();songLoadCancelled=false;if(songCancel is not null)songCancel.IsEnabled=true;MediaStatus.Text="Připravuji skladbu a zvukovou časovou osu…";
             var existing=relocated??songs.Values.FirstOrDefault(s=>string.Equals(s.SourcePath,path,StringComparison.OrdinalIgnoreCase));var speed=existing?.Speed??currentSpeed;
-            await audio.PrepareFileAsync(path,speed);if(closed || songLoadCancelled)return;await WaitForSongAsync(speed);
+            await audio.PrepareFileAsync(path,speed);if(closed)return;if(songLoadCancelled)throw new OperationCanceledException();await WaitForSongAsync(speed);if(songCancel is not null)songCancel.IsEnabled=false;
             studioOwnsPlayback=false;studioTicket=0;
             var transport=audio.GetTransport();songPeaks=await audio.GetWaveformAsync();currentSpeed=speed;mediaPath=path;mediaMidi=null;
             var duration=transport.DurationSeconds*speed;
             song=SongRules.Validate((existing??new SongSession(Guid.NewGuid().ToString("D"),name,path,duration)) with{SourcePath=path,Duration=duration,Speed=speed,Position=Math.Min(existing?.Position??0,duration),Sections=(existing?.Sections??[]).Where(s=>s.End<=duration).ToArray()});
             await audio.SeekAsync(song.Position/speed);RememberFile(path);MediaTitle.Text=song.Name;SaveSong();workspaceCache.Remove(new("07"));ShowWorkspace();MediaStatus.Text="Skladba je připravená; monitoring zůstal samostatný. Přehrávání spustíš tlačítkem.";
-        }catch(OperationCanceledException){song=previous;}
+        }catch(OperationCanceledException){song=previous;mediaPath=oldPath;mediaMidi=oldMidi;currentSpeed=oldSpeed;await RestoreSongPlaybackAsync(oldPath,oldMidi,oldSpeed,oldState,oldStudio);MediaStatus.Text="Načítání bylo zrušeno. Předchozí zdroj je zachovaný a pozastavený.";}
+        catch{song=previous;mediaPath=oldPath;mediaMidi=oldMidi;currentSpeed=oldSpeed;await RestoreSongPlaybackAsync(oldPath,oldMidi,oldSpeed,oldState,oldStudio);throw;}
         finally{if(!closed){SetBusy(false);if(songCancel is not null)songCancel.IsEnabled=false;}}
     }
     private async Task ChangeSongSpeedAsync(double speed)
     {
-        if(audio is null || busy || (mediaPath is null && mediaMidi is null) || speed==currentSpeed)return;
+        if(audio is null || powerTransition || busy || (mediaPath is null && mediaMidi is null) || speed==currentSpeed)return;
         var previous=currentSpeed;var transport=audio.GetTransport();var sourcePosition=transport.PositionSeconds*previous;
         try{
             SetBusy(true);await CancelSongRampAsync();songLoadCancelled=false;if(songCancel is not null)songCancel.IsEnabled=true;MediaStatus.Text="Připravuji novou rychlost; živý vstup pokračuje…";
-            if(mediaPath is not null)await audio.PrepareFileAsync(mediaPath,speed);else await audio.PrepareMidiAsync(mediaMidi!,speed);if(closed || songLoadCancelled)return;await WaitForSongAsync(speed);currentSpeed=speed;
+            if(mediaPath is not null)await audio.PrepareFileAsync(mediaPath,speed);else await audio.PrepareMidiAsync(mediaMidi!,speed);if(closed)return;if(songLoadCancelled)throw new OperationCanceledException();await WaitForSongAsync(speed);if(songCancel is not null)songCancel.IsEnabled=false;currentSpeed=speed;
             await audio.SeekAsync(Math.Min(sourcePosition/speed,audio.GetTransport().DurationSeconds));songPeaks=await audio.GetWaveformAsync();
             if(song is not null && mediaPath is not null){song=song with{Speed=speed,Position=Math.Min(sourcePosition,song.Duration)};SaveSong();if((transport.Reserved&1)!=0)await ApplySongLoopAsync();}
             if(notationLoop is { } loop && mediaMidi is not null && ReferenceEquals(mediaMidi,notationPlayingMidi))await audio.SetLoopAsync(loop.Start/speed,loop.End/speed,true);
             if(transport.Playing!=0)await audio.PlayAsync();MediaStatus.Text="Rychlost byla změněna bez změny výšky tónu.";
-        }catch{currentSpeed=previous;throw;}
+        }catch(OperationCanceledException){currentSpeed=previous;await RestoreSongPlaybackAsync(mediaPath,mediaMidi,previous,transport,false);MediaStatus.Text="Změna rychlosti byla zrušena. Zdroj je pozastavený.";}
+        catch{currentSpeed=previous;await RestoreSongPlaybackAsync(mediaPath,mediaMidi,previous,transport,false);throw;}
         finally{if(!closed){songUpdating=true;SpeedBox.SelectedIndex=Array.IndexOf(new[]{.25,.5,.75,1.0,1.5,2.0},currentSpeed);if(songSpeed is not null)songSpeed.Value=currentSpeed;songUpdating=false;SetBusy(false);if(songCancel is not null)songCancel.IsEnabled=false;DrawSongWaveform();}}
     }
     private async Task ApplySongLoopAsync()

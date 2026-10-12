@@ -14,7 +14,7 @@ public sealed partial class MainWindow
     private void DeviceBusy(bool value){deviceOperationRunning=value;DeviceControls.IsEnabled=!value;if(!closed)RefreshState();}
     private async Task DeviceOperationAsync(Func<Task> operation)
     {
-        if(deviceOperationRunning || closingWindow || audio is null)return;
+        if(deviceOperationRunning || closingWindow || powerTransition || busy || fileOperation || backupOperationRunning || profileOperation || studioOperation || looperOperation || audio is null)return;
         DeviceBusy(true);
         try{CancelPalm();await StopRhythmUiAsync();++playbackIntent;await audio.StopAsync();if(!await StopCaptureAsync())return;await operation();}
         catch(Exception error){if(!closed)DeviceSelectionStatus.Text="Zařízení nelze změnit. "+error.Message;}

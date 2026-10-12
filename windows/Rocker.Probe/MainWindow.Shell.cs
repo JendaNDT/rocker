@@ -183,6 +183,7 @@ public sealed partial class MainWindow
         closingWindow = true;
         try
         {
+            await powerStopTask;
             foreach (var guard in closeGuards.Values.Where(guard => guard.State.RequiresConfirmation).ToArray())
             {
                 var dialog = new ContentDialog { XamlRoot = ShellRoot.XamlRoot, Title = "Zavřít Rocker?", Content = guard.State.Prompt, PrimaryButtonText = "Uložit a zavřít", SecondaryButtonText = guard.State.Recording ? "" : "Zahodit", CloseButtonText = "Zrušit", DefaultButton = ContentDialogButton.Primary };
@@ -235,6 +236,7 @@ public sealed partial class MainWindow
         await VerifyOverviewLiveAsync();
         await VerifyFirstRunAsync();
         await VerifyFileCommandsAsync();
+        await VerifyPowerRecoveryAsync();
         await VerifyAllDesignViewsAsync();
         await VerifyDevicesAsync();
         VerifyComponents();

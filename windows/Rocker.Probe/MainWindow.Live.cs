@@ -40,7 +40,7 @@ public sealed partial class MainWindow
     }
     private async void LiveStart_Click(object sender,RoutedEventArgs args)
     {
-        if(audio is null || busy || deviceOperationRunning || closingWindow)return;
+        if(audio is null || busy || powerTransition || deviceOperationRunning || closingWindow)return;
         if(deviceSelectionUnavailable || appSettings.AudioDevice is not {InputChannel:>=0}){ShowPersistenceError("Nejdřív vyber zvukovou kartu a konkrétní vstup kytary.");Navigate(new("29"));return;}
         try{++playbackIntent;SetBusy(true);await audio.StartLiveAsync();if(!closed && !closingWindow)RefreshState();}
         catch(Exception error){if(!closed)ShowError(error);}
@@ -49,7 +49,7 @@ public sealed partial class MainWindow
     private void LiveMonitoring_Changed(object sender,RoutedEventArgs args){if(!liveUpdating)ApplyLiveMonitoring();}
     private void ApplyLiveMonitoring()
     {
-        if(audio is null || closed || closingWindow)return;
+        if(audio is null || closed || closingWindow || powerTransition)return;
         try{audio.SetMonitoring(liveMonitor?.IsChecked==true,liveGain);}
         catch(Exception error){ShowError(error);}
     }

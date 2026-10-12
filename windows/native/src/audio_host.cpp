@@ -55,11 +55,11 @@ struct rocker_audio_host {
     std::string error;
     uint32_t state=ROCKER_STOPPED;
     std::atomic<uint64_t> intent{0},referenceIntent{0},mediaIntent{0};
-    struct StagedClip {uint64_t generation,mediaTicket;std::unique_ptr<rocker::media::Clip> clip;};
+    struct StagedClip {uint64_t generation,mediaTicket;std::unique_ptr<rocker::media::Clip> clip;std::string waveform="[]";};
     std::vector<StagedClip> stagedClips;
     std::string waveformJson="[]";uint64_t clipGeneration=0,regularClipGeneration=0;
     void collectClips(){const auto lease=tone.clipLease();if(!lease.valid)return;
-        if(regularClipGeneration<=lease.consumed && regularClipGeneration!=lease.current && regularClipGeneration!=lease.pending){regularClipGeneration=lease.current;projectSource.reset();projectTicket=0;for(const auto& item:stagedClips)if(item.generation==lease.current){projectSource=std::dynamic_pointer_cast<rocker::media::ProjectSource>(item.clip->stream);projectTicket=projectSource?item.mediaTicket:0;}}
+        if(regularClipGeneration<=lease.consumed && regularClipGeneration!=lease.current && regularClipGeneration!=lease.pending){regularClipGeneration=lease.current;projectSource.reset();projectTicket=0;const std::lock_guard lock(telemetry);waveformJson="[]";for(const auto& item:stagedClips)if(item.generation==lease.current){waveformJson=item.waveform;projectSource=std::dynamic_pointer_cast<rocker::media::ProjectSource>(item.clip->stream);projectTicket=projectSource?item.mediaTicket:0;}}
         std::erase_if(stagedClips,[=](const auto& item){return item.generation<=lease.consumed && item.generation!=lease.current && item.generation!=lease.pending;});
     }
     std::atomic<uint64_t> stopRequests{0};
@@ -435,7 +435,7 @@ template <typename Decode> static rocker_audio_result prepareMedia(rocker_audio_
             if(afterCycles && (clip.sampleRate!=h.tone.sourceRate() || std::abs(clip.frames()/clip.sampleRate*speed-h.tone.duration()*h.tone.speed())>2/clip.sampleRate)){h.error="The source file changed during loop preparation.";return ROCKER_MEDIA_ERROR;}
             if(afterCycles && clip.stream){const auto start=static_cast<uint64_t>(std::llround(h.tone.loopStart()*h.tone.speed()/speed*clip.sampleRate));clip.stream->request(start);clip.stream->loopHint(start);}
             h.collectClips();if(h.stagedClips.size()>=64)return ROCKER_NOT_READY;
-            const auto id=++h.clipGeneration;h.stagedClips.push_back({id,generation,std::make_unique<rocker::media::Clip>(std::move(clip))});
+            const auto id=++h.clipGeneration;h.stagedClips.push_back({id,generation,std::make_unique<rocker::media::Clip>(std::move(clip)),json.str()});
             if(!h.tone.stage(h.stagedClips.back().clip.get(),speed,id,h.state!=ROCKER_RUNNING,afterCycles,generation)){h.stagedClips.pop_back();--h.clipGeneration;return ROCKER_NOT_READY;}
             if(!afterCycles){h.projectSource=std::dynamic_pointer_cast<rocker::media::ProjectSource>(h.stagedClips.back().clip->stream);h.projectTicket=h.projectSource?generation:0;h.regularClipGeneration=id;const std::lock_guard lock(h.telemetry);h.waveformJson=json.str();}h.error.clear(); return ROCKER_OK;
         });

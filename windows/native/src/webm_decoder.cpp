@@ -43,7 +43,8 @@ std::size_t nanosecondFrames(unsigned long long ns) {
     return static_cast<std::size_t>(std::llround(ns * (48000.0 / 1000000000)));
 }
 }
-Clip decodeWebm(const std::filesystem::path& path, Limits limits) {
+PcmShape decodeWebmChunks(const std::filesystem::path& path, Limits limits,const ChunkSink& sink,const CancelCheck& cancellation) {
+    if(cancellation)cancellation();
     Reader reader(path, limits);
     mkvparser::EBMLHeader header;
     long long position = 0;
@@ -83,7 +84,7 @@ Clip decodeWebm(const std::filesystem::path& path, Limits limits) {
     if (opus_decoder_ctl(decoder.get(), OPUS_SET_GAIN(signedGain)) != OPUS_OK)
         throw Failure(Error::decodeFailed, "Cannot set Opus output gain");
     std::size_t skip = track->GetCodecDelay() ? nanosecondFrames(track->GetCodecDelay()) : read16(opusHeader + 10);
-    Clip clip{48000, std::vector<std::vector<float>>(channels)};
+    uint64_t totalFrames=0;
     std::vector<float> pcm(5760 * channels);
     std::vector<unsigned char> packet;
     const mkvparser::BlockEntry* entry = nullptr;
@@ -91,8 +92,9 @@ Clip decodeWebm(const std::filesystem::path& path, Limits limits) {
     long long previousTime = -1;
     long long previousFrames = 0;
     while (entry && !entry->EOS()) {
+        if(cancellation)cancellation();
         const auto* block = entry->GetBlock();
-        if (!block || block->GetFrameCount() < 1) throw Failure(Error::decodeFailed, "Empty Opus block");
+        if (!block || block->GetFrameCount() < 1 || block->GetFrameCount()>256) throw Failure(Error::decodeFailed, "Empty Opus block");
         const auto time = block->GetTime(entry->GetCluster());
         // Continuous MediaRecorder audio is supported. Do not silently remove
         // timeline gaps: discontinuous/editing-oriented containers need a later importer.
@@ -102,6 +104,7 @@ Clip decodeWebm(const std::filesystem::path& path, Limits limits) {
         previousFrames = 0;
         std::vector<std::vector<float>> blockPcm(channels);
         for (int f = 0; f < block->GetFrameCount(); ++f) {
+            if(cancellation)cancellation();
             const auto& frame = block->GetFrame(f);
             if (frame.len < 1 || frame.len > 65536) throw Failure(Error::decodeFailed, "Invalid Opus packet size");
             packet.resize(static_cast<std::size_t>(frame.len));
@@ -109,8 +112,8 @@ Clip decodeWebm(const std::filesystem::path& path, Limits limits) {
             const int decoded = opus_decode_float(decoder.get(), packet.data(), static_cast<opus_int32>(packet.size()), pcm.data(), 5760, 0);
             if (decoded <= 0) throw Failure(Error::decodeFailed, "Invalid Opus packet");
             previousFrames += decoded;
-            if (static_cast<std::uint64_t>(previousFrames) > limits.pcmBytes / (channels * sizeof(float)))
-                throw Failure(Error::limitExceeded, "WebM block exceeds PCM budget");
+            if (static_cast<std::uint64_t>(previousFrames) > std::min<uint64_t>(limits.pcmBytes,16ull*1024*1024) / (channels * sizeof(float)))
+                throw Failure(Error::limitExceeded, "WebM block exceeds bounded chunk budget");
             for (int c = 0; c < channels; ++c)
                 for (int n = 0; n < decoded; ++n) blockPcm[c].push_back(pcm[n * channels + c]);
         }
@@ -128,21 +131,21 @@ Clip decodeWebm(const std::filesystem::path& path, Limits limits) {
         const auto preSkip = std::min(skip, last - first);
         first += preSkip;
         skip -= preSkip;
-        const auto resultFrames = clip.frames() + last - first;
-        if (resultFrames > limits.pcmBytes / (channels * sizeof(float)) || resultFrames > static_cast<std::size_t>(std::numeric_limits<int>::max()))
+        const auto resultFrames = totalFrames + last - first;
+        if (resultFrames > limits.pcmBytes / (channels * sizeof(float)) || resultFrames > static_cast<std::size_t>(std::numeric_limits<uint32_t>::max()))
             throw Failure(Error::limitExceeded, "WebM PCM exceeds budget");
-        for (int c = 0; c < channels; ++c) {
-            for (std::size_t n = first; n < last; ++n) {
-                const auto value = blockPcm[c][n];
-                if (!std::isfinite(value)) throw Failure(Error::decodeFailed, "Non-finite Opus PCM");
-                clip.channels[c].push_back(value);
-            }
-        }
+        std::vector<float> chunk((last-first)*channels);
+        for(size_t n=first;n<last;++n)for(int c=0;c<channels;++c){float value=blockPcm[c][n];if(!std::isfinite(value))throw Failure(Error::decodeFailed,"Non-finite Opus PCM");chunk[(n-first)*channels+c]=value;}
+        if(last>first)sink(chunk.data(),last-first,static_cast<uint32_t>(channels),48000);
+        totalFrames=resultFrames;
         const mkvparser::BlockEntry* next = nullptr;
         if (track->GetNext(entry, next) < 0) throw Failure(Error::decodeFailed, "Cannot read next Opus block");
         entry = next;
     }
-    if (clip.frames() == 0 || skip) throw Failure(Error::decodeFailed, "Incomplete Opus audio");
-    return clip;
+    if (totalFrames == 0 || skip) throw Failure(Error::decodeFailed, "Incomplete Opus audio");
+    return {48000,static_cast<uint32_t>(channels),totalFrames};
+}
+Clip decodeWebm(const std::filesystem::path& path,Limits limits){
+    Clip clip;auto shape=decodeWebmChunks(path,limits,[&](const float* data,size_t count,uint32_t channels,double rate){clip.sampleRate=rate;if(clip.channels.empty())clip.channels.resize(channels);for(uint32_t c=0;c<channels;++c)for(size_t n=0;n<count;++n)clip.channels[c].push_back(data[n*channels+c]);},{});(void)shape;return clip;
 }
 }
