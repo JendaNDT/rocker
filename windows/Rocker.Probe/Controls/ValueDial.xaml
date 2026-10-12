@@ -1,13 +1,16 @@
 <UserControl x:Class="Rocker.Probe.Controls.ValueDial"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <StackPanel Spacing="6" MinWidth="150" MaxWidth="220">
-        <TextBlock x:Name="ParameterLabel" Style="{StaticResource VintageBodyTextStyle}" />
-        <Canvas Width="80" Height="80" HorizontalAlignment="Center" IsHitTestVisible="False">
-            <Ellipse Width="72" Height="72" Canvas.Left="4" Canvas.Top="4" Style="{StaticResource VintageDialFaceStyle}" />
-            <Line x:Name="Needle" X1="40" Y1="40" X2="40" Y2="12" Style="{StaticResource VintageNeedleStyle}" />
+    <StackPanel Spacing="6" MinWidth="140" MaxWidth="200">
+        <TextBlock x:Name="ParameterLabel" Style="{StaticResource VintageBodyTextStyle}" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+        <Canvas x:Name="DialFace" Width="104" Height="104" HorizontalAlignment="Center" IsHitTestVisible="False">
+            <Ellipse Width="74" Height="74" Canvas.Left="15" Canvas.Top="17" Fill="{ThemeResource VintageMeterWell}"/>
+            <Ellipse Width="72" Height="72" Canvas.Left="16" Canvas.Top="16" Style="{StaticResource VintageDialFaceStyle}"/>
+            <Ellipse Width="60" Height="60" Canvas.Left="22" Canvas.Top="22" Stroke="{ThemeResource VintageMetalEdge}" StrokeThickness="1" Opacity="0.45"/>
+            <Line x:Name="Needle" X1="52" Y1="38" X2="52" Y2="23" Style="{StaticResource VintageDialPointerStyle}"/>
+            <Ellipse Width="6" Height="6" Canvas.Left="49" Canvas.Top="49" Fill="{ThemeResource VintageMetalEdge}"/>
         </Canvas>
-        <NumberBox x:Name="Number" ValueChanged="Number_Changed" SpinButtonPlacementMode="Compact" SmallChange="1" LargeChange="10" />
-        <Slider x:Name="Position" ValueChanged="Position_Changed" />
+        <NumberBox x:Name="Number" ValueChanged="Number_Changed" SpinButtonPlacementMode="Compact" SmallChange="1" LargeChange="10"/>
+        <Slider x:Name="Position" ValueChanged="Position_Changed"/>
     </StackPanel>
 </UserControl>

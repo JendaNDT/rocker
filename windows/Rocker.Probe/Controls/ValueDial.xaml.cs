@@ -16,7 +16,16 @@ public sealed partial class ValueDial : UserControl
     public double Value { get => (double)GetValue(ValueProperty); set => SetValue(ValueProperty,value); }
     public event EventHandler? ValueChanged;
     private bool initialized, updating;
-    public ValueDial() { InitializeComponent(); initialized = true; Update(); }
+    public ValueDial() { InitializeComponent(); initialized = true; BuildScale(); Update(); }
+    private void BuildScale()
+    {
+        for (int i=0;i<=10;++i)
+        {
+            double angle=(-135+i*27)*Math.PI/180;
+            var tick=new Microsoft.UI.Xaml.Shapes.Line {X1=52+Math.Sin(angle)*43,Y1=52-Math.Cos(angle)*43,X2=52+Math.Sin(angle)*48,Y2=52-Math.Cos(angle)*48,Style=(Style)Application.Current.Resources["VintageDialTickStyle"]};
+            DialFace.Children.Add(tick);
+        }
+    }
     private static void Changed(DependencyObject owner, DependencyPropertyChangedEventArgs args)
     {
         var control = (ValueDial)owner; control.Update();
@@ -41,7 +50,8 @@ public sealed partial class ValueDial : UserControl
             ParameterLabel.Text = Label;
             AutomationProperties.SetName(Number,Label + ", přesná hodnota"); AutomationProperties.SetName(Position,Label);
             double angle = (-135 + 270 * (value - Minimum) / (Maximum - Minimum)) * Math.PI / 180;
-            Needle.X2 = 40 + Math.Sin(angle) * 27; Needle.Y2 = 40 - Math.Cos(angle) * 27;
+            Needle.X1=52+Math.Sin(angle)*15; Needle.Y1=52-Math.Cos(angle)*15;
+            Needle.X2=52+Math.Sin(angle)*29; Needle.Y2=52-Math.Cos(angle)*29;
         }
         finally { updating = false; }
     }

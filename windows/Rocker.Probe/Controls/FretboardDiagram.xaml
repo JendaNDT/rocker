@@ -4,7 +4,7 @@
     <StackPanel Spacing="8">
         <TextBlock Text="Hmatník · šipky mění pozici, Enter vybírá tón" Style="{StaticResource VintageBodyTextStyle}" />
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
-            <Grid x:Name="Board" KeyDown="Board_KeyDown" />
+            <Border Style="{StaticResource VintageCardStyle}" Padding="10"><Grid x:Name="Board" KeyDown="Board_KeyDown" /></Border>
         </ScrollViewer>
         <TextBlock x:Name="SelectedNote" Text="Vyber tón." Style="{StaticResource VintageSecondaryTextStyle}" AutomationProperties.LiveSetting="Polite" />
     </StackPanel>

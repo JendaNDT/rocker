@@ -55,10 +55,23 @@
                         OpenPaneLength="192" ExpandedModeThresholdWidth="900" CompactModeThresholdWidth="640"
                         SelectionChanged="Navigation_SelectionChanged" BackRequested="Navigation_BackRequested" IsBackButtonVisible="Visible"
                         AutomationProperties.Name="Pracovní pohledy Rockeru">
-            <NavigationView.PaneHeader><TextBlock Text="ROCKER" FontSize="22" FontWeight="SemiBold" Margin="16,12" Foreground="{ThemeResource VintageAccent}" /></NavigationView.PaneHeader>
+            <NavigationView.PaneHeader>
+                <StackPanel Margin="16,10,8,18" Spacing="8">
+                    <StackPanel Orientation="Horizontal" Spacing="9">
+                        <Border Width="28" Height="28" Background="{ThemeResource VintageAccent}" CornerRadius="7">
+                            <Viewbox Margin="6"><Path Data="M 3,1 L 13,1 C 19,1 20,10 14,12 L 20,21 L 14,21 L 8,13 L 8,21 L 3,21 Z M 8,5 L 8,9 L 12,9 C 15,9 15,5 12,5 Z" Fill="{ThemeResource VintageAccentForeground}"/></Viewbox>
+                        </Border>
+                        <TextBlock Text="ROCKER" FontSize="20" CharacterSpacing="70" FontWeight="Bold" VerticalAlignment="Center" Foreground="{ThemeResource VintageAccent}"/>
+                    </StackPanel>
+                    <TextBlock Text="KYTAROVÉ STUDIO" FontSize="10" CharacterSpacing="120" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+                </StackPanel>
+            </NavigationView.PaneHeader>
             <ScrollViewer HorizontalScrollBarVisibility="Disabled">
                 <StackPanel Margin="24,12,24,24" Spacing="12" MaxWidth="1100" HorizontalAlignment="Stretch">
-                    <TextBlock x:Name="WorkspaceTitle" Text="Přehled" Style="{ThemeResource TitleTextBlockStyle}" />
+                    <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,4,0,0">
+                        <Border Width="3" Height="27" CornerRadius="1" Background="{ThemeResource VintageAccent}" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="WorkspaceTitle" Text="Přehled" FontSize="30" FontWeight="SemiBold"/>
+                    </StackPanel>
                     <TextBlock x:Name="WorkspaceTrail" Text="Rocker / Přehled" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                     <InfoBar x:Name="ShellNotice" IsOpen="False" IsClosable="True" Severity="Informational" Title="Rocker"
                              Message="" />
@@ -102,7 +115,7 @@
                 <TextBlock x:Name="SelectionStatus" Text="Takt zatím není vybraný." TextWrapping="Wrap" />
                 <Button x:Name="ExportMidiButton" Content="Uložit MIDI…" Click="ExportMidi_Click" IsEnabled="False" />
                     </StackPanel>
-                <Border x:Name="VideoPanel" Background="{ThemeResource VintagePanel}" Padding="16" CornerRadius="4" Visibility="Collapsed">
+                <Border x:Name="VideoPanel" Style="{StaticResource VintageCardStyle}" Visibility="Collapsed">
                     <StackPanel Spacing="12">
                         <TextBlock Text="Oficiální YouTube přehrávač. Video a jeho zvuk zůstávají součástí YouTube; žádný zvuk se nestahuje ani nepřevádí." TextWrapping="Wrap" />
                         <TextBox x:Name="VideoUrl" Header="Odkaz na video" PlaceholderText="https://www.youtube.com/watch?v=…" MaxLength="2048" />
@@ -140,7 +153,7 @@
                         <TextBlock x:Name="VideoStatus" Text="Připravuji přehrávač…" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />
                     </StackPanel>
                 </Border>
-                <Border x:Name="DevicePanel" Background="{ThemeResource VintagePanel}" Padding="16" CornerRadius="4" Visibility="Collapsed">
+                <Border x:Name="DevicePanel" Style="{StaticResource VintageCardStyle}" Visibility="Collapsed">
                     <StackPanel Spacing="12">
                         <TextBlock Text="Vyber ovladač, zvukovou kartu a vstup pro kytaru. Změna nastavení zastaví přehrávání; monitoring se nezapíná automaticky."
                                    TextWrapping="Wrap" />
@@ -172,7 +185,7 @@
                 </StackPanel>
             </ScrollViewer>
         </NavigationView>
-        <Border x:Name="MediaPanel" Grid.Row="2" Background="{ThemeResource VintagePanel}" Padding="16,4" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="0,1,0,0">
+        <Border x:Name="MediaPanel" Grid.Row="2" Background="{ThemeResource VintagePanelMaterial}" Padding="16,4" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="0,1,0,0">
             <StackPanel Spacing="4">
                 <InfoBar x:Name="PracticeRestNotice" IsOpen="False" IsClosable="True" Severity="Informational" Title="Cvičení" />
                 <Grid x:Name="PracticeRow" ColumnSpacing="16">
@@ -192,7 +205,7 @@
                 <Grid x:Name="MediaTransportRow" ColumnSpacing="12">
                     <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
                     <TextBlock x:Name="MediaTitle" Text="Připrav nahrávku nebo noty" FontSize="14" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
-                    <CommandBar x:Name="MediaButtons" Grid.Column="1" DefaultLabelPosition="Right" ClosedDisplayMode="Compact" Background="{ThemeResource VintagePanel}">
+                    <CommandBar x:Name="MediaButtons" Grid.Column="1" DefaultLabelPosition="Right" ClosedDisplayMode="Compact" Background="Transparent">
                         <AppBarButton x:Name="PlayMediaButton" Label="Přehrát" Icon="Play" Click="ToggleMedia_Click" IsEnabled="False" />
                         <AppBarButton x:Name="StopButton" Label="Zastavit" Icon="Stop" AccessKey="Z" Click="Stop_Click" IsEnabled="False" />
                         <AppBarButton Label="Hlasitost" Icon="Volume">

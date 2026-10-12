@@ -24,6 +24,7 @@ public sealed partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        AppWindow.SetIcon(Path.Combine(AppContext.BaseDirectory,"Assets","Rocker.ico"));
         AppWindow.Resize(new Windows.Graphics.SizeInt32(1280, 940));
         InitializeShell();
         InitializeNativeEvents();InitializePracticeTracking();InitializeFileCommands();

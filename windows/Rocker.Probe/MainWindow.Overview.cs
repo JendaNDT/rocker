@@ -32,8 +32,8 @@ public sealed partial class MainWindow
         var tasks=missingAi?Array.Empty<PlanTask>():CurrentPlanTasks();
         int done=tasks.Count(t=>PlanDone(key,t.Id));
         var remaining=tasks.FirstOrDefault(t=>!PlanDone(key,t.Id));
-        var welcome=Stack();
-        var title=Text("Pojďme si zahrát.");title.FontSize=24;title.FontWeight=Microsoft.UI.Text.FontWeights.SemiBold;welcome.Children.Add(title);
+        var welcome=Stack();var kicker=Text("CVIČ · HRAJ · TVOŘ");kicker.Style=(Style)Application.Current.Resources["VintageSectionTextStyle"];welcome.Children.Add(kicker);
+        var title=Text("Pojďme si zahrát.");title.FontSize=32;title.FontWeight=Microsoft.UI.Text.FontWeights.SemiBold;welcome.Children.Add(title);
         welcome.Children.Add(Text(instrumentProfile.Name+" · "+CurrentTuning().Label,true));
         welcome.Children.Add(Text(remaining is null?"Vyber si nástroj nebo si zahraj volně v Live.":"Další krok: "+remaining.Title,true));
         var actions=Stack();
@@ -49,7 +49,7 @@ public sealed partial class MainWindow
         var cards=new List<FrameworkElement>();int number=0;
         foreach(var task in tasks)
         {
-            bool completed=PlanDone(key,task.Id);var row=Stack();row.Children.Add(Text($"{++number:00} · {task.Minutes} min"+(completed?" · hotovo":""),true));
+            bool completed=PlanDone(key,task.Id);var row=Stack();var numberLabel=Text($"{++number:00}  /  {task.Minutes} MIN"+(completed?"  ·  HOTOVO":""));numberLabel.Style=(Style)Application.Current.Resources["VintageSectionTextStyle"];row.Children.Add(numberLabel);
             var taskTitle=Text(task.Title);taskTitle.FontSize=18;taskTitle.FontWeight=Microsoft.UI.Text.FontWeights.SemiBold;row.Children.Add(taskTitle);row.Children.Add(Text(task.Detail,true));
             var open=new Button{Content=completed?"Zopakovat blok":"Otevřít cvičení",MinHeight=40};open.Click+=(_,_)=>OpenPlanTask(key,task);row.Children.Add(open);cards.Add(Card(row));
         }

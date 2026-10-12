@@ -2,8 +2,8 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <StackPanel Spacing="8">
-        <TextBlock x:Name="ChordTitle" Style="{StaticResource VintageBodyTextStyle}" />
-        <Border Background="{ThemeResource VintageInstrumentFace}" Padding="12" CornerRadius="4" HorizontalAlignment="Left">
+        <TextBlock x:Name="ChordTitle" FontSize="22" FontWeight="SemiBold" Style="{StaticResource VintageBodyTextStyle}" />
+        <Border Style="{StaticResource VintageInstrumentCardStyle}" Padding="16" HorizontalAlignment="Left">
             <Canvas x:Name="Diagram" Width="200" Height="225" IsHitTestVisible="False" />
         </Border>
         <TextBlock x:Name="Description" Style="{StaticResource VintageSecondaryTextStyle}" TextWrapping="Wrap" />

@@ -24,6 +24,8 @@ public sealed partial class FretboardDiagram : UserControl
         leftHanded = mirror; cells.Clear(); Board.Children.Clear(); Board.RowDefinitions.Clear(); Board.ColumnDefinitions.Clear();
         for (int row = 0; row < 7; ++row) Board.RowDefinitions.Add(new() { Height = new(42) });
         for (int col = 0; col <= 13; ++col) Board.ColumnDefinitions.Add(new() { Width = new(58) });
+        for(int str=0;str<6;++str){var wire=new Microsoft.UI.Xaml.Shapes.Line{X1=0,X2=754,Y1=21,Y2=21,StrokeThickness=0.7+(5-str)*0.2,Style=(Style)Application.Current.Resources["VintageDialTickStyle"],IsHitTestVisible=false};Grid.SetRow(wire,6-str);Grid.SetColumn(wire,1);Grid.SetColumnSpan(wire,13);Board.Children.Add(wire);}
+        for(int fret=firstFret;fret<=firstFret+12;++fret){var fretWire=new Border{BorderThickness=new Thickness(fret==0?3:1,0,0,0),Style=(Style)Application.Current.Resources["VintageFretWireStyle"],IsHitTestVisible=false};Grid.SetRow(fretWire,1);Grid.SetRowSpan(fretWire,6);Grid.SetColumn(fretWire,1+(mirror?12-(fret-firstFret):fret-firstFret));Board.Children.Add(fretWire);}
         for(int fret=firstFret;fret<=firstFret+12;++fret){var label=new TextBlock{Text=fret.ToString(),HorizontalAlignment=HorizontalAlignment.Center,VerticalAlignment=VerticalAlignment.Center};Grid.SetRow(label,0);Grid.SetColumn(label,1+(mirror?12-(fret-firstFret):fret-firstFret));Board.Children.Add(label);}
         for(int str=0;str<6;++str){var label=new TextBlock{Text=$"{6-str} · {Music.MidiToLabel(tuning[str],notation)}",VerticalAlignment=VerticalAlignment.Center};Grid.SetRow(label,6-str);Board.Children.Add(label);}
         for (int str = 0; str < 6; ++str) for (int fret = firstFret; fret <= firstFret+12; ++fret)
@@ -31,9 +33,9 @@ public sealed partial class FretboardDiagram : UserControl
             int midi = tuning[str] + fret; var address = (String:str,Fret:fret);
             bool included = scale is null || MusicShapes.ScaleOffset(scale,rootPitch,midi%12) is not null;
             bool root = scale is not null && MusicShapes.NoteAtFret(midi,0) == ((rootPitch%12)+12)%12;
-            var button = new Button { Content = concealNotes?(root?"1":fret==0?"0":"·"):Music.PitchClassName(midi,notation) + (root ? " 1" : ""), Margin = new(2), HorizontalAlignment = HorizontalAlignment.Stretch, IsTabStop = str == selectedString && fret == selectedFret };
+            var button = new Button { Style=(Style)Application.Current.Resources["VintageFretButtonStyle"],Content = concealNotes?(root?"1":fret==0?"0":"·"):Music.PitchClassName(midi,notation) + (root ? " 1" : ""), Margin = new(7,5,7,5), HorizontalAlignment = HorizontalAlignment.Stretch, IsTabStop = str == selectedString && fret == selectedFret };
             if(!included){button.Content="—";button.Opacity=.55;}
-            if (root) button.Style = (Style)Application.Current.Resources["VintageRootButtonStyle"];
+            if (root) button.Style = (Style)Application.Current.Resources["VintageFretRootButtonStyle"];
             AutomationProperties.SetName(button,$"Struna {6-str}, pražec {fret}"+(concealNotes?"":", "+Music.MidiToLabel(midi,notation)) + (scale is null ? "" : root ? ", kořen stupnice" : included ? ", ve stupnici" : ", mimo stupnici"));
             button.Tag=midi;button.Click += (_,_) => Select(address,midi);
             button.GotFocus += (_,_) => { selectedString = address.String; selectedFret = address.Fret; foreach (var cell in cells) cell.Value.IsTabStop = cell.Key == address; };

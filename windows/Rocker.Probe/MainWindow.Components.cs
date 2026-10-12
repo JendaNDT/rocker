@@ -70,6 +70,7 @@ public sealed partial class MainWindow
         int checks = 0; void Check(bool value) { if (!value) throw new InvalidOperationException("Native component contract failed."); ++checks; }
         var dial = new ValueDial { Minimum = -100,Maximum = 100,Value = 250 };
         Check(dial.Value == 100); dial.Value = double.NaN; Check(dial.Value == -100);
+        var gauge=new PitchGauge();Check(!gauge.HasReading);gauge.Value=200;Check(gauge.Value==100);gauge.Value=double.NaN;Check(gauge.Value==50);gauge.HasReading=true;gauge.HasReading=false;Check(!gauge.HasReading);
         var meter = new LevelMeter(); meter.SetLevel(double.NaN,true,true); Check(!meter.HasSignal && meter.Level == 0);
         meter.SetLevel(2,true,true); Check(meter.HasSignal && meter.Level == 1);
         if (catalog is not null)

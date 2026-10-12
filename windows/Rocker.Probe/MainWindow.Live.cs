@@ -6,7 +6,7 @@ using Rocker.Probe.Controls;
 namespace Rocker.Probe;
 public sealed partial class MainWindow
 {
-    private TextBlock? liveTunerNote,liveTunerCents;private ProgressBar? liveTunerNeedle;
+    private TextBlock? liveTunerNote,liveTunerCents;private PitchGauge? liveTunerNeedle;
     private LevelMeter? liveInputMeter,liveProcessedMeter,liveMixMeter;
     private TextBlock? liveState,liveDiagnostic;
     private CheckBox? liveMonitor;
@@ -28,8 +28,8 @@ public sealed partial class MainWindow
         liveState=Text("Spusť Live a potom zapni poslech kytary.",true);monitoring.Children.Add(liveState);left.Children.Add(Card(monitoring));
         var tuner=Stack();
         TextBlock FaceText(string label){var text=Text(label);text.Style=(Style)Application.Current.Resources["VintageInstrumentTextStyle"];return text;}
-        tuner.Children.Add(FaceText("Ladění"));liveTunerNote=FaceText("—");liveTunerNote.FontSize=40;liveTunerCents=FaceText("Žádný aktuálně měřený tón.");
-        liveTunerNeedle=new ProgressBar{Minimum=0,Maximum=100,Value=50};Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(liveTunerNeedle,"Live · odchylka v centech");tuner.Children.Add(liveTunerNote);tuner.Children.Add(liveTunerCents);tuner.Children.Add(liveTunerNeedle);
+        var tunerLabel=FaceText("LADIČKA");tunerLabel.FontSize=11;tunerLabel.CharacterSpacing=160;tuner.Children.Add(tunerLabel);liveTunerNote=FaceText("—");liveTunerNote.FontSize=48;liveTunerNote.FontWeight=Microsoft.UI.Text.FontWeights.SemiBold;liveTunerCents=FaceText("Žádný aktuálně měřený tón.");
+        liveTunerNeedle=new PitchGauge{Value=50};Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(liveTunerNeedle,"Live · odchylka v centech");tuner.Children.Add(liveTunerNote);tuner.Children.Add(liveTunerCents);tuner.Children.Add(liveTunerNeedle);
         var tune=new Button{Content="Otevřít ladičku"};tune.Click+=(_,_)=>Navigate(new("03"));tuner.Children.Add(tune);var tunerCard=Card(tuner);tunerCard.Style=(Style)Application.Current.Resources["VintageInstrumentCardStyle"];left.Children.Add(tunerCard);
         right.Children.Add(BuildCompactAmplifier());right.Children.Add(BuildRecordingControls(compact:true));right.Children.Add(BuildCompactMetronome());
         panel.Children.Add(ResponsiveColumns(left,right));
@@ -69,7 +69,7 @@ public sealed partial class MainWindow
         liveMixMeter!.SetLevel(meters.MixPeak,running);
         liveUpdating=true;liveMonitor!.IsChecked=meters.Monitoring;liveUpdating=false;
         liveState!.Text=running?(meters.HasInput?(meters.Monitoring?"Vstup běží a monitoring je zapnutý.":"Vstup běží. Monitoring je ztlumený."):"Zvuk běží bez vstupu kytary."):"Živý vstup je zastavený. Zařízení je uvolněné.";
-        var reading=audio.GetAnalysis();var note=reading.ActiveInput && !reading.Stale && reading.PitchDetected?Rocker.Domain.Music.FrequencyToNote(reading.Frequency*440/(appSettings.ReferenceA??440)):null;liveTunerNote!.Text=note is null?"—":NoteLabel(note.Midi);if(note is null){liveTunerCents!.Text="Žádný aktuálně měřený tón.";liveTunerNeedle!.Value=50;}else{int cents=Rocker.Domain.Music.CentsBetween(reading.Frequency,TunerFrequency(note.Midi));liveTunerCents!.Text=$"{cents:+0;-0;0} centů · {CurrentTuning().Label}";liveTunerNeedle!.Value=Math.Clamp(50+cents,0,100);}
+        var reading=audio.GetAnalysis();var note=reading.ActiveInput && !reading.Stale && reading.PitchDetected?Rocker.Domain.Music.FrequencyToNote(reading.Frequency*440/(appSettings.ReferenceA??440)):null;liveTunerNote!.Text=note is null?"—":NoteLabel(note.Midi);if(note is null){liveTunerCents!.Text="Žádný aktuálně měřený tón.";liveTunerNeedle!.HasReading=false;liveTunerNeedle.Value=50;}else{int cents=Rocker.Domain.Music.CentsBetween(reading.Frequency,TunerFrequency(note.Midi));liveTunerCents!.Text=$"{cents:+0;-0;0} centů · {CurrentTuning().Label}";liveTunerNeedle!.HasReading=true;liveTunerNeedle.Value=Math.Clamp(50+cents,0,100);}
         var clock=audio.GetClock();
         liveDiagnostic!.Text=$"Společné hodiny: {clock.Frame:N0} vzorků · {clock.ElapsedSeconds:0.000} s · epocha {clock.Epoch} · DSP FIR {clock.DspLatencyFrames} vzorků\n"+$"Přebuzení vstupu: {meters.InputClips} · přebuzení výstupu: {meters.OutputClips} · neplatné vzorky: {meters.InvalidSamples}\nAnalytická fronta: {meters.DroppedAnalysisBlocks} zahozených bloků. Tón a kalibrace jsou v Ladičce.";
     }

@@ -17,6 +17,8 @@ public sealed partial class ChordDiagram : UserControl
         void Line(double x1,double y1,double x2,double y2) => Diagram.Children.Add(new Line { X1=x1,Y1=y1,X2=x2,Y2=y2,Style=(Style)Application.Current.Resources["VintageInstrumentLineStyle"] });
         for (int i = 0; i < 6; ++i) Line(X(i),35,X(i),195);
         for (int i = 0; i <= 4; ++i) Line(20,35+i*40,180,35+i*40);
+        if(baseFret==1)Diagram.Children.Add(new Line{X1=20,X2=180,Y1=35,Y2=35,Style=(Style)Application.Current.Resources["VintageInstrumentLineStyle"],StrokeThickness=4});
+        for(int i=0;i<6;++i){var stringLabel=new TextBlock{Text=(6-i).ToString(),FontSize=11,Width=24,TextAlignment=TextAlignment.Center,Style=(Style)Application.Current.Resources["VintageInstrumentTextStyle"]};Canvas.SetLeft(stringLabel,X(i)-12);Canvas.SetTop(stringLabel,207);Diagram.Children.Add(stringLabel);}
         var barre = chord.GetProperty("barre");
         if (barre.ValueKind == JsonValueKind.Object)
         {
@@ -37,8 +39,8 @@ public sealed partial class ChordDiagram : UserControl
             Canvas.SetLeft(dot,X(i)-11.5); Canvas.SetTop(dot,y-11.5); Diagram.Children.Add(dot);
             if (fingers[i].ValueKind == JsonValueKind.Number)
             {
-                var finger = new TextBlock { Text=fingers[i].GetInt32().ToString(),Style=(Style)Application.Current.Resources["VintageAccentTextStyle"] };
-                Canvas.SetLeft(finger,X(i)-4); Canvas.SetTop(finger,y-9); Diagram.Children.Add(finger);
+                var finger = new TextBlock { Text=fingers[i].GetInt32().ToString(),Width=23,TextAlignment=TextAlignment.Center,FontSize=12,FontWeight=Microsoft.UI.Text.FontWeights.SemiBold,Style=(Style)Application.Current.Resources["VintageAccentTextStyle"] };
+                Canvas.SetLeft(finger,X(i)-11.5); Canvas.SetTop(finger,y-9); Diagram.Children.Add(finger);
             }
         }
         Description.Text = (leftHanded ? "Pro leváka. " : "") + $"Výchozí pražec {baseFret}. " + string.Join("; ",descriptions);

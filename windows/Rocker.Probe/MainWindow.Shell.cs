@@ -262,6 +262,7 @@ public sealed partial class MainWindow
         await VerifyPowerRecoveryAsync();
         await VerifyWorkspaceUxAsync();
         await VerifyAllDesignViewsAsync();
+        await CaptureVisualFinishAsync();
         await VerifyAccessibilityAsync();
         await VerifyDevicesAsync();
         VerifyComponents();

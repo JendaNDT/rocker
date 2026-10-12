@@ -22,14 +22,17 @@ public sealed partial class MainWindow
     private AmpPreset[] AllAmpPresets()=>catalog is null?userAmpPresets.ToArray():catalog.Items("ampPresets").Select(UserData.Read<AmpPreset>).Concat(userAmpPresets).ToArray();
     private FrameworkElement BuildAmplifier()
     {
-        var panel=Stack();panel.Children.Add(Text("Aparát · Vintage"));
+        var panel=Stack();var sectionLabel=Text("ZVUKOVÝ ŘETĚZEC");sectionLabel.Style=(Style)Application.Current.Resources["VintageSectionTextStyle"];panel.Children.Add(sectionLabel);
         ampEnabledBox=new CheckBox{Content="Zapnout aparát",IsChecked=appSettings.AmpEnabled};ampEnabledBox.Checked+=AmplifierEnabled_Changed;ampEnabledBox.Unchecked+=AmplifierEnabled_Changed;panel.Children.Add(ampEnabledBox);
         ampPresetsBox=PresetSelector();panel.Children.Add(ampPresetsBox);
-        var grid=new Grid{ColumnSpacing=16,RowSpacing=12};grid.ColumnDefinitions.Add(new(){Width=new GridLength(1,GridUnitType.Star)});grid.ColumnDefinitions.Add(new(){Width=new GridLength(1,GridUnitType.Star)});
         var parameters=new[]{("compression","Komprese"),("drive","Drive"),("bass","Basy"),("mid","Středy"),("treble","Výšky"),("delay","Delay"),("reverb","Reverb"),("chorus","Chorus"),("level","Výstup")};
-        ampDials.Clear();for(int i=0;i<parameters.Length;++i){if(i%2==0)grid.RowDefinitions.Add(new(){Height=GridLength.Auto});var (id,label)=parameters[i];var dial=new ValueDial{Label=label+" (%)",Minimum=id is "bass" or "mid" or "treble"?-100:0,Maximum=100,Value=AmpValue(id)*100};ampDials.Add(id,dial);
-            dial.ValueChanged+=(_,_)=>{if(ampUiUpdating)return;SetAmpValue(id,dial.Value/100);QueueAmplifier();};Grid.SetRow(dial,i/2);Grid.SetColumn(dial,i%2);grid.Children.Add(dial);}
-        panel.Children.Add(grid);
+        var controls=new List<FrameworkElement>();ampDials.Clear();
+        foreach(var (id,label) in parameters)
+        {
+            var dial=new ValueDial{Label=label+" (%)",Minimum=id is "bass" or "mid" or "treble"?-100:0,Maximum=100,Value=AmpValue(id)*100};ampDials.Add(id,dial);
+            dial.ValueChanged+=(_,_)=>{if(ampUiUpdating)return;SetAmpValue(id,dial.Value/100);QueueAmplifier();};controls.Add(dial);
+        }
+        panel.Children.Add(ResponsiveInstrumentColumns(controls.ToArray()));
         ampDistortionBox=new ComboBox{Header="Zkreslení",ItemsSource=new[]{"Overdrive","Distortion","Fuzz"},SelectedIndex=ampSettings.Distortion=="overdrive"?0:ampSettings.Distortion=="fuzz"?2:1};
         ampDistortionBox.SelectionChanged+=(_,_)=>{if(!ampUiUpdating){ampSettings=ampSettings with{Distortion=ampDistortionBox.SelectedIndex==0?"overdrive":ampDistortionBox.SelectedIndex==2?"fuzz":"distortion",PresetId=null};QueueAmplifier();}};panel.Children.Add(ampDistortionBox);
         ampCabinetBox=new ComboBox{Header="Kabinet",ItemsSource=new[]{"Moderní","Vintage","Otevřený"},SelectedIndex=ampSettings.Cabinet=="vintage"?1:ampSettings.Cabinet=="open"?2:0};
