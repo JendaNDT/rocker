@@ -16,6 +16,8 @@ Windows 11 x64 od 24H2 (build 26100). .NET a Windows App SDK jsou přibalené, o
 
 Balík je nepodepsaný. Automatické ověření na Windows runneru nepotvrzuje instalaci s aktivním Smart App Control na uživatelově počítači; globální vypínání ochrany není součástí postupu. Zdrojové kódy jsou volitelně ke stažení zvlášť; bratr nic nesestavuje.
 
+Snímky na runneru ověřují menší/širší rozložení; požadované velikosti 1280/1680 omezila jeho obrazovka, takže nejde o přejímku skutečného velkého monitoru.
+
 Poslech, skutečná odezva od kytary ke sluchátkům, buffer/ASIO M-Track Solo, fyzické uspání a odpojení, skutečný Narrator/vysoký kontrast/DPI, čistá offline VM a online YouTube/OpenAI nebyly během automatického vývoje potvrzené. Performance protokol renderuje 60 minut zvuku zrychleně; nejde o hodinu reálného hraní. Přechod verzí v instalačních kontrolách používá výslovně označené verze stejného kandidáta; netvrdí kompatibilitu se všemi historickými binárkami.
 
 Noty používají vlastní strunnou/bicí syntézu, nikoli celou banku General MIDI. Detektor hodnotí jednotlivé tóny; neslibuje polyfonní vyhodnocení akordu ani obecné přesné skóre rytmu. Palm mute je kalibrovaná pomůcka. Nové DSP není bitově totožné s webovým aparátem. AI je volitelná s vlastním OpenAI klíčem; původní Gemini klíč se zachová odděleně a osobní Gemini cesta je podle zaznamenaných podmínek blokovaná. Skutečný API účet nebyl použit.

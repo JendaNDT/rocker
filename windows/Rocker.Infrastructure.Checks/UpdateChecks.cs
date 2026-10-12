@@ -23,6 +23,10 @@ internal static class UpdateChecks
             var state=await (await DataRepository.OpenAsync(files)).SnapshotAsync();Check(UserData.Read<AppSettings>(state.Documents.Single().Value).Theme==(phase=="prepared"?"light":"dark"),"recovery publishes only validated profile after "+phase);
         }
         string bad=Path.Combine(directory,"invalid-backup.rockerbackup");await File.WriteAllBytesAsync(bad,[1,2,3]);var before=await File.ReadAllBytesAsync(databasePath);bool corrupt=false;try{await ColdProfileRecovery.RestoreAsync(files,bad);}catch(InvalidDataException){corrupt=true;}Check(corrupt && (await File.ReadAllBytesAsync(databasePath)).SequenceEqual(before),"invalid archive leaves the exact previous database untouched");
+        var truncatedFiles=new UserFiles(Path.Combine(directory,"truncated-update-profile"));string truncated=Path.Combine(truncatedFiles.DirectoryFor("database"),"rocker.db");byte[] broken=[1,2,3];await File.WriteAllBytesAsync(truncated,broken);
+        bool truncatedRejected=false;try{await UpdatePreparation.CreateAsync(truncatedFiles,"0.2.0");}catch(InvalidDataException){truncatedRejected=true;}
+        Check(truncatedRejected && (await File.ReadAllBytesAsync(truncated)).SequenceEqual(broken),"truncated nonempty SQLite file rejected without initialization or overwrite");
+        var emptyFiles=new UserFiles(Path.Combine(directory,"empty-initial-profile"));string empty=Path.Combine(emptyFiles.DirectoryFor("database"),"rocker.db");await File.WriteAllBytesAsync(empty,[]);var emptySnapshot=await (await DataRepository.OpenAsync(emptyFiles)).SnapshotAsync();Check(emptySnapshot.Documents.Count==0,"genuinely empty initial database may initialize safely");
         Console.WriteLine($"PASS: {checks} update backup, schema refusal and cold profile recovery assertions.");return checks;
     }
 }

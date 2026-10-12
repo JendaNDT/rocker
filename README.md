@@ -5,17 +5,9 @@
 
 **Živá verze:** https://rocker-rust.vercel.app
 
-**Nový směr — nativní Windows aplikace:** [úplná implementační roadmapa](WINDOWS_ROADMAP.md)
-obsahuje 48 kroků od designu Vintage a zvukového jádra přes převod dat až po
-instalátor a testování na M-Audio M-Track Solo. [Všech 32 návrhů obrazovek](docs/windows/design/vsechny-navrhy.md)
-je uložených v repozitáři. Jde o plán a návrhy; níže popsaná funkční aplikace
-je zatím současná PWA. [První krok — inventura a reference](docs/windows/baseline/README.md)
-je dokončený, stejně jako [výběr platformy, licencí a distribuce](docs/windows/decisions/0001-platform-and-distribution.md).
-Bratr dostane instalátor, zdroje budou dostupné samostatně. [Technický prototyp W03](windows/README.md)
-má už úspěšné Windows sestavení, integrační testy a automatickou kontrolu otevření/zavření okna.
-[Stáhnout sestavený Windows prototyp](https://github.com/JendaNDT/rocker/releases/tag/windows-w04-notation-preview-20261011)
-— ZIP rozbalit a spustit `Rocker.Probe.exe`; vývojové nástroje nejsou potřeba.
-Testovací tón už Jenda ověřil; první část W04 přidává [nativní notový náhled](docs/windows/w04/README.md), výběr taktu a export MIDI. Kompletní funkce a Vintage UI teprve následují. [Kontroly W03](docs/windows/w03-windows-validation.json) a [Windows výsledky W04](docs/windows/w04/validation.json) odlišují ověřené chování od zbývajících částí.
+**Nativní Windows verze 0.2.0:** implementovaný je rozsah W04–W43 — všech 32 pohledů ve Vintage designu, WinUI 3 ovládání, C++/JUCE zvukové jádro, výuka, nástroje, nahrávky, Looper, Studio, data a instalátor. Závěrečné sestavení a instalační přejímka probíhají; konkrétní ověřený kandidát musí mít uložený úspěšný protokol. [Návod a matice úplnosti](docs/windows/w43/README.md), [aktuální stav](PROJECT_STATUS.md), [roadmapa](WINDOWS_ROADMAP.md) a [skutečné snímky všech obrazovek](docs/windows/w36/native-gallery/index.html).
+
+Bratr dostane sestavený instalátor; zdroje jsou samostatně a nic nemusí kompilovat. Skutečné hraní na M-Track Solo a měření celkové odezvy následují ve W44. [Původní návrhy](docs/windows/design/vsechny-navrhy.md) zůstávají referencí. Main a živá PWA se nemění; následující části popisují původní webovou aplikaci.
 
 ## Co to je
 

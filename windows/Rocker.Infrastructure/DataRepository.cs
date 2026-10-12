@@ -25,6 +25,23 @@ public sealed class DataRepository
     private static void Execute(SqliteConnection connection, string sql) { using var cmd = connection.CreateCommand(); cmd.CommandText = sql; cmd.ExecuteNonQuery(); }
     private void Initialize()
     {
+        // SQLite treats some truncated files as empty databases. Refuse them
+        // before opening a writable connection, preserving their original bytes.
+        if(File.Exists(DatabasePath))
+        {
+            using var input=new FileStream(DatabasePath,FileMode.Open,FileAccess.Read,FileShare.ReadWrite);
+            if(input.Length==0)
+            {
+                string wal=DatabasePath+"-wal";
+                if(File.Exists(wal) && new FileInfo(wal).Length>0)throw new InvalidDataException("Prázdná databáze má rozpracovaný journal. Původní soubory se nepřepisují.");
+            }
+            else
+            {
+                Span<byte> signature=stackalloc byte[16];
+                if(input.Length<100 || input.Read(signature)!=16 || !signature.SequenceEqual("SQLite format 3\0"u8))
+                    throw new InvalidDataException("Hlavička databáze je poškozená. Použij zálohu; původní soubor zůstává zachovaný.");
+            }
+        }
         using var connection = Connect();
         long version = (long)(Scalar(connection,"PRAGMA user_version") ?? 0L);
         if (version > SchemaVersion) throw new InvalidDataException("Databáze pochází z novější verze Rockeru. Nebude přepsána.");

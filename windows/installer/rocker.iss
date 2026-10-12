@@ -42,7 +42,7 @@ Name: "czech"; MessagesFile: "compiler:Languages\Czech.isl"
 [Messages]
 ConfirmUninstall=Chceš odebrat Rocker?%n%nNahrávky, projekty, nastavení a zálohy zůstanou ve tvém účtu Windows.
 [Files]
-Source: "{#AppSource}\*"; DestDir: "{app}\versions\{#VersionFolder}"; Excludes: "LICENSE.txt"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#AppSource}\*"; DestDir: "{app}\versions\{#VersionFolder}"; Excludes: "\LICENSE.txt"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "{#AppSource}\LICENSE.txt"; DestDir: "{app}\versions\{#VersionFolder}"; Flags: ignoreversion; AfterInstall: PrepareProfileUpdate
 [Icons]
 Name: "{userprograms}\Rocker\Rocker"; Filename: "{app}\versions\{#VersionFolder}\Rocker.Probe.exe"; WorkingDir: "{app}\versions\{#VersionFolder}"; AppUserModelID: "JendaNDT.Rocker"

@@ -48,16 +48,26 @@ try {
     $futurePackages=Join-Path $fixture 'future';New-Item -ItemType Directory -Force $futurePackages | Out-Null
     & (Join-Path $PSScriptRoot 'build.ps1') -ApplicationDirectory $app -PackageDirectory $futurePackages -Version '0.2.1' -Revision $info.commit
     $invalidProfile=Join-Path $fixture 'incompatible-profile';New-Item -ItemType Directory -Force (Join-Path $invalidProfile 'database') | Out-Null
-    [IO.File]::WriteAllBytes((Join-Path $invalidProfile 'database/rocker.db'),[byte[]]@(1,2,3))
+    $invalidDatabase=Join-Path $invalidProfile 'database/rocker.db';[IO.File]::WriteAllBytes($invalidDatabase,[byte[]]@(1,2,3));$invalidHash=(Get-FileHash $invalidDatabase -Algorithm SHA256).Hash
     $env:ROCKER_USER_DATA_DIR=$invalidProfile
     $failed=Start-Process (Join-Path $futurePackages 'Rocker-Windows-Setup-0.2.1-x64.exe') -ArgumentList ($arguments+@("/LOG=`"$(Join-Path $ReportDirectory 'failed-update.log')`"")) -Wait -PassThru
-    if($failed.ExitCode -eq 0){throw 'An invalid profile was accepted by update preflight.'}
+    if($failed.ExitCode -eq 0 -or (Get-FileHash $invalidDatabase -Algorithm SHA256).Hash -ne $invalidHash){throw 'An invalid profile was accepted or changed by update preflight.'}
     if((Get-ItemPropertyValue 'HKCU:/Software/JendaNDT/Rocker' -Name CurrentPath) -ne $currentPath -or (Get-ItemPropertyValue 'HKCU:/Software/Classes/JendaNDT.Rocker.Project/shell/open/command' -Name '(default)') -ne $currentAssociation -or (Get-FileHash $shortcut -Algorithm SHA256).Hash -ne $shortcutHash){throw 'Failed update changed the current path, shortcut or project association.'}
     $env:ROCKER_USER_DATA_DIR=$oldData
     # Continue with the actual candidate, installed forms, repair and file activation.
     $version=Get-Item $currentPath
     $executable=Join-Path $version.FullName 'Rocker.Probe.exe'
     if(-not (Test-Path $executable)){throw 'Installer omitted the compiled application.'}
+    $archive=[IO.Compression.ZipFile]::OpenRead((Join-Path $PackageDirectory 'Rocker-Windows-x64.zip'))
+    try{
+        foreach($entry in $archive.Entries){
+            if(-not $entry.Name){continue}
+            $target=Join-Path $version.FullName $entry.FullName
+            if(-not (Test-Path $target)){throw "Installer omitted runtime/notice file: $($entry.FullName)"}
+            $stream=$entry.Open();try{$expected=[Convert]::ToHexStringLower([Security.Cryptography.SHA256]::HashData($stream))}finally{$stream.Dispose()}
+            if((Get-FileHash $target -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected){throw "Installed inventory mismatch: $($entry.FullName)"}
+        }
+    }finally{$archive.Dispose()}
     & (Join-Path $PSScriptRoot '../smoke.ps1') -PublishDirectory $version.FullName -ReportDirectory (Join-Path $ReportDirectory 'installed')
     $sentinel=Join-Path $profile 'keep-after-uninstall.txt';'Preserve owned data' | Set-Content $sentinel
     $sentinelHash=(Get-FileHash $sentinel -Algorithm SHA256).Hash
@@ -85,7 +95,7 @@ try {
     $uninstall=Start-Process (Join-Path $install 'unins000.exe') -ArgumentList @('/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART') -Wait -PassThru
     if($uninstall.ExitCode -ne 0 -or (Test-Path $executable)){throw 'Uninstall left the installed executable.'}
     if((Get-FileHash $sentinel -Algorithm SHA256).Hash -ne $sentinelHash -or -not (Test-Path (Join-Path $profile 'database/rocker.db'))){throw 'Uninstall removed user-owned data.'}
-    @{result='passed';perUserInstall=$true;installedNativeWindow=$true;offlineSelfContainedStart=$true;exactDllRepair=$true;versionTransitionPreservedDataAndPriorBinary=$true;failedUpdatePreservedShortcutAndAssociation=$true;transitionUsesSameCandidateBinariesWithSyntheticVersionLabels=$true;historicBinaryDowngradeVerified=$false;preUpdateFullBackupAndRawDatabase=$true;projectAssociationRegistered=$true;unicodeProjectActivation=$true;uninstallPreservedDatabaseAndSentinel=$true;adminRequired=$false;smartAppControlVerified=$false;hardwareVerified=$false} | ConvertTo-Json | Set-Content (Join-Path $ReportDirectory 'installer-smoke.json')
+    @{result='passed';perUserInstall=$true;installedNativeWindow=$true;offlineSelfContainedStart=$true;installedInventoryMatchesPortableArchive=$true;exactDllRepair=$true;versionTransitionPreservedDataAndPriorBinary=$true;failedUpdatePreservedShortcutAndAssociation=$true;transitionUsesSameCandidateBinariesWithSyntheticVersionLabels=$true;historicBinaryDowngradeVerified=$false;preUpdateFullBackupAndRawDatabase=$true;projectAssociationRegistered=$true;unicodeProjectActivation=$true;uninstallPreservedDatabaseAndSentinel=$true;adminRequired=$false;smartAppControlVerified=$false;hardwareVerified=$false} | ConvertTo-Json | Set-Content (Join-Path $ReportDirectory 'installer-smoke.json')
 } finally {
     $env:ROCKER_USER_DATA_DIR=$oldData;$env:ROCKER_ACTIVATION_REPORT=$oldActivation
     if($process -and -not $process.HasExited){Stop-Process -Id $process.Id -Force}
