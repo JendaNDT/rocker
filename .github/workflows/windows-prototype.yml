@@ -61,6 +61,8 @@ jobs:
         run: ./windows/package.ps1
       - name: Verify per-user install, repair, file activation and uninstall
         run: ./windows/installer/smoke.ps1
+      - name: Check complete candidate evidence
+        run: ./windows/verify-candidate.ps1
       - name: Upload runnable prototype
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
