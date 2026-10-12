@@ -3,6 +3,32 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Default">
+            <SolidColorBrush x:Key="NavigationViewSelectionIndicatorForeground" Color="#D6A66C"/>
+            <SolidColorBrush x:Key="SliderThumbBackground" Color="#D6A66C"/>
+            <SolidColorBrush x:Key="SliderThumbBackgroundPointerOver" Color="#C99A60"/>
+            <SolidColorBrush x:Key="SliderThumbBackgroundPressed" Color="#B98951"/>
+            <SolidColorBrush x:Key="SliderTrackValueFill" Color="#D6A66C"/>
+            <SolidColorBrush x:Key="SliderTrackValueFillPointerOver" Color="#C99A60"/>
+            <SolidColorBrush x:Key="SliderTrackValueFillPressed" Color="#B98951"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeChecked" Color="#D6A66C"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeCheckedPointerOver" Color="#C99A60"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeCheckedPressed" Color="#B98951"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillChecked" Color="#D6A66C"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillCheckedPointerOver" Color="#C99A60"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillCheckedPressed" Color="#B98951"/>
+            <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundChecked" Color="#1D1D1B"/>
+            <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundCheckedPointerOver" Color="#1D1D1B"/>
+            <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundCheckedPressed" Color="#1D1D1B"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeIndeterminate" Color="#D6A66C"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeIndeterminatePointerOver" Color="#C99A60"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeIndeterminatePressed" Color="#B98951"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillIndeterminate" Color="#D6A66C"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillIndeterminatePointerOver" Color="#C99A60"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillIndeterminatePressed" Color="#B98951"/>
+            <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundIndeterminate" Color="#1D1D1B"/>
+            <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundIndeterminatePointerOver" Color="#1D1D1B"/>
+            <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundIndeterminatePressed" Color="#1D1D1B"/>
+
             <SolidColorBrush x:Key="SystemControlHighlightAccentBrush" Color="#D6A66C"/>
             <SolidColorBrush x:Key="SystemControlHighlightAltAccentBrush" Color="#D6A66C"/>
 
@@ -28,6 +54,32 @@
             <SolidColorBrush x:Key="VintageInstrumentInk" Color="#1D1D1B" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="Light">
+            <SolidColorBrush x:Key="NavigationViewSelectionIndicatorForeground" Color="#905622"/>
+            <SolidColorBrush x:Key="SliderThumbBackground" Color="#905622"/>
+            <SolidColorBrush x:Key="SliderThumbBackgroundPointerOver" Color="#7F4B1D"/>
+            <SolidColorBrush x:Key="SliderThumbBackgroundPressed" Color="#713F16"/>
+            <SolidColorBrush x:Key="SliderTrackValueFill" Color="#905622"/>
+            <SolidColorBrush x:Key="SliderTrackValueFillPointerOver" Color="#7F4B1D"/>
+            <SolidColorBrush x:Key="SliderTrackValueFillPressed" Color="#713F16"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeChecked" Color="#905622"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeCheckedPointerOver" Color="#7F4B1D"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeCheckedPressed" Color="#713F16"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillChecked" Color="#905622"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillCheckedPointerOver" Color="#7F4B1D"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillCheckedPressed" Color="#713F16"/>
+            <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundChecked" Color="#FFFFFF"/>
+            <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundCheckedPointerOver" Color="#FFFFFF"/>
+            <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundCheckedPressed" Color="#FFFFFF"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeIndeterminate" Color="#905622"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeIndeterminatePointerOver" Color="#7F4B1D"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeIndeterminatePressed" Color="#713F16"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillIndeterminate" Color="#905622"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillIndeterminatePointerOver" Color="#7F4B1D"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillIndeterminatePressed" Color="#713F16"/>
+            <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundIndeterminate" Color="#FFFFFF"/>
+            <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundIndeterminatePointerOver" Color="#FFFFFF"/>
+            <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundIndeterminatePressed" Color="#FFFFFF"/>
+
             <SolidColorBrush x:Key="SystemControlHighlightAccentBrush" Color="#905622"/>
             <SolidColorBrush x:Key="SystemControlHighlightAltAccentBrush" Color="#905622"/>
 
@@ -53,6 +105,32 @@
             <SolidColorBrush x:Key="VintageInstrumentInk" Color="#1D1D1B" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="HighContrast">
+            <SolidColorBrush x:Key="NavigationViewSelectionIndicatorForeground" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="SliderThumbBackground" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="SliderThumbBackgroundPointerOver" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="SliderThumbBackgroundPressed" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="SliderTrackValueFill" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="SliderTrackValueFillPointerOver" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="SliderTrackValueFillPressed" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeChecked" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeCheckedPointerOver" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeCheckedPressed" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillChecked" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillCheckedPointerOver" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillCheckedPressed" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundChecked" Color="{ThemeResource SystemColorHighlightTextColor}"/>
+            <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundCheckedPointerOver" Color="{ThemeResource SystemColorHighlightTextColor}"/>
+            <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundCheckedPressed" Color="{ThemeResource SystemColorHighlightTextColor}"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeIndeterminate" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeIndeterminatePointerOver" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundStrokeIndeterminatePressed" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillIndeterminate" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillIndeterminatePointerOver" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="CheckBoxCheckBackgroundFillIndeterminatePressed" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundIndeterminate" Color="{ThemeResource SystemColorHighlightTextColor}"/>
+            <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundIndeterminatePointerOver" Color="{ThemeResource SystemColorHighlightTextColor}"/>
+            <SolidColorBrush x:Key="CheckBoxCheckGlyphForegroundIndeterminatePressed" Color="{ThemeResource SystemColorHighlightTextColor}"/>
+
             <SolidColorBrush x:Key="SystemControlHighlightAccentBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
             <SolidColorBrush x:Key="SystemControlHighlightAltAccentBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
 
