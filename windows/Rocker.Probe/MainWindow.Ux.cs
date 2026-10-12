@@ -71,6 +71,8 @@ public sealed partial class MainWindow
         bool navigationLabels = ShellRoot.ActualWidth<900 || Navigation.DisplayMode==NavigationViewDisplayMode.Expanded && Navigation.IsPaneOpen;
         Navigate(new("02"));RefreshState();await Task.Delay(60);
         double liveFooter=MediaPanel.ActualHeight;double liveClientHeight=ShellRoot.ActualHeight;
+        var diagnostics=Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTICS_DIR");
+        if(!string.IsNullOrEmpty(diagnostics)){Directory.CreateDirectory(Path.Combine(diagnostics,"screens"));await CaptureNativeViewAsync("screens/ux-live.png");}
         double liveScaleBottom=liveTunerNeedle!.TransformToVisual(ShellRoot).TransformPoint(new Windows.Foundation.Point(0,liveTunerNeedle.ActualHeight)).Y;
         bool visibleScale=liveTunerNeedle.ActualWidth>150 && liveScaleBottom<=ShellRoot.ActualHeight-MediaPanel.ActualHeight-24;
         bool focusedLive = PracticeStart.Visibility==Visibility.Visible && PracticePause.Visibility==Visibility.Collapsed && PracticeEnd.Visibility==Visibility.Collapsed && liveStart is {MinHeight:>=40} && liveMonitor is not null && !liveMonitor.IsEnabled;
@@ -83,7 +85,7 @@ public sealed partial class MainWindow
         bool media = MediaTransportRow.Visibility==Visibility.Visible && MediaSeekRow.Visibility==Visibility.Visible && PlayMediaButton.IsEnabled && PlayMediaButton.Label=="Přehrát";
         Navigate(previous);
         bool passed=quietSettings && navigationLabels && focusedLive && compactLive && visibleScale && narrow && media;
-        WriteShellDiagnostic("ux-layout.json",new{result=passed?"passed":"failed",idleSettingsHasNoPlayerOrPracticeBar=quietSettings,desktopNavigationShowsLabels=navigationLabels,liveHasPrimarySetupAndRelevantActions=focusedLive,liveFooterHeightDip=liveFooter,liveTuningScaleVisible=visibleScale,liveTuningScaleBottomDip=liveScaleBottom,clientHeightDip=liveClientHeight,emptyMediaDoesNotOccupyLive=compactLive,narrowWorkspaceFits=narrow,loadedMediaHasAccessibleTransport=media,manualUsabilityVerified=false});
+        WriteShellDiagnostic("ux-layout.json",new{result=passed?"passed":"failed",idleSettingsHasNoPlayerOrPracticeBar=quietSettings,desktopNavigationShowsLabels=navigationLabels,liveHasPrimarySetupAndRelevantActions=focusedLive,liveFooterHeightDip=liveFooter,liveTuningScaleVisible=visibleScale,liveTuningScaleBottomDip=liveScaleBottom,clientHeightDip=liveClientHeight,liveScaleHeightDip=liveTunerNeedle.ActualHeight,liveScaleWidthDip=liveTunerNeedle.ActualWidth,emptyMediaDoesNotOccupyLive=compactLive,narrowWorkspaceFits=narrow,loadedMediaHasAccessibleTransport=media,manualUsabilityVerified=false});
         if(!passed)throw new InvalidOperationException("Workspace UX layout/state regression failed.");
     }
 }
