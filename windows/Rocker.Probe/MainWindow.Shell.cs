@@ -90,6 +90,7 @@ public sealed partial class MainWindow
             WorkspaceContent.Content = page;
         }
         LabelNativeControls(ShellRoot);
+        if(view.Id=="28")RefreshSettingsControls();
         RefreshPlanControls();
         if(aiPages.TryGetValue(view.Id,out var aiPage) && !aiBusy)RefreshAiPage(aiPage);
         if (view.Id == "08" && !videoInitializationStarted) _ = EnsureVideoAsync();
@@ -115,6 +116,7 @@ public sealed partial class MainWindow
         selectedTheme = theme;
         appSettings = appSettings with { Theme=theme }; SaveSettings();
         ShellRoot.RequestedTheme = theme switch { "dark" => ElementTheme.Dark, "light" => ElementTheme.Light, _ => ElementTheme.Default };
+        RefreshSettingsControls();
     }
     private void Shell_SizeChanged(object sender, SizeChangedEventArgs args)
     {
