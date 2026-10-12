@@ -59,6 +59,7 @@ public sealed partial class MainWindow
         var meters=audio.GetMeters();bool running=state.State==AudioState.Running;
         bool configured=appSettings.AudioDevice is{InputChannel:>=0} && !deviceSelectionUnavailable;
         liveStart!.Content=configured?"Spustit Live":"Nastavit zvuk";liveStart.IsEnabled=!busy && !powerTransition && !deviceOperationRunning && (!running || !meters.HasInput);
+        Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(liveStart,(string)liveStart.Content);
         liveStop!.IsEnabled=state.State!=AudioState.Stopped || captureDraft is not null;
         liveDevice!.Text=configured && appSettings.AudioDevice is{ } device?device.Output+" · vstup "+(device.InputChannel+1):"Nejdřív vyber zvukovou kartu a vstup kytary.";
         liveMonitor!.IsEnabled=running && meters.HasInput && !powerTransition && !deviceOperationRunning;

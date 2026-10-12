@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 namespace Rocker.Probe;
 public sealed partial class MainWindow
 {
@@ -39,8 +40,14 @@ public sealed partial class MainWindow
             LabelNativeControls(root);
             foreach(var element in AuthoredElements(root).Where(e=>e is ButtonBase or ComboBox or TextBox or PasswordBox or NumberBox or Slider or ToggleSwitch))
             {
-                ++controls;var peer=FrameworkElementAutomationPeer.FromElement(element)??FrameworkElementAutomationPeer.CreatePeerForElement(element);
-                if(peer is null || string.IsNullOrWhiteSpace(peer.GetName()))missing.Add(view.Id+":"+element.GetType().Name+":"+element.Name);
+                ++controls;
+                bool visible=element.IsLoaded;
+                for(DependencyObject? parent=element;parent is not null;parent=VisualTreeHelper.GetParent(parent))if(parent is FrameworkElement {Visibility:Visibility.Collapsed})visible=false;
+                string declared=AutomationProperties.GetName(element);
+                var peer=visible?FrameworkElementAutomationPeer.FromElement(element)??FrameworkElementAutomationPeer.CreatePeerForElement(element):null;
+                // Collapsed actions do not expose a native peer until loaded;
+                // keep checking their declared name for when they become available.
+                if(string.IsNullOrWhiteSpace(declared) || visible && (peer is null || string.IsNullOrWhiteSpace(peer.GetName())))missing.Add(view.Id+":"+element.GetType().Name+":"+element.Name+":"+declared+":visible="+visible);
             }
         }
         LabelNativeControls(ShellRoot);var playPeer=FrameworkElementAutomationPeer.FromElement(StopButton)??FrameworkElementAutomationPeer.CreatePeerForElement(StopButton);var rangePeer=FrameworkElementAutomationPeer.FromElement(VolumeSlider)??FrameworkElementAutomationPeer.CreatePeerForElement(VolumeSlider);
