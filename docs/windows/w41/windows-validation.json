@@ -1,0 +1,25 @@
+{
+  "runId": 38196070619,
+  "runUrl": "https://github.com/JendaNDT/rocker/actions/runs/38196070619",
+  "commit": "1ce23b74c86fe6106ae14cc95fe9b13d6d94c5f6",
+  "result": "passed",
+  "check": {
+    "exactDllRepair": true,
+    "result": "passed",
+    "hardwareVerified": false,
+    "uninstallPreservedDatabaseAndSentinel": true,
+    "transitionUsesSameCandidateBinariesWithSyntheticVersionLabels": true,
+    "failedUpdatePreservedShortcutAndAssociation": true,
+    "installedNativeWindow": true,
+    "installedInventoryMatchesPortableArchive": true,
+    "versionTransitionPreservedDataAndPriorBinary": true,
+    "projectAssociationRegistered": true,
+    "unicodeProjectActivation": true,
+    "preUpdateFullBackupAndRawDatabase": true,
+    "smartAppControlVerified": false,
+    "adminRequired": false,
+    "offlineSelfContainedStart": true,
+    "perUserInstall": true,
+    "historicBinaryDowngradeVerified": false
+  }
+}

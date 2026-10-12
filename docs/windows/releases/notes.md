@@ -1,11 +1,24 @@
-První část W04 přidává nativní notový náhled k dosavadnímu testovacímu tónu. Obsahuje vlastní ukázky MusicXML a Guitar Pro 7, otevření souboru systémovým dialogem, výběr taktu kliknutím a uložení MIDI. Noty se vykreslují přes .NET AlphaTab / nativní AlphaSkia bez webového rozhraní.
+# Rocker 0.2.0 — kompletní Windows kandidát
 
-Stáhni **Rocker-Windows-x64.zip**, rozbal celý archiv a spusť **Rocker.Probe.exe**. Vyžaduje Windows 11 x64 od 24H2; vývojové nástroje nejsou potřeba. Zdrojový ZIP je samostatný a pro spuštění jej nepotřebuješ.
+Nativní WinUI 3 aplikace ve Vintage designu se všemi 32 pracovními pohledy a společným C++/JUCE zvukovým jádrem. Obsahuje Live, ladičku, rozšířený metronom, aparát, lekce a trenažéry, knihovny a hry, vlastní skladby/noty, nahrávání, Looper, Studio, profil/pokrok, volitelnou AI, YouTube, převod webových dat a úplné zálohy.
 
-Windows runner úspěšně sestavil aplikaci a JUCE DLL, provedl původní ABI/životnostní kontroly a všech 22 notových ověření. Publikované WinUI okno načetlo a dekódovalo notový obrázek a normálně se zavřelo. Balík má ověřený SHA-256, ZIP integritu a x64 architekturu; čtyři zdrojové archivy odpovídají připnutým revizím.
+## Stažení a spuštění
 
-Prototyp ukazuje první stopu a nejvýše 12 taktů; import omezuje na 4 MB, 16 stop a 128 taktů. Důkaz importu je pro GP7 a nekomprimované MusicXML; další formáty nabízené parserem zatím nemají vlastní přejímku. Ruční klikání a systémové dialogy čekají na ověření Jendou.
+1. Stáhni **Rocker-Windows-Setup-0.2.0-x64.exe**, spusť jej a potom otevři **Rocker** z nabídky Start. Vyžaduje Windows 11 x64 od 24H2 (build 26100).
+2. Vývojové nástroje ani zdroje nepotřebuješ. .NET a Windows App SDK jsou přibalené. Instalace je pro aktuálního uživatele bez administrátorských oprávnění.
+3. M-Track Solo a sluchátka nastav v průvodci; vyber jediný vstup s kytarou. Monitoring zapni výslovně s nízkou hlasitostí. Ovladač M-Audio se stahuje od výrobce.
+4. Návod je v **Nápověda → Návod k používání**. Předchozí prototyp zavři před instalací. Instalátor zálohuje existující profil a při chybě přípravy zastaví aktualizaci před změnou původní instalace. Odinstalace ponechá uživatelská data.
 
-**W04 není celý hotový.** Přehrávání not přes společné C++ jádro, dekódování nahrávek, zpomalování a YouTube budou navazovat. Kompletní aplikace a finální Vintage design zatím nejsou implementované. Automatický test nepřehrával zvuk; fyzická zvukovka, ASIO a latence tímto vydáním nejsou ověřené.
+Volitelný **Rocker-Windows-x64.zip** je přenosná varianta: Extrahovat vše, potom Rocker.Probe.exe. **Code → Download ZIP** není sestavená aplikace.
 
-Balík je nepodepsaný. Zapnutý Smart App Control může blokovat rocker_audio.dll i libalphaskia.dll; toto vydání nemá ověření podepsaných knihoven se zapnutou ochranou. Odpovídající zdroje Rockeru, JUCE, AlphaTab a AlphaSkia jsou v samostatném **Rocker-Windows-sources.zip**; licenční texty a oznámení jsou přibalené k aplikaci.
+**Rocker-Windows-sources.zip** obsahuje odpovídající zdroje a sestavovací postupy zvlášť. Jejich stažení není pro používání potřebné. Licenční oznámení zůstávají v aplikaci. Jde o soukromé předání v tomto repozitáři.
+
+## Ověření a hranice
+
+Tato konkrétní revize prošla automatickým sestavením na Windows, všemi 22 nativními sadami, doménovými/datovými/migračními a mediálními kontrolami, konstrukcí všech 32 pohledů a UI Automation. Instalační cyklus ověřil přechod verzí, blokování neplatného profilu bez změny zástupce/asociace, shodu všech souborů s přenosným balíkem, opravu DLL, aktivaci projektu a odinstalaci se zachováním dat. SHA256SUMS.txt a candidate-validation.json identifikují ověřený balík.
+
+Skutečné hraní, celkovou odezvu a stabilní ASIO buffer na bratrově M-Track Solo je ještě potřeba potvrdit. Online YouTube/OpenAI, fyzické uspání/odpojení, Narrator/DPI a čistá offline VM nebyly ručně ověřené. Zrychlený hodinový render není hodina skutečného hraní. Přechod verzí používá označené instalační fixture se stejnými kandidátními binárkami; netvrdí kompatibilitu se všemi historickými verzemi.
+
+Balík je nepodepsaný; kompatibilita se zapnutým Smart App Control není potvrzená. YouTube vyžaduje internet a Evergreen WebView2; ostatní hlavní nástroje jej nepotřebují. AI je volitelná s vlastním OpenAI klíčem, bez posílání audio nahrávek. Osobní Gemini cesta je blokovaná podle zaznamenaných podmínek. Noty používají vlastní strunnou/bicí syntézu, nikoli celou banku General MIDI. Detektor hodnotí jednotlivé tóny a neslibuje obecné polyfonní/rytmické skóre.
+
+Úplná matice, návod, protokoly a připravený test s bratrem jsou v docs/windows/w43. W04–W43 jsou dokončené; reálná přejímka a následné stabilní vydání navazují ve W44–W48.

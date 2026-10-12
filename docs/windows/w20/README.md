@@ -42,7 +42,7 @@ maximálním aparátem, oběma vrstvami metronomu, referencí a 127/1024 sample
 bloky. Fronta se odčítá, nečeká a neztrácí bloky; všechna data zůstanou konečná.
 Test reportuje skutečný wall time/over-budget, nemá přenosný práh CPU ani
 nevydává syntetické tempo za fyzický hardware nebo měření ovladače.
-C# PInvoke kontroluje 160b ABI 10, skutečné callback čítače, unknown -1 i
+160b diagnostika byla zavedena v ABI 10 (současné společné ABI je 15); C# PInvoke kontroluje skutečné callback čítače, unknown -1 i
 výslovný simulovaný vendor count 7. Deset report schema testů chrání pravdivost
 latence, oddělené čítače a pevný export bez soukromých dat. Windows sestavení a formulář/report [prošly](windows-validation.json); export picker, zatížení fyzické karty/UI při hraní a skutečné
 underruny jsou neprovedené do přejímky.

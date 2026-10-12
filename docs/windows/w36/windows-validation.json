@@ -1,9 +1,9 @@
 {
-  "runId": 38187437967,
-  "runUrl": "https://github.com/JendaNDT/rocker/actions/runs/38187437967",
-  "commit": "058501c11d0b190d823cf9850011da869a5af2a3",
+  "runId": 38196070619,
+  "runUrl": "https://github.com/JendaNDT/rocker/actions/runs/38196070619",
+  "commit": "1ce23b74c86fe6106ae14cc95fe9b13d6d94c5f6",
   "result": "passed",
-  "check": {
+  "home": {
     "result": "passed",
     "nativeViews": 32,
     "screenshots": [
@@ -43,7 +43,254 @@
       "screens/live-1680.png",
       "screens/overview-light.png"
     ],
-    "adaptiveWidths": [
+    "captures": [
+      {
+        "file": "screens/view-01.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-02.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-03.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-04.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-05.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-06.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-07.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-08.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-09.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-10.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-11.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-12.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-13.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-14.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-15.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-16.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-17.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-18.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-19.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-20.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-21.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-22.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-23.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-24.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-25.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-26.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-27.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-28.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-29.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-30.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-31.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-32.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/live-640.png",
+        "clientWidthDip": 624,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 640,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/live-1680.png",
+        "clientWidthDip": 1028,
+        "clientHeightDip": 749,
+        "windowWidthPixels": 1044,
+        "windowHeightPixels": 788
+      },
+      {
+        "file": "screens/overview-light.png",
+        "clientWidthDip": 1028,
+        "clientHeightDip": 749,
+        "windowWidthPixels": 1044,
+        "windowHeightPixels": 788
+      }
+    ],
+    "requestedAdaptiveWidthsPixels": [
       640,
       1280,
       1680
@@ -56,7 +303,7 @@
     "narratorManualVerified": false,
     "highContrastManualVerified": false
   },
-  "componentsForm": {
+  "components": {
     "result": "passed",
     "nativeViews": 32,
     "screenshots": [
@@ -96,7 +343,254 @@
       "screens/live-1680.png",
       "screens/overview-light.png"
     ],
-    "adaptiveWidths": [
+    "captures": [
+      {
+        "file": "screens/view-01.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-02.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-03.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-04.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-05.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-06.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-07.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-08.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-09.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-10.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-11.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-12.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-13.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-14.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-15.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-16.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-17.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-18.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-19.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-20.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-21.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-22.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-23.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-24.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-25.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-26.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-27.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-28.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-29.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-30.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-31.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/view-32.png",
+        "clientWidthDip": 1008,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 1024,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/live-640.png",
+        "clientWidthDip": 624,
+        "clientHeightDip": 681,
+        "windowWidthPixels": 640,
+        "windowHeightPixels": 720
+      },
+      {
+        "file": "screens/live-1680.png",
+        "clientWidthDip": 1028,
+        "clientHeightDip": 749,
+        "windowWidthPixels": 1044,
+        "windowHeightPixels": 788
+      },
+      {
+        "file": "screens/overview-light.png",
+        "clientWidthDip": 1028,
+        "clientHeightDip": 749,
+        "windowWidthPixels": 1044,
+        "windowHeightPixels": 788
+      }
+    ],
+    "requestedAdaptiveWidthsPixels": [
       640,
       1280,
       1680
@@ -108,6 +602,5 @@
     "keyboardManualVerified": false,
     "narratorManualVerified": false,
     "highContrastManualVerified": false
-  },
-  "hardwareVerified": false
+  }
 }

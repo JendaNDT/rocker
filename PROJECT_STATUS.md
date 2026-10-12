@@ -1,6 +1,6 @@
 # Rocker — stav projektu
 
-Aktualizováno 12. 10. 2026. Windows verze 0.2.0 má implementovaný celý rozsah W04–W43: 32 skutečných WinUI pohledů ve Vintage designu, společné C++/JUCE jádro, všechny původní výukové a pracovní funkce, data/migraci, zálohy a instalátor pro uživatele. Závěrečné Windows kontroly instalátoru a kandidáta právě probíhají; dokud nemají uložený úspěšný výsledek, nejde o ověřený balík k předání.
+Aktualizováno 12. 10. 2026. Windows verze 0.2.0 má implementovaný celý rozsah W04–W43: 32 skutečných WinUI pohledů ve Vintage designu, společné C++/JUCE jádro, všechny původní výukové a pracovní funkce, data/migraci, zálohy a instalátor pro uživatele. Závěrečné automatické Windows kontroly aplikace, instalátoru a úplného kandidáta prošly v [běhu 38196070619](https://github.com/JendaNDT/rocker/actions/runs/38196070619), revize `1ce23b7`. [Sestavený soukromý kandidát](https://github.com/JendaNDT/rocker/releases/tag/windows-0.2.0-rc1-20261012) obsahuje instalátor, přenosný ZIP, samostatné zdroje a kontrolní součty.
 
 [Roadmapa](WINDOWS_ROADMAP.md), [matice úplnosti a důkazy](docs/windows/w43/README.md), [návod](docs/windows/w43/user-guide.md), [skutečná galerie](docs/windows/w36/native-gallery/index.html). Testy všech doménových vrstev, médií, UI a obnovy běží automaticky. Detaily a konkrétní revize jsou v jednotlivých W protokolech; samotná implementace není důkaz ručního poslechu.
 

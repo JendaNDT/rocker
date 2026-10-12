@@ -5,7 +5,7 @@
 
 **Živá verze:** https://rocker-rust.vercel.app
 
-**Nativní Windows verze 0.2.0:** implementovaný je rozsah W04–W43 — všech 32 pohledů ve Vintage designu, WinUI 3 ovládání, C++/JUCE zvukové jádro, výuka, nástroje, nahrávky, Looper, Studio, data a instalátor. Závěrečné sestavení a instalační přejímka probíhají; konkrétní ověřený kandidát musí mít uložený úspěšný protokol. [Návod a matice úplnosti](docs/windows/w43/README.md), [aktuální stav](PROJECT_STATUS.md), [roadmapa](WINDOWS_ROADMAP.md) a [skutečné snímky všech obrazovek](docs/windows/w36/native-gallery/index.html).
+**Nativní Windows verze 0.2.0:** implementovaný je rozsah W04–W43 — všech 32 pohledů ve Vintage designu, WinUI 3 ovládání, C++/JUCE zvukové jádro, výuka, nástroje, nahrávky, Looper, Studio, data a instalátor. Závěrečné automatické sestavení a instalační přejímka prošly. [Stáhnout hotový instalátor](https://github.com/JendaNDT/rocker/releases/tag/windows-0.2.0-rc1-20261012); [konkrétní Windows důkaz](docs/windows/w43/windows-validation.json). [Návod a matice úplnosti](docs/windows/w43/README.md), [aktuální stav](PROJECT_STATUS.md), [roadmapa](WINDOWS_ROADMAP.md) a [skutečné snímky všech obrazovek](docs/windows/w36/native-gallery/index.html).
 
 Bratr dostane sestavený instalátor; zdroje jsou samostatně a nic nemusí kompilovat. Skutečné hraní na M-Track Solo a měření celkové odezvy následují ve W44. [Původní návrhy](docs/windows/design/vsechny-navrhy.md) zůstávají referencí. Main a živá PWA se nemění; následující části popisují původní webovou aplikaci.
 

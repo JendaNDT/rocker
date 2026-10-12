@@ -1,6 +1,6 @@
 # Rocker pro Windows — úplný implementační plán
 
-Stav k 12. 10. 2026: implementovaný je rozsah W01–W43, včetně 32 skutečných WinUI pohledů, Vintage designu, C++/JUCE zvukového jádra, všech pracovních funkcí, převodu dat a instalačního balíku. W40–W43 právě procházejí závěrečnou Windows kontrolou; úspěšný sestavený kandidát musí mít uložené důkazy. [Matice úplnosti a návod](docs/windows/w43/README.md) oddělují automatické kontroly od odloženého skutečného hraní. W44–W48 zůstávají jako bratrův test, případné opravy a stabilní předání. Main/produkční PWA se nemění; [původní roadmapa](ROADMAP.md) popisuje webovou historii.
+Stav k 12. 10. 2026: implementovaný je rozsah W01–W43, včetně 32 skutečných WinUI pohledů, Vintage designu, C++/JUCE zvukového jádra, všech pracovních funkcí, převodu dat a instalačního balíku. W40–W43 prošly závěrečnou automatickou Windows kontrolou v běhu 38196070619, revize `1ce23b7`; [uložené důkazy](docs/windows/w43/windows-validation.json) a [sestavený soukromý kandidát](https://github.com/JendaNDT/rocker/releases/tag/windows-0.2.0-rc1-20261012) jsou k dispozici. [Matice úplnosti a návod](docs/windows/w43/README.md) oddělují automatické kontroly od odloženého skutečného hraní. W44–W48 zůstávají jako bratrův test, případné opravy a stabilní předání. Main/produkční PWA se nemění; [původní roadmapa](ROADMAP.md) popisuje webovou historii.
 
 **Výsledek:** instalovatelný kytarový pomocník pro Windows se skutečným nativním ovládáním, vzhledem Vintage a samostatným zvukovým jádrem. Zachová všechny již implementované pracovní postupy Rockeru, převede uživatelská data a doplní práci se soubory a projekty. Bratr dostane až funkčně kompletní testovací verzi; na svém počítači s M-Audio M-Track Solo ověří zvuk, stabilitu a pocit ze hry.
 
@@ -237,7 +237,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w08"></a>
 #### W08 — Implementovat Vintage designový systém
 
-- [ ] Rozpracováno: [společné Vintage komponenty](docs/windows/w08/README.md), nativní ovladače, diagramy, měřák a kompaktní transport. [Windows build a snímky prošly](docs/windows/w08/windows-validation.json); Live a kompletní produktové pohledy se připojí v příslušných funkčních krocích. Závislosti: W07.
+- [x] Implementováno: [společné Vintage komponenty](docs/windows/w08/README.md), nativní ovladače, diagramy, měřák a kompaktní transport jsou zapojené do všech pracovních pohledů. [Aktuální galerie a Windows kontrola](docs/windows/w36/windows-validation.json). Závislosti: W07.
 - Převést návrhy do tokenů barev, typografie, rozestupů, hran a stavů. Preferovat Segoe/system fonty pro ovládání; dekorativní písmo a materiály jen tam, kde pomáhají hudebnímu přístroji.
 - Připravit společné seznamy, formuláře, panely, transport, level metr, knoby se zadáním čísla, diagramy a chybové stavy. Každý vlastní widget musí mít klávesnici a UI Automation reprezentaci.
 - Rozpracovat stavové specifikace všech 32 pohledů, včetně malého okna, vysokého DPI, vysokého kontrastu, offline režimu a prázdných dat. Systémový dialog nereplikovat obrázkem nebo vlastním webovým formulářem.
@@ -352,7 +352,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w20"></a>
 #### W20 — Diagnostika zvuku a automatické audio kontroly
 
-- [ ] Rozpracováno: [čas grafu, oddělené čítače a diagnostický export](docs/windows/w20/README.md), Linux integrační/RT/PInvoke kontroly prošly. [Windows formulář a náhled reportu prošly](docs/windows/w20/windows-validation.json). Závislosti: W14–W19.
+- [x] Implementováno: [čas grafu, oddělené čítače a diagnostický export](docs/windows/w20/README.md); Linux a Windows kontroly prošly. Skutečná odezva na M-Track Solo zůstává ve W44. Závislosti: W14–W19.
 - Zavést bezpečné čítače výpadků, dobu callbacku, maximum front, ztracené bloky, přetečení úrovní a důvody restartu. Jejich sběr nesmí blokovat realtime vlákno.
 - Přidat podporovaný diagnostický export s verzí aplikace, zařízením, ovladačem, konfigurací a naměřenými hodnotami. Neobsahuje API klíče ani uživatelovy nahrávky; před odesláním lze obsah prohlédnout.
 - Vytvořit opakovatelnou sadu offline a simulovaných integračních testů: impulsy, tónové sekvence, vícero kanálů, různé délky bloků, změny zařízení, dlouhý běh a zatížení UI.
@@ -382,7 +382,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w23"></a>
 #### W23 — Looper se správným časováním a vrstvami
 
-- [ ] Rozpracováno: [nativní vzorkový Looper, vrstvy a uložené sessions](docs/windows/w23/README.md). Linux 15/15 CTest, kompenzovaný impuls, 20 000 opakování, callback audit a obnovení vrstev prošly. [Windows formulář a projektová persistence prošly](docs/windows/w23/windows-validation.json); poslech je odložený. Závislosti: W16, W18, W22.
+- [x] Implementováno: [nativní vzorkový Looper, vrstvy a uložené sessions](docs/windows/w23/README.md); nativní/Windows kontroly a persistence prošly. Ruční poslech je odložený. Závislosti: W16, W18, W22.
 - Přenést první záznam určující délku, přehrávání smyčky a overdub vrstev. Určit volné versus taktově zarovnané zahájení, předtakt a pravidla zaokrouhlení hranic.
 - Vrstvy mají společnou délku v celých vzorcích, správné úrovně a přechod přes konec bez lupnutí; při nové vrstvě se využije známá kompenzace zachycení a přehrávání.
 - Doplnit návrat poslední vrstvy, bezpečné vymazání, persistenci nebo výslovné uložení session a export do nahrávek či Studia. Paměťové limity a ztráta zařízení mají viditelný stav.
@@ -506,7 +506,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w36"></a>
 #### W36 — Přejmout všech 32 pohledů a doladit design
 
-- [ ] Všech 32 implementací zapojených, [matice a nativní galerie](docs/windows/w36/README.md); Windows snímky a automatické ověření čekají. Ruční přejímka je odložená. Závislosti: W08, W17–W35.
+- [x] Implementováno: všech 32 pohledů, [matice a nativní galerie](docs/windows/w36/README.md); Windows konstrukce a 35 skutečných snímků prošly. Ruční DPI/přístupnost zůstávají ve W44. Závislosti: W08, W17–W35.
 - Projít matici obrazovek jednu po druhé. Každá musí používat skutečná data a služby, mít hotové povinné stavy a naplnit příslušný pracovní postup, nikoli jen připomínat obrázek.
 - Sjednotit české texty, rozměry, řazení ovladačů, hustotu tabulek, čitelnost z odstupu, prázdné stavy a konzistenci transportu. Rozdíly proti konceptu zapsat do návrhové specifikace.
 - Pořídit aktuální screenshoty nativního programu a porovnat s návrhy. Ověřit práci myší i klávesnicí na běžném notebooku, velkém monitoru a malém přichyceném okně.
@@ -517,7 +517,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w37"></a>
 #### W37 — Ověřit skutečný přechod z webové verze
 
-- [ ] Automatický skutečný browser → SQLite prošel: [W37](docs/windows/w37/README.md); Windows import naváže v buildu. Osobní profil ani živá PWA nebyly měněné. Závislosti: W12, W22–W24, W31, W32, W35.
+- [x] Implementováno: [skutečný browser → SQLite a bookmark pomocník](docs/windows/w37/README.md); oba Windows scénáře importu prošly. Osobní profil ani živá PWA nebyly měněné. Závislosti: W12, W22–W24, W31, W32, W35.
 - Projít export ze skutečného testovacího browser profilu a import do čisté Windows instalace. Porovnat nastavení, postup, vlastní ladění a presety, YouTube smyčky, AI historii i metadata a přehratelnost nahrávek.
 - Ověřit starší zálohu, prázdný profil, opakovaný import, částečně poškozený archiv, chybějící zvuk a nepodporovanou budoucí verzi. Report musí ukázat počty přijatých, duplicitních a odmítnutých položek.
 - Zajistit návrat k předchozímu desktopovému stavu po přerušeném importu. PWA data zůstávají dostupná; v paměti neuložené Studio či Looper nelze zpětně vydávat za migrované.
@@ -535,7 +535,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w39"></a>
 #### W39 — Výkon a dlouhý běh
 
-- [x] Implementováno: [W39](docs/windows/w39/README.md); zrychlených 60 minut místně prošlo, skutečný hodinový hardware běh je odložený. Windows protokol čeká. Závislosti: W20, W24, W29–W31, W36, W38. Windows run 38188156041 prošel; hardware a skutečný hodinový běh jsou odložené.
+- [x] Implementováno: [W39](docs/windows/w39/README.md); zrychlených 60 minut místně prošlo, skutečný hodinový hardware běh je odložený. Závislosti: W20, W24, W29–W31, W36, W38. Windows run 38188156041 prošel; hardware a skutečný hodinový běh jsou odložené.
 - Na popsaném referenčním Windows počítači měřit dobu audio callbacku, vytížení, paměť, start, načítání velkých souborů, počet výpadků a reakce UI. Výsledky vždy uvést s konkrétní konfigurací.
 - Zátěž: aparát + metronom + nahrávání, Looper s vrstvami, vícestopý projekt, noty, změna velikosti a DPI, práce v AI a samostatně souběh YouTube. Počet stop a velikost dat zvolit před testem a uvést jako ověřený rozsah.
 - Cíl pro vybranou stabilní konfiguraci: 60 minut aktivní session bez ztracených audio bloků, bez rostoucího úniku paměti a bez znatelného blokování UI. Callback musí mít rezervu do délky bloku; sledovat i špičky, nejen průměr.
@@ -555,7 +555,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w41"></a>
 #### W41 — Instalátor a čistý Windows počítač
 
-- [ ] Implementováno: [W41](docs/windows/w41/README.md); sestavení instalátoru a instalační cyklus čekají na Windows kontrolu. Čistá offline VM a Smart App Control nejsou potvrzené. Závislosti: W02, W05, W36, W40.
+- [x] Implementováno a automaticky ověřeno: [W41](docs/windows/w41/README.md), sestavený instalátor, úplná shoda runtime, přechod verzí, oprava DLL, aktivace projektu a odinstalace se zachováním dat. [Windows důkaz](docs/windows/w41/windows-validation.json). Čistá offline VM a Smart App Control nejsou potvrzené. Závislosti: W02, W05, W36, W40.
 - Ověřit model z W02: unpackaged WinUI aplikace s jednoduchým instalátorem pro daného uživatele. Zvolit nástroj a jeho licenci; MSIX je alternativa pouze při prokázané potřebě. Před cíleným balíkem potvrdit bratrův Windows a kompatibilitu zvolených závislostí.
 - Zahrnout správnou architekturu knihoven a potřebné runtime závislosti podle zvoleného modelu instalace: Windows App SDK, .NET, C++ runtime a případně WebView2. Stanovit chování bez internetu a administrátorských práv.
 - Placený certifikát není podmínkou tohoto soukromého předání. Ověřit a popsat skutečné chování Windows u výsledného balíku, včetně případného upozornění. Pokud bude zvolen podpis, chránit klíč; nepožadovat obecné vypnutí ochrany Windows.
@@ -564,7 +564,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w42"></a>
 #### W42 — Aktualizace, kompatibilita a návrat verze
 
-- [ ] Implementováno: [W42](docs/windows/w42/README.md); kompatibilní obnova a přerušení se kontrolují místně, skutečný instalační preflight čeká na Windows běh. Závislosti: W09, W11, W41.
+- [x] Implementováno a automaticky ověřeno: [W42](docs/windows/w42/README.md), studená záloha, kompatibilní obnova, přerušení a blokování neplatného instalačního profilu bez změny původní instalace. [Windows důkaz](docs/windows/w42/windows-validation.json). Historické binární verze ani hardware nejsou potvrzené. Závislosti: W09, W11, W41.
 - Zavést verzi aplikace, formátu projektu i databáze, kontrolu kompatibility a migrační zálohu. Aktualizace se nenainstaluje ani nerestartuje aplikaci uprostřed nahrávání.
 - Použít ruční předání nové verze podle W02. Stažený balík musí mít ověřený původ a integritu; aplikace se má dát dál používat offline. Samotný kontrolní součet nenahrazuje ověření původu.
 - Ověřit aktualizaci přes existující instalaci a rollback. Pokud starší verze neumí nové schéma, nabídnout kompatibilní zálohu místo pokusu otevřít data naslepo.
@@ -573,7 +573,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w43"></a>
 #### W43 — Uzavřít funkčně kompletního kandidáta
 
-- [ ] Čeká. Závislosti: W01–W42.
+- [x] Dokončený funkčně kompletní kandidát: [matice, návod a výsledky](docs/windows/w43/README.md). Windows běh 38196070619, revize `1ce23b7`, prošel společnou přejímkou; [sestavené soukromé vydání](https://github.com/JendaNDT/rocker/releases/tag/windows-0.2.0-rc1-20261012) obsahuje instalátor a samostatné zdroje. Ruční hraní/online/přístupnost zůstávají ve W44. Závislosti: W01–W42.
 - Uzavřít úplnost všech 32 pohledů a všech funkcí v inventáři. Dokončit offline/syntetické testy, Windows integrace, design, migraci, instalaci a dokumentaci známých omezení.
 - Připravit instalační balík, poznámky k verzi, krátký návod pro bratra a formulář výsledků testu. Vedle instalátoru zpřístupnit zdarma odpovídající zdroje a build skripty podle W02, samostatným odkazem bez povinného stažení. Přiložit vyžadovaná licenční oznámení výsledných komponent. Kandidát nesmí mít známé blokující chyby ukládání, ztráty dat, licence nebo základního pracovního postupu.
 - Oddělit „ověřeno na testovacím Windows“ a „čeká na M-Track Solo“. Pokud schází skutečný AI integrační klíč nebo konkrétní kodek, popsat to jako nesplněnou kontrolu, ne zelený test.
@@ -746,6 +746,6 @@ Model M-Track Solo je potvrzen uživatelem. Přesný aktuální ovladač, jeho p
 
 ### Jak pokračovat v další pracovní session
 
-Dokončit závěrečné ověření W40–W43; po úspěšném předání kandidáta navazuje přejímka W44. Nejprve přečíst pravidla repozitáře, tento plán, rozhodnutí W02 a aktuální stav; ověřit skutečný Git diff. Před realizací konkrétní změny popsat její výsledek a soubory v rozsahu dohodnuté spolupráce. Po dokončení uložit důkazy kontrol a aktualizovat tento dokument i stav projektu. Podle pokynu z 11. 10. 2026 pokračovat v dohodnutém Windows rozsahu bez dalšího per-step schválení a bez čekání na ruční testy Jendy; ty následují až po W43.
+W04–W43 jsou implementované a automaticky ověřené. Navazuje skutečná přejímka W44 podle připraveného protokolu; následné opravy vycházejí z jejích konkrétních zjištění. Nejprve přečíst pravidla repozitáře, tento plán, rozhodnutí W02 a aktuální stav; ověřit skutečný Git diff. Před realizací konkrétní změny popsat její výsledek a soubory v rozsahu dohodnuté spolupráce. Po dokončení uložit důkazy kontrol a aktualizovat tento dokument i stav projektu. Podle pokynu z 11. 10. 2026 pokračovat v dohodnutém Windows rozsahu bez dalšího per-step schválení a bez čekání na ruční testy Jendy; ty následují až po W43.
 
 Požadavek na tuto roadmapu znamená vytvoření plánovacího podkladu a uložení návrhů. Neoznačuje nativní jádro za hotové, nepřepíná živou PWA a sám o sobě nepublikuje instalátor. Implementace W01–W43 je uložená; sestavený kandidát vyžaduje úspěšné závěrečné protokoly. Bratrův test následuje ve W44.

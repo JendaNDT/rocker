@@ -1,4 +1,4 @@
-name: Publish verified Windows prototype
+name: Publish verified Windows candidate
 
 on:
   push:
@@ -35,7 +35,9 @@ jobs:
           jq -e --arg commit "$commit" '.object.type == "commit" and .object.sha == $commit' /tmp/release-ref.json
           gh api "repos/$GITHUB_REPOSITORY/actions/runs/$run_id" > /tmp/build-run.json
           jq -e --arg commit "$commit" '.conclusion == "success" and .head_sha == $commit and .path == ".github/workflows/windows-prototype.yml" and .head_branch == "windows-native-prototype"' /tmp/build-run.json
+          gh api "repos/$GITHUB_REPOSITORY" --jq '.private' | grep -qx true
           gh run download "$run_id" --repo "$GITHUB_REPOSITORY" -n Rocker-Windows-downloads -D /tmp/rocker-downloads
+          gh run download "$run_id" --repo "$GITHUB_REPOSITORY" -n Windows-build-reports -D /tmp/rocker-reports
           cd /tmp/rocker-downloads
           sha256sum --check SHA256SUMS.txt
       - name: Verify archive contents and matching source revisions
@@ -45,6 +47,18 @@ jobs:
           from pathlib import Path
           selection = json.loads(Path('docs/windows/releases/current.json').read_text())
           root = Path('/tmp/rocker-downloads')
+          report = json.loads(Path('/tmp/rocker-reports/candidate-validation.json').read_text(encoding='utf-8-sig'))
+          assert report['result'] == 'passed' and report['sourceCommit'] == selection['commit']
+          assert report['windowsRun'].endswith('/' + str(selection['runId']))
+          assert report['nativeWorkspaces'] == 32 and report['nativeSuites'] == 22
+          setup = root / report['installer']
+          assert setup.name == 'Rocker-Windows-Setup-0.2.0-x64.exe' and setup.read_bytes()[:2] == b'MZ'
+          installer = json.loads(Path('/tmp/rocker-reports/installer/installer-smoke.json').read_text(encoding='utf-8-sig'))
+          assert installer['result'] == 'passed'
+          for field in ['versionTransitionPreservedDataAndPriorBinary','failedUpdatePreservedShortcutAndAssociation',
+                        'exactDllRepair','installedInventoryMatchesPortableArchive','preUpdateFullBackupAndRawDatabase','unicodeProjectActivation',
+                        'uninstallPreservedDatabaseAndSentinel']:
+              assert installer[field] is True, field
           with zipfile.ZipFile(root / 'Rocker-Windows-x64.zip') as package:
               assert package.testzip() is None
               info = json.loads(package.read('build-info.json'))
@@ -61,21 +75,31 @@ jobs:
                            'AlphaTab.dll', 'AlphaSkia.dll', 'libalphaskia.dll', 'Rocker.Notation.dll',
                            'fixtures/notation-scale.musicxml', 'fixtures/notation-phrases.gp',
                            'licenses/alphatab-license.txt', 'licenses/alphaskia-license.txt',
-                           'licenses/bravura-license.txt', 'licenses/noto-sans-license.txt']:
+                           'licenses/bravura-license.txt', 'licenses/noto-sans-license.txt',
+                           'component-manifest.json', 'PwaMigration/helper.html', 'help/user-guide.txt',
+                           'licenses/pwa-exporter-MIT.txt', 'licenses/inno-setup-license.txt']:
                   assert name.lower() in names, name
               for name in ['Rocker.Probe.exe', 'rocker_audio.dll', 'libalphaskia.dll']:
                   data = package.read(name)
                   offset = struct.unpack_from('<I', data, 0x3c)[0]
                   assert data[:2] == b'MZ' and data[offset:offset+4] == b'PE\0\0'
                   assert struct.unpack_from('<H', data, offset+4)[0] == 0x8664
+              import hashlib
+              manifest = json.loads(package.read('component-manifest.json'))
+              assert manifest['separateCorrespondingSources'] is True and manifest['publishedBinaries']
+              for binary in manifest['publishedBinaries']:
+                  assert hashlib.sha256(package.read(binary['path'])).hexdigest() == binary['sha256'], binary['path']
           with zipfile.ZipFile(root / 'Rocker-Windows-sources.zip') as sources:
               assert sources.testzip() is None
               for name, revision in [('rocker-source.zip', info['commit']), ('JUCE-source.zip', info['juceCommit']),
-                                     ('AlphaTab-source.zip', info['alphaTabCommit']), ('AlphaSkia-source.zip', info['alphaSkiaCommit'])]:
+                                     ('AlphaTab-source.zip', info['alphaTabCommit']), ('AlphaSkia-source.zip', info['alphaSkiaCommit']),
+                                     ('Signalsmith-Stretch-source.zip', info['signalsmithStretchCommit']),
+                                     ('Signalsmith-Linear-source.zip', info['signalsmithLinearCommit']),
+                                     ('libwebm-source.zip', info['libwebmCommit'])]:
                   with zipfile.ZipFile(io.BytesIO(sources.read(name))) as archive:
                       assert archive.testzip() is None
                       assert archive.comment.decode() == revision
-          print('PASS: Windows build, native notation checks/view, x64 binaries, ZIP integrity and all corresponding sources.')
+          print('PASS: complete Windows candidate, installer checks, binary hashes, ZIP integrity and seven corresponding source revisions.')
           PY
       - name: Publish private repository prerelease
         env:
@@ -87,10 +111,10 @@ jobs:
           title=$(jq -r '.title' docs/windows/releases/current.json)
           if gh release view "$tag" --repo "$GITHUB_REPOSITORY" --json isDraft > /tmp/existing-release.json; then
             jq -e '.isDraft == true' /tmp/existing-release.json
-            gh release upload "$tag" /tmp/rocker-downloads/Rocker-Windows-x64.zip /tmp/rocker-downloads/Rocker-Windows-sources.zip /tmp/rocker-downloads/SHA256SUMS.txt \
+            gh release upload "$tag" /tmp/rocker-downloads/Rocker-Windows-Setup-0.2.0-x64.exe /tmp/rocker-downloads/Rocker-Windows-x64.zip /tmp/rocker-downloads/Rocker-Windows-sources.zip /tmp/rocker-downloads/SHA256SUMS.txt /tmp/rocker-reports/candidate-validation.json \
               --repo "$GITHUB_REPOSITORY"
             gh release edit "$tag" --repo "$GITHUB_REPOSITORY" --draft=false
           else
-            gh release create "$tag" /tmp/rocker-downloads/Rocker-Windows-x64.zip /tmp/rocker-downloads/Rocker-Windows-sources.zip /tmp/rocker-downloads/SHA256SUMS.txt \
+            gh release create "$tag" /tmp/rocker-downloads/Rocker-Windows-Setup-0.2.0-x64.exe /tmp/rocker-downloads/Rocker-Windows-x64.zip /tmp/rocker-downloads/Rocker-Windows-sources.zip /tmp/rocker-downloads/SHA256SUMS.txt /tmp/rocker-reports/candidate-validation.json \
               --repo "$GITHUB_REPOSITORY" --verify-tag --title "$title" --notes-file docs/windows/releases/notes.md --prerelease
           fi

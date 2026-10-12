@@ -1,5 +1,9 @@
 # W04 — první technický řez: nativní noty
 
+Aktuální stav W43: navazující mediální transport, zpomalování, společná syntéza not a vyhrazený YouTube pohled jsou implementované. [Úplný kandidát a aktuální Windows důkaz](../w43/README.md). Online přehrávání a skutečný poslech jsou nadále odložené.
+
+## Historický stav prvního prototypu
+
 Stav: import, vykreslení, hit testing a MIDI data prošly Linux i Windows kontrolami; publikované WinUI okno načetlo notový obraz. [Protokol](validation.json). W04 jako
 celek není dokončený; dekódování médií, zpomalování, syntéza not a WebView2 /
 YouTube zatím nejsou součástí tohoto prototypu.

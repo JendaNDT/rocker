@@ -1,6 +1,6 @@
 # W23 — Layered native looper
 
-ABI 13 exposes a 120-byte cached looper snapshot. The looper shares the input
+The 120-byte cached looper snapshot was introduced in ABI 13; the current common ABI is 15. The looper shares the input
 callback, amplifier and sample clock with playback, metronome and recording.
 Its 64 MiB buffer is allocated on the coordinator when first used, before a
 queued pointer handoff. The callback never allocates, resizes, saves or frees

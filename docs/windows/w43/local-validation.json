@@ -1,0 +1,46 @@
+{
+  "result": "passed",
+  "recordedAtUtc": "2026-10-12T01:42:00Z",
+  "sourceCommit": "4b5a978ffd66cea6ca6d0cca93a08310db1452af",
+  "nativeSourceTree": "790844c72516f50fe78116e01271b71887a12f1f",
+  "nativeLinuxSuites": 21,
+  "pwaTests": 567,
+  "pwaTestFiles": 55,
+  "typescript": "passed",
+  "eslint": "passed",
+  "csharpSemantic": {
+    "files": 50,
+    "errors": 0,
+    "xamlFieldsStubbed": true,
+    "windowsRuntimeVerified": false,
+    "sourceCommit": "1ce23b74c86fe6106ae14cc95fe9b13d6d94c5f6",
+    "checkedAtUtc": "2026-10-12T02:30:00Z"
+  },
+  "domain": {
+    "result": "passed",
+    "referenceCases": 69,
+    "boundaryChecks": 168,
+    "contentGroups": 15,
+    "surgicalStatesCompared": 37,
+    "extendedReferenceCases": 372,
+    "extendedStatesCompared": 350
+  },
+  "storage": {
+    "result": "passed",
+    "fileChecks": 17,
+    "aiChecks": 28,
+    "storageChecks": 39,
+    "secretChecks": 2,
+    "backupChecks": 20,
+    "migrationChecks": 28,
+    "diagnosticChecks": 10,
+    "recordingChecks": 25,
+    "updateChecks": 16,
+    "dpapiVerified": false,
+    "forcedTerminationVerified": true,
+    "manualHardwareVerified": false
+  },
+  "manualHardwareVerified": false,
+  "onlineServicesVerified": false,
+  "scopeNote": "Linux/PWA/domain/storage results recorded at sourceCommit; unchanged native tree and domain/infrastructure sources. WinUI semantic check rerun at csharpSemantic.sourceCommit after activation-report normalization; actual Windows installer/runtime proof is separate."
+}

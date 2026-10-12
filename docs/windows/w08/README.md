@@ -20,7 +20,7 @@ Nástroje → Komponenty Vintage otevře skutečný katalog v hlavním WinUI okn
 - Karty, nativní seznam s více položkami a standardní InfoBar stavy.
 
 Katalog používá demonstrační hodnoty a nepřehrává/neměří kytaru. Produktové
-stránky budou tyto stejné komponenty připojovat ke skutečným datům a hostu.
+stránky nyní tyto stejné komponenty připojují ke skutečným datům a hostu; [aktuální úplná galerie a ověření](../w36/README.md).
 Neoznačovat katalog za dokončený Aparát, Live, trenažér nebo zařízení.
 
 Windows diagnostika vytvoří komponenty, ověří hranice NumberBox/Slider,
@@ -28,7 +28,7 @@ neplatný vstup měřáku a vykreslí všech 26 akordů pro obě ruce. Dva start
 publikovaného procesu ověřují přehled i katalog, noty, bridge a čisté zavření.
 `RenderTargetBitmap` ukládá skutečný obsah WinUI jako PNG; případný desktopový
 snímek je doplňkový a jeho absence neskrývá výsledek renderu. Ruční klávesnice,
-čtečky, všechny vysoké DPI a systémový vysoký kontrast jsou další W37/W42,
+čtečky, všechny vysoké DPI a systémový vysoký kontrast jsou odložené do W44,
 nejsou vydávané za již provedené testy.
 
 Windows sestavení [38153511933](https://github.com/JendaNDT/rocker/actions/runs/38153511933)
@@ -36,4 +36,4 @@ prošlo oběma starty, 31 kontrolami komponent v každém procesu, navigací vš
 32 pohledů, notovým rendererem, místním video bridgem a čistým zavřením.
 [Důkaz](windows-validation.json) a skutečné WinUI snímky
 [přehledu](windows-overview.png) a [komponent](windows-components.png) jsou
-uložené zde. Tyto výsledky nepotvrzují dosud nepřipojené produktové funkce.
+uložené zde. Tento historický krok nepotvrzoval navazující produktové funkce; jejich aktuální implementaci a přejímku dokládá [W43](../w43/README.md).

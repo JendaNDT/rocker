@@ -1,7 +1,7 @@
 {
-  "runId": 38189577832,
-  "runUrl": "https://github.com/JendaNDT/rocker/actions/runs/38189577832",
-  "commit": "f9dd859754c247f3268d5f8da6883869eafc7c3d",
+  "runId": 38196070619,
+  "runUrl": "https://github.com/JendaNDT/rocker/actions/runs/38196070619",
+  "commit": "1ce23b74c86fe6106ae14cc95fe9b13d6d94c5f6",
   "result": "passed",
   "check": {
     "result": "passed",
@@ -13,7 +13,10 @@
     "physicalDpiVerified": false,
     "systemHighContrastManualVerified": false
   },
-  "packageLicenseAudit": "passed: package.ps1 step completed; installer execution is not claimed",
-  "manualAccessVerified": false,
-  "fullCandidateVerified": false
+  "packageAudit": {
+    "restoredNuGetComponents": 28,
+    "publishedBinaryHashes": 296,
+    "installerInventoryMatched": true,
+    "correspondingSourcesSeparate": true
+  }
 }

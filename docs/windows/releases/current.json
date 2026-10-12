@@ -1,6 +1,6 @@
 {
-  "runId": 38135049339,
-  "commit": "975a760329eaaa65cf2f69d453e72d4d572ee15e",
-  "tag": "windows-w04-notation-preview-20261011",
-  "title": "Rocker – W04: nativní notový prototyp"
+  "runId": 38196070619,
+  "commit": "1ce23b74c86fe6106ae14cc95fe9b13d6d94c5f6",
+  "tag": "windows-0.2.0-rc1-20261012",
+  "title": "Rocker 0.2.0 — kompletní nativní Windows kandidát"
 }

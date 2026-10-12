@@ -1,0 +1,112 @@
+{
+  "runId": 38196070619,
+  "runUrl": "https://github.com/JendaNDT/rocker/actions/runs/38196070619",
+  "commit": "1ce23b74c86fe6106ae14cc95fe9b13d6d94c5f6",
+  "result": "passed",
+  "candidate": {
+    "actualLatencyVerified": false,
+    "smartAppControlVerified": false,
+    "windowsRun": "https://github.com/JendaNDT/rocker/actions/runs/38196070619",
+    "result": "passed",
+    "wallClockHourOnHardwareVerified": false,
+    "onlineYouTubeVerified": false,
+    "correspondingSourcesSeparate": true,
+    "installer": "Rocker-Windows-Setup-0.2.0-x64.exe",
+    "nativeSuites": 22,
+    "manualHardwareVerified": false,
+    "nativeWorkspaces": 32,
+    "onlineAiVerified": false,
+    "sourceCommit": "1ce23b74c86fe6106ae14cc95fe9b13d6d94c5f6",
+    "reports": [
+      {
+        "result": "passed",
+        "report": "domain-checks.json"
+      },
+      {
+        "result": "passed",
+        "report": "storage-checks.json"
+      },
+      {
+        "result": "passed",
+        "report": "notation-checks.json"
+      },
+      {
+        "result": "passed",
+        "report": "media-checks.json"
+      },
+      {
+        "result": "passed",
+        "report": "transport-checks.json"
+      },
+      {
+        "result": "passed",
+        "report": "browser-ui-import.json"
+      },
+      {
+        "result": "passed",
+        "report": "browser-bookmark-import.json"
+      },
+      {
+        "result": "passed",
+        "report": "power-recovery.json"
+      },
+      {
+        "result": "passed",
+        "report": "performance-checks.json"
+      },
+      {
+        "result": "passed",
+        "report": "accessibility.json"
+      },
+      {
+        "result": "passed",
+        "report": "design-views.json"
+      },
+      {
+        "result": "passed",
+        "report": "practice-profile.json"
+      },
+      {
+        "result": "passed",
+        "report": "overview-live.json"
+      },
+      {
+        "result": "passed",
+        "report": "first-run.json"
+      },
+      {
+        "result": "passed",
+        "report": "file-commands.json"
+      },
+      {
+        "result": "passed",
+        "report": "window-smoke.json"
+      },
+      {
+        "result": "passed",
+        "report": "installer/installer-smoke.json"
+      }
+    ],
+    "narratorAndHighContrastManualVerified": false
+  },
+  "installer": {
+    "exactDllRepair": true,
+    "result": "passed",
+    "hardwareVerified": false,
+    "uninstallPreservedDatabaseAndSentinel": true,
+    "transitionUsesSameCandidateBinariesWithSyntheticVersionLabels": true,
+    "failedUpdatePreservedShortcutAndAssociation": true,
+    "installedNativeWindow": true,
+    "installedInventoryMatchesPortableArchive": true,
+    "versionTransitionPreservedDataAndPriorBinary": true,
+    "projectAssociationRegistered": true,
+    "unicodeProjectActivation": true,
+    "preUpdateFullBackupAndRawDatabase": true,
+    "smartAppControlVerified": false,
+    "adminRequired": false,
+    "offlineSelfContainedStart": true,
+    "perUserInstall": true,
+    "historicBinaryDowngradeVerified": false
+  },
+  "knownManualLimits": "Hardware/latency/online/Narrator/DPI/clean VM remain unperformed; accelerated offline benchmark is not an hour of live playing."
+}
