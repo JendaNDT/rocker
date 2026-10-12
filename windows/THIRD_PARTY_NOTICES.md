@@ -1,4 +1,4 @@
-# Licence technického prototypu
+# Licence Windows aplikace
 
 Nové vlastní soubory v této složce jsou pod AGPL-3.0-only; viz [LICENSE](LICENSE).
 Původní PWA a její kořenová MIT licence se nemění.
@@ -22,12 +22,6 @@ Původní PWA a její kořenová MIT licence se nemění.
   Úplná oznámení Ogg, Opus, Opusfile a libopusenc a patentové informace Opus
   jsou přibalené samostatně v `licenses`.
 
-Přesné podklady jsou v rozhodnutí W02 v repozitáři. Toto je interní prototyp,
-nikoli hotový distribuční balík pro bratra. Předběžný spustitelný ZIP uchovává
-licenční podklady ve složce `licenses`; odpovídající zdroje Rockeru a celého
-připnutého JUCE jsou nabídnuté zvlášť v `Rocker-Windows-sources.zip` u stejného
-vydání. Identifikaci sestavení obsahuje `build-info.json`.
-Před předáním bratrovi ve W43 musí vzniknout
-úplný soupis skutečně přibalených komponent a jejich licenčních textů, odpovídající
-zdrojový archiv a dostupný samostatný odkaz vedle instalátoru. Pouhý tento stručný
-soubor finální licenční povinnosti nenahrazuje.
+Přesné revize a původ jsou v `build-info.json` a `component-manifest.json` skutečného balíku. Manifest uvádí obnovované NuGet závislosti, licence a SHA256 publikovaných binárek. Úplné originální licenční texty a oznámení jsou ve složce `licenses`, včetně .NET runtime, Windows App SDK, SQLite/SQLitePCLRaw, MIT migračního exportéru PWA a Inno Setup 6.7.3. Systémové kodeky Media Foundation, M-Audio ovladač a Evergreen WebView2 runtime se nepřibalují.
+
+Odpovídající zdroje Rockeru, JUCE, Signalsmith Stretch/Linear, libwebm, AlphaTab a AlphaSkia jsou samostatný `Rocker-Windows-sources.zip` vedle instalačního EXE u stejné revize soukromého vydání. Bratr je nemusí stahovat ani kompilovat. Původní vendor zdroje nejsou upravené. Podklady jsou v [rozhodnutí W02](../docs/windows/decisions/0001-platform-and-distribution.md) a [auditu W40](../docs/windows/w40/README.md). Audit musí projít nad skutečně sestaveným balíkem; samotný tento přehled nenahrazuje přibalená úplná oznámení.

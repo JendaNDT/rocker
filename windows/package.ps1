@@ -103,6 +103,13 @@ Get-ChildItem (Join-Path $juce 'modules/juce_core/zip') -Recurse -File -Filter '
 }
 Copy-Item (Join-Path $repository 'LICENSE') (Join-Path $licenses 'pwa-exporter-MIT.txt')
 Copy-Item (Join-Path $repository 'docs/windows/w40/evidence/inno-setup-license.txt') $licenses
+$guide=Join-Path $app 'help'
+New-Item -ItemType Directory -Force $guide | Out-Null
+foreach($name in @('user-guide','brother-test')){
+    $text=Get-Content (Join-Path $repository ('docs/windows/w43/'+$name+'.md')) -Raw
+    $text=$text -replace '\[([^\]]+)\]\([^)]+\)', '$1' -replace '\*\*','' -replace '`',''
+    $text | Set-Content (Join-Path $guide ($name+'.txt')) -Encoding utf8
+}
 $sourceUrl = "https://github.com/JendaNDT/rocker/tree/$commit"
 @"
 ROCKER — WINDOWS

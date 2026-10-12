@@ -1,0 +1,19 @@
+{
+  "runId": 38189577832,
+  "runUrl": "https://github.com/JendaNDT/rocker/actions/runs/38189577832",
+  "commit": "f9dd859754c247f3268d5f8da6883869eafc7c3d",
+  "result": "passed",
+  "check": {
+    "result": "passed",
+    "authoredControlsChecked": 624,
+    "unnamed": [],
+    "standardInvokeAndRangePatterns": true,
+    "narratorManualVerified": false,
+    "keyboardManualVerified": false,
+    "physicalDpiVerified": false,
+    "systemHighContrastManualVerified": false
+  },
+  "packageLicenseAudit": "passed: package.ps1 step completed; installer execution is not claimed",
+  "manualAccessVerified": false,
+  "fullCandidateVerified": false
+}

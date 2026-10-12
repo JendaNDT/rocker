@@ -49,7 +49,7 @@
                 <MenuFlyoutItem Text="Nastavení" Tag="28" Click="NavigateMenu_Click" />
                 <MenuFlyoutItem Text="Zálohy a soubory" Tag="30" Click="NavigateMenu_Click" />
             </MenuBarItem>
-            <MenuBarItem Title="Nápověda"><MenuFlyoutItem Text="O aplikaci Rocker" Click="About_Click" /></MenuBarItem>
+            <MenuBarItem Title="Nápověda"><MenuFlyoutItem Text="Návod k používání" Click="Guide_Click" /><MenuFlyoutItem Text="O aplikaci Rocker" Click="About_Click" /></MenuBarItem>
         </MenuBar>
         <NavigationView x:Name="Navigation" Grid.Row="1" IsSettingsVisible="False" PaneDisplayMode="Auto"
                         OpenPaneLength="220" ExpandedModeThresholdWidth="1040" CompactModeThresholdWidth="640"

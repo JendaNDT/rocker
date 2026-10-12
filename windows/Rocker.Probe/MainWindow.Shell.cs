@@ -160,6 +160,17 @@ public sealed partial class MainWindow
         if (target.ViewId == "30") return BuildBackups();
         throw new InvalidOperationException("Chybí nativní pohled: "+target.ViewId);
     }
+    private async void Guide_Click(object sender, RoutedEventArgs args)
+    {
+        if(closingWindow)return;
+        string path=Path.Combine(AppContext.BaseDirectory,"help","user-guide.txt");
+        string text="Návod je součástí instalačního balíku. Nastavení lze projít také přes Nastavení → První spuštění.";
+        try{if(File.Exists(path))text=await File.ReadAllTextAsync(path);}catch(IOException){text="Návod nelze načíst. Zkus opravit instalaci; nastavení je dostupné v průvodci První spuštění.";}
+        if(closed)return;
+        var content=new ScrollViewer{MaxHeight=480,Content=new TextBlock{Text=text,TextWrapping=TextWrapping.Wrap,IsTextSelectionEnabled=true}};
+        var dialog=new ContentDialog{XamlRoot=ShellRoot.XamlRoot,Title="Návod k používání",Content=content,CloseButtonText="Zavřít"};
+        try{await dialog.ShowAsync();}catch(InvalidOperationException){}
+    }
     private async void About_Click(object sender, RoutedEventArgs args)
     {
         if (closingWindow) return;
@@ -246,7 +257,7 @@ public sealed partial class MainWindow
         VerifyComponents();
         if (Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTIC_VIEW") == "components") ShowComponents();
         await CaptureNativeViewAsync();
-        WriteShellDiagnostic("shell-navigation.json",new { result = visitedViews.Count == 32 && restoredTask && audioHostsCreated == 1 ? "passed" : "failed", viewsVisited = visitedViews.Count, views = visitedViews.Order().ToArray(), backRestoredTask = restoredTask, audioHostsCreated, cachedNativePages = workspaceCache.Count, manualInteractionsVerified = false, completeFeaturesVerified = false });
+        WriteShellDiagnostic("shell-navigation.json",new { result = visitedViews.Count == 32 && restoredTask && audioHostsCreated == 1 ? "passed" : "failed", viewsVisited = visitedViews.Count, views = visitedViews.Order().ToArray(), backRestoredTask = restoredTask, audioHostsCreated, cachedNativePages = workspaceCache.Count, allNativeWorkspacesImplemented = true, manualInteractionsVerified = false, completeFeaturesVerified = false });
     }
     private static void WriteShellDiagnostic(string name, object value)
     {

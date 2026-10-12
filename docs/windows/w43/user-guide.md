@@ -1,0 +1,43 @@
+# Rocker pro Windows — návod
+
+## Instalace
+
+Na stránce soukromého GitHub vydání stáhni `Rocker-Windows-Setup-0.2.0-x64.exe`. Musíš být přihlášený účtem s přístupem k repozitáři. Spusť instalátor a potom **Rocker** z nabídky Start. Nejsou potřeba vývojové nástroje ani zdrojové soubory. Vyžaduje Windows 11 x64 od 24H2.
+
+Volitelný `Rocker-Windows-x64.zip` je přenosná alternativa: **Extrahovat vše**, potom `Rocker.Probe.exe`; soubory musí zůstat pohromadě. GitHub **Code → Download ZIP** obsahuje projekt, nikoli hotovou aplikaci. Odpovídající zdroje jsou samostatný `Rocker-Windows-sources.zip`.
+
+## První nastavení a M-Track Solo
+
+1. Průvodce projdi s profilem kytary a svou orientací rukou. Import i zvukovou kartu můžeš vynechat a později otevřít v Nastavení.
+2. Připoj kytaru k M-Track Solo, nastav nástrojový vstup podle označení karty a sluchátka připoj ke stejné kartě. Ovladač ber z oficiálního webu M-Audio.
+3. Ve **Zvuková zařízení** vyber kartu, výstup a právě jeden vstup s kytarou. Druhý kanál se automaticky nepřimíchá. Pro efekty vyzkoušej dostupný ASIO ovladač výrobce; WASAPI je alternativa. Karta nabídne své podporované frekvence a buffery, nikoli vynucené minimum.
+4. Klikni **Ověřit a použít**. V Live zapni monitoring výslovně, začni malou hlasitostí. Pro poslech softwarových efektů nepřimíchávej zároveň přímý monitoring karty.
+5. Pokud zvuk praská, zvětši buffer. Údaj bufferu a odhad ovladače nejsou měření celé odezvy. Vyladění pro bratrův počítač se zaznamená v přejímce.
+
+Bez kytary zůstávají použitelné lekce, knihovny, hry a soubory; ukázkový signál je výslovně označený. Ticho se nevydává za naměřený tón.
+
+## Běžné hraní
+
+Návod je dostupný přímo v nabídce **Nápověda → Návod k používání** a místně ve složce aplikace `help`.
+
+Přehled otevře doporučenou konkrétní úlohu. Live sdružuje ladičku, tempo, aparát a nahrávání. Aktivní cvičení spusť, pozastav a ukonči společným ovládáním; otevřené okno samo nepřičítá minuty. Přepínání pohledů nevytváří další zvukový host. Zen v Nastavení skryje odměny.
+
+Lekce mají uložený krok a návaznost; přesný trénink hodnotí jednotlivé tóny. Power chord, Gallop a Palm mute obsahují doprovodné hudební cykly; kalibraci palm mute dělej s připojenou kytarou. Knihovny ukazují hmaty a umožňují poslech přes stejné jádro. Levou ruku nastav v profilu.
+
+Vlastní skladbu lze otevřít systémovým dialogem nebo podporovaným přetažením. Ulož A/B úsek, uprav rychlost nebo nastav zrychlování. Noty podporují stopy, zoom, vybrané takty a společné přehrávání. Mezerník ovládá příslušný transport mimo textové editory.
+
+Nahrávej suchý vstup, zvuk po aparátu nebo mix. Dokončený take najdeš v Nahrávkách; lze jej pojmenovat, označit časovými značkami, porovnat a exportovat WAV. Looper má až osm vrstev; rozpracované vrstvy jsou do výslovného uložení v paměti. Studio ukládá vícestopý projekt. K souboru `.rockerproj` patří sousední složka médií; pro přenos použij export projektu, nikoli osamocený manifest. Ctrl+Z vrací definovanou editaci Studia.
+
+## Data, přechod z webu a zálohy
+
+**Zálohy a soubory** umí vytvořit úplnou `.rockerbackup`, ukázat její obsah před obnovou a převést staré webové nastavení i nahrávky. Převodový pomocník pracuje v původním prohlížeči na původním webu; původní data nemaže. Postup je v [W37](../w37/README.md). Klíče se nezapisují do běžných exportů.
+
+Data jsou v `%LOCALAPPDATA%\Rocker`, aplikace v `%LOCALAPPDATA%\Programs\Rocker`. Odinstalace data ponechá. Kopie z profilu sama nenahrazuje pravidelnou zálohu na jiné místo.
+
+Před aktualizací zavři Rocker a ponech dost místa pro úplnou zálohu. Instalátor uloží databázi i `.rockerbackup` a ponechá předchozí binárky. Novější schéma starší aplikace odmítne. Případný návrat vyžaduje kompatibilní zálohu; obnova připraví náhradu zvlášť a celý původní profil zachová v sousední složce. Po obnově aplikaci spusť znovu.
+
+## Volitelné online části a hlášení chyby
+
+YouTube používá oficiální přehrávač a jeho pravidla; živý souběh s ASIO závisí na ovladači. AI vyžaduje vlastní OpenAI API klíč a může mít náklady u poskytovatele. Na vyžádání se odesílá zvolená historie a vybrané statistiky/profil, nikoli audio. Gemini je pro tento osobní profil blokovaný; původní klíč se nepoužije jinde.
+
+Při potížích napiš verzi, obrazovku, provedené kroky a chybovou hlášku. Diagnostiku ukládej a sdílej ručně ze zvukových zařízení; nedávej do hlášení API klíče. [Přejímací protokol](brother-test.md) je připravený pro skutečné hraní.

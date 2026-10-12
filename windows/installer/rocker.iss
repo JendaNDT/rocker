@@ -42,7 +42,8 @@ Name: "czech"; MessagesFile: "compiler:Languages\Czech.isl"
 [Messages]
 ConfirmUninstall=Chceš odebrat Rocker?%n%nNahrávky, projekty, nastavení a zálohy zůstanou ve tvém účtu Windows.
 [Files]
-Source: "{#AppSource}\*"; DestDir: "{app}\versions\{#VersionFolder}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#AppSource}\*"; DestDir: "{app}\versions\{#VersionFolder}"; Excludes: "LICENSE.txt"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#AppSource}\LICENSE.txt"; DestDir: "{app}\versions\{#VersionFolder}"; Flags: ignoreversion; AfterInstall: PrepareProfileUpdate
 [Icons]
 Name: "{userprograms}\Rocker\Rocker"; Filename: "{app}\versions\{#VersionFolder}\Rocker.Probe.exe"; WorkingDir: "{app}\versions\{#VersionFolder}"; AppUserModelID: "JendaNDT.Rocker"
 Name: "{userprograms}\Rocker\Předchozí verze Rockeru"; Filename: "{code:PreviousExe}"; WorkingDir: "{code:PreviousFolder}"; Check: HasPrevious; AppUserModelID: "JendaNDT.Rocker"
@@ -72,19 +73,23 @@ function CompareVersion(A, B: String): Integer;
 var I, Left, Right: Integer;
 begin Result := 0; for I := 1 to 4 do begin Left := VersionPart(A); Right := VersionPart(B); if Left < Right then begin Result := -1; exit; end; if Left > Right then begin Result := 1; exit; end; end; end;
 procedure InitializeWizard;
-begin RegQueryStringValue(HKCU, StateKey, 'CurrentPath', PreviousPath); RegQueryStringValue(HKCU, StateKey, 'Version', PreviousVersion);
-if PreviousPath = ExpandConstant('{app}\versions\{#VersionFolder}') then RegQueryStringValue(HKCU, StateKey, 'PreviousPath', PreviousPath); end;
+begin RegQueryStringValue(HKCU, StateKey, 'CurrentPath', PreviousPath); RegQueryStringValue(HKCU, StateKey, 'Version', PreviousVersion); end;
 function PrepareToInstall(var NeedsRestart: Boolean): String;
-begin Result := ''; if CompareVersion('{#AppVersion}', PreviousVersion) < 0 then begin
+begin Result := '';
+if PreviousPath = ExpandConstant('{app}\versions\{#VersionFolder}') then RegQueryStringValue(HKCU, StateKey, 'PreviousPath', PreviousPath);
+if CompareVersion('{#AppVersion}', PreviousVersion) < 0 then begin
 if WizardSilent then Result := 'Návrat starší verze spusť ručně. Použij zálohu kompatibilní s její verzí dat.'
 else if MsgBox('Instaluješ starší verzi. Novější schéma dat nemusí umět otevřít. Máš kompatibilní zálohu a chceš pokračovat?', mbConfirmation, MB_YESNO) <> IDYES then Result := 'Návrat verze byl zrušen.'; end; end;
 function UserDataRoot: String;
 begin Result := GetEnv('ROCKER_USER_DATA_DIR'); if Result = '' then Result := ExpandConstant('{localappdata}\Rocker'); end;
-procedure CurStepChanged(CurStep: TSetupStep);
-begin if CurStep = ssPostInstall then begin
+procedure PrepareProfileUpdate;
+begin
 if FileExists(UserDataRoot + '\database\rocker.db') then begin
 if not Exec(ExpandConstant('{app}\versions\{#VersionFolder}\Rocker.Probe.exe'), '--prepare-update', '', SW_HIDE, ewWaitUntilTerminated, BackupExitCode) or (BackupExitCode <> 0) then RaiseException('Záloha před aktualizací se nezdařila. Původní data a předchozí verze zůstávají zachované. Zkontroluj volné místo a místní profil.');
 end;
+end;
+procedure CurStepChanged(CurStep: TSetupStep);
+begin if CurStep = ssPostInstall then begin
 RegWriteStringValue(HKCU, StateKey, 'CurrentPath', ExpandConstant('{app}\versions\{#VersionFolder}'));
 RegWriteStringValue(HKCU, StateKey, 'Version', '{#AppVersion}');
 if HasPrevious then RegWriteStringValue(HKCU, StateKey, 'PreviousPath', PreviousPath);

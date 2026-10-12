@@ -9,7 +9,9 @@ foreach($name in $checks){$value=Get-Content (Join-Path $Reports $name) -Raw | C
 $design=Get-Content (Join-Path $Reports 'design-views.json') -Raw | ConvertFrom-Json
 if($design.nativeViews -ne 32 -or $design.screenshots.Count -ne 35){throw 'Candidate does not cover every native workspace.'}
 [xml]$native=Get-Content (Join-Path $Reports 'native-tests.xml') -Raw
-if([int]$native.testsuite.failures -ne 0){throw 'Native checks have failures.'}
+if([int]$native.testsuite.failures -ne 0 -or [int]$native.testsuite.tests -ne 22){throw 'All 22 Windows native suites must pass.'}
+$installer=Get-Content (Join-Path $Reports 'installer/installer-smoke.json') -Raw | ConvertFrom-Json
+if(-not $installer.versionTransitionPreservedDataAndPriorBinary -or -not $installer.failedUpdatePreservedShortcutAndAssociation){throw 'Version transition and failed-update safety must be checked.'}
 $setup=Get-ChildItem $Packages -Filter 'Rocker-Windows-Setup-*-x64.exe' | Select-Object -First 1
 if(-not $setup){throw 'A compiled installer is required before candidate handoff.'}
 foreach($name in @('Rocker-Windows-x64.zip','Rocker-Windows-sources.zip','SHA256SUMS.txt')){if(-not (Test-Path (Join-Path $Packages $name))){throw "Candidate package is missing: $name"}}

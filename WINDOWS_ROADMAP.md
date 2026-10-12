@@ -1,6 +1,6 @@
 # Rocker pro Windows — úplný implementační plán
 
-Stav k 11. 10. 2026: W01–W03 jsou dokončené — [inventura](docs/windows/baseline/README.md) a [platforma, licence a předání](docs/windows/decisions/0001-platform-and-distribution.md). W03 má [první implementaci](windows/README.md), úspěšné [Windows sestavení a automatické kontroly](docs/windows/w03-windows-validation.json) i spustitelný ZIP; Jenda potvrdil přehrávání, zastavení, opětovné spuštění a zastavení zvuku při zavření okna. Další ruční scénáře a hardwarové testy zůstávají neověřené. Celá nativní aplikace zatím hotová není. Podkladem je současná PWA a sada 32 návrhů rozhraní. Tento dokument je hlavní roadmapou pro nově zvolený směr; [původní roadmapa](ROADMAP.md) zůstává historií webové verze.
+Stav k 12. 10. 2026: implementovaný je rozsah W01–W43, včetně 32 skutečných WinUI pohledů, Vintage designu, C++/JUCE zvukového jádra, všech pracovních funkcí, převodu dat a instalačního balíku. W40–W43 právě procházejí závěrečnou Windows kontrolou; úspěšný sestavený kandidát musí mít uložené důkazy. [Matice úplnosti a návod](docs/windows/w43/README.md) oddělují automatické kontroly od odloženého skutečného hraní. W44–W48 zůstávají jako bratrův test, případné opravy a stabilní předání. Main/produkční PWA se nemění; [původní roadmapa](ROADMAP.md) popisuje webovou historii.
 
 **Výsledek:** instalovatelný kytarový pomocník pro Windows se skutečným nativním ovládáním, vzhledem Vintage a samostatným zvukovým jádrem. Zachová všechny již implementované pracovní postupy Rockeru, převede uživatelská data a doplní práci se soubory a projekty. Bratr dostane až funkčně kompletní testovací verzi; na svém počítači s M-Audio M-Track Solo ověří zvuk, stabilitu a pocit ze hry.
 
@@ -198,7 +198,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w04"></a>
 #### W04 — Ověřit noty, média a souběh zvuku
 
-- [ ] Rozpracováno. Závislosti: W02, W03. První technický řez: [nativní noty](docs/windows/w04/README.md); Windows ověření a ruční přejímka mají vlastní protokol. Navázal [offline mediální modul](docs/windows/w04/media.md) a [původní nahrávky](docs/windows/w04/legacy-media.md): WAV/MP3/Ogg/Opus/WebM/Opus, Windows MP4/AAC a zpomalení. Windows prošel 167/167 mediálními kontrolami, Linux 138/138 s ASan/UBSan. Navazuje [společné přehrávání a základní syntéza not](docs/windows/w04/common-playback.md); Windows build 38147210735 prošel včetně přípravy MIDI v produkční DLL a nativního ovládání. Navazuje [oficiální YouTube/WebView2](docs/windows/w04/video.md); Windows lokální bridge prošel v běhu 38148531570; online a hardwarová přejímka zůstává odložená po W43.
+- [x] Implementace a automatické integrační kontroly dokončené. Závislosti: W02, W03. První technický řez: [nativní noty](docs/windows/w04/README.md); Windows ověření a ruční přejímka mají vlastní protokol. Navázal [offline mediální modul](docs/windows/w04/media.md) a [původní nahrávky](docs/windows/w04/legacy-media.md): WAV/MP3/Ogg/Opus/WebM/Opus, Windows MP4/AAC a zpomalení. Windows prošel 167/167 mediálními kontrolami, Linux 138/138 s ASan/UBSan. Navazuje [společné přehrávání a základní syntéza not](docs/windows/w04/common-playback.md); Windows build 38147210735 prošel včetně přípravy MIDI v produkční DLL a nativního ovládání. Navazuje [oficiální YouTube/WebView2](docs/windows/w04/video.md); Windows lokální bridge prošel v běhu 38148531570; online a hardwarová přejímka zůstává odložená po W43.
 - Prokázat načtení reprezentativního Guitar Pro a MusicXML do .NET AlphaTab, vykreslení v nativním okně, hit testing, výběr taktů a dostupnost dat pro společné přehrávání. Samostatně rozhodnout, jak renderer a syntéza zapadnou do jádra.
 - Zvolit dekódování MP3/WAV a starých nahrávek WebM/Opus, Ogg/Opus a podporovaných MP4. Ověřit algoritmus zpomalení bez změny výšky, kvalitu, paměť a licenci; JUCE samotné automaticky neřeší všechny tyto požadavky.
 - Ověřit oficiální YouTube embed ve WebView2, povolenou komunikaci a souběh jeho výstupu s audio hostem. Na dostupném Windows zařízení ověřit WASAPI; specifický souběh M-Track Solo zůstává v matici W44.
@@ -275,7 +275,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w12"></a>
 #### W12 — Připravit převod z PWA včetně nahrávek
 
-- [ ] Rozpracováno: [převod všech 11 skupin a původních nahrávek](docs/windows/w12/README.md), skutečný referenční archiv PWA, náhled a deduplikace. [Windows integrace prošla](docs/windows/w12/windows-validation.json); produkční webový export zatím není nasazený. Závislosti: W04, W09–W11.
+- [x] Implementace a automatické integrační kontroly dokončené. [převod všech 11 skupin a původních nahrávek](docs/windows/w12/README.md), skutečný referenční archiv PWA, náhled a deduplikace. [Windows integrace prošla](docs/windows/w12/windows-validation.json); Přechod bez nasazení na produkční web je ověřený migračním pomocníkem W37. Závislosti: W04, W09–W11.
 - Implementovat import starých záloh nastavení podle 11 klíčů v kapitole o migraci. Zachovat ID, časové údaje a vlastní obsah; známé rozdíly mezi webovým a nativním nastavením přeložit, ostatní vysvětlit v reportu.
 - Připravit malý migrační export v PWA pro IndexedDB nahrávky s původními soubory, MIME typem, názvem, délkou a časem vytvoření. Změna exportu a případné nasazení jsou samostatný implementační úkol; tento dokument je neprovádí.
 - Native aplikace nemůže přímo převzít localStorage jiného prohlížeče. Nabídnout jasný postup exportu ze stávajícího profilu a importu souboru; původní data neodstraňovat.
@@ -286,7 +286,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w13"></a>
 #### W13 — Implementovat realtime host a řízení životního cyklu
 
-- [ ] Rozpracováno: [řízení hostu a realtime kontrakty](docs/windows/w13/README.md), předalokované SPSC fronty, souběžné kontroly a audit alokací společného rendereru. [Windows W13/W14 prošel](docs/windows/w13/windows-validation.json); analýza a disk se připojí ve funkčních krocích. Závislosti: W03, W05.
+- [x] Implementace a automatické integrační kontroly dokončené. [řízení hostu a realtime kontrakty](docs/windows/w13/README.md), předalokované SPSC fronty, souběžné kontroly a audit alokací společného rendereru. [Windows W13/W14 prošel](docs/windows/w13/windows-validation.json); Analýza a disk jsou připojené ve W19/W22. Závislosti: W03, W05.
 - Vytvořit host s jasnými stavy zastaveno, spouštění, běží, změna konfigurace, chyba a ukončování. Jednoznačné vlastnictví zařízení a všech vláken; ochrana proti závodu start/stop a starým výsledkům požadavků.
 - Předalokované audio buffery, omezené fronty příkazů, oddělené pracovní fronty pro analýzu a disk. Při přeplnění analýzy lze zahodit starý snímek; při ztrátě nahrávaných dat se chyba musí přiznat.
 - Přidat headless režim, testovací generátor a offline zpracování stejným DSP grafem. Testovací signál je volitelný a viditelně označený.
@@ -295,7 +295,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w14"></a>
 #### W14 — Zařízení, ASIO a WASAPI
 
-- [ ] Rozpracováno: [enumerace, výslovná volba, formát, panel a zachování konfigurace](docs/windows/w14/README.md). [Automatické Windows ověření prošlo](docs/windows/w14/windows-validation.json), hardware se finálně testuje až ve W44. Závislosti: W02, W07, W13.
+- [x] Implementace a automatické integrační kontroly dokončené. [enumerace, výslovná volba, formát, panel a zachování konfigurace](docs/windows/w14/README.md). [Automatické Windows ověření prošlo](docs/windows/w14/windows-validation.json), hardware se finálně testuje až ve W44. Závislosti: W02, W07, W13.
 - Enumerovat ovladače, zařízení, názvy kanálů, podporované vzorkování a buffery. Nabízet skutečné hodnoty, ukládat volbu podle stabilní identity a při zmizení zařízení vyžádat srozumitelný náhradní postup.
 - Zpřístupnit podporovaný ASIO control panel a WASAPI režimy. Neinstalovat ani nepřibalovat cizí ovladač bez práv; odkazovat na ověřený zdroj výrobce.
 - Ošetřit obsazené zařízení, Windows omezení vstupu, nesoulad formátu, hotplug, změnu výchozího zařízení a spánek/probuzení. Nepřepnout živou kytaru potichu na reproduktory notebooku.
@@ -304,7 +304,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w15"></a>
 #### W15 — Routing jednoho vstupu, mix a monitoring
 
-- [ ] Rozpracováno: [skutečný mono vstup, stereo monitoring a měřáky](docs/windows/w15/README.md), [Windows W15 prošel](docs/windows/w15/windows-validation.json), Linux routing a realtime kontrakty. Aparát a nahrávací writer navazují ve W17/W22; Windows ověření ještě probíhá. Závislosti: W14.
+- [x] Implementace a automatické integrační kontroly dokončené. [skutečný mono vstup, stereo monitoring a měřáky](docs/windows/w15/README.md), [Windows W15 prošel](docs/windows/w15/windows-validation.json), Linux routing a realtime kontrakty. Aparát a nahrávací writer jsou připojené ve W17/W22. Závislosti: W14.
 - Zavést volbu konkrétního mono vstupu, správné stereo výstupy a oddělené sběrnice pro suchou kytaru, efekty, podklad, metronom a výsledný mix. Jednotná pravidla úrovní a headroomu.
 - Zapnutí monitoringu musí být výslovné. Přidat dostupné ztlumení, měřiče před i po efektech a ochranu před náhlým skokem hlasitosti při přepnutí parametrů či zařízení.
 - Preferovat vstup i sluchátka na stejném interfejsu. Přímý hardwarový monitoring popsat jako samostatnou cestu bez softwarových efektů, nikoli jako výsledek optimalizace jádra.
@@ -313,7 +313,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w16"></a>
 #### W16 — Společný transport, hodiny a evidence latence
 
-- [ ] Rozpracováno: [vzorkové hodiny, tempo a A/B hranice](docs/windows/w16/README.md), [Windows W16 prošel](docs/windows/w16/windows-validation.json), test proměnlivých bloků a tisíců smyček bez ztráty frakčního přesahu. Předtakt/metronom a metadata navazují ve W18/W22. Závislosti: W13–W15.
+- [x] Implementace a automatické integrační kontroly dokončené. [vzorkové hodiny, tempo a A/B hranice](docs/windows/w16/README.md), [Windows W16 prošel](docs/windows/w16/windows-validation.json), test proměnlivých bloků a tisíců smyček bez ztráty frakčního přesahu. Předtakt/metronom a metadata jsou připojené ve W18/W22. Závislosti: W13–W15.
 - Zavést počítadlo vzorků, převody takty/doby/čas, přesné události uvnitř bloku a sjednocené příkazy play, stop, seek, count-in a loop. Při změně vzorkování bezpečně přepočítat stav nebo zastavit podle předem daného pravidla.
 - Oddělit hudební čas, čas nahrávky a okamžik prezentace UI. Metadata zaznamenají konfiguraci zařízení a známé DSP zpoždění pro pozdější kompenzaci stop.
 - Zobrazovat zvlášť odhad ovladače, buffer, zpoždění DSP a výsledky skutečného měření. Samotný součet webových baseLatency a outputLatency se nepřebírá jako celková latence.
@@ -324,7 +324,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w17"></a>
 #### W17 — Přenést celý aparát a jeho presety
 
-- [ ] Rozpracováno: [plný DSP řetězec, skutečný bypass a Vintage presety](docs/windows/w17/README.md), Linux 7/7 CTest a nativní parameter roundtrip. [Windows formulář/persistence prošly](docs/windows/w17/windows-validation.json); volba nahrávací sběrnice naváže ve W22 a poslech je odložený. Závislosti: W06, W08, W15, W16.
+- [x] Implementace a automatické integrační kontroly dokončené. [plný DSP řetězec, skutečný bypass a Vintage presety](docs/windows/w17/README.md), Linux 7/7 CTest a nativní parameter roundtrip. [Windows formulář/persistence prošly](docs/windows/w17/windows-validation.json); volba nahrávací sběrnice je připojená ve W22 a poslech je odložený. Závislosti: W06, W08, W15, W16.
 - Implementovat kompresi, vstupní zesílení, overdrive/distortion/fuzz, třípásmový EQ, dosavadní charakteristiky kabinetu, delay, reverb, chorus a výstup. Zachovat smysl parametrů a převod továrních i uživatelských presetů; nový zvuk neslibovat jako bitově totožný s Web Audio.
 - Zajistit smoothing, správnou práci se stavem filtrů, ochranu před neplatnými vzorky, DC a denormály, stabilitu zpětné vazby efektů a přechody bez lupnutí. Zpoždění oversamplingu, lookaheadu a případné konvoluce patří do evidence.
 - Ověřit skutečný bypass. Vypnutý nebo nulový efekt nesmí nepozorovaně přidávat prodlevu; současná webová komprese v řetězci je konkrétní důvod pro toto ověření. Nastavit jasné chování doznívání efektů při vypnutí.
@@ -334,7 +334,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w18"></a>
 #### W18 — Metronom a všechny doprovodné zvuky
 
-- [ ] Rozpracováno: [nativní kliky, celý formulář a presety](docs/windows/w18/README.md). Vzorkové/PInvoke testy i [Windows sestavení/formulář/persistence prošly](docs/windows/w18/windows-validation.json). Společný start nahrávání/Looperu naváže ve W22/W23. Závislosti: W06, W08, W16.
+- [x] Implementace a automatické integrační kontroly dokončené. [nativní kliky, celý formulář a presety](docs/windows/w18/README.md). Vzorkové/PInvoke testy i [Windows sestavení/formulář/persistence prošly](docs/windows/w18/windows-validation.json). Společný start nahrávání/Looperu je připojený ve W22/W23. Závislosti: W06, W08, W16.
 - Přenést všechny současné takty, subdivize, per-beat akcenty a zvuky, tap tempo, swing, předtakt, zrychlování, cvičné ticho, drum mode, polyrytmus, presety a vizualizaci kyvadla.
 - Clicky, bicí i pozdější hudební náhledy běží ve společném audio grafu. Hudební události plánovat na konkrétní vzorek; UI kyvadlo a zvýraznění doby odvozovat od transportu.
 - Zachovat ovládání tempa číslem, klávesami i velkým tlačítkem v Live. Změny během hraní mají určený okamžik použití a neduplikují dobu.
@@ -343,7 +343,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w19"></a>
 #### W19 — Ladička, detekce tónu a analýza palm mute
 
-- [ ] Rozpracováno: [ladička, worker, kalibrace a společné referenční tóny](docs/windows/w19/README.md). Linux detektor/FFT/worker/RT/PInvoke testy i [Windows formulář/persistence prošly](docs/windows/w19/windows-validation.json). Ruční poslech a technika budou v přejímce. Závislosti: W06, W08, W15, W16.
+- [x] Implementace a automatické integrační kontroly dokončené. [ladička, worker, kalibrace a společné referenční tóny](docs/windows/w19/README.md). Linux detektor/FFT/worker/RT/PInvoke testy i [Windows formulář/persistence prošly](docs/windows/w19/windows-validation.json). Ruční poslech a technika budou v přejímce. Závislosti: W06, W08, W15, W16.
 - Zvolit a ověřit detektor mono tónu s odpovídající licencí, přenést výpočty centů, stabilizaci a confidence gate. Zachovat vedený i chromatický režim, referenční A, značení H/B, tovární a vlastní ladění, referenční tón a volitelný potvrzovací zvuk.
 - Kalibraci šumu, měřič vstupu a algoritmus palm mute odvodit ze skutečných vstupních dat. Ticho, slabý či zkreslený signál mají vlastní stav; bez signálu se nezobrazuje poslední tón jako aktuálně měřený.
 - Vyhodnocovat mimo audio callback, omezit počet aktualizací UI a měřit stáří výsledku. Vysvětlit, že analýza nízkých tónů potřebuje delší okno než samotný monitoring.
@@ -363,7 +363,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w21"></a>
 #### W21 — Přehrávání vlastních skladeb a práce s úsekem
 
-- [ ] Rozpracováno: [blokové čtení, samostatný transport a nativní úseky](docs/windows/w21/README.md), [Windows formulář a persistence prošly](docs/windows/w21/windows-validation.json). Rozšíření dlouhých WebM/AAC navazuje před kandidátem. Závislosti: W04, W08, W09, W16.
+- [x] Implementace a automatické integrační kontroly dokončené. [blokové čtení, samostatný transport a nativní úseky](docs/windows/w21/README.md), [Windows formulář a persistence prošly](docs/windows/w21/windows-validation.json). Dlouhé WebM/AAC prošly blokovým čtením ve W38. Závislosti: W04, W08, W09, W16.
 - Implementovat asynchronní otevření a dekódování souboru, waveform cache, časovou osu, seek, A/B smyčku, změnu rychlosti bez změny výšky, předtakt a postupné zrychlování.
 - Velké soubory číst postupně; příprava waveformy a time stretching nesmějí blokovat monitoring. Délku, pozice a mezní hodnoty počítat z audio dat, ne z nepřesného UI časovače.
 - Ukládat pojmenované úseky a poslední pozici. Při chybějícím souboru nabídnout jeho dohledání; neplatný formát nesmí ukončit aplikaci.
@@ -372,7 +372,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w22"></a>
 #### W22 — Spolehlivé nahrávání, knihovna a export
 
-- [ ] Rozpracováno: [PCM24 diskový writer, obnova po pádu, nativní knihovna a export](docs/windows/w22/README.md). Linux 14/14 CTest, C# propojení a 20 kontrol ukládání nahrávek prošly; [Windows sestavení, formulář a persistence prošly](docs/windows/w22/windows-validation.json). Fyzický záznam je odložený do závěrečné přejímky. Závislosti: W09, W15–W17, W21.
+- [x] Implementace a automatické integrační kontroly dokončené. [PCM24 diskový writer, obnova po pádu, nativní knihovna a export](docs/windows/w22/README.md). Linux 14/14 CTest, C# propojení a 20 kontrol ukládání nahrávek prošly; [Windows sestavení, formulář a persistence prošly](docs/windows/w22/windows-validation.json). Fyzický záznam je odložený do závěrečné přejímky. Závislosti: W09, W15–W17, W21.
 - Nahrávat vybranou sběrnici přes předalokovanou frontu na pracovní diskové vlákno. Délka je odvozena od počtu vzorků. Primární bezeztrátový výstup je PCM WAV; podporovanou hloubku a velké soubory řešit podle reálných limitů writeru.
 - Záznam během práce bezpečně průběžně uchovávat, po ukončení dokončit hlavičku a metadata. Zaplněný disk, chyba oprávnění nebo nestíhající zápis nesmějí vytvořit falešně úspěšný záznam; nabídnout obnovu dostupné části.
 - Implementovat seznam, přejmenování, výběr více položek, přehrání, pojmenované časové značky včetně skoku na ně, porovnání dvou take-ů A/B, export a mazání s možností návratu či potvrzením. Zachovat původní importované soubory i jejich markery, případný převod označit.
@@ -468,7 +468,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w32"></a>
 #### W32 — Profil, pokrok a skutečně aktivní cvičení
 
-- [ ] Implementace a doménové kontroly hotové, nativní Windows kontrola čeká. Závislosti: W06, W09, W25–W28.
+- [x] Implementace a automatické integrační kontroly dokončené. [Windows W32 prošel](docs/windows/w32/windows-validation.json). Závislosti: W06, W09, W25–W28.
 - Přenést profil kytary, doporučení nastavení, ladění a orientaci hráče, historii, streaky, achievementy, tempo rekordy a připomínky přestávek.
 - Zavést explicitní cvičební session se startem, pauzou a koncem. Live zahrnout do aktivního času; pouhé otevření obrazovky není důkaz hry. Poslechová cvičení a hry se započítají i bez vstupního signálu podle skutečné aktivity.
 - Zabránit dvojímu započtení při navigaci, souběhu transportů, uspání a opakovaném dokončení úlohy. Den a streak vyhodnocovat v místním čase uživatele, včetně změny pásma a půlnoci.
@@ -479,7 +479,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w33"></a>
 #### W33 — Dokončit Přehled, Live a návaznosti
 
-- [x] Implementováno: [W33](docs/windows/w33/README.md), Windows integrace čeká. Závislosti: W17–W19, W22, W25–W28, W31, W32. Windows run 38187437967 prošel; ruční scénáře zůstávají odložené.
+- [x] Implementováno: [W33](docs/windows/w33/README.md). Závislosti: W17–W19, W22, W25–W28, W31, W32. Windows run 38187437967 prošel; ruční scénáře zůstávají odložené.
 - Denní plán a AI plán otevírají konkrétní lekci, riff, trenažér nebo úsek s potřebnými parametry. Zachovat „pokračovat“ a návrat do plánu, stav hotové úlohy a doporučený další krok.
 - Live propojí velkou ladičku, metronom, aparát, vstupní úroveň a jeden skutečný nahrávací transport. Nepovolí spuštění dvou konkurenčních rekordérů ze dvou obrazovek.
 - Udržet stabilní ovládání zvuku při přepínání pohledů a režim pro hraní z odstupu. Zabránění uspání platí jen během zvolené aktivní session a po zastavení se uvolní.
@@ -488,7 +488,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w34"></a>
 #### W34 — Nastavení a první spuštění
 
-- [x] Implementováno: [W34](docs/windows/w34/README.md), Windows kontrola čeká. Závislosti: W08–W12, W14, W19, W20, W31–W33. Windows run 38187437967 prošel; ruční scénáře zůstávají odložené.
+- [x] Implementováno: [W34](docs/windows/w34/README.md). Závislosti: W08–W12, W14, W19, W20, W31–W33. Windows run 38187437967 prošel; ruční scénáře zůstávají odložené.
 - Sjednotit nastavení zvuku, vstupního kanálu, vzhledu, klávesnice, AI, umístění dat a diagnostiky. Zachovat Zen režim skrývající gamifikaci. Ověřit okamžik uplatnění každé volby a jasně odlišit změny vyžadující restart zvuku.
 - Průvodce zahrne profil, případný import, výstup a vstup, otestování úrovně, monitoring a informace o ukládání. Jde dokončit bez kytary i bez AI klíče; lze se k němu vrátit.
 - Nabídnout jasně označený ukázkový signál pro ověření aplikace bez zařízení. Reset jednotlivého nastavení není nečekané smazání celé databáze.
@@ -497,7 +497,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w35"></a>
 #### W35 — Dokončit práci se soubory a příkazy Windows
 
-- [x] Implementováno: [W35](docs/windows/w35/README.md); asociace naváže v instalátoru W41, Windows kontrola čeká. Závislosti: W07, W11, W21–W24, W29, W34. Windows run 38187437967 prošel; ruční scénáře zůstávají odložené.
+- [x] Implementováno: [W35](docs/windows/w35/README.md); asociace naváže v instalátoru W41. Závislosti: W07, W11, W21–W24, W29, W34. Windows run 38187437967 prošel; ruční scénáře zůstávají odložené.
 - Skutečné dialogy Otevřít/Uložit, podporované přetažení, poslední soubory, „Zobrazit ve složce“, kontextové nabídky, schránka a asociace vlastního projektového formátu. Otevření souboru z Průzkumníka předat správné instanci.
 - Zkratky svázat s jednotnými příkazy a jejich dostupností. Mezerník ovládá příslušný transport mimo psaní textu, Escape zavře vhodný dialog, Ctrl+Z vrací jen definované editace a nemá fingovanou univerzální funkci.
 - Ošetřit české a dlouhé cesty, read-only složky, odpojené disky, přepsání souboru, chybějící médium a změnu názvu projektu. Souborové operace jsou zrušitelné a ponechají konzistentní stav.
@@ -544,7 +544,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w40"></a>
 #### W40 — Přístupnost, soukromí a kontrola distribuce
 
-- [ ] Implementováno: [W40](docs/windows/w40/README.md); UI Automation a balíkový licenční audit čekají na Windows kontrolu. Ruční přístupnost je odložená. Závislosti: W02, W10, W11, W30, W31, W35–W39.
+- [x] Implementováno: [W40](docs/windows/w40/README.md); UI Automation prověřila 624 prvků a balíkový licenční audit prošel. [Windows důkaz](docs/windows/w40/windows-validation.json). Ruční přístupnost je odložená. Závislosti: W02, W10, W11, W30, W31, W35–W39.
 - Projít celou aplikaci pouze klávesnicí a Narratorem, vysoký kontrast, zvětšený text a různé DPI. Ověřit pořadí fokusu, oznámení změn a možnost ovládat vlastní hudební widgety.
 - Prověřit, co opouští počítač při AI, YouTube, aktualizaci a diagnostice. Základní cvičení funguje bez sítě; audio se nikam neodesílá bez samostatného vědomého rozhodnutí.
 - Prověřit importy nedůvěryhodných souborů, hranici WebView2, tajné hodnoty v logu a archivu, licenční oznámení a seznam distribuovaných závislostí. Případnou telemetrii oddělit od nutné funkčnosti a výslovně nabídnout.
@@ -746,6 +746,6 @@ Model M-Track Solo je potvrzen uživatelem. Přesný aktuální ovladač, jeho p
 
 ### Jak pokračovat v další pracovní session
 
-Začít nejnižším nedokončeným krokem tohoto dokumentu, nyní W04. Nejprve přečíst pravidla repozitáře, tento plán, rozhodnutí W02 a aktuální stav; ověřit skutečný Git diff. Před realizací konkrétní změny popsat její výsledek a soubory v rozsahu dohodnuté spolupráce. Po dokončení uložit důkazy kontrol a aktualizovat tento dokument i stav projektu. Podle pokynu z 11. 10. 2026 pokračovat v dohodnutém Windows rozsahu bez dalšího per-step schválení a bez čekání na ruční testy Jendy; ty následují až po W43.
+Dokončit závěrečné ověření W40–W43; po úspěšném předání kandidáta navazuje přejímka W44. Nejprve přečíst pravidla repozitáře, tento plán, rozhodnutí W02 a aktuální stav; ověřit skutečný Git diff. Před realizací konkrétní změny popsat její výsledek a soubory v rozsahu dohodnuté spolupráce. Po dokončení uložit důkazy kontrol a aktualizovat tento dokument i stav projektu. Podle pokynu z 11. 10. 2026 pokračovat v dohodnutém Windows rozsahu bez dalšího per-step schválení a bez čekání na ruční testy Jendy; ty následují až po W43.
 
-Požadavek na tuto roadmapu znamená vytvoření plánovacího podkladu a uložení návrhů. Neoznačuje nativní jádro za hotové, nepřepíná živou PWA a sám o sobě nepublikuje instalátor. W01–W03 jsou dokončené v uvedeném rozsahu; další konkrétní práce naváže na W04; bratrův test zůstává až za W43.
+Požadavek na tuto roadmapu znamená vytvoření plánovacího podkladu a uložení návrhů. Neoznačuje nativní jádro za hotové, nepřepíná živou PWA a sám o sobě nepublikuje instalátor. Implementace W01–W43 je uložená; sestavený kandidát vyžaduje úspěšné závěrečné protokoly. Bratrův test následuje ve W44.
