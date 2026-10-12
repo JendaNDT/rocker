@@ -41,9 +41,10 @@ public sealed partial class MainWindow
         bool ready = audio is not null && audio.GetTransport().Ready != 0;
         bool active = audio is not null && audio.GetSnapshot().State != Rocker.Interop.AudioState.Stopped;
         bool mediaView = navigation.Current.ViewId is "07" or "14" or "15" or "19" or "20";
-        MediaTransportRow.Visibility = ready || active || mediaView ? Visibility.Visible : Visibility.Collapsed;
+        MediaTransportRow.Visibility = ready || mediaView ? Visibility.Visible : Visibility.Collapsed;
         MediaSeekRow.Visibility = ready ? Visibility.Visible : Visibility.Collapsed;
-        MediaPanel.Visibility = practice || ready || active || mediaView || PlanButtons.Visibility == Visibility.Visible || PracticeRestNotice.IsOpen ? Visibility.Visible : Visibility.Collapsed;
+        GlobalMuteButton.Visibility = active ? Visibility.Visible : Visibility.Collapsed;
+        MediaPanel.Visibility = practice || ready || mediaView || PlanButtons.Visibility == Visibility.Visible || PracticeRestNotice.IsOpen ? Visibility.Visible : Visibility.Collapsed;
     }
     private async void ToggleMedia_Click(object sender, RoutedEventArgs args)
     {

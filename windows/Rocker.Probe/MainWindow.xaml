@@ -229,9 +229,10 @@
             </StackPanel>
         </Border>
         <Border Grid.Row="3" Padding="16,4" Background="{ThemeResource VintageBackground}">
-            <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+            <Grid ColumnSpacing="12"><Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
                 <TextBlock x:Name="StatusText" Text="Připravuji zvuk…" FontSize="12" TextTrimming="CharacterEllipsis" AutomationProperties.LiveSetting="Polite" />
-                <TextBlock x:Name="ShellStateText" Grid.Column="1" Text="Rocker" FontSize="12" Margin="16,0,0,0" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                <Button x:Name="GlobalMuteButton" Grid.Column="1" Content="Zastavit zvuk" Click="Stop_Click" Visibility="Collapsed" MinHeight="32" AutomationProperties.Name="Zastavit všechny zvukové zdroje" />
+                <TextBlock x:Name="ShellStateText" Grid.Column="2" Text="Rocker" FontSize="12" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
             </Grid>
         </Border>
     </Grid>
