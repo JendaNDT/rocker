@@ -34,7 +34,7 @@ public sealed partial class AiHttpClient(HttpClient http,string provider="openai
     private static async Task<byte[]> ReadBoundedAsync(Stream stream,int maximum,CancellationToken token)
     {
         using var output=new MemoryStream();var bytes=new byte[8192];int read;
-        while((read=await stream.ReadAsync(bytes,token))>0){if(output.Length+read>maximum)throw new AiRequestException("Odpověď AI překročila povolenou velikost.");await output.WriteAsync(bytes.AsMemory(0,read),token);}return output.ToArray();
+        while((read=await stream.ReadAsync(bytes,token).ConfigureAwait(false))>0){if(output.Length+read>maximum)throw new AiRequestException("Odpověď AI překročila povolenou velikost.");await output.WriteAsync(bytes.AsMemory(0,read),token).ConfigureAwait(false);}return output.ToArray();
     }
     private static JsonElement OpenAiSchema(object schema)
     {
@@ -52,7 +52,7 @@ public sealed partial class AiHttpClient(HttpClient http,string provider="openai
     public async Task<AiModelList> ModelsAsync(string key,CancellationToken cancellation=default)
     {
         using var timeout=CancellationTokenSource.CreateLinkedTokenSource(cancellation);timeout.CancelAfter(TimeSpan.FromSeconds(30));var models=new List<AiModel>();string? next=null;
-        try{for(int page=0;page<5;++page){using var request=Request(HttpMethod.Get,provider=="openai"?"models":"models?pageSize=100"+(next is null?"":"&pageToken="+Uri.EscapeDataString(next)),key);using var response=await http.SendAsync(request,HttpCompletionOption.ResponseHeadersRead,timeout.Token);EnsureStatus(response);await using var stream=await response.Content.ReadAsStreamAsync(timeout.Token);using var json=JsonDocument.Parse(await ReadBoundedAsync(stream,1024*1024,timeout.Token),new JsonDocumentOptions{MaxDepth=16});
+        try{for(int page=0;page<5;++page){using var request=Request(HttpMethod.Get,provider=="openai"?"models":"models?pageSize=100"+(next is null?"":"&pageToken="+Uri.EscapeDataString(next)),key);using var response=await http.SendAsync(request,HttpCompletionOption.ResponseHeadersRead,timeout.Token).ConfigureAwait(false);EnsureStatus(response);await using var stream=await response.Content.ReadAsStreamAsync(timeout.Token).ConfigureAwait(false);using var json=JsonDocument.Parse(await ReadBoundedAsync(stream,1024*1024,timeout.Token).ConfigureAwait(false),new JsonDocumentOptions{MaxDepth=16});
             if(json.RootElement.TryGetProperty(provider=="openai"?"data":"models",out var entries) && entries.ValueKind==JsonValueKind.Array)foreach(var entry in entries.EnumerateArray())
             {
                 if(!entry.TryGetProperty(provider=="openai"?"id":"name",out var name) || name.ValueKind!=JsonValueKind.String)continue;
@@ -79,8 +79,8 @@ public sealed partial class AiHttpClient(HttpClient http,string provider="openai
                 var messages=new List<object>{new{role="system",content=instruction}};messages.AddRange(history.Select(m=>(object)new{role=m.Role=="model"?"assistant":"user",content=m.Text}));var body=new Dictionary<string,object>{{"model",model},{"messages",messages},{"stream",true},{"max_completion_tokens",4096}};if(responseSchema is not null)body["response_format"]=new{type="json_schema",json_schema=new{name="rocker_practice_plan",strict=true,schema=OpenAiSchema(responseSchema)}};request.Content=JsonContent.Create(body);
             }
             else request.Content=JsonContent.Create(new{systemInstruction=new{parts=new[]{new{text=instruction}}},contents=history.Select(m=>new{role=m.Role,parts=new[]{new{text=m.Text}}}),generationConfig=config});
-            using var response=await http.SendAsync(request,HttpCompletionOption.ResponseHeadersRead,timeout.Token);EnsureStatus(response);
-            await using var stream=await response.Content.ReadAsStreamAsync(timeout.Token);using var reader=new StreamReader(stream,new UTF8Encoding(false,true),false,4096);var buffer=new char[4096];var line=new StringBuilder();var data=new StringBuilder();var text=new StringBuilder();int total=0;bool completed=false;
+            using var response=await http.SendAsync(request,HttpCompletionOption.ResponseHeadersRead,timeout.Token).ConfigureAwait(false);EnsureStatus(response);
+            await using var stream=await response.Content.ReadAsStreamAsync(timeout.Token).ConfigureAwait(false);using var reader=new StreamReader(stream,new UTF8Encoding(false,true),false,4096);var buffer=new char[4096];var line=new StringBuilder();var data=new StringBuilder();var text=new StringBuilder();int total=0;bool completed=false;
             void ProcessData()
             {
                 string payload=data.ToString().Trim();data.Clear();if(payload.Length==0 || payload=="[DONE]")return;
@@ -104,7 +104,7 @@ public sealed partial class AiHttpClient(HttpClient http,string provider="openai
                 if(candidate.TryGetProperty("finishReason",out var reason) && reason.GetString() is { } why && why is not ("STOP" or "FINISH_REASON_UNSPECIFIED"))throw new AiRequestException(why=="MAX_TOKENS"?"Odpověď je neúplná kvůli limitu délky. Zkrať zadání.":"Poskytovatel odpověď nedokončil. Uprav zadání.");
             }
             void ProcessLine(){string value=line.ToString().TrimEnd('\r');line.Clear();if(value.Length==0){ProcessData();return;}if(value.StartsWith("data:",StringComparison.Ordinal)){data.Append(value.AsSpan(5).TrimStart());data.Append('\n');if(data.Length>1024*1024)throw new AiRequestException("Část odpovědi AI je příliš velká.");}}
-            int count;while((count=await reader.ReadAsync(buffer.AsMemory(),timeout.Token))>0){total+=count;if(total>4*1024*1024)throw new AiRequestException("Odpověď AI překročila povolenou velikost.");for(int i=0;i<count;++i){if(buffer[i]=='\n')ProcessLine();else{line.Append(buffer[i]);if(line.Length>1024*1024)throw new AiRequestException("Řádek odpovědi AI je příliš dlouhý.");}}}
+            int count;while((count=await reader.ReadAsync(buffer.AsMemory(),timeout.Token).ConfigureAwait(false))>0){total+=count;if(total>4*1024*1024)throw new AiRequestException("Odpověď AI překročila povolenou velikost.");for(int i=0;i<count;++i){if(buffer[i]=='\n')ProcessLine();else{line.Append(buffer[i]);if(line.Length>1024*1024)throw new AiRequestException("Řádek odpovědi AI je příliš dlouhý.");}}}
             if(line.Length>0)ProcessLine();ProcessData();if(!completed)throw new AiRequestException("Spojení skončilo před dokončením odpovědi. Neúplný text nebyl přijat.");if(string.IsNullOrWhiteSpace(text.ToString()))throw new AiRequestException("AI nevrátila žádnou odpověď. Uprav zadání.");return text.ToString().Trim();
         }
         catch(OperationCanceledException) when(!cancellation.IsCancellationRequested){throw new AiRequestException("Čekání na AI vypršelo. Dotaz se automaticky neopakuje.");}

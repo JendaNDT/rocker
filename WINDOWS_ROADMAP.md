@@ -535,7 +535,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w39"></a>
 #### W39 — Výkon a dlouhý běh
 
-- [ ] Čeká. Závislosti: W20, W24, W29–W31, W36, W38.
+- [ ] Implementováno: [W39](docs/windows/w39/README.md); zrychlených 60 minut místně prošlo, skutečný hodinový hardware běh je odložený. Windows protokol čeká. Závislosti: W20, W24, W29–W31, W36, W38.
 - Na popsaném referenčním Windows počítači měřit dobu audio callbacku, vytížení, paměť, start, načítání velkých souborů, počet výpadků a reakce UI. Výsledky vždy uvést s konkrétní konfigurací.
 - Zátěž: aparát + metronom + nahrávání, Looper s vrstvami, vícestopý projekt, noty, změna velikosti a DPI, práce v AI a samostatně souběh YouTube. Počet stop a velikost dat zvolit před testem a uvést jako ověřený rozsah.
 - Cíl pro vybranou stabilní konfiguraci: 60 minut aktivní session bez ztracených audio bloků, bez rostoucího úniku paměti a bez znatelného blokování UI. Callback musí mít rezervu do délky bloku; sledovat i špičky, nejen průměr.

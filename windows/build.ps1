@@ -59,6 +59,7 @@ try {
     Invoke-Checked 'cmake' @('--build', $nativeBuild, '--parallel', '2')
     Invoke-Checked 'ctest' @('--test-dir', $nativeBuild, '--output-on-failure',
         '--output-junit', (Join-Path $reportDirectory 'native-tests.xml'))
+    Copy-Item (Join-Path $nativeBuild 'performance-checks.json') (Join-Path $reportDirectory 'performance-checks.json')
     $mediaReport = Join-Path $nativeBuild 'media-checks.json'
     if (-not (Test-Path $mediaReport)) { throw 'Native media checks did not produce evidence.' }
     $mediaResult = Get-Content $mediaReport -Raw | ConvertFrom-Json
