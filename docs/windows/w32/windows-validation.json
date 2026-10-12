@@ -1,0 +1,31 @@
+{
+  "runId": 38187437967,
+  "runUrl": "https://github.com/JendaNDT/rocker/actions/runs/38187437967",
+  "commit": "058501c11d0b190d823cf9850011da869a5af2a3",
+  "result": "passed",
+  "check": {
+    "result": "passed",
+    "nativeProfile": true,
+    "linkedHandAndTuning": true,
+    "profilePersistence": true,
+    "timeZoneNotification": true,
+    "activeMilliseconds": 1000,
+    "drainedOnce": true,
+    "pauseExcluded": true,
+    "nativeProgress": true,
+    "hardwareVerified": false
+  },
+  "componentsForm": {
+    "result": "passed",
+    "nativeProfile": true,
+    "linkedHandAndTuning": true,
+    "profilePersistence": true,
+    "timeZoneNotification": true,
+    "activeMilliseconds": 1000,
+    "drainedOnce": true,
+    "pauseExcluded": true,
+    "nativeProgress": true,
+    "hardwareVerified": false
+  },
+  "hardwareVerified": false
+}

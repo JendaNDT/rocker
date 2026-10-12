@@ -45,7 +45,6 @@
                 <MenuFlyoutItem Text="Světlý Vintage" Tag="light" Click="Theme_Click" />
             </MenuBarItem>
             <MenuBarItem Title="Nástroje">
-                <MenuFlyoutItem Text="Komponenty Vintage" Click="Components_Click" />
                 <MenuFlyoutItem Text="Zvuková zařízení" Tag="29" Click="NavigateMenu_Click" />
                 <MenuFlyoutItem Text="Nastavení" Tag="28" Click="NavigateMenu_Click" />
                 <MenuFlyoutItem Text="Zálohy a soubory" Tag="30" Click="NavigateMenu_Click" />
@@ -61,8 +60,8 @@
                 <StackPanel Margin="24,12,24,24" Spacing="16" MaxWidth="1100" HorizontalAlignment="Stretch">
                     <TextBlock x:Name="WorkspaceTitle" Text="Přehled" Style="{ThemeResource TitleTextBlockStyle}" />
                     <TextBlock x:Name="WorkspaceTrail" Text="Rocker / Přehled" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
-                    <InfoBar x:Name="ShellNotice" IsOpen="True" IsClosable="True" Severity="Informational" Title="Rozpracovaná Windows verze"
-                             Message="Hlavní okno a přehrávání už fungují. Další části postupně dokončujeme." />
+                    <InfoBar x:Name="ShellNotice" IsOpen="False" IsClosable="True" Severity="Informational" Title="Rocker"
+                             Message="" />
                     <ContentControl x:Name="WorkspaceContent" HorizontalContentAlignment="Stretch" />
                     <StackPanel x:Name="NotationPanel" Visibility="Collapsed" Spacing="12">
                 <TextBlock Text="Noty a tabulatury" Style="{ThemeResource SubtitleTextBlockStyle}" />
@@ -176,12 +175,15 @@
         <Border x:Name="MediaPanel" Grid.Row="2" Background="{ThemeResource VintagePanel}" Padding="16,8">
             <StackPanel Spacing="4">
                 <InfoBar x:Name="PracticeRestNotice" IsOpen="False" IsClosable="True" Severity="Informational" Title="Cvičení" />
+                <Grid x:Name="PracticeRow" ColumnSpacing="16">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                 <StackPanel x:Name="PracticeButtons" Orientation="Horizontal" Spacing="8">
                     <Button x:Name="PracticeStart" Content="Zahájit cvičení" IsEnabled="False" Click="PracticeStart_Click" />
                     <Button x:Name="PracticePause" Content="Pauza cvičení" IsEnabled="False" Click="PracticePause_Click" />
                     <Button x:Name="PracticeEnd" Content="Ukončit cvičení" IsEnabled="False" Click="PracticeEnd_Click" />
                 </StackPanel>
-                <TextBlock x:Name="PracticeStatus" Text="Cvičení není zahájené · aktivně 0:00" TextWrapping="Wrap" FontSize="12" />
+                <TextBlock x:Name="PracticeStatus" Text="Cvičení není zahájené · aktivně 0:00" TextWrapping="Wrap" FontSize="12" Grid.Column="1" VerticalAlignment="Center" />
+                </Grid>
                 <StackPanel x:Name="PlanButtons" Orientation="Horizontal" Spacing="8" Visibility="Collapsed">
                     <Button x:Name="ReturnPlan" Content="Zpět do plánu" Click="ReturnPlan_Click" />
                     <Button x:Name="CompletePlan" Content="Označit blok jako hotový" Click="CompletePlan_Click" />

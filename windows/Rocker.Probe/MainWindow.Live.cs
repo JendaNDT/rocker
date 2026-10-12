@@ -6,7 +6,7 @@ using Rocker.Probe.Controls;
 namespace Rocker.Probe;
 public sealed partial class MainWindow
 {
-    private TextBlock? liveProcessedLabel,liveTunerNote,liveTunerCents;private ProgressBar? liveTunerNeedle;
+    private TextBlock? liveTunerNote,liveTunerCents;private ProgressBar? liveTunerNeedle;
     private LevelMeter? liveInputMeter,liveProcessedMeter,liveMixMeter;
     private TextBlock? liveState,liveDiagnostic;
     private CheckBox? liveMonitor;
@@ -14,8 +14,7 @@ public sealed partial class MainWindow
     private bool liveUpdating;
     private FrameworkElement BuildLive()
     {
-        var panel=Stack();panel.Children.Add(Text("Live · kytara a poslech"));
-        panel.Children.Add(Text("Zvuk běží ve společném nativním jádru a pokračuje při přepnutí obrazovky. Aparát a jeho presety sdílí stejný zvukový graf.",true));
+        var panel=Stack();
         var devices=new Button{Content="Vybrat kartu a vstup kytary"};devices.Click+=(_,_)=>Navigate(new("29"));panel.Children.Add(devices);
         var start=new Button{Content="Spustit živý vstup"};start.Click+=LiveStart_Click;
         var stop=new Button{Content="Zastavit a ztlumit"};stop.Click+=Stop_Click;
@@ -30,13 +29,13 @@ public sealed partial class MainWindow
         Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(level,"Hlasitost monitoringu");
         level.ValueChanged+=(_,args)=>{liveGain=args.NewValue/100;ApplyLiveMonitoring();};left.Children.Add(level);
         liveState=Text("Vyber vstup kytary, spusť Live a monitoring zapni výslovně.",true);left.Children.Add(liveState);
-        liveInputMeter=new();liveProcessedMeter=new();liveMixMeter=new();
-        left.Children.Add(Text("Suchý vstup"));left.Children.Add(liveInputMeter);
-        liveProcessedLabel=Text("Za aparátem");left.Children.Add(liveProcessedLabel);left.Children.Add(liveProcessedMeter);
-        left.Children.Add(Text("Výsledný mix"));left.Children.Add(liveMixMeter);panel.Children.Add(ResponsiveColumns(left,right));
+        liveInputMeter=new(){Label="Suchý vstup"};liveProcessedMeter=new(){Label="Za aparátem"};liveMixMeter=new(){Label="Výsledný mix"};
+        left.Children.Add(liveInputMeter);
+        left.Children.Add(liveProcessedMeter);
+        left.Children.Add(liveMixMeter);panel.Children.Add(ResponsiveColumns(left,right));
         liveDiagnostic=Text("",true);panel.Children.Add(new Expander{Header="Podrobnosti zvuku a přebuzení",Content=liveDiagnostic});
         panel.Children.Add(Text("Kytara i sluchátka mají být připojené ke stejné kartě. Direct Monitor na M-Track je další cesta bez efektů; současný přímý a softwarový poslech může vytvořit dvojí zvuk.",true));
-        return Card(panel);
+        return panel;
     }
     private async void LiveStart_Click(object sender,RoutedEventArgs args)
     {
@@ -58,7 +57,7 @@ public sealed partial class MainWindow
         if(liveInputMeter is null || audio is null)return;
         var meters=audio.GetMeters();bool running=state.State==AudioState.Running;
         liveInputMeter.SetLevel(meters.InputPeak,running && meters.HasInput);
-        liveProcessedLabel!.Text=appSettings.AmpEnabled?"Za aparátem":"Za aparátem · bypass";
+        liveProcessedMeter!.Label=appSettings.AmpEnabled?"Za aparátem":"Za aparátem · bypass";
         liveProcessedMeter!.SetLevel(meters.ProcessedPeak,running && meters.HasInput);
         liveMixMeter!.SetLevel(meters.MixPeak,running);
         liveUpdating=true;liveMonitor!.IsChecked=meters.Monitoring;liveUpdating=false;

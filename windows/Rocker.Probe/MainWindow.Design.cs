@@ -15,7 +15,7 @@ public sealed partial class MainWindow
     {yield return root;for(int i=0;i<VisualTreeHelper.GetChildrenCount(root);++i)foreach(var child in Descendants(VisualTreeHelper.GetChild(root,i)))yield return child;}
     private async Task VerifyAllDesignViewsAsync()
     {
-        string? directory=Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTICS_DIR");if(string.IsNullOrEmpty(directory))return;string previousTheme=selectedTheme;var screenshots=new List<string>();ApplyTheme("dark");Directory.CreateDirectory(System.IO.Path.Combine(directory,"screens"));
+        string? directory=Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTICS_DIR");if(string.IsNullOrEmpty(directory))return;string previousTheme=selectedTheme;var screenshots=new List<string>();ShellNotice.IsOpen=false;PracticeRestNotice.IsOpen=false;ApplyTheme("dark");Directory.CreateDirectory(System.IO.Path.Combine(directory,"screens"));
         foreach(var view in Rocker.Domain.WorkspaceViews.All){Navigate(new(view.Id));await Task.Delay(35);string name="screens/view-"+view.Id+".png";await CaptureNativeViewAsync(name);screenshots.Add(name);}
         foreach(var (width,height) in new[]{(640,720),(1680,1000)}){AppWindow.Resize(new Windows.Graphics.SizeInt32(width,height));Navigate(new("02"));await Task.Delay(50);string name=$"screens/live-{width}.png";await CaptureNativeViewAsync(name);screenshots.Add(name);}
         AppWindow.Resize(new Windows.Graphics.SizeInt32(1280,940));ApplyTheme("light");Navigate(new("01"));await Task.Delay(50);await CaptureNativeViewAsync("screens/overview-light.png");screenshots.Add("screens/overview-light.png");ApplyTheme(previousTheme);Navigate(new("01"));

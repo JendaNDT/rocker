@@ -39,7 +39,7 @@ public sealed partial class MainWindow
             if (group.Key == "Přehled") parent.IsExpanded = true;
         }
         try { catalog = ContentCatalog.Load(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "content", "catalog.json"))); }
-        catch (Exception error) { ShellNotice.Severity = InfoBarSeverity.Error; ShellNotice.Message = "Výukový obsah nelze načíst. " + error.Message; }
+        catch (Exception error) { ShellNotice.IsOpen=true;ShellNotice.Severity = InfoBarSeverity.Error; ShellNotice.Message = "Výukový obsah nelze načíst. " + error.Message; }
         windowStore = new(userFiles);
         try
         {
@@ -52,7 +52,8 @@ public sealed partial class MainWindow
             ApplyTheme(saved?.Theme ?? "system");
             if (saved?.Maximized == true && AppWindow.Presenter is OverlappedPresenter presenter) presenter.Maximize();
         }
-        catch (Exception error) { ShellNotice.Message = "Polohu okna se nepodařilo obnovit. " + error.Message; }
+        catch (Exception error) { ShellNotice.IsOpen=true;ShellNotice.Message = "Polohu okna se nepodařilo obnovit. " + error.Message; }
+        Navigation.DisplayModeChanged+=(_,args)=>{var inset=args.DisplayMode==NavigationViewDisplayMode.Minimal?new Thickness(48,0,0,0):new Thickness(0);WorkspaceTitle.Margin=WorkspaceTrail.Margin=inset;};
         AppWindow.Changed += (_,_) => TrackWindowBounds();
         AppWindow.Closing += Shell_Closing;
         shellReady = true; ShowWorkspace();
@@ -88,6 +89,7 @@ public sealed partial class MainWindow
             if (!workspaceCache.TryGetValue(target, out var page)) { page = BuildWorkspace(target); workspaceCache.Add(target,page); }
             WorkspaceContent.Content = page;
         }
+        LabelNativeControls(ShellRoot);
         RefreshPlanControls();
         if(aiPages.TryGetValue(view.Id,out var aiPage) && !aiBusy)RefreshAiPage(aiPage);
         if (view.Id == "08" && !videoInitializationStarted) _ = EnsureVideoAsync();
@@ -119,6 +121,7 @@ public sealed partial class MainWindow
         if (!shellReady) return;
         var orientation = args.NewSize.Width < 850 ? Orientation.Vertical : Orientation.Horizontal;
         ScoreButtons.Orientation = VideoButtons.Orientation = PlanButtons.Orientation = orientation;
+        if(args.NewSize.Width<780){Grid.SetColumn(PracticeStatus,0);PracticeRow.RowDefinitions.Clear();PracticeRow.RowDefinitions.Add(new(){Height=GridLength.Auto});PracticeRow.RowDefinitions.Add(new(){Height=GridLength.Auto});Grid.SetRow(PracticeStatus,1);}else{Grid.SetRow(PracticeStatus,0);Grid.SetColumn(PracticeStatus,1);PracticeRow.RowDefinitions.Clear();}
         ShellStateText.Visibility = args.NewSize.Width < 640 ? Visibility.Collapsed : Visibility.Visible;
     }
     private static StackPanel Stack() => new() { Spacing = 12, HorizontalAlignment = HorizontalAlignment.Stretch };
@@ -238,6 +241,7 @@ public sealed partial class MainWindow
         await VerifyFileCommandsAsync();
         await VerifyPowerRecoveryAsync();
         await VerifyAllDesignViewsAsync();
+        await VerifyAccessibilityAsync();
         await VerifyDevicesAsync();
         VerifyComponents();
         if (Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTIC_VIEW") == "components") ShowComponents();

@@ -479,7 +479,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w33"></a>
 #### W33 — Dokončit Přehled, Live a návaznosti
 
-- [ ] Implementováno: [W33](docs/windows/w33/README.md), Windows integrace čeká. Závislosti: W17–W19, W22, W25–W28, W31, W32.
+- [x] Implementováno: [W33](docs/windows/w33/README.md), Windows integrace čeká. Závislosti: W17–W19, W22, W25–W28, W31, W32. Windows run 38187437967 prošel; ruční scénáře zůstávají odložené.
 - Denní plán a AI plán otevírají konkrétní lekci, riff, trenažér nebo úsek s potřebnými parametry. Zachovat „pokračovat“ a návrat do plánu, stav hotové úlohy a doporučený další krok.
 - Live propojí velkou ladičku, metronom, aparát, vstupní úroveň a jeden skutečný nahrávací transport. Nepovolí spuštění dvou konkurenčních rekordérů ze dvou obrazovek.
 - Udržet stabilní ovládání zvuku při přepínání pohledů a režim pro hraní z odstupu. Zabránění uspání platí jen během zvolené aktivní session a po zastavení se uvolní.
@@ -488,7 +488,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w34"></a>
 #### W34 — Nastavení a první spuštění
 
-- [ ] Implementováno: [W34](docs/windows/w34/README.md), Windows kontrola čeká. Závislosti: W08–W12, W14, W19, W20, W31–W33.
+- [x] Implementováno: [W34](docs/windows/w34/README.md), Windows kontrola čeká. Závislosti: W08–W12, W14, W19, W20, W31–W33. Windows run 38187437967 prošel; ruční scénáře zůstávají odložené.
 - Sjednotit nastavení zvuku, vstupního kanálu, vzhledu, klávesnice, AI, umístění dat a diagnostiky. Zachovat Zen režim skrývající gamifikaci. Ověřit okamžik uplatnění každé volby a jasně odlišit změny vyžadující restart zvuku.
 - Průvodce zahrne profil, případný import, výstup a vstup, otestování úrovně, monitoring a informace o ukládání. Jde dokončit bez kytary i bez AI klíče; lze se k němu vrátit.
 - Nabídnout jasně označený ukázkový signál pro ověření aplikace bez zařízení. Reset jednotlivého nastavení není nečekané smazání celé databáze.
@@ -497,7 +497,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w35"></a>
 #### W35 — Dokončit práci se soubory a příkazy Windows
 
-- [ ] Implementováno: [W35](docs/windows/w35/README.md); asociace naváže v instalátoru W41, Windows kontrola čeká. Závislosti: W07, W11, W21–W24, W29, W34.
+- [x] Implementováno: [W35](docs/windows/w35/README.md); asociace naváže v instalátoru W41, Windows kontrola čeká. Závislosti: W07, W11, W21–W24, W29, W34. Windows run 38187437967 prošel; ruční scénáře zůstávají odložené.
 - Skutečné dialogy Otevřít/Uložit, podporované přetažení, poslední soubory, „Zobrazit ve složce“, kontextové nabídky, schránka a asociace vlastního projektového formátu. Otevření souboru z Průzkumníka předat správné instanci.
 - Zkratky svázat s jednotnými příkazy a jejich dostupností. Mezerník ovládá příslušný transport mimo psaní textu, Escape zavře vhodný dialog, Ctrl+Z vrací jen definované editace a nemá fingovanou univerzální funkci.
 - Ošetřit české a dlouhé cesty, read-only složky, odpojené disky, přepsání souboru, chybějící médium a změnu názvu projektu. Souborové operace jsou zrušitelné a ponechají konzistentní stav.
@@ -544,7 +544,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w40"></a>
 #### W40 — Přístupnost, soukromí a kontrola distribuce
 
-- [ ] Čeká. Závislosti: W02, W10, W11, W30, W31, W35–W39.
+- [ ] Implementováno: [W40](docs/windows/w40/README.md); UI Automation a balíkový licenční audit čekají na Windows kontrolu. Ruční přístupnost je odložená. Závislosti: W02, W10, W11, W30, W31, W35–W39.
 - Projít celou aplikaci pouze klávesnicí a Narratorem, vysoký kontrast, zvětšený text a různé DPI. Ověřit pořadí fokusu, oznámení změn a možnost ovládat vlastní hudební widgety.
 - Prověřit, co opouští počítač při AI, YouTube, aktualizaci a diagnostice. Základní cvičení funguje bez sítě; audio se nikam neodesílá bez samostatného vědomého rozhodnutí.
 - Prověřit importy nedůvěryhodných souborů, hranici WebView2, tajné hodnoty v logu a archivu, licenční oznámení a seznam distribuovaných závislostí. Případnou telemetrii oddělit od nutné funkčnosti a výslovně nabídnout.
