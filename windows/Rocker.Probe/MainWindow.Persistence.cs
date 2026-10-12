@@ -48,7 +48,7 @@ public sealed partial class MainWindow
             if (snapshot.Warnings.Count > 0) ShowPersistenceError($"Při obnovení dat bylo upraveno nebo vynecháno {snapshot.Warnings.Count} neplatných záznamů. Původní databáze je zachovaná.");
         }
         catch (Exception)
-        { ShowPersistenceError("Uložená data nelze otevřít. Původní soubory zůstávají zachované. Změny se nyní neukládají; obnov data ze zálohy nebo zkontroluj složku dat."); }
+        { ShowColdRecovery();ShowPersistenceError("Uložená data nelze otevřít. Původní soubory zůstávají zachované. Změny se nyní neukládají; obnov data ze zálohy nebo zkontroluj složku dat."); }
     }
     private void ShowPersistenceError(string message)
     { ShellNotice.IsOpen=true; ShellNotice.Severity=InfoBarSeverity.Error; ShellNotice.Message=message; }

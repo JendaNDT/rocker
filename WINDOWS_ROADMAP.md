@@ -526,7 +526,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w38"></a>
 #### W38 — Chyby, přerušení a obnova práce
 
-- [ ] Implementováno: [W38](docs/windows/w38/README.md); místní automatické kontroly prošly, Windows zprávy a AAC čekají na build. Závislosti: W20, W22–W24, W30, W31, W36, W37.
+- [x] Implementováno: [W38](docs/windows/w38/README.md); místní automatické kontroly prošly, Windows zprávy a AAC čekají na build. Závislosti: W20, W22–W24, W30, W31, W36, W37. Windows run 38188156041 prošel; hardware a skutečný hodinový běh jsou odložené.
 - Simulovat odpojení zařízení a disku, obsazený ovladač, plný disk, chybějící práva, uspání a probuzení, síťový výpadek a ukončení během záznamu, exportu, importu a autosave.
 - Ověřit, že se neobnoví nechtěný hlasitý monitoring, nesmaže poslední platný projekt a chyba jednoho online nástroje nevyřadí lekce ani nahrávky.
 - Zotavení musí nabídnout konkrétní akci: vybrat zařízení, dohledat médium, obnovit take, uložit jinam nebo operaci zrušit. Log nesmí přehlušit původní chybu dalšími selháními.
@@ -535,7 +535,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w39"></a>
 #### W39 — Výkon a dlouhý běh
 
-- [ ] Implementováno: [W39](docs/windows/w39/README.md); zrychlených 60 minut místně prošlo, skutečný hodinový hardware běh je odložený. Windows protokol čeká. Závislosti: W20, W24, W29–W31, W36, W38.
+- [x] Implementováno: [W39](docs/windows/w39/README.md); zrychlených 60 minut místně prošlo, skutečný hodinový hardware běh je odložený. Windows protokol čeká. Závislosti: W20, W24, W29–W31, W36, W38. Windows run 38188156041 prošel; hardware a skutečný hodinový běh jsou odložené.
 - Na popsaném referenčním Windows počítači měřit dobu audio callbacku, vytížení, paměť, start, načítání velkých souborů, počet výpadků a reakce UI. Výsledky vždy uvést s konkrétní konfigurací.
 - Zátěž: aparát + metronom + nahrávání, Looper s vrstvami, vícestopý projekt, noty, změna velikosti a DPI, práce v AI a samostatně souběh YouTube. Počet stop a velikost dat zvolit před testem a uvést jako ověřený rozsah.
 - Cíl pro vybranou stabilní konfiguraci: 60 minut aktivní session bez ztracených audio bloků, bez rostoucího úniku paměti a bez znatelného blokování UI. Callback musí mít rezervu do délky bloku; sledovat i špičky, nejen průměr.
@@ -555,7 +555,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w41"></a>
 #### W41 — Instalátor a čistý Windows počítač
 
-- [ ] Čeká. Závislosti: W02, W05, W36, W40.
+- [ ] Implementováno: [W41](docs/windows/w41/README.md); sestavení instalátoru a instalační cyklus čekají na Windows kontrolu. Čistá offline VM a Smart App Control nejsou potvrzené. Závislosti: W02, W05, W36, W40.
 - Ověřit model z W02: unpackaged WinUI aplikace s jednoduchým instalátorem pro daného uživatele. Zvolit nástroj a jeho licenci; MSIX je alternativa pouze při prokázané potřebě. Před cíleným balíkem potvrdit bratrův Windows a kompatibilitu zvolených závislostí.
 - Zahrnout správnou architekturu knihoven a potřebné runtime závislosti podle zvoleného modelu instalace: Windows App SDK, .NET, C++ runtime a případně WebView2. Stanovit chování bez internetu a administrátorských práv.
 - Placený certifikát není podmínkou tohoto soukromého předání. Ověřit a popsat skutečné chování Windows u výsledného balíku, včetně případného upozornění. Pokud bude zvolen podpis, chránit klíč; nepožadovat obecné vypnutí ochrany Windows.
@@ -564,7 +564,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w42"></a>
 #### W42 — Aktualizace, kompatibilita a návrat verze
 
-- [ ] Čeká. Závislosti: W09, W11, W41.
+- [ ] Implementováno: [W42](docs/windows/w42/README.md); kompatibilní obnova a přerušení se kontrolují místně, skutečný instalační preflight čeká na Windows běh. Závislosti: W09, W11, W41.
 - Zavést verzi aplikace, formátu projektu i databáze, kontrolu kompatibility a migrační zálohu. Aktualizace se nenainstaluje ani nerestartuje aplikaci uprostřed nahrávání.
 - Použít ruční předání nové verze podle W02. Stažený balík musí mít ověřený původ a integritu; aplikace se má dát dál používat offline. Samotný kontrolní součet nenahrazuje ověření původu.
 - Ověřit aktualizaci přes existující instalaci a rollback. Pokud starší verze neumí nové schéma, nabídnout kompatibilní zálohu místo pokusu otevřít data naslepo.

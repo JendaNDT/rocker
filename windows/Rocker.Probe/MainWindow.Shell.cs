@@ -163,7 +163,7 @@ public sealed partial class MainWindow
     private async void About_Click(object sender, RoutedEventArgs args)
     {
         if (closingWindow) return;
-        var dialog = new ContentDialog { XamlRoot = ShellRoot.XamlRoot, Title = "Rocker", Content = "Nativní kytarový pomocník pro Windows. Rozpracovaná verze 0.1.0.\nWinUI 3 a společné C++ zvukové jádro.\nLicence a samostatné zdroje jsou součástí podkladů k předání.", CloseButtonText = "Zavřít" };
+        var dialog = new ContentDialog { XamlRoot = ShellRoot.XamlRoot, Title = "Rocker", Content = $"Nativní kytarový pomocník pro Windows · verze {typeof(App).Assembly.GetName().Version!.ToString(3)}.\nLekce, aparát, metronom, nahrávky, Looper, Studio a knihovna.\nLicence najdeš u aplikace; odpovídající zdroje lze stáhnout zvlášť u stejného vydání.", CloseButtonText = "Zavřít" };
         try { await dialog.ShowAsync(); } catch (InvalidOperationException) { }
     }
     // Each recording/project feature registers its actual state and actions.

@@ -1,0 +1,14 @@
+{
+  "runId": 38188156041,
+  "runUrl": "https://github.com/JendaNDT/rocker/actions/runs/38188156041",
+  "commit": "a57e5e5f4495f5df214bdd7242d088e7bfd6e365",
+  "result": "passed",
+  "check": {
+    "result": "passed",
+    "syntheticWindowMessages": true,
+    "suspendStoppedAudio": true,
+    "resumeRemainedSilent": true,
+    "physicalSuspendVerified": false
+  },
+  "hardwareVerified": false
+}

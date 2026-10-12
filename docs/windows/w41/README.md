@@ -1,0 +1,9 @@
+# W41 — per-user native installer
+
+Pinned Inno Setup 6.7.3 (free license and upstream SHA256 in `windows/installer/toolchain.json`) builds a Czech unsigned x64 installer. No admin elevation, .NET development tools or runtime install is required: the published .NET/Windows App SDK are self-contained and C++ uses the static CRT. Windows 11 24H2 x64 is required. The M-Audio driver is provided by its manufacturer; optional Evergreen WebView2 is not silently downloaded by this installer. Offline tools work without it, YouTube reports its absence.
+
+Each build installs into `%LOCALAPPDATA%/Programs/Rocker/versions/<version>-<commit>`. Start shortcuts and the stable YouTube AppUserModelID are registered per user. `.rockerproj` has a quoted native open command, OpenWithProgids and a default only if none exists; uninstall removes that default only if it still belongs to Rocker. An app-held mutex prevents setup closing a live application/recording. Existing version directories remain available for rollback. Uninstall never removes `%LOCALAPPDATA%/Rocker`.
+
+`installer/smoke.ps1` installs on the Windows runner, runs the real installed WinUI checks, corrupts then repairs a native DLL to its exact checksum, registers the association, launches a Unicode project into Studio and uninstalls while preserving a database and sentinel. It checks only the described disposable profile/runner; it is not an offline clean VM or the brother's hardware, and enabled Smart App Control is unverified. No protection change is requested.
+
+Updates also run the new application's cold maintenance entry point before switching the current shortcut/state. Failure retains the old version/state and data. W42 describes profile backups and compatibility recovery. Sources are packaged separately; licenses remain included as required.

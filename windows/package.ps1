@@ -101,25 +101,40 @@ foreach ($root in $assets.packageFolders.Keys) {
 Get-ChildItem (Join-Path $juce 'modules/juce_core/zip') -Recurse -File -Filter '*zlib*.h' | ForEach-Object {
     Copy-Item $_.FullName (Join-Path $licenses ($_.Name + '.txt'))
 }
+Copy-Item (Join-Path $repository 'LICENSE') (Join-Path $licenses 'pwa-exporter-MIT.txt')
+Copy-Item (Join-Path $repository 'docs/windows/w40/evidence/inno-setup-license.txt') $licenses
 $sourceUrl = "https://github.com/JendaNDT/rocker/tree/$commit"
 @"
-ROCKER - TESTOVACÍ PROTOTYP PRO WINDOWS
+ROCKER — WINDOWS
 
-1. Rozbal celý ZIP do vlastní složky (Extrahovat vše).
-2. Spusť Rocker.Probe.exe. Ostatní soubory ponech vedle něj.
-3. Začni s nízkou hlasitostí a tlačítkem Spustit tón; Zastavit tón ukončí.
+Spusť instalační soubor Rocker-Windows-Setup a potom Rocker z nabídky Start.
+Pokud používáš přenosný ZIP, zvol Extrahovat vše a spusť Rocker.Probe.exe.
+Vývojové nástroje ani stahování zdrojů nejsou potřeba.
+Vyžaduje Windows 11 x64 od 24H2. .NET a Windows App SDK jsou součástí aplikace.
 
-Vyžaduje Windows 11 x64 od 24H2. Vývojové nástroje nejsou potřeba.
-Toto je technický prototyp s testovacím tónem a notovým náhledem, ne kompletní Rocker.
-Noty se vykreslují nativně; lze otevřít MusicXML/Guitar Pro, vybrat takt a uložit MIDI.
-Nahrávky a jednoduchý syntetický strunný zvuk not používají společný C++ přehrávač.
-Lze přehrávat, zastavit, změnit pozici, hlasitost a rychlost bez změny výšky tónů.
-Bicí, ohýbání tónů a pokročilé notové nástroje zatím nejsou dokončené.
-YouTube používá oficiální přehrávač přes systémový WebView2; vyžaduje internet.
-CI ověřuje místní propojení; online video a souběh zvuku vyžadují závěrečnou přejímku.
-Zvuk, skutečná odezva a chování na tvém zařízení vyžadují ruční ověření.
-Balík není podepsaný certifikátem. Zapnutý Smart App Control může blokovat jeho DLL.
-Tato verze není ověřená se zapnutým Smart App Control; podepisování zatím není připravené.
+Průvodce nastaví profil kytary, převod webových dat a zvukovou kartu.
+Pro M-Audio M-Track Solo nainstaluj oficiální ovladač od výrobce, pokud není
+nainstalovaný. Vyber tuto kartu, její výstup a jediný vstup s kytarou.
+Sluchátka připoj ke stejné kartě. Monitoring se zapíná výslovně v Live;
+začni nízkou hlasitostí. Přehrávání, efekty, metronom, záznam i looper používají
+společné nativní jádro. Skutečnou odezvu a stabilní buffer ověř při hře.
+
+Lekce, ladička, trenažéry, knihovna, noty, nahrávky, Looper, Studio, plány,
+profil a statistiky fungují místně. Převod původní PWA je v Zálohy a soubory.
+Původní webová data se nemažou. Vytvářej zálohy včetně nahrávek a projektů.
+Noty mají vlastní syntetický strunný/bicí zvuk; není to plná banka GM nástrojů.
+YouTube používá oficiální přehrávač a vyžaduje internet a WebView2 runtime.
+AI je volitelná, vyžaduje vlastní klíč OpenAI; uložený Gemini klíč se nepoužije
+u jiného poskytovatele. Čistě osobní Gemini cesta je v této verzi blokovaná
+podle aktuálních podmínek poskytovatele. Žádná zvuková nahrávka se AI neposílá.
+
+Odinstalace ponechá data v %LOCALAPPDATA%\Rocker. Před aktualizací zavři Rocker;
+instalátor jej nebude ukončovat uprostřed nahrávání. Předchozí verze a záloha
+zůstávají pro návrat; novější schéma se starší verzí neotevře naslepo.
+Balík není podepsaný certifikátem. Smart App Control může jeho DLL blokovat;
+kompatibilita se zapnutým Smart App Control není potvrzená.
+Automatické kontroly nejsou potvrzením poslechu, online AI/YouTube,
+Narratoru ani skutečné odezvy na M-Track. Ty patří do závěrečné přejímky.
 
 Verze zdrojů: $commit
 Zdrojový repozitář: $sourceUrl
@@ -147,6 +162,8 @@ Licence a oznámení jsou ve složce licenses; vlastní Windows kód je pod AGPL
     checkedWindow = $smoke
     toolchain = (Get-Content (Join-Path $reports 'toolchain.json') -Raw | ConvertFrom-Json)
 } | ConvertTo-Json -Depth 8 | Set-Content (Join-Path $app 'build-info.json')
+
+& (Join-Path $PSScriptRoot 'license-audit.ps1') -ApplicationDirectory $app -AssetsFile (Join-Path $PSScriptRoot 'Rocker.Probe/obj/project.assets.json')
 
 # Sources are offered separately; Git archives exclude credentials and build caches.
 Invoke-Git @('-C', $repository, 'archive', '--format=zip', "--output=$(Join-Path $sources 'rocker-source.zip')", 'HEAD')
@@ -176,12 +193,14 @@ The WebM decoder uses the Opus implementation already included in the full JUCE 
 MP4/AAC decoding uses optional system Media Foundation; no Windows codec DLL is bundled.
 "@ | Set-Content (Join-Path $sources 'BUILD-SOURCES.txt')
 Copy-Item (Join-Path $app 'build-info.json') $sources
+[xml]$properties=Get-Content (Join-Path $PSScriptRoot 'Directory.Build.props') -Raw
+& (Join-Path $PSScriptRoot 'installer/build.ps1') -ApplicationDirectory $app -PackageDirectory $packages -Version $properties.Project.PropertyGroup.VersionPrefix -Revision $commit
 foreach ($item in @(@{ Name = 'Rocker-Windows-x64.zip'; Directory = $app },
                     @{ Name = 'Rocker-Windows-sources.zip'; Directory = $sources })) {
     $destination = Join-Path $packages $item.Name
     [IO.Compression.ZipFile]::CreateFromDirectory($item.Directory, $destination, [IO.Compression.CompressionLevel]::Optimal, $false)
 }
-Get-ChildItem $packages -Filter '*.zip' | Sort-Object Name | ForEach-Object {
+Get-ChildItem $packages -File | Where-Object {$_.Extension -in @('.zip','.exe')} | Sort-Object Name | ForEach-Object {
     "$((Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant())  $($_.Name)"
 } | Set-Content (Join-Path $packages 'SHA256SUMS.txt')
 Write-Output "Runnable and separate source ZIPs created in $packages."

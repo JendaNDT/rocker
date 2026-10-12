@@ -9,7 +9,7 @@ public partial class App : Application
 {
     [DllImport("shell32.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
     private static extern int SetCurrentProcessExplicitAppUserModelID(string appId);
-    private Window? window;private Mutex? instanceMutex;private bool ownsInstance;private CancellationTokenSource? instanceCancellation;private Task? instanceListener;
+    private Mutex? setupGuard;private bool ownsSetupGuard;private Window? window;private Mutex? instanceMutex;private bool ownsInstance;private CancellationTokenSource? instanceCancellation;private Task? instanceListener;
     public App()
     {
         UnhandledException += (_, args) => LogStartupFailure(args.Exception, args.Message);
@@ -23,10 +23,14 @@ public partial class App : Application
             string root=new UserFiles(Environment.GetEnvironmentVariable("ROCKER_USER_DATA_DIR")).Root;string identity=System.Security.Principal.WindowsIdentity.GetCurrent().User!.Value+"|"+root.ToUpperInvariant();string name="Rocker-"+Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(identity)))[..32];
             instanceMutex=new Mutex(true,"Local\\"+name,out bool created);ownsInstance=created;if(!created){try{ownsInstance=instanceMutex.WaitOne(0);}catch(AbandonedMutexException){ownsInstance=true;}}
             string request=Environment.GetCommandLineArgs().Skip(1).FirstOrDefault(v=>v!="--")??"";
+            if(!ownsInstance && request=="--prepare-update"){Environment.ExitCode=2;Exit();return;}
             if(!ownsInstance){using var timeout=new CancellationTokenSource(TimeSpan.FromSeconds(5));await InstanceChannel.SendAsync(name,request,timeout.Token);instanceMutex.Dispose();Exit();return;}
+            await ColdProfileRecovery.RecoverInterruptedAsync(new UserFiles(root));
+            if(request=="--prepare-update"){try{if(System.Diagnostics.Process.GetProcessesByName(System.Diagnostics.Process.GetCurrentProcess().ProcessName).Any(process=>{using(process)return process.Id!=Environment.ProcessId;}))throw new IOException("Před aktualizací zavři všechny běžící verze Rockeru.");await UpdatePreparation.CreateAsync(new UserFiles(root),typeof(App).Assembly.GetName().Version!.ToString());Environment.ExitCode=0;}catch(Exception error){LogStartupFailure(error,"Update backup failed; existing data retained.");Environment.ExitCode=1;}Exit();return;}
+            setupGuard=new Mutex(true,"Local\\JendaNDT.Rocker.SetupGuard",out ownsSetupGuard);if(!ownsSetupGuard){try{ownsSetupGuard=setupGuard.WaitOne(0);}catch(AbandonedMutexException){ownsSetupGuard=true;}}
             Marshal.ThrowExceptionForHR(SetCurrentProcessExplicitAppUserModelID(VideoProtocol.AppId));
             var main=new MainWindow();window=main;main.QueueFileActivation(request);main.Activate();instanceCancellation=new();instanceListener=ObserveInstanceListenerAsync(name,main,instanceCancellation.Token);
-            main.Closed+=(_,_)=>{instanceCancellation.Cancel();if(ownsInstance){instanceMutex.ReleaseMutex();ownsInstance=false;}instanceMutex.Dispose();};
+            main.Closed+=(_,_)=>{instanceCancellation.Cancel();if(ownsSetupGuard){setupGuard!.ReleaseMutex();ownsSetupGuard=false;}setupGuard?.Dispose();if(ownsInstance){instanceMutex.ReleaseMutex();ownsInstance=false;}instanceMutex.Dispose();};
         }
         catch (Exception error) { LogStartupFailure(error); throw; }
     }
