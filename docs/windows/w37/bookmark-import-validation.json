@@ -1,0 +1,12 @@
+{
+  "result": "passed",
+  "checks": 13,
+  "sourceGroups": 11,
+  "recordings": 5,
+  "recordingBytesAndMetadataPreserved": true,
+  "duplicateImportVerified": true,
+  "cancelVerified": true,
+  "originalBrowserDataDeleted": false,
+  "realPersonalProfileUsed": false,
+  "physicalPlaybackVerified": false
+}

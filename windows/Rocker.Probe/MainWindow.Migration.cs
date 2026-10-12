@@ -10,6 +10,7 @@ public sealed partial class MainWindow
     {
         var panel=Stack();panel.Children.Add(Text("Převod z webové aplikace"));
         panel.Children.Add(Text("Ve stejném prohlížeči a profilu otevři původní Rocker. Export pro Windows zahrnuje nahrávky i značky; stará záloha JSON přenese pouze nastavení a pokrok. Webová data se nemažou.",true));
+        var helper=new Button{Content="Pomocník pro export z původního prohlížeče"};helper.Click+=async(_,_)=>{try{var file=await Windows.Storage.StorageFile.GetFileFromPathAsync(System.IO.Path.Combine(AppContext.BaseDirectory,"PwaMigration","helper.html"));await Windows.System.Launcher.LaunchFileAsync(file);}catch(Exception){ShowPersistenceError("Pomocníka nelze otevřít. Použij export pro Windows v původní webové aplikaci nebo její JSON zálohu.");}};panel.Children.Add(helper);
         var import=new Button{Content="Otevřít soubor pro převod…",IsEnabled=persistenceReady};var status=Text("Podporované soubory: .rockermigration a původní .json zálohy.",true);
         import.Click+=async (_,_)=>
         {
@@ -32,7 +33,7 @@ public sealed partial class MainWindow
                 var result=await service.CommitAsync(migration,choice.SelectedIndex==0?RestoreStrategy.MergeKeepCurrent:RestoreStrategy.ReplaceIncluded,key.IsChecked==true);
                 lessonSessions.Clear();completedLessons.Clear();savedLessonPositions.Clear();persistenceReady=false;await InitializePersistenceAsync();
                 ShellNotice.IsOpen=true;ShellNotice.Title="Webová data převedena";ShellNotice.Severity=result.SecretFailed?InfoBarSeverity.Warning:InfoBarSeverity.Success;
-                ShellNotice.Message=$"Převzato {result.Data.Imported}, zachováno {result.Data.KeptCurrent}. Původní webová data zůstávají."+(result.SecretFailed?" AI klíč se neuložil; zadej ho znovu v Nastavení.":result.SecretImported?" AI klíč chrání Windows.":"");
+                ShellNotice.Message= $"Převzato {result.Data.Imported}, zachováno {result.Data.KeptCurrent}, poznámek k převodu {migration.Warnings.Count}. Původní webová data zůstávají."+(result.SecretFailed?" AI klíč se neuložil; zadej ho znovu v Nastavení.":result.SecretImported?" AI klíč chrání Windows.":"");
             }
             catch(Exception){status.Text="Převod se nezdařil. Zkontroluj formát, dostupnost médií a volné místo. Původní webový soubor se nepřepisuje.";}
             finally{backupOperationRunning=false;if(!closed){ShellInteractionRoot.IsEnabled=true;import.IsEnabled=persistenceReady;}}

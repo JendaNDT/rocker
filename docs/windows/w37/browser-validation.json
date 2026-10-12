@@ -1,0 +1,19 @@
+{
+  "result": "passed",
+  "browser": "154.0.8037.57",
+  "pwaOrigin": "http://127.0.0.1:3010",
+  "uiExporterVerified": true,
+  "bookmarkExporterVerified": true,
+  "fixtureGroups": 11,
+  "fixtureRecordings": 5,
+  "confirmationDialogs": 1,
+  "syntheticSecretRedacted": true,
+  "preserved": {
+    "keys": 11,
+    "profile": "Referenční kytara W01",
+    "recordings": 5
+  },
+  "sourceDataDeleted": false,
+  "realPersonalProfileUsed": false,
+  "originalProductionModified": false
+}

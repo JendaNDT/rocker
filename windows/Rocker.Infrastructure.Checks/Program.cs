@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 using Rocker.Infrastructure;
+if(args.Length==3 && args[0]=="--browser-migration"){await BrowserMigrationChecks.RunAsync(args[1],args[2]);return;}
 if(args.Length==3 && args[0]=="--capture-crash"){await RecordingChecks.CrashAsync(args[1],args[2]);return;}
 if (args.Length == 3 && args[0] == "--crash-writer") { await StorageChecks.CrashWriterAsync(args[1],args[2]); return; }
 var directory = Path.Combine(Path.GetTempPath(), "rocker-file-check-" + Guid.NewGuid().ToString("N"));

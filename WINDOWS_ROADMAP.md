@@ -517,7 +517,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w37"></a>
 #### W37 — Ověřit skutečný přechod z webové verze
 
-- [ ] Čeká. Závislosti: W12, W22–W24, W31, W32, W35.
+- [ ] Automatický skutečný browser → SQLite prošel: [W37](docs/windows/w37/README.md); Windows import naváže v buildu. Osobní profil ani živá PWA nebyly měněné. Závislosti: W12, W22–W24, W31, W32, W35.
 - Projít export ze skutečného testovacího browser profilu a import do čisté Windows instalace. Porovnat nastavení, postup, vlastní ladění a presety, YouTube smyčky, AI historii i metadata a přehratelnost nahrávek.
 - Ověřit starší zálohu, prázdný profil, opakovaný import, částečně poškozený archiv, chybějící zvuk a nepodporovanou budoucí verzi. Report musí ukázat počty přijatých, duplicitních a odmítnutých položek.
 - Zajistit návrat k předchozímu desktopovému stavu po přerušeném importu. PWA data zůstávají dostupná; v paměti neuložené Studio či Looper nelze zpětně vydávat za migrované.

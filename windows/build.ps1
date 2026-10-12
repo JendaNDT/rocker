@@ -36,6 +36,9 @@ try {
         (Join-Path $PSScriptRoot '../docs/windows/baseline/fixtures/domain-cases.json'),
         (Join-Path $PSScriptRoot 'content/catalog.json'), (Join-Path $reportDirectory 'domain-checks.json'))
     Invoke-Checked 'dotnet' @('run', '--project', 'Rocker.Infrastructure.Checks', '-c', 'Release', '--no-restore', '--', (Join-Path $reportDirectory 'storage-checks.json'))
+    foreach ($browserKind in @('ui','bookmark')) {
+        Invoke-Checked 'dotnet' @('run','--project','Rocker.Infrastructure.Checks','-c','Release','--no-restore','--','--browser-migration', (Join-Path $PSScriptRoot "../docs/windows/w37/fixtures/$browserKind.rockermigration"), (Join-Path $reportDirectory "browser-$browserKind-import.json"))
+    }
     @{
         os = [Environment]::OSVersion.VersionString
         cl = (Get-Command cl.exe).Source
