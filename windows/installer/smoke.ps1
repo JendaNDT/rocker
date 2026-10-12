@@ -91,7 +91,10 @@ try {
     $deadline=[DateTime]::UtcNow.AddSeconds(45)
     while(-not (Test-Path $env:ROCKER_ACTIVATION_REPORT) -and [DateTime]::UtcNow -lt $deadline){if($process.HasExited){throw 'Installed file activation exited unexpectedly.'};Start-Sleep -Milliseconds 100}
     $activation=Get-Content $env:ROCKER_ACTIVATION_REPORT -Raw | ConvertFrom-Json
-    if($activation.result -ne 'passed' -or $activation.kind -ne 'Project' -or $activation.view -ne '15'){throw 'Installed project file did not open the native Studio.'}
+    if($activation.result -ne 'passed' -or $activation.kind -ne 'Project' -or $activation.view -ne '15' -or $activation.canonicalPath -ne [IO.Path]::GetFullPath($project) -or $activation.projectName -ne 'Asociace projektu'){throw 'Installed project file did not open the native Studio.'}
+    $importedProject=Join-Path $profile ('projects/'+([Guid]$activation.projectId).ToString('N')+'/project.rockerproj')
+    $restoredProject=Get-Content $importedProject -Raw | ConvertFrom-Json
+    if($restoredProject.name -ne 'Asociace projektu' -or $restoredProject.tracks.Count -ne 0){throw 'Installed project activation did not preserve the imported manifest.'}
     $process.Refresh();if(-not $process.CloseMainWindow()){throw 'Installed application has no closable native window.'};if(-not $process.WaitForExit(30000) -or $process.ExitCode -ne 0){throw 'Installed application failed graceful close.'}
     $uninstall=Start-Process (Join-Path $install 'unins000.exe') -ArgumentList @('/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART') -Wait -PassThru
     if($uninstall.ExitCode -ne 0 -or (Test-Path $executable)){throw 'Uninstall left the installed executable.'}
