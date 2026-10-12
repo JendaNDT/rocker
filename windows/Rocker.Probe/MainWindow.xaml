@@ -52,12 +52,12 @@
             <MenuBarItem Title="Nápověda"><MenuFlyoutItem Text="Návod k používání" Click="Guide_Click" /><MenuFlyoutItem Text="O aplikaci Rocker" Click="About_Click" /></MenuBarItem>
         </MenuBar>
         <NavigationView x:Name="Navigation" Grid.Row="1" IsSettingsVisible="False" PaneDisplayMode="Auto"
-                        OpenPaneLength="220" ExpandedModeThresholdWidth="1040" CompactModeThresholdWidth="640"
+                        OpenPaneLength="192" ExpandedModeThresholdWidth="900" CompactModeThresholdWidth="640"
                         SelectionChanged="Navigation_SelectionChanged" BackRequested="Navigation_BackRequested" IsBackButtonVisible="Visible"
                         AutomationProperties.Name="Pracovní pohledy Rockeru">
             <NavigationView.PaneHeader><TextBlock Text="ROCKER" FontSize="22" FontWeight="SemiBold" Margin="16,12" Foreground="{ThemeResource VintageAccent}" /></NavigationView.PaneHeader>
             <ScrollViewer HorizontalScrollBarVisibility="Disabled">
-                <StackPanel Margin="24,12,24,24" Spacing="16" MaxWidth="1100" HorizontalAlignment="Stretch">
+                <StackPanel Margin="24,12,24,24" Spacing="12" MaxWidth="1100" HorizontalAlignment="Stretch">
                     <TextBlock x:Name="WorkspaceTitle" Text="Přehled" Style="{ThemeResource TitleTextBlockStyle}" />
                     <TextBlock x:Name="WorkspaceTrail" Text="Rocker / Přehled" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                     <InfoBar x:Name="ShellNotice" IsOpen="False" IsClosable="True" Severity="Informational" Title="Rocker"
@@ -172,7 +172,7 @@
                 </StackPanel>
             </ScrollViewer>
         </NavigationView>
-        <Border x:Name="MediaPanel" Grid.Row="2" Background="{ThemeResource VintagePanel}" Padding="16,8">
+        <Border x:Name="MediaPanel" Grid.Row="2" Background="{ThemeResource VintagePanel}" Padding="16,4" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="0,1,0,0">
             <StackPanel Spacing="4">
                 <InfoBar x:Name="PracticeRestNotice" IsOpen="False" IsClosable="True" Severity="Informational" Title="Cvičení" />
                 <Grid x:Name="PracticeRow" ColumnSpacing="16">
@@ -189,15 +189,17 @@
                     <Button x:Name="CompletePlan" Content="Označit blok jako hotový" Click="CompletePlan_Click" />
                     <TextBlock x:Name="PlanTaskLabel" TextWrapping="Wrap" VerticalAlignment="Center" />
                 </StackPanel>
-                <Grid>
-                    <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="120" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
-                    <TextBlock x:Name="MediaTitle" Text="Připrav nahrávku nebo noty" FontSize="16" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
-                    <Slider x:Name="VolumeSlider" Grid.Column="1" Minimum="0" Maximum="100" Value="15" ValueChanged="Volume_Changed"
-                            AutomationProperties.Name="Hlasitost přehrávání" ToolTipService.ToolTip="Hlasitost přehrávání" />
-                    <CommandBar x:Name="MediaButtons" Grid.Column="2" DefaultLabelPosition="Collapsed" ClosedDisplayMode="Compact" Background="{ThemeResource VintagePanel}">
-                        <AppBarButton x:Name="OpenMediaButton" Label="Otevřít nahrávku" Icon="OpenFile" Click="OpenMedia_Click" />
-                        <AppBarButton x:Name="PlayMediaButton" Label="Přehrát" Icon="Play" Click="PlayMedia_Click" IsEnabled="False" />
+                <Grid x:Name="MediaTransportRow" ColumnSpacing="12">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                    <TextBlock x:Name="MediaTitle" Text="Připrav nahrávku nebo noty" FontSize="14" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                    <CommandBar x:Name="MediaButtons" Grid.Column="1" DefaultLabelPosition="Right" ClosedDisplayMode="Compact" Background="{ThemeResource VintagePanel}">
+                        <AppBarButton x:Name="PlayMediaButton" Label="Přehrát" Icon="Play" Click="ToggleMedia_Click" IsEnabled="False" />
                         <AppBarButton x:Name="StopButton" Label="Zastavit" Icon="Stop" AccessKey="Z" Click="Stop_Click" IsEnabled="False" />
+                        <AppBarButton Label="Hlasitost" Icon="Volume">
+                            <AppBarButton.Flyout><Flyout><Slider x:Name="VolumeSlider" Header="Hlasitost přehrávání" Width="200" Minimum="0" Maximum="100" Value="15" ValueChanged="Volume_Changed" AutomationProperties.Name="Hlasitost přehrávání" /></Flyout></AppBarButton.Flyout>
+                        </AppBarButton>
+                        <CommandBar.SecondaryCommands>
+                        <AppBarButton x:Name="OpenMediaButton" Label="Otevřít nahrávku" Icon="OpenFile" Click="OpenMedia_Click" />
                         <AppBarButton x:Name="RewindButton" Label="Na začátek" Icon="Previous" Click="Rewind_Click" IsEnabled="False" />
                         <AppBarButton Label="Rychlost přehrávání" Icon="Setting">
                             <AppBarButton.Flyout><Flyout><StackPanel Spacing="12" Width="220">
@@ -212,22 +214,24 @@
                                 <TextBlock Text="Nová rychlost se připraví na pozadí; monitoring kytary pokračuje." TextWrapping="Wrap" />
                             </StackPanel></Flyout></AppBarButton.Flyout>
                         </AppBarButton>
+                        <AppBarButton Label="Informace o přehrávání" Icon="Help">
+                            <AppBarButton.Flyout><Flyout><TextBlock x:Name="MediaStatus" MaxWidth="320" Text="Otevři nahrávku nebo noty přes nabídku Soubor." TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" /></Flyout></AppBarButton.Flyout>
+                        </AppBarButton>
+                        </CommandBar.SecondaryCommands>
                     </CommandBar>
                 </Grid>
-                <Grid>
+                <Grid x:Name="MediaSeekRow">
                     <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
                     <Slider x:Name="PositionSlider" Minimum="0" Maximum="1" Value="0" IsEnabled="False"
                             KeyDown="Position_KeyDown" KeyUp="Position_KeyUp" AutomationProperties.Name="Pozice přehrávání; změna zastaví zvuk" />
                     <TextBlock x:Name="PositionText" Grid.Column="1" Text="0:00 / 0:00" VerticalAlignment="Center" Margin="16,0,0,0" />
                 </Grid>
-                <TextBlock x:Name="MediaStatus" Text="Zvuk se spustí až tlačítkem. WAV, MP3, Ogg/Opus, WebM/Opus a Windows MP4/AAC."
-                           TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />
             </StackPanel>
         </Border>
-        <Border Grid.Row="3" Padding="16,8" Background="{ThemeResource VintagePanel}">
+        <Border Grid.Row="3" Padding="16,4" Background="{ThemeResource VintageBackground}">
             <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
-                <TextBlock x:Name="StatusText" Text="Připravuji zvukovou knihovnu…" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />
-                <TextBlock x:Name="ShellStateText" Grid.Column="1" Text="Nativní Windows" Margin="16,0,0,0" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                <TextBlock x:Name="StatusText" Text="Připravuji zvuk…" FontSize="12" TextTrimming="CharacterEllipsis" AutomationProperties.LiveSetting="Polite" />
+                <TextBlock x:Name="ShellStateText" Grid.Column="1" Text="Rocker" FontSize="12" Margin="16,0,0,0" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
             </Grid>
         </Border>
     </Grid>

@@ -26,14 +26,36 @@ public sealed partial class MainWindow
     private NavigationTarget DailyTarget(PlanItem item)=>item.LessonId is not null?new("06",item.LessonId):item.TrainerId=="surgical"?new("09",catalog!.Items("surgicalExercises").First().GetProperty("id").GetString()):item.TrainerId=="riff"?new("19",catalog!.Items("riffs").First().GetProperty("id").GetString()):new(item.Href switch{"/tuner"=>"03","/metronome"=>"04","/youtube"=>"08",_=>"05"});
     private FrameworkElement BuildOverview()
     {
-        var panel=Stack();panel.Children.Add(Text("Pojďme si zahrát."));var summary=Stack();summary.Children.Add(Text("Kytara: "+instrumentProfile.Name));summary.Children.Add(Text($"{CurrentTuning().Label} · dokončené lekce {completedLessons.Count}/{catalog!.Lessons.Count}",true));var live=new Button{Content="Otevřít Live · ladění, metronom a nahrávání"};live.Click+=(_,_)=>Navigate(new("02"));summary.Children.Add(live);
-        if(appSettings.ResumeTask is { } resume){var next=new Button{Content="Pokračovat · "+TaskTitle(resume)};next.Click+=(_,_)=>Navigate(resume);summary.Children.Add(next);}panel.Children.Add(Card(summary));
-        var select=new ComboBox{Header="Cvičební plán",ItemsSource=new[]{"Denní plán bez AI","Uložený AI plán"},SelectedIndex=planKind=="ai"?1:0};select.SelectionChanged+=(_,_)=>{planKind=select.SelectedIndex==1?"ai":"daily";workspaceCache.Remove(new("01"));ShowWorkspace();};panel.Children.Add(select);
-        if(planKind=="ai" && aiSettings.Plan is null){panel.Children.Add(Text("Zatím nemáš uložený AI plán. Denní plán funguje bez účtu i internetu.",true));var create=new Button{Content="Navrhnout AI plán"};create.Click+=(_,_)=>Navigate(new("24"));panel.Children.Add(create);return panel;}
-        string key=CurrentPlanKey;var tasks=CurrentPlanTasks();panel.Children.Add(Text($"{tasks.Sum(t=>t.Minutes)} minut · hotovo {tasks.Count(t=>PlanDone(key,t.Id))}/{tasks.Count}",true));
-        foreach(var task in tasks){var row=Stack();row.Children.Add(Text($"{(PlanDone(key,task.Id)?"Hotovo · ":"")}{task.Title} · {task.Minutes} min"));row.Children.Add(Text(task.Detail,true));row.Children.Add(Text("Otevře: "+TaskTitle(task.Target),true));var open=new Button{Content="Otevřít tento blok"};open.Click+=(_,_)=>OpenPlanTask(key,task);row.Children.Add(open);panel.Children.Add(Card(row));}
-        var remaining=tasks.FirstOrDefault(t=>!PlanDone(key,t.Id));if(remaining is not null){var next=new Button{Content="Další krok · "+remaining.Title};next.Click+=(_,_)=>OpenPlanTask(key,remaining);panel.Children.Add(next);}else{panel.Children.Add(Text("Plán je dokončený. Ulož si hru v Live, nebo se vrať k některému bloku.",true));}
-        panel.Children.Add(Text("Hotový blok potvrzuješ sám. Označení neznamená automaticky změřenou přesnost ani nepřičítá minuty.",true));return panel;
+        var panel=Stack();
+        string key=CurrentPlanKey;
+        bool missingAi=planKind=="ai" && aiSettings.Plan is null;
+        var tasks=missingAi?Array.Empty<PlanTask>():CurrentPlanTasks();
+        int done=tasks.Count(t=>PlanDone(key,t.Id));
+        var remaining=tasks.FirstOrDefault(t=>!PlanDone(key,t.Id));
+        var welcome=Stack();
+        var title=Text("Pojďme si zahrát.");title.FontSize=24;title.FontWeight=Microsoft.UI.Text.FontWeights.SemiBold;welcome.Children.Add(title);
+        welcome.Children.Add(Text(instrumentProfile.Name+" · "+CurrentTuning().Label,true));
+        welcome.Children.Add(Text(remaining is null?"Vyber si nástroj nebo si zahraj volně v Live.":"Další krok: "+remaining.Title,true));
+        var actions=Stack();
+        if(remaining is not null){var begin=PrimaryAction(done==0?(planKind=="ai"?"Začít AI plán":"Začít dnešní plán"):"Pokračovat v plánu");begin.Click+=(_,_)=>OpenPlanTask(key,remaining);actions.Children.Add(begin);}
+        var live=new Button{Content="Volné hraní v Live",MinHeight=40};live.Click+=(_,_)=>Navigate(new("02"));actions.Children.Add(live);
+        if(appSettings.ResumeTask is { } resume){var next=new Button{Content="Pokračovat · "+TaskTitle(resume),MinHeight=40};next.Click+=(_,_)=>Navigate(resume);actions.Children.Add(next);}
+        panel.Children.Add(Card(ResponsiveColumns(welcome,actions)));
+        var select=new ComboBox{Header="Cvičební plán",ItemsSource=new[]{"Denní plán · bez účtu a internetu","Můj uložený AI plán"},SelectedIndex=planKind=="ai"?1:0,HorizontalAlignment=HorizontalAlignment.Stretch};
+        select.SelectionChanged+=(_,_)=>{planKind=select.SelectedIndex==1?"ai":"daily";workspaceCache.Remove(new("01"));ShowWorkspace();};panel.Children.Add(select);
+        if(missingAi){panel.Children.Add(Text("Zatím nemáš uložený AI plán. Denní plán funguje bez účtu i internetu.",true));var create=new Button{Content="Navrhnout AI plán",MinHeight=40};create.Click+=(_,_)=>Navigate(new("24"));panel.Children.Add(create);return panel;}
+        panel.Children.Add(Text($"{tasks.Sum(t=>t.Minutes)} minut celkem · dokončeno {done} z {tasks.Count} bloků",true));
+        var progress=new ProgressBar{Minimum=0,Maximum=Math.Max(1,tasks.Count),Value=done,Height=4};Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(progress,"Dokončené bloky cvičebního plánu");panel.Children.Add(progress);
+        var cards=new List<FrameworkElement>();int number=0;
+        foreach(var task in tasks)
+        {
+            bool completed=PlanDone(key,task.Id);var row=Stack();row.Children.Add(Text($"{++number:00} · {task.Minutes} min"+(completed?" · hotovo":""),true));
+            var taskTitle=Text(task.Title);taskTitle.FontSize=18;taskTitle.FontWeight=Microsoft.UI.Text.FontWeights.SemiBold;row.Children.Add(taskTitle);row.Children.Add(Text(task.Detail,true));
+            var open=new Button{Content=completed?"Zopakovat blok":"Otevřít cvičení",MinHeight=40};open.Click+=(_,_)=>OpenPlanTask(key,task);row.Children.Add(open);cards.Add(Card(row));
+        }
+        panel.Children.Add(ResponsiveColumns(cards.ToArray()));
+        if(remaining is null)panel.Children.Add(Text("Dnešní plán je hotový. Můžeš si zahrát v Live nebo zopakovat některý blok.",true));
+        panel.Children.Add(Text("Hotový blok potvrzuješ sám. Čas se započítává až po zahájení cvičení a při aktivitě.",true));return panel;
     }
     private string TaskTitle(NavigationTarget target)
     {

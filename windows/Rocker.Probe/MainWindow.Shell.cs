@@ -13,6 +13,7 @@ public sealed partial class MainWindow
     private readonly UserFiles userFiles = new(Environment.GetEnvironmentVariable("ROCKER_USER_DATA_DIR"));
     private readonly NavigationSession navigation = new();
     private readonly Dictionary<string, NavigationViewItem> navigationItems = [];
+    private readonly Dictionary<string, NavigationViewItem> navigationParents = [];
     private readonly Dictionary<NavigationTarget, FrameworkElement> workspaceCache = [];
     private readonly Dictionary<string, LessonSession> lessonSessions = [];
     private readonly HashSet<string> completedLessons = [], visitedViews = [];
@@ -29,14 +30,16 @@ public sealed partial class MainWindow
     {
         foreach (var group in WorkspaceViews.All.GroupBy(view => view.Group))
         {
-            var parent = new NavigationViewItem { Content = group.Key, SelectsOnInvoked = false, Icon = new SymbolIcon(group.Key switch { "Přehled" => Symbol.Home, "Live" => Symbol.Play, "Cvičení" => Symbol.Edit, "Zvuk" => Symbol.Volume, "Knihovna" => Symbol.Library, "AI tutor" => Symbol.Message, _ => Symbol.Setting }) };
+            string? mainId = group.Key switch { "Přehled" => "01", "Live" => "02", "Nastavení" => "28", _ => null };
+            var parent = new NavigationViewItem { Content = group.Key, Tag = mainId, SelectsOnInvoked = mainId is not null, Icon = new SymbolIcon(group.Key switch { "Přehled" => Symbol.Home, "Live" => Symbol.Play, "Cvičení" => Symbol.Edit, "Zvuk" => Symbol.Volume, "Knihovna" => Symbol.Library, "AI tutor" => Symbol.Message, _ => Symbol.Setting }) };
             foreach (var view in group)
             {
+                navigationParents.Add(view.Id, parent);
+                if (view.Id == mainId) { navigationItems.Add(view.Id, parent); continue; }
                 var item = new NavigationViewItem { Content = view.Title, Tag = view.Id };
                 parent.MenuItems.Add(item); navigationItems.Add(view.Id, item);
             }
             Navigation.MenuItems.Add(parent);
-            if (group.Key == "Přehled") parent.IsExpanded = true;
         }
         try { catalog = ContentCatalog.Load(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "content", "catalog.json"))); }
         catch (Exception error) { ShellNotice.IsOpen=true;ShellNotice.Severity = InfoBarSeverity.Error; ShellNotice.Message = "Výukový obsah nelze načíst. " + error.Message; }
@@ -75,7 +78,9 @@ public sealed partial class MainWindow
         if(target.ViewId!="22" && (earHeard || earOperation))_ = PauseEarPreviewAsync();
         if(target.ViewId!="09" && surgicalListening){surgicalListening=false;UpdateSurgical();}
         visitedViews.Add(view.Id); Title = "Rocker — " + view.Title;
-        WorkspaceTitle.Text = view.Title; WorkspaceTrail.Text = "Rocker / " + view.Group + (target.ItemId is null ? "" : " / " + TaskTitle(target));
+        WorkspaceTitle.Text = view.Title; WorkspaceTrail.Text = WorkspaceDescription(target);
+        foreach (var parent in navigationParents.Values.Distinct()) if (parent != navigationParents[view.Id]) parent.IsExpanded = false;
+        if (navigationItems[view.Id] != navigationParents[view.Id]) navigationParents[view.Id].IsExpanded = true;
         selectingNavigation = true; Navigation.SelectedItem = navigationItems[view.Id]; selectingNavigation = false;
         Navigation.IsBackEnabled = BackMenu.IsEnabled = navigation.CanGoBack; ForwardMenu.IsEnabled = navigation.CanGoForward;
         NotationPanel.Visibility = view.Id == "20" ? Visibility.Visible : Visibility.Collapsed;
@@ -92,6 +97,7 @@ public sealed partial class MainWindow
         LabelNativeControls(ShellRoot);
         if(view.Id=="28")RefreshSettingsControls();
         RefreshPlanControls();
+        RefreshWorkspaceChrome();
         if(aiPages.TryGetValue(view.Id,out var aiPage) && !aiBusy)RefreshAiPage(aiPage);
         if (view.Id == "08" && !videoInitializationStarted) _ = EnsureVideoAsync();
     }
@@ -253,6 +259,7 @@ public sealed partial class MainWindow
         await VerifyFirstRunAsync();
         await VerifyFileCommandsAsync();
         await VerifyPowerRecoveryAsync();
+        await VerifyWorkspaceUxAsync();
         await VerifyAllDesignViewsAsync();
         await VerifyAccessibilityAsync();
         await VerifyDevicesAsync();

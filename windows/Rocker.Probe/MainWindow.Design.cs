@@ -8,7 +8,7 @@ public sealed partial class MainWindow
     private static FrameworkElement ResponsiveColumns(params FrameworkElement[] panels)
     {
         var grid=new Grid{ColumnSpacing=20,RowSpacing=16};foreach(var panel in panels)grid.Children.Add(panel);int currentColumns=0;
-        void Layout(double width){int columns=width>=780?2:1;if(columns==currentColumns)return;currentColumns=columns;grid.ColumnDefinitions.Clear();grid.RowDefinitions.Clear();for(int i=0;i<columns;++i)grid.ColumnDefinitions.Add(new(){Width=new GridLength(1,GridUnitType.Star)});for(int i=0;i<(panels.Length+columns-1)/columns;++i)grid.RowDefinitions.Add(new(){Height=GridLength.Auto});for(int i=0;i<panels.Length;++i){Grid.SetRow(panels[i],i/columns);Grid.SetColumn(panels[i],i%columns);}}
+        void Layout(double width){int columns=width>=720?2:1;if(columns==currentColumns)return;currentColumns=columns;grid.ColumnDefinitions.Clear();grid.RowDefinitions.Clear();for(int i=0;i<columns;++i)grid.ColumnDefinitions.Add(new(){Width=new GridLength(1,GridUnitType.Star)});for(int i=0;i<(panels.Length+columns-1)/columns;++i)grid.RowDefinitions.Add(new(){Height=GridLength.Auto});for(int i=0;i<panels.Length;++i){Grid.SetRow(panels[i],i/columns);Grid.SetColumn(panels[i],i%columns);}}
         Layout(0);grid.SizeChanged+=(_,e)=>Layout(e.NewSize.Width);return grid;
     }
     private static IEnumerable<DependencyObject> Descendants(DependencyObject root)

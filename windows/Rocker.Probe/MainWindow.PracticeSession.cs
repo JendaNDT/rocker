@@ -59,5 +59,6 @@ public sealed partial class MainWindow
     {
         UpdateWakeLock();
         PracticeStart.IsEnabled=persistenceReady && practiceSession.Phase!=PracticePhase.Running;PracticeStart.Content=practiceSession.Phase==PracticePhase.Paused?"Pokračovat ve cvičení":"Zahájit cvičení";PracticePause.IsEnabled=practiceSession.Phase==PracticePhase.Running;PracticeEnd.IsEnabled=practiceSession.Phase is PracticePhase.Running or PracticePhase.Paused;PracticeStatus.Text=(practiceSession.Phase switch{PracticePhase.Running=>"Cvičení běží; počítá se jen aktivita",PracticePhase.Paused=>"Cvičení pozastavené",PracticePhase.Ended=>"Cvičení ukončené",_=>"Cvičení není zahájené"})+" · aktivně "+FormatTime(practiceSession.TotalMs/1000);
+        RefreshWorkspaceChrome();
     }
 }

@@ -10,32 +10,33 @@ public sealed partial class MainWindow
     private LevelMeter? liveInputMeter,liveProcessedMeter,liveMixMeter;
     private TextBlock? liveState,liveDiagnostic;
     private CheckBox? liveMonitor;
+    private Button? liveStart,liveStop;private TextBlock? liveDevice;
     private double liveGain=0.15;
     private bool liveUpdating;
     private FrameworkElement BuildLive()
     {
         var panel=Stack();
-        var devices=new Button{Content="Vybrat kartu a vstup kytary"};devices.Click+=(_,_)=>Navigate(new("29"));panel.Children.Add(devices);
-        var start=new Button{Content="Spustit živý vstup"};start.Click+=LiveStart_Click;
-        var stop=new Button{Content="Zastavit a ztlumit"};stop.Click+=Stop_Click;
-        var buttons=new StackPanel{Orientation=Orientation.Horizontal,Spacing=8};buttons.Children.Add(start);buttons.Children.Add(stop);panel.Children.Add(buttons);
-        var tuner=Stack();tuner.Children.Add(Text("Ladění · skutečný vstup"));liveTunerNote=Text("—");liveTunerNote.FontSize=64;liveTunerCents=Text("Žádný aktuálně měřený tón.",true);liveTunerNeedle=new ProgressBar{Minimum=0,Maximum=100,Value=50};Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(liveTunerNeedle,"Live · odchylka v centech");tuner.Children.Add(liveTunerNote);tuner.Children.Add(liveTunerCents);tuner.Children.Add(liveTunerNeedle);var tune=new Button{Content="Ladění a referenční tóny"};tune.Click+=(_,_)=>Navigate(new("03"));tuner.Children.Add(tune);var left=Stack();left.Children.Add(Card(tuner));var right=Stack();
-        right.Children.Add(BuildCompactAmplifier());
-        right.Children.Add(BuildCompactMetronome());
-        right.Children.Add(Card(BuildRecordingControls()));
-        liveMonitor=new CheckBox{Content="Poslouchat kytaru ve sluchátkách (softwarový monitoring)",IsChecked=false};
-        liveMonitor.Checked+=LiveMonitoring_Changed;liveMonitor.Unchecked+=LiveMonitoring_Changed;left.Children.Add(liveMonitor);
-        var level=new Slider{Header="Hlasitost monitoringu",Minimum=0,Maximum=100,Value=liveGain*100};
-        Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(level,"Hlasitost monitoringu");
-        level.ValueChanged+=(_,args)=>{liveGain=args.NewValue/100;ApplyLiveMonitoring();};left.Children.Add(level);
-        liveState=Text("Vyber vstup kytary, spusť Live a monitoring zapni výslovně.",true);left.Children.Add(liveState);
-        liveInputMeter=new(){Label="Suchý vstup"};liveProcessedMeter=new(){Label="Za aparátem"};liveMixMeter=new(){Label="Výsledný mix"};
-        left.Children.Add(liveInputMeter);
-        left.Children.Add(liveProcessedMeter);
-        left.Children.Add(liveMixMeter);panel.Children.Add(ResponsiveColumns(left,right));
-        liveDiagnostic=Text("",true);panel.Children.Add(new Expander{Header="Podrobnosti zvuku a přebuzení",Content=liveDiagnostic});
-        panel.Children.Add(Text("Kytara i sluchátka mají být připojené ke stejné kartě. Direct Monitor na M-Track je další cesta bez efektů; současný přímý a softwarový poslech může vytvořit dvojí zvuk.",true));
-        return panel;
+        liveDevice=Text("Vyber kartu a jeden vstup pro kytaru.",true);
+        liveStart=PrimaryAction("Nastavit zvuk");liveStart.Click+=(_,_)=>{if(appSettings.AudioDevice is not{InputChannel:>=0} || deviceSelectionUnavailable)Navigate(new("29"));else LiveStart_Click(liveStart,new());};
+        liveStop=new Button{Content="Zastavit zvuk",MinHeight=40,IsEnabled=false};liveStop.Click+=Stop_Click;
+        var buttons=new StackPanel{Orientation=Orientation.Horizontal,Spacing=8};buttons.Children.Add(liveStart);buttons.Children.Add(liveStop);panel.Children.Add(buttons);panel.Children.Add(liveDevice);
+        var left=Stack();var right=Stack();
+        var monitoring=Stack();
+        liveMonitor=new CheckBox{Content="Poslouchat kytaru ve sluchátkách",IsChecked=false};liveMonitor.Checked+=LiveMonitoring_Changed;liveMonitor.Unchecked+=LiveMonitoring_Changed;monitoring.Children.Add(liveMonitor);
+        var level=new Slider{Header="Hlasitost monitoringu",Minimum=0,Maximum=100,Value=liveGain*100};Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(level,"Hlasitost monitoringu");level.ValueChanged+=(_,args)=>{liveGain=args.NewValue/100;ApplyLiveMonitoring();};monitoring.Children.Add(level);
+        liveInputMeter=new(){Label="Vstup kytary"};monitoring.Children.Add(liveInputMeter);
+        liveState=Text("Spusť Live a potom zapni poslech kytary.",true);monitoring.Children.Add(liveState);left.Children.Add(Card(monitoring));
+        var tuner=Stack();
+        TextBlock FaceText(string label){var text=Text(label);text.Style=(Style)Application.Current.Resources["VintageInstrumentTextStyle"];return text;}
+        tuner.Children.Add(FaceText("Ladění"));liveTunerNote=FaceText("—");liveTunerNote.FontSize=40;liveTunerCents=FaceText("Žádný aktuálně měřený tón.");
+        liveTunerNeedle=new ProgressBar{Minimum=0,Maximum=100,Value=50};Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(liveTunerNeedle,"Live · odchylka v centech");tuner.Children.Add(liveTunerNote);tuner.Children.Add(liveTunerCents);tuner.Children.Add(liveTunerNeedle);
+        var tune=new Button{Content="Otevřít ladičku"};tune.Click+=(_,_)=>Navigate(new("03"));tuner.Children.Add(tune);var tunerCard=Card(tuner);tunerCard.Style=(Style)Application.Current.Resources["VintageInstrumentCardStyle"];left.Children.Add(tunerCard);
+        right.Children.Add(BuildCompactAmplifier());right.Children.Add(BuildRecordingControls(compact:true));right.Children.Add(BuildCompactMetronome());
+        panel.Children.Add(ResponsiveColumns(left,right));
+        var details=Stack();liveProcessedMeter=new(){Label="Za aparátem"};liveMixMeter=new(){Label="Výsledný mix"};details.Children.Add(liveProcessedMeter);details.Children.Add(liveMixMeter);liveDiagnostic=Text("",true);details.Children.Add(liveDiagnostic);
+        details.Children.Add(Text("Kytaru i sluchátka připoj ke stejné kartě. Pro poslech softwarových efektů nepřimíchávej současně Direct Monitor karty.",true));
+        var devices=new Button{Content="Změnit zvukovou kartu a vstup"};devices.Click+=(_,_)=>Navigate(new("29"));details.Children.Add(devices);
+        panel.Children.Add(new Expander{Header="Zvuková karta, měřáky a podrobnosti",Content=details,HorizontalAlignment=HorizontalAlignment.Stretch});return panel;
     }
     private async void LiveStart_Click(object sender,RoutedEventArgs args)
     {
@@ -56,6 +57,11 @@ public sealed partial class MainWindow
     {
         if(liveInputMeter is null || audio is null)return;
         var meters=audio.GetMeters();bool running=state.State==AudioState.Running;
+        bool configured=appSettings.AudioDevice is{InputChannel:>=0} && !deviceSelectionUnavailable;
+        liveStart!.Content=configured?"Spustit Live":"Nastavit zvuk";liveStart.IsEnabled=!busy && !powerTransition && !deviceOperationRunning && (!running || !meters.HasInput);
+        liveStop!.IsEnabled=state.State!=AudioState.Stopped || captureDraft is not null;
+        liveDevice!.Text=configured && appSettings.AudioDevice is{ } device?device.Output+" · vstup "+(device.InputChannel+1):"Nejdřív vyber zvukovou kartu a vstup kytary.";
+        liveMonitor!.IsEnabled=running && meters.HasInput && !powerTransition && !deviceOperationRunning;
         liveInputMeter.SetLevel(meters.InputPeak,running && meters.HasInput);
         liveProcessedMeter!.Label=appSettings.AmpEnabled?"Za aparátem":"Za aparátem · bypass";
         liveProcessedMeter!.SetLevel(meters.ProcessedPeak,running && meters.HasInput);

@@ -30,9 +30,12 @@
     <Style x:Key="VintageCardStyle" TargetType="Border">
         <Setter Property="Background" Value="{ThemeResource VintagePanel}" />
         <Setter Property="Padding" Value="16" />
-        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="CornerRadius" Value="8" />
         <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
         <Setter Property="BorderThickness" Value="1" />
+    </Style>
+    <Style x:Key="VintageInstrumentCardStyle" TargetType="Border" BasedOn="{StaticResource VintageCardStyle}">
+        <Setter Property="Background" Value="{ThemeResource VintageInstrumentFace}" />
     </Style>
     <Style x:Key="VintageBodyTextStyle" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />

@@ -26,16 +26,16 @@ public sealed partial class MainWindow
         recordingLabels.Clear();recordingStarts.Clear();recordingStops.Clear();recordingList=null;playingRecording=null;
         if(messages.Count>0){ShellNotice.IsOpen=true;ShellNotice.Severity=InfoBarSeverity.Warning;ShellNotice.Message=string.Join("\n",messages);}
     }
-    private FrameworkElement BuildRecordingControls()
+    private FrameworkElement BuildRecordingControls(bool compact=false)
     {
-        var panel=Stack();var name=new TextBox{Header="Název nahrávky",Text=recordingName,MaxLength=256};name.TextChanged+=(_,_)=>recordingName=name.Text;panel.Children.Add(name);
-        var bus=new ComboBox{Header="Co nahrávat",ItemsSource=new[]{"Suchá kytara · mono","Kytara za aparátem · mono","Výsledný mix · stereo"},SelectedIndex=(int)recordingBus};bus.SelectionChanged+=(_,_)=>{if(bus.SelectedIndex>=0)recordingBus=(uint)bus.SelectedIndex;};panel.Children.Add(bus);
-        var count=new ComboBox{Header="Předtakt",ItemsSource=new[]{"Bez předtaktu","1 takt","2 takty"},SelectedIndex=(int)recordingCountIn};count.SelectionChanged+=(_,_)=>{if(count.SelectedIndex>=0)recordingCountIn=(uint)count.SelectedIndex;};panel.Children.Add(count);
-        panel.Children.Add(Text("Předtakt používá tempo a takt metronomu. Výsledný mix obsahuje jen zvuk Rockeru; YouTube se nenahrává.",true));
-        var start=new Button{Content="Spustit nahrávání"};start.Click+=async(_,_)=>await StartCaptureAsync();recordingStarts.Add(start);panel.Children.Add(start);
-        var stop=new Button{Content="Zastavit a uložit nahrávku",IsEnabled=captureDraft is not null};stop.Click+=async(_,_)=>await StopCaptureAsync();recordingStops.Add(stop);panel.Children.Add(stop);
-        var marker=new Button{Content="Přidat značku během nahrávání…"};marker.Click+=async(_,_)=>{if(captureDraft is null || audio is null)return;double time=audio.GetRecording().CapturedFrames/(double)captureDraft.Rate;var label=await AskRecordingNameAsync("Nová značka","Značka");if(label is not null)captureMarkers.Add(new(Guid.NewGuid().ToString("N"),time,label));};panel.Children.Add(marker);
-        var status=Text("Nahrávání je zastavené.",true);recordingLabels.Add(status);panel.Children.Add(status);return Card(panel);
+        var panel=Stack();var settings=compact?Stack():panel;if(compact){var title=Text("Nahrávání");title.FontSize=18;title.FontWeight=Microsoft.UI.Text.FontWeights.SemiBold;panel.Children.Add(title);}var name=new TextBox{Header="Název nahrávky",Text=recordingName,MaxLength=256};name.TextChanged+=(_,_)=>recordingName=name.Text;settings.Children.Add(name);
+        var bus=new ComboBox{Header="Co nahrávat",ItemsSource=new[]{"Suchá kytara · mono","Kytara za aparátem · mono","Výsledný mix · stereo"},SelectedIndex=(int)recordingBus};bus.SelectionChanged+=(_,_)=>{if(bus.SelectedIndex>=0)recordingBus=(uint)bus.SelectedIndex;};settings.Children.Add(bus);
+        var count=new ComboBox{Header="Předtakt",ItemsSource=new[]{"Bez předtaktu","1 takt","2 takty"},SelectedIndex=(int)recordingCountIn};count.SelectionChanged+=(_,_)=>{if(count.SelectedIndex>=0)recordingCountIn=(uint)count.SelectedIndex;};settings.Children.Add(count);
+        settings.Children.Add(Text("Předtakt používá tempo a takt metronomu. Výsledný mix obsahuje jen zvuk Rockeru; YouTube se nenahrává.",true));
+        var start=new Button{Content=compact?"Nahrávat kytaru":"Spustit nahrávání",MinHeight=40,Tag=compact?"compact-recording":null};start.Click+=async(_,_)=>await StartCaptureAsync();recordingStarts.Add(start);panel.Children.Add(start);
+        var stop=new Button{Content=compact?"Zastavit a uložit":"Zastavit a uložit nahrávku",MinHeight=40,Tag=compact?"compact-recording":null,IsEnabled=captureDraft is not null};stop.Click+=async(_,_)=>await StopCaptureAsync();recordingStops.Add(stop);panel.Children.Add(stop);
+        var marker=new Button{Content="Přidat značku během nahrávání…"};marker.Click+=async(_,_)=>{if(captureDraft is null || audio is null)return;double time=audio.GetRecording().CapturedFrames/(double)captureDraft.Rate;var label=await AskRecordingNameAsync("Nová značka","Značka");if(label is not null)captureMarkers.Add(new(Guid.NewGuid().ToString("N"),time,label));};settings.Children.Add(marker);
+        var status=Text("Nahrávání je zastavené.",true);recordingLabels.Add(status);panel.Children.Add(status);if(compact)panel.Children.Add(new Expander{Header="Název, zdroj a předtakt",Content=settings,HorizontalAlignment=HorizontalAlignment.Stretch});return Card(panel);
     }
     private FrameworkElement BuildRecordings()
     {
@@ -100,7 +100,7 @@ public sealed partial class MainWindow
         if(audio is null)return;try
         {
             var state=audio.GetRecording();string status=captureDraft is null?"Nahrávání je zastavené.":$"{captureDraft.Name} · {FormatTime(state.Duration)} · "+(state.State==1?"Předtakt…":state.State==3?"Dokončuji zápis…":state.State==5?"Přerušeno; zachovávám dostupný zvuk.":"Nahrávání");
-            foreach(var label in recordingLabels)label.Text=status;foreach(var start in recordingStarts)start.IsEnabled=captureDraft is null && !recordingOperation && persistenceReady;foreach(var stop in recordingStops)stop.IsEnabled=captureDraft is not null && !recordingOperation;
+            foreach(var label in recordingLabels)label.Text=status;foreach(var start in recordingStarts){start.IsEnabled=captureDraft is null && !recordingOperation && persistenceReady;if(start.Tag as string=="compact-recording")start.Visibility=captureDraft is null?Visibility.Visible:Visibility.Collapsed;}foreach(var stop in recordingStops){stop.IsEnabled=captureDraft is not null && !recordingOperation;if(stop.Tag as string=="compact-recording")stop.Visibility=captureDraft is not null?Visibility.Visible:Visibility.Collapsed;}
             if(captureDraft is not null && !recordingOperation && state.State is 4 or 5)_=StopCaptureAsync();
         }catch(Exception error){if(!closed)ShowPersistenceError("Stav nahrávání není dostupný. "+error.Message);}
     }

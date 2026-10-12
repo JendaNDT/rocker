@@ -72,7 +72,10 @@ public sealed partial class MainWindow : Window
             var state = audio.GetSnapshot();
             var transport = audio.GetTransport();
             StartButton.IsEnabled = !deviceSelectionUnavailable && !deviceOperationRunning && !powerTransition && !busy && state.State != AudioState.Running;
-            PlayMediaButton.IsEnabled = PlayMenu.IsEnabled = !deviceSelectionUnavailable && !deviceOperationRunning && !powerTransition && !busy && transport.Ready != 0 && transport.Playing == 0;
+            PlayMediaButton.IsEnabled = !deviceSelectionUnavailable && !deviceOperationRunning && !powerTransition && !busy && transport.Ready != 0;
+            PlayMenu.IsEnabled = PlayMediaButton.IsEnabled && transport.Playing == 0;
+            string playLabel = transport.Playing != 0 ? "Pozastavit" : "Přehrát";
+            if (PlayMediaButton.Label != playLabel) { PlayMediaButton.Label = playLabel; PlayMediaButton.Icon = new SymbolIcon(transport.Playing != 0 ? Symbol.Pause : Symbol.Play); }
             RewindButton.IsEnabled = PositionSlider.IsEnabled = !busy && transport.Ready != 0;
             SpeedBox.IsEnabled = !studioOwnsPlayback && !busy && transport.Ready != 0;
             PlayScoreButton.IsEnabled = !deviceSelectionUnavailable && !deviceOperationRunning && !powerTransition && !busy && preview is not null;
@@ -85,7 +88,7 @@ public sealed partial class MainWindow : Window
             }
             PositionText.Text = $"{FormatTime(transport.PositionSeconds)} / {FormatTime(transport.DurationSeconds)}";
             StopButton.IsEnabled = state.State != AudioState.Stopped;
-            StatusText.Text = state.State switch
+            string status = state.State switch
             {
                 AudioState.Running => state.Reserved==8 ? "Zvuková ukázka." : state.Reserved==6 ? "Looper." : state.Reserved==5 ? "Nahrávání; monitoring se ovládá samostatně." : state.Reserved==3 ? "Metronom." : state.Reserved==2 ? "Živý vstup. Monitoring se ovládá samostatně." : transport.Playing != 0 ? "Přehrávání." : state.Reserved==1 ? "Skladba pozastavena; zvukové zařízení běží." : "Hraje testovací tón.",
                 AudioState.Starting => "Spouštím zvukové zařízení…",
@@ -94,6 +97,7 @@ public sealed partial class MainWindow : Window
                 AudioState.Faulted => "Zvuk se zastavil kvůli chybě zařízení. " + audio.GetLastError(),
                 _ => "Zastaveno. Zařízení je uvolněné."
             };
+            if (StatusText.Text != status) { StatusText.Text = status; ToolTipService.SetToolTip(StatusText, status); if (state.State == AudioState.Faulted) { ShellNotice.IsOpen = true; ShellNotice.Severity = InfoBarSeverity.Error; ShellNotice.Message = status; } }
             RefreshLive(state);
             RefreshMetronome(state);
             var analysis=audio.GetAnalysis();RefreshTuner(analysis);RefreshLesson(analysis);RefreshSurgical(analysis);RefreshPalmMute(analysis);RefreshRhythm();RefreshNotation(transport);
@@ -102,6 +106,7 @@ public sealed partial class MainWindow : Window
             RefreshSong(transport);
             RefreshRecording();
             RefreshLooper();
+            RefreshWorkspaceChrome();
             DeviceText.Text = state.State == AudioState.Running
                 ? $"Vzorkování {state.SampleRate:N0} Hz · buffer {state.BufferFrames} vzorků · výstupy {state.OutputChannels}\nZpracováno {state.RenderedFrames:N0} vzorků."
                 : "Zařízení zatím není otevřené.";
@@ -111,6 +116,8 @@ public sealed partial class MainWindow : Window
     private void ShowError(Exception error)
     {
         StatusText.Text = "Zvuk není dostupný. " + error.Message;
+        ToolTipService.SetToolTip(StatusText, StatusText.Text);
+        ShellNotice.IsOpen = true; ShellNotice.Severity = InfoBarSeverity.Error; ShellNotice.Message = StatusText.Text;
         StopButton.IsEnabled = audio is not null;
     }
 
