@@ -15,7 +15,7 @@ public sealed partial class MainWindow
         var captures=new List<object>();
         foreach(var (theme,view) in new[]{("dark","01"),("dark","02"),("dark","03"),("dark","04"),("dark","13"),("dark","17"),("dark","18"),("light","02"),("light","13")})
         {
-            ApplyTheme(theme);Navigate(new(view));RefreshState();await Task.Delay(60);
+            ApplyTheme(theme);Navigate(new(view));RefreshState();await Task.Delay(350);
             string file=$"screens/finish-{theme}-{view}.png";await CaptureNativeViewAsync(file);
             captures.Add(new{file,theme,view,clientWidthDip=ShellRoot.ActualWidth,clientHeightDip=ShellRoot.ActualHeight});
         }
