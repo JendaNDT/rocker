@@ -3,6 +3,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Default">
+            <SolidColorBrush x:Key="SystemControlHighlightAccentBrush" Color="#D6A66C"/>
+            <SolidColorBrush x:Key="SystemControlHighlightAltAccentBrush" Color="#D6A66C"/>
+
             <LinearGradientBrush x:Key="VintagePanelMaterial" StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#34312D" Offset="0"/><GradientStop Color="#282725" Offset="1"/></LinearGradientBrush>
             <LinearGradientBrush x:Key="VintageFaceMaterial" StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#F7EEDD" Offset="0"/><GradientStop Color="#E8D2AD" Offset="1"/></LinearGradientBrush>
             <LinearGradientBrush x:Key="VintageKnobMaterial" StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#585955" Offset="0"/><GradientStop Color="#292A29" Offset="0.48"/><GradientStop Color="#222321" Offset="1"/></LinearGradientBrush>
@@ -25,6 +28,9 @@
             <SolidColorBrush x:Key="VintageInstrumentInk" Color="#1D1D1B" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="Light">
+            <SolidColorBrush x:Key="SystemControlHighlightAccentBrush" Color="#905622"/>
+            <SolidColorBrush x:Key="SystemControlHighlightAltAccentBrush" Color="#905622"/>
+
             <LinearGradientBrush x:Key="VintagePanelMaterial" StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#FFFFFF" Offset="0"/><GradientStop Color="#F4EEE5" Offset="1"/></LinearGradientBrush>
             <LinearGradientBrush x:Key="VintageFaceMaterial" StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#FFF7E8" Offset="0"/><GradientStop Color="#E5D0AE" Offset="1"/></LinearGradientBrush>
             <LinearGradientBrush x:Key="VintageKnobMaterial" StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#FFFFFF" Offset="0"/><GradientStop Color="#EEECE6" Offset="0.48"/><GradientStop Color="#B1ADA4" Offset="1"/></LinearGradientBrush>
@@ -47,6 +53,9 @@
             <SolidColorBrush x:Key="VintageInstrumentInk" Color="#1D1D1B" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="HighContrast">
+            <SolidColorBrush x:Key="SystemControlHighlightAccentBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="SystemControlHighlightAltAccentBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
+
             <SolidColorBrush x:Key="AccentFillColorDefaultBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
             <SolidColorBrush x:Key="AccentFillColorSecondaryBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
             <SolidColorBrush x:Key="VintagePanelMaterial" Color="{ThemeResource SystemColorWindowColor}"/>
