@@ -62,12 +62,15 @@ public sealed partial class MainWindow
     {
         if (audio is null) throw new InvalidOperationException("UX check requires the native host.");
         var previous = navigation.Current;
+        // Use the same desktop size as design captures before checking the scale.
+        // Startup restores the window to the runner work area, which can be smaller.
+        AppWindow.Resize(new Windows.Graphics.SizeInt32(1280,940));await Task.Delay(100);
         await audio.StopAsync();await audio.ClearMediaAsync();PracticeRestNotice.IsOpen=false;
         Navigate(new("28"));RefreshState();await Task.Delay(60);
         bool quietSettings = PracticeRow.Visibility==Visibility.Collapsed && MediaPanel.Visibility==Visibility.Collapsed;
         bool navigationLabels = ShellRoot.ActualWidth<900 || Navigation.DisplayMode==NavigationViewDisplayMode.Expanded && Navigation.IsPaneOpen;
         Navigate(new("02"));RefreshState();await Task.Delay(60);
-        double liveFooter=MediaPanel.ActualHeight;
+        double liveFooter=MediaPanel.ActualHeight;double liveClientHeight=ShellRoot.ActualHeight;
         double liveScaleBottom=liveTunerNeedle!.TransformToVisual(ShellRoot).TransformPoint(new Windows.Foundation.Point(0,liveTunerNeedle.ActualHeight)).Y;
         bool visibleScale=liveTunerNeedle.ActualWidth>150 && liveScaleBottom<=ShellRoot.ActualHeight-MediaPanel.ActualHeight-24;
         bool focusedLive = PracticeStart.Visibility==Visibility.Visible && PracticePause.Visibility==Visibility.Collapsed && PracticeEnd.Visibility==Visibility.Collapsed && liveStart is {MinHeight:>=40} && liveMonitor is not null && !liveMonitor.IsEnabled;
@@ -80,7 +83,7 @@ public sealed partial class MainWindow
         bool media = MediaTransportRow.Visibility==Visibility.Visible && MediaSeekRow.Visibility==Visibility.Visible && PlayMediaButton.IsEnabled && PlayMediaButton.Label=="Přehrát";
         Navigate(previous);
         bool passed=quietSettings && navigationLabels && focusedLive && compactLive && visibleScale && narrow && media;
-        WriteShellDiagnostic("ux-layout.json",new{result=passed?"passed":"failed",idleSettingsHasNoPlayerOrPracticeBar=quietSettings,desktopNavigationShowsLabels=navigationLabels,liveHasPrimarySetupAndRelevantActions=focusedLive,liveFooterHeightDip=liveFooter,liveTuningScaleVisible=visibleScale,liveTuningScaleBottomDip=liveScaleBottom,clientHeightDip=ShellRoot.ActualHeight,emptyMediaDoesNotOccupyLive=compactLive,narrowWorkspaceFits=narrow,loadedMediaHasAccessibleTransport=media,manualUsabilityVerified=false});
+        WriteShellDiagnostic("ux-layout.json",new{result=passed?"passed":"failed",idleSettingsHasNoPlayerOrPracticeBar=quietSettings,desktopNavigationShowsLabels=navigationLabels,liveHasPrimarySetupAndRelevantActions=focusedLive,liveFooterHeightDip=liveFooter,liveTuningScaleVisible=visibleScale,liveTuningScaleBottomDip=liveScaleBottom,clientHeightDip=liveClientHeight,emptyMediaDoesNotOccupyLive=compactLive,narrowWorkspaceFits=narrow,loadedMediaHasAccessibleTransport=media,manualUsabilityVerified=false});
         if(!passed)throw new InvalidOperationException("Workspace UX layout/state regression failed.");
     }
 }
