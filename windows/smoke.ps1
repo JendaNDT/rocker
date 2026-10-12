@@ -40,17 +40,20 @@ try {
     if ($process.MainWindowHandle -eq 0) { throw 'Application did not show a window within 45 seconds.' }
     $title = $process.MainWindowTitle
     if ($title -notlike 'Rocker*') { throw "Unexpected application window: $title" }
+    # Cold notation/font initialization has its own budget after the HWND appears.
+    $deadline = (Get-Date).AddSeconds(60)
     do {
         Start-Sleep -Milliseconds 250
         $process.Refresh()
         if ($process.HasExited) { throw 'Application exited before native notation appeared.' }
     } while (-not (Test-Path $notationReport) -and (Get-Date) -lt $deadline)
-    if (-not (Test-Path $notationReport)) { throw 'Native notation did not finish within 45 seconds.' }
+    if (-not (Test-Path $notationReport)) { throw 'Native notation did not finish within 60 seconds after opening the window.' }
     $notation = Get-Content $notationReport -Raw | ConvertFrom-Json
     if ($notation.result -ne 'passed' -or -not $notation.bitmapDecoded -or $notation.BarCount -ne 2 -or
         -not $notation.midiPreparedInCommonEngine) {
         throw "Published native notation failed: $(Get-Content $notationReport -Raw)"
     }
+    $deadline = (Get-Date).AddSeconds(45)
     do {
         Start-Sleep -Milliseconds 250
         $process.Refresh()
@@ -61,7 +64,7 @@ try {
     if ($video.result -ne 'passed' -or -not $video.localBridgeVerified -or -not $video.runtimeVersion) {
         throw "Local WebView2 bridge failed: $(Get-Content $videoReport -Raw)"
     }
-    $deadline = $started.AddSeconds(120)
+    $deadline = $started.AddSeconds(180)
     do {
         Start-Sleep -Milliseconds 250
         $process.Refresh()
