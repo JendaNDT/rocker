@@ -80,7 +80,7 @@ public sealed partial class MainWindow
         bool media = MediaTransportRow.Visibility==Visibility.Visible && MediaSeekRow.Visibility==Visibility.Visible && PlayMediaButton.IsEnabled && PlayMediaButton.Label=="Přehrát";
         Navigate(previous);
         bool passed=quietSettings && navigationLabels && focusedLive && compactLive && visibleScale && narrow && media;
-        WriteShellDiagnostic("ux-layout.json",new{result=passed?"passed":"failed",idleSettingsHasNoPlayerOrPracticeBar=quietSettings,desktopNavigationShowsLabels=navigationLabels,liveHasPrimarySetupAndRelevantActions=focusedLive,liveFooterHeightDip=liveFooter,liveTuningScaleVisible=visibleScale,liveTuningScaleBottomDip=liveScaleBottom,emptyMediaDoesNotOccupyLive=compactLive,narrowWorkspaceFits=narrow,loadedMediaHasAccessibleTransport=media,manualUsabilityVerified=false});
+        WriteShellDiagnostic("ux-layout.json",new{result=passed?"passed":"failed",idleSettingsHasNoPlayerOrPracticeBar=quietSettings,desktopNavigationShowsLabels=navigationLabels,liveHasPrimarySetupAndRelevantActions=focusedLive,liveFooterHeightDip=liveFooter,liveTuningScaleVisible=visibleScale,liveTuningScaleBottomDip=liveScaleBottom,clientHeightDip=ShellRoot.ActualHeight,emptyMediaDoesNotOccupyLive=compactLive,narrowWorkspaceFits=narrow,loadedMediaHasAccessibleTransport=media,manualUsabilityVerified=false});
         if(!passed)throw new InvalidOperationException("Workspace UX layout/state regression failed.");
     }
 }
