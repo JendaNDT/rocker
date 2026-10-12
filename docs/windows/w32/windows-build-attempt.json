@@ -1,0 +1,9 @@
+{
+  "result": "failed",
+  "runId": 38185873181,
+  "commit": "3827e3e184c4edd108134b203a05e55b7dc10199",
+  "nativeTestsPassed": 19,
+  "interopPassed": true,
+  "winUiBuildPassed": false,
+  "cause": "Native profile check used Length on IReadOnlyList<Pickup>; corrected to Count. No native-window validation claimed."
+}

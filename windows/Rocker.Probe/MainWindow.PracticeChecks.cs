@@ -9,7 +9,7 @@ public sealed partial class MainWindow
     private async Task VerifyPracticeAndProfileAsync()
     {
         var oldProfile=instrumentProfile;var oldSettings=appSettings;var oldProgress=progressData;
-        Navigate(new("26"));bool form=profileName is not null && profileTuning is not null && pickupEditors.Count==oldProfile.Pickups.Length;
+        Navigate(new("26"));bool form=profileName is not null && profileTuning is not null && pickupEditors.Count==oldProfile.Pickups.Count;
         profileName!.Text="Testovací kytara · žluťoučká";profileHand!.SelectedIndex=1;profileTuning!.SelectedValue="standard";await SaveInstrumentAsync();bool linked=appSettings.Handedness=="left" && CurrentTuning().Id=="standard" && instrumentProfile.Name.Contains("žluťoučká",StringComparison.Ordinal);
         await autosave!.FlushAsync();var snapshot=await (await DataRepository.OpenAsync(userFiles)).SnapshotAsync();var restored=UserData.Read<InstrumentProfile>(snapshot.Documents.Single(d=>d.Kind=="instrument").Value);bool stored=restored.Name==instrumentProfile.Name && restored.Pickups.SequenceEqual(instrumentProfile.Pickups);
         int before=timeZoneNotifications;SendMessageW(nativeWindow,0x001e,0,0);bool zone=timeZoneNotifications==before+1;
