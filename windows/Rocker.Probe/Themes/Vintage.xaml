@@ -47,6 +47,8 @@
             <SolidColorBrush x:Key="VintageInstrumentInk" Color="#1D1D1B" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="HighContrast">
+            <SolidColorBrush x:Key="AccentFillColorDefaultBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
+            <SolidColorBrush x:Key="AccentFillColorSecondaryBrush" Color="{ThemeResource SystemColorHighlightColor}"/>
             <SolidColorBrush x:Key="VintagePanelMaterial" Color="{ThemeResource SystemColorWindowColor}"/>
             <SolidColorBrush x:Key="VintageFaceMaterial" Color="{ThemeResource SystemColorWindowColor}"/>
             <SolidColorBrush x:Key="VintageKnobMaterial" Color="{ThemeResource SystemColorWindowColor}"/>
