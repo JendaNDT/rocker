@@ -1,0 +1,391 @@
+{
+  "schemaVersion": 1,
+  "views": [
+    {
+      "id": "01",
+      "title": "Přehled",
+      "implementation": "windows/Rocker.Probe/MainWindow.Overview.cs",
+      "originalAcceptance": [
+        "Z profilu se dvěma dokončenými lekcemi nabídnout správnou následující lekci; ověřit součet minut a režim Zen."
+      ],
+      "implemented": true,
+      "nativeConstructionAndCapture": "pending Windows run",
+      "manualAcceptance": "deferred, not performed",
+      "requiredHardwareOrOnlineAcceptance": "not performed"
+    },
+    {
+      "id": "02",
+      "title": "Live",
+      "implementation": "windows/Rocker.Probe/MainWindow.Live.cs",
+      "originalAcceptance": [
+        "Změnit tempo, spustit/zastavit záznam, odejít a vrátit se bez zdvojení audio hostu; ověřit platný uložený take."
+      ],
+      "implemented": true,
+      "nativeConstructionAndCapture": "pending Windows run",
+      "manualAcceptance": "deferred, not performed",
+      "requiredHardwareOrOnlineAcceptance": "not performed"
+    },
+    {
+      "id": "03",
+      "title": "Ladička",
+      "implementation": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "originalAcceptance": [
+        "Přehrát syntetické E2 a A4, ověřit tóny a ticho; obnovit vlastní ladění a H/B; referenční tón zastavit při uvolnění tlačítka."
+      ],
+      "implemented": true,
+      "nativeConstructionAndCapture": "pending Windows run",
+      "manualAcceptance": "deferred, not performed",
+      "requiredHardwareOrOnlineAcceptance": "not performed"
+    },
+    {
+      "id": "04",
+      "title": "Metronom",
+      "implementation": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "originalAcceptance": [
+        "Znovu načíst vlastní preset; ověřit hranice předtaktu, rampy a ticha i součet swingových dob; přepnutí vizualizace nemění časování."
+      ],
+      "implemented": true,
+      "nativeConstructionAndCapture": "pending Windows run",
+      "manualAcceptance": "deferred, not performed",
+      "requiredHardwareOrOnlineAcceptance": "not performed"
+    },
+    {
+      "id": "05",
+      "title": "Výběr lekce",
+      "implementation": "windows/Rocker.Probe/MainWindow.Lessons.cs",
+      "originalAcceptance": [
+        "Každou lekci najít podle stabilního ID; po importu jsou stejné dokončené lekce."
+      ],
+      "implemented": true,
+      "nativeConstructionAndCapture": "pending Windows run",
+      "manualAcceptance": "deferred, not performed",
+      "requiredHardwareOrOnlineAcceptance": "not performed"
+    },
+    {
+      "id": "06",
+      "title": "Průběh lekce",
+      "implementation": "windows/Rocker.Probe/MainWindow.Lessons.cs",
+      "originalAcceptance": [
+        "Projít každý typ kroku, opakovaným potvrzením nevytvořit duplicitu dokončení; bez vstupu se tónová kontrola netváří úspěšně."
+      ],
+      "implemented": true,
+      "nativeConstructionAndCapture": "pending Windows run",
+      "manualAcceptance": "deferred, not performed",
+      "requiredHardwareOrOnlineAcceptance": "not performed"
+    },
+    {
+      "id": "07",
+      "title": "Vlastní skladba",
+      "implementation": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "originalAcceptance": [
+        "Otevřít referenční WAV/MP3, nastavit A/B a rychlost, opakovaně seekovat; ověřit délku a ukončení starého přehrávání."
+      ],
+      "implemented": true,
+      "nativeConstructionAndCapture": "pending Windows run",
+      "manualAcceptance": "deferred, not performed",
+      "requiredHardwareOrOnlineAcceptance": "not performed"
+    },
+    {
+      "id": "08",
+      "title": "YouTube cvičení",
+      "implementation": "windows/Rocker.Probe/MainWindow.VideoPractice.cs",
+      "originalAcceptance": [
+        "Obnovit zkušební smyčku bez síťového požadavku; samostatně ověřit povolené živé video, chybu vložení a offline stav."
+      ],
+      "implemented": true,
+      "nativeConstructionAndCapture": "pending Windows run",
+      "manualAcceptance": "deferred, not performed",
+      "requiredHardwareOrOnlineAcceptance": "not performed"
+    },
+    {
+      "id": "09",
+      "title": "Přesný trénink",
+      "implementation": "windows/Rocker.Probe/MainWindow.Surgical.cs",
+      "originalAcceptance": [
+        "Přehrát zaznamenané stopy čistého průchodu, chyby a tří drillů; ověřit i tón o oktávu výše."
+      ],
+      "implemented": true,
+      "nativeConstructionAndCapture": "pending Windows run",
+      "manualAcceptance": "deferred, not performed",
+      "requiredHardwareOrOnlineAcceptance": "not performed"
+    },
+    {
+      "id": "10",
+      "title": "Power chordy",
+      "implementation": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "originalAcceptance": [
+        "Projít kolo proti metronomu, správně změnit akord i tempo a uložit pouze lepší rekord."
+      ],
+      "implemented": true,
+      "nativeConstructionAndCapture": "pending Windows run",
+      "manualAcceptance": "deferred, not performed",
+      "requiredHardwareOrOnlineAcceptance": "not performed"
+    },
+    {
+      "id": "11",
+      "title": "Gallop",
+      "implementation": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "originalAcceptance": [
+        "Ověřit časové pozice patternu a změnu kola/tempa; zastavení ukončí všechny naplánované události."
+      ],
+      "implemented": true,
+      "nativeConstructionAndCapture": "pending Windows run",
+      "manualAcceptance": "deferred, not performed",
+      "requiredHardwareOrOnlineAcceptance": "not performed"
+    },
+    {
+      "id": "12",
+      "title": "Palm mute",
+      "implementation": "windows/Rocker.Probe/MainWindow.PalmMute.cs",
+      "originalAcceptance": [
+        "Ověřit čistou logiku kalibrace a skóre, ticho a nedostatečnou kalibraci; konečné rozlišení na konkrétní kytaře."
+      ],
+      "implemented": true,
+      "nativeConstructionAndCapture": "pending Windows run",
+      "manualAcceptance": "deferred, not performed",
+      "requiredHardwareOrOnlineAcceptance": "not performed"
+    },
+    {
+      "id": "13",
+      "title": "Aparát",
+      "implementation": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "originalAcceptance": [
+        "Obnovit vlastní preset, změnit parametr, přejít do jiné obrazovky a zaznamenat zaaparátovaný zvuk."
+      ],
+      "implemented": true,
+      "nativeConstructionAndCapture": "pending Windows run",
+      "manualAcceptance": "deferred, not performed",
+      "requiredHardwareOrOnlineAcceptance": "not performed"
+    },
+    {
+      "id": "14",
+      "title": "Nahrávky",
+      "implementation": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "originalAcceptance": [
+        "Načíst všech 5 referenčních záznamů, obnovit značku a přehrát; názvy souborů a MIME souhlasí; export není přejmenovaný blob."
+      ],
+      "implemented": true,
+      "nativeConstructionAndCapture": "pending Windows run",
+      "manualAcceptance": "deferred, not performed",
+      "requiredHardwareOrOnlineAcceptance": "not performed"
+    },
+    {
+      "id": "15",
+      "title": "Studio",
+      "implementation": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "originalAcceptance": [
+        "Vrstvit známé signály, ztlumit jednu stopu, exportovat mix a ověřit délku a kanály."
+      ],
+      "implemented": true,
+      "nativeConstructionAndCapture": "pending Windows run",
+      "manualAcceptance": "deferred, not performed",
+      "requiredHardwareOrOnlineAcceptance": "not performed"
+    },
+    {
+      "id": "16",
+      "title": "Looper",
+      "implementation": "windows/Rocker.Probe/MainWindow.Looper.cs",
+      "originalAcceptance": [
+        "Ověřit délku první smyčky a opakované vrstvení, zastavení a reset; posun vrstev přiznat."
+      ],
+      "implemented": true,
+      "nativeConstructionAndCapture": "pending Windows run",
+      "manualAcceptance": "deferred, not performed",
+      "requiredHardwareOrOnlineAcceptance": "not performed"
+    },
+    {
+      "id": "17",
+      "title": "Akordy",
+      "implementation": "windows/Rocker.Probe/MainWindow.Library.cs",
+      "originalAcceptance": [
+        "Zkontrolovat všechny diagramy a MIDI tóny, zrcadlení pro leváka a české H."
+      ],
+      "implemented": true,
+      "nativeConstructionAndCapture": "pending Windows run",
+      "manualAcceptance": "deferred, not performed",
+      "requiredHardwareOrOnlineAcceptance": "not performed"
+    },
+    {
+      "id": "18",
+      "title": "Stupnice",
+      "implementation": "windows/Rocker.Probe/MainWindow.Library.cs",
+      "originalAcceptance": [
+        "Změnit toniku a vlastní ladění; zkontrolovat polohy v pravé i levé orientaci."
+      ],
+      "implemented": true,
+      "nativeConstructionAndCapture": "pending Windows run",
+      "manualAcceptance": "deferred, not performed",
+      "requiredHardwareOrOnlineAcceptance": "not performed"
+    },
+    {
+      "id": "19",
+      "title": "Riffy",
+      "implementation": "windows/Rocker.Probe/MainWindow.Riffs.cs",
+      "originalAcceptance": [
+        "Zkontrolovat ID, noty a časování všech riffů; samostatně prověřit distribuční práva k pojmenovaným skladbám."
+      ],
+      "implemented": true,
+      "nativeConstructionAndCapture": "pending Windows run",
+      "manualAcceptance": "deferred, not performed",
+      "requiredHardwareOrOnlineAcceptance": "not performed"
+    },
+    {
+      "id": "20",
+      "title": "Noty a tabulatury",
+      "implementation": "windows/Rocker.Probe/MainWindow.Notation.cs",
+      "originalAcceptance": [
+        "Importovat vlastní MusicXML a samostatně vzorky GP formátů; správně zobrazit tóny a přehrát zvolenou stopu."
+      ],
+      "implemented": true,
+      "nativeConstructionAndCapture": "pending Windows run",
+      "manualAcceptance": "deferred, not performed",
+      "requiredHardwareOrOnlineAcceptance": "not performed"
+    },
+    {
+      "id": "21",
+      "title": "Hmatník",
+      "implementation": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "originalAcceptance": [
+        "Správná i chybná odpověď mění skóre podle současné logiky; vlastní ladění odpovídá hmatníku."
+      ],
+      "implemented": true,
+      "nativeConstructionAndCapture": "pending Windows run",
+      "manualAcceptance": "deferred, not performed",
+      "requiredHardwareOrOnlineAcceptance": "not performed"
+    },
+    {
+      "id": "22",
+      "title": "Sluch",
+      "implementation": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "originalAcceptance": [
+        "Ověřit intervaly a vyhodnocení odpovědí; fungovat jen s výstupním zařízením."
+      ],
+      "implemented": true,
+      "nativeConstructionAndCapture": "pending Windows run",
+      "manualAcceptance": "deferred, not performed",
+      "requiredHardwareOrOnlineAcceptance": "not performed"
+    },
+    {
+      "id": "23",
+      "title": "AI — rozhovor",
+      "implementation": "windows/Rocker.Probe/MainWindow.AiChat.cs",
+      "originalAcceptance": [
+        "Mock server: úspěch, zrušení, síť a neplatný klíč; obnovit stejné role/texty z referenční zálohy."
+      ],
+      "implemented": true,
+      "nativeConstructionAndCapture": "pending Windows run",
+      "manualAcceptance": "deferred, not performed",
+      "requiredHardwareOrOnlineAcceptance": "not performed"
+    },
+    {
+      "id": "24",
+      "title": "AI — plán",
+      "implementation": "windows/Rocker.Probe/MainWindow.AiPlan.cs",
+      "originalAcceptance": [
+        "Odmítnout neplatné JSON a neznámé cíle; součet minut odpovídá blokům."
+      ],
+      "implemented": true,
+      "nativeConstructionAndCapture": "pending Windows run",
+      "manualAcceptance": "deferred, not performed",
+      "requiredHardwareOrOnlineAcceptance": "not performed"
+    },
+    {
+      "id": "25",
+      "title": "AI — zpětná vazba",
+      "implementation": "windows/Rocker.Probe/MainWindow.AiFeedback.cs",
+      "originalAcceptance": [
+        "Vstupní text musí odpovídat testovací historii a nesmí tvrdit, že byly analyzované audio vzorky."
+      ],
+      "implemented": true,
+      "nativeConstructionAndCapture": "pending Windows run",
+      "manualAcceptance": "deferred, not performed",
+      "requiredHardwareOrOnlineAcceptance": "not performed"
+    },
+    {
+      "id": "26",
+      "title": "Moje kytara",
+      "implementation": "windows/Rocker.Probe/MainWindow.Instrument.cs",
+      "originalAcceptance": [
+        "Obnovit umělý profil, změnit snímače a ověřit doporučení; ladění nesmí mít dvě různé uložené hodnoty."
+      ],
+      "implemented": true,
+      "nativeConstructionAndCapture": "pending Windows run",
+      "manualAcceptance": "deferred, not performed",
+      "requiredHardwareOrOnlineAcceptance": "not performed"
+    },
+    {
+      "id": "27",
+      "title": "Pokrok",
+      "implementation": "windows/Rocker.Probe/MainWindow.Progress.cs",
+      "originalAcceptance": [
+        "Ověřit půlnoc, sérii do včerejška, deduplikaci odměn a zachování historie po importu."
+      ],
+      "implemented": true,
+      "nativeConstructionAndCapture": "pending Windows run",
+      "manualAcceptance": "deferred, not performed",
+      "requiredHardwareOrOnlineAcceptance": "not performed"
+    },
+    {
+      "id": "28",
+      "title": "Nastavení",
+      "implementation": "windows/Rocker.Probe/MainWindow.Settings.cs",
+      "originalAcceptance": [
+        "Obnovit všechny smysluplné preference; Zen a notace přežijí restart, neplatná data se opraví."
+      ],
+      "implemented": true,
+      "nativeConstructionAndCapture": "pending Windows run",
+      "manualAcceptance": "deferred, not performed",
+      "requiredHardwareOrOnlineAcceptance": "not performed"
+    },
+    {
+      "id": "29",
+      "title": "Zvuková zařízení",
+      "implementation": "windows/Rocker.Probe/MainWindow.Devices.cs",
+      "originalAcceptance": [
+        "Ověřit start/stop/závody a chyby oprávnění; referenční dvoukanálové WAV rozlišují každý vstup."
+      ],
+      "implemented": true,
+      "nativeConstructionAndCapture": "pending Windows run",
+      "manualAcceptance": "deferred, not performed",
+      "requiredHardwareOrOnlineAcceptance": "not performed"
+    },
+    {
+      "id": "30",
+      "title": "Zálohy a soubory",
+      "implementation": "windows/Rocker.Probe/MainWindow.Backups.cs",
+      "originalAcceptance": [
+        "Prohlédnout úplnou, starší, částečnou i chybnou umělou zálohu; samostatně ověřit nahrávky a markery."
+      ],
+      "implemented": true,
+      "nativeConstructionAndCapture": "pending Windows run",
+      "manualAcceptance": "deferred, not performed",
+      "requiredHardwareOrOnlineAcceptance": "not performed"
+    },
+    {
+      "id": "31",
+      "title": "První spuštění",
+      "implementation": "windows/Rocker.Probe/MainWindow.FirstRun.cs",
+      "originalAcceptance": [
+        "Spustit čistý profil i profil s onboarded=true; další start nesmí znovu vynutit průvodce."
+      ],
+      "implemented": true,
+      "nativeConstructionAndCapture": "pending Windows run",
+      "manualAcceptance": "deferred, not performed",
+      "requiredHardwareOrOnlineAcceptance": "not performed"
+    },
+    {
+      "id": "32",
+      "title": "Export nahrávky",
+      "implementation": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "originalAcceptance": [
+        "Zkontrolovat MIME, skutečný obsah souboru, diakritiku a zakázané znaky; WAV má správné kanály/délku."
+      ],
+      "implemented": true,
+      "nativeConstructionAndCapture": "pending Windows run",
+      "manualAcceptance": "deferred, not performed",
+      "requiredHardwareOrOnlineAcceptance": "not performed"
+    }
+  ],
+  "manualAcceptanceVerified": false,
+  "hardwareVerified": false
+}

@@ -13,7 +13,7 @@ public sealed partial class MainWindow
     private PalmMuteState? palmState;private TextBlock? palmReading,palmSummary;private ListView? palmResults;
     private void ResetPalmRuntime(){++palmGeneration;palmSampleContext=null;palmOperation=false;palmLastReading="";palmOpen.Clear();palmMuted.Clear();palmCollect=null;palmListening=false;palmState=null;palmReading=null;palmSummary=null;palmResults=null;}
     private bool PalmProfileMatches()=>appSettings.PalmMute is { } profile && profile.Device==PalmDeviceFingerprint() && profile.Tuning==appSettings.TuningId && profile.Instrument==InstrumentFingerprint() && profile.Pickup==palmPickup;
-    private FrameworkElement BuildPalmMute()
+    private FrameworkElement BuildPalmMute(string? itemId=null)
     {
         var panel=Stack();panel.Children.Add(Text("Palm mute · kalibrace a skutečné úhozy"));
         var pickup=new TextBox{Header="Snímač / poloha přepínače pro tuto kalibraci",Text=palmPickup,MaxLength=64};pickup.TextChanged+=(_,_)=>{palmPickup=pickup.Text.Trim();CancelPalm();UpdatePalm();};panel.Children.Add(pickup);
@@ -37,7 +37,7 @@ public sealed partial class MainWindow
             if(palmOperation || audio is null)return;palmOperation=true;var generation=++palmGeneration;
             try{if(!PalmProfileMatches())throw new InvalidOperationException("Kalibrace neodpovídá vstupu, ladění, profilu nebo snímači. Překalibruj aktuální nastavení.");if(palmState is null)return;var drill=palmState.Drill;var value=await PreparePalmAsync();if(generation!=palmGeneration || navigation.Current.ViewId!="12" || palmState?.Drill.Id!=drill.Id)return;palmState=PalmMuteRules.Start(drill);BaselinePalm(value);palmCollect=null;palmListening=true;UpdatePalm();}catch(Exception error){ShowError(error);}finally{palmOperation=false;}
         };panel.Children.Add(start);var stop=new Button{Content="Pozastavit měření"};stop.Click+=(_,_)=>{CancelPalm();UpdatePalm();};panel.Children.Add(stop);
-        palmResults=new ListView{Header="Očekávané a měřené úhozy"};panel.Children.Add(palmResults);panel.Children.Add(Text("Klasifikace používá jas těla úhozu ze skutečného vstupu. Odstup od hranice je orientační pomůcka, nikoli statistická pravděpodobnost. Po změně kytary, snímače nebo gainu překalibruj. Měření úhozů má minimální rozestup přibližně 320 ms; rychlé pasáže posuzuj při poslechu.",true));panel.Children.Add(BuildRecordingControls());choose.SelectedItem=drills[0];UpdatePalm();return Card(panel);
+        palmResults=new ListView{Header="Očekávané a měřené úhozy"};panel.Children.Add(palmResults);panel.Children.Add(Text("Klasifikace používá jas těla úhozu ze skutečného vstupu. Odstup od hranice je orientační pomůcka, nikoli statistická pravděpodobnost. Po změně kytary, snímače nebo gainu překalibruj. Měření úhozů má minimální rozestup přibližně 320 ms; rychlé pasáže posuzuj při poslechu.",true));panel.Children.Add(BuildRecordingControls());choose.SelectedItem=drills.FirstOrDefault(d=>d.Id==itemId)??drills[0];UpdatePalm();return Card(panel);
     }
     private void UpdatePalm()
     {

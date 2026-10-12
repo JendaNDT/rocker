@@ -61,6 +61,7 @@ try {
     if ($video.result -ne 'passed' -or -not $video.localBridgeVerified -or -not $video.runtimeVersion) {
         throw "Local WebView2 bridge failed: $(Get-Content $videoReport -Raw)"
     }
+    $deadline = $started.AddSeconds(120)
     do {
         Start-Sleep -Milliseconds 250
         $process.Refresh()
@@ -99,7 +100,7 @@ try {
     if (-not (Test-Path $aiViewsPath)) { throw 'Native AI workspace report is missing.' }
     $aiViews = Get-Content $aiViewsPath -Raw | ConvertFrom-Json
     if ($aiViews.result -ne 'passed' -or $aiViews.nativeViews -ne 3 -or -not $aiViews.persistenceReopened -or -not $aiViews.unknownTaskRejected) { throw 'Native AI form/plan/history checks failed.' }
-    foreach ($integratedName in @('practice-profile.json','overview-live.json','first-run.json','file-commands.json')) {
+    foreach ($integratedName in @('practice-profile.json','overview-live.json','first-run.json','file-commands.json','design-views.json')) {
         $integratedPath = Join-Path $reportDirectory $integratedName
         if (-not (Test-Path $integratedPath)) { throw "Missing integrated native report: $integratedName" }
         $integrated = Get-Content $integratedPath -Raw | ConvertFrom-Json

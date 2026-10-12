@@ -506,7 +506,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w36"></a>
 #### W36 — Přejmout všech 32 pohledů a doladit design
 
-- [ ] Čeká. Závislosti: W08, W17–W35.
+- [ ] Všech 32 implementací zapojených, [matice a nativní galerie](docs/windows/w36/README.md); Windows snímky a automatické ověření čekají. Ruční přejímka je odložená. Závislosti: W08, W17–W35.
 - Projít matici obrazovek jednu po druhé. Každá musí používat skutečná data a služby, mít hotové povinné stavy a naplnit příslušný pracovní postup, nikoli jen připomínat obrázek.
 - Sjednotit české texty, rozměry, řazení ovladačů, hustotu tabulek, čitelnost z odstupu, prázdné stavy a konzistenci transportu. Rozdíly proti konceptu zapsat do návrhové specifikace.
 - Pořídit aktuální screenshoty nativního programu a porovnat s návrhy. Ověřit práci myší i klávesnicí na běžném notebooku, velkém monitoru a malém přichyceném okně.

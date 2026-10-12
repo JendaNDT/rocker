@@ -151,3 +151,7 @@ Obrázky jsou koncepční vizualizace. Nejsou důkazem běžícího WinUI progra
 
 Podklad pro volbu Windows rozhraní: [Microsoft WinUI](https://github.com/microsoft/microsoft-ui-xaml).
 
+
+## Native implementation differences (W36)
+
+The implemented Windows views use real WinUI controls and service data. Live uses adaptive columns; the common session/plan footer remains visible. AI plan task selection uses human names. The notation renderer is native AlphaSkia, with procedural MIDI sound. YouTube remains the isolated official WebView2 player. The [32-view matrix](../w36/view-matrix.json) and Windows artifact gallery distinguish implemented behavior from unperformed manual/hardware acceptance.

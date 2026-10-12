@@ -180,8 +180,8 @@
                     <Button x:Name="PracticeStart" Content="Zahájit cvičení" IsEnabled="False" Click="PracticeStart_Click" />
                     <Button x:Name="PracticePause" Content="Pauza cvičení" IsEnabled="False" Click="PracticePause_Click" />
                     <Button x:Name="PracticeEnd" Content="Ukončit cvičení" IsEnabled="False" Click="PracticeEnd_Click" />
-                    <TextBlock x:Name="PracticeStatus" Text="Cvičení není zahájené · aktivně 0:00" TextWrapping="Wrap" VerticalAlignment="Center" />
                 </StackPanel>
+                <TextBlock x:Name="PracticeStatus" Text="Cvičení není zahájené · aktivně 0:00" TextWrapping="Wrap" FontSize="12" />
                 <StackPanel x:Name="PlanButtons" Orientation="Horizontal" Spacing="8" Visibility="Collapsed">
                     <Button x:Name="ReturnPlan" Content="Zpět do plánu" Click="ReturnPlan_Click" />
                     <Button x:Name="CompletePlan" Content="Označit blok jako hotový" Click="CompletePlan_Click" />

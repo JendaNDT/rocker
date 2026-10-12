@@ -66,7 +66,7 @@ public sealed partial class MainWindow
     private void ShowWorkspace()
     {
         if (!shellReady || closed) return;
-        var target = navigation.Current; var view = WorkspaceViews.Get(target.ViewId);
+        var target = navigation.Current;ApplyNavigationTask(target);var view = WorkspaceViews.Get(target.ViewId);
         foreach(var old in workspaceCache.Keys.Where(k=>k.ViewId==target.ViewId && k!=target).ToArray())workspaceCache.Remove(old);
         if(aiActive is { } active && target.ViewId!=active.View)aiCancellation?.Cancel();
         if(target.ViewId!=rhythmView && (rhythmRunning || rhythmOperation))_ = StopRhythmUiAsync();
@@ -74,7 +74,7 @@ public sealed partial class MainWindow
         if(target.ViewId!="22" && (earHeard || earOperation))_ = PauseEarPreviewAsync();
         if(target.ViewId!="09" && surgicalListening){surgicalListening=false;UpdateSurgical();}
         visitedViews.Add(view.Id); Title = "Rocker — " + view.Title;
-        WorkspaceTitle.Text = view.Title; WorkspaceTrail.Text = "Rocker / " + view.Group + (target.ItemId is null ? "" : " / " + target.ItemId);
+        WorkspaceTitle.Text = view.Title; WorkspaceTrail.Text = "Rocker / " + view.Group + (target.ItemId is null ? "" : " / " + TaskTitle(target));
         selectingNavigation = true; Navigation.SelectedItem = navigationItems[view.Id]; selectingNavigation = false;
         Navigation.IsBackEnabled = BackMenu.IsEnabled = navigation.CanGoBack; ForwardMenu.IsEnabled = navigation.CanGoForward;
         NotationPanel.Visibility = view.Id == "20" ? Visibility.Visible : Visibility.Collapsed;
@@ -118,7 +118,7 @@ public sealed partial class MainWindow
     {
         if (!shellReady) return;
         var orientation = args.NewSize.Width < 850 ? Orientation.Vertical : Orientation.Horizontal;
-        ScoreButtons.Orientation = VideoButtons.Orientation = PlanButtons.Orientation = PracticeButtons.Orientation = orientation;
+        ScoreButtons.Orientation = VideoButtons.Orientation = PlanButtons.Orientation = orientation;
         ShellStateText.Visibility = args.NewSize.Width < 640 ? Visibility.Collapsed : Visibility.Visible;
     }
     private static StackPanel Stack() => new() { Spacing = 12, HorizontalAlignment = HorizontalAlignment.Stretch };
@@ -139,7 +139,7 @@ public sealed partial class MainWindow
         if (target.ViewId == "21") return BuildFretboardGame();
         if (target.ViewId == "22") return BuildEarGame();
         if (target.ViewId is "10" or "11") return BuildRhythmTrainer(target.ViewId,target.ItemId);
-        if (target.ViewId == "12") return BuildPalmMute();
+        if (target.ViewId == "12") return BuildPalmMute(target.ItemId);
         if (target.ViewId == "09") return BuildSurgical(target.ItemId);
         if (target.ViewId == "15") return BuildStudio();
         if (target.ViewId == "16") return BuildLooper();
@@ -155,38 +155,7 @@ public sealed partial class MainWindow
         if (target.ViewId == "06") return BuildLesson(target.ItemId);
         if (target.ViewId == "28") return BuildSettings();
         if (target.ViewId == "30") return BuildBackups();
-        if (target.ViewId == "27") return Card(Text($"Dokončené lekce: {completedLessons.Count} / {catalog.Lessons.Count}. Pokrok a rozpracované kroky se průběžně ukládají."));
-        var group = target.ViewId switch { "03" => "tunings", "04" => "metronomePresets", "09" => "surgicalExercises", "10" => "powerChordExercises", "11" => "gallopExercises", "12" => "palmMuteDrills", "13" => "ampPresets", "17" => "chords", "18" => "scales", "19" => "riffs", _ => null };
-        if (group is not null) return BuildCatalog(group, target.ItemId);
-        var panel = Stack();
-        panel.Children.Add(Text(target.ViewId switch {
-            "02" => "Živý vstup z kytary ještě není dostupný. Přehrávání nahrávky nebo not můžeš ovládat ve spodním panelu.",
-
-            "14" => "Nahrávky zatím nejsou uložené v knihovně. Zvukový soubor můžeš otevřít a přehrát.",
-            "15" => "Studio čeká na připojení stop a ukládání projektu.", "16" => "Looper čeká na živý vstup a nahrávání vrstev.",
-            "21" => "Hra na hmatníku čeká na dokončení pracovního rozhraní.", "22" => "Sluchové cvičení čeká na ovládání otázek a společné přehrávání tónů.",
-            "23" or "24" or "25" => "AI tutor zatím není připojený. Klíč ani žádné dotazy se nyní neposílají.",
-            "26" => "Profil kytary čeká na propojení s laděním a trvalým ukládáním.",
-            "30" => "Záloha a převod dat budou dostupné po dokončení ukládání. Původní webová data zůstávají zachovaná.",
-            "31" => "Průvodce zvukovým vstupem ještě není připravený. Vzhled okna můžeš změnit v Nastavení.",
-            "32" => "Export nahrávky bude dostupný po dokončení nahrávání. Noty už lze uložit jako MIDI.", _ => "Tento pracovní pohled se připravuje." }));
-        if (target.ViewId is "07" or "14") { var open = new Button { Content = "Otevřít nahrávku…" }; open.Click += OpenMedia_Click; panel.Children.Add(open); }
-        if (target.ViewId == "32") { var notes = new Button { Content = "Otevřít noty a export MIDI" }; notes.Click += (_,_) => Navigate(new("20")); panel.Children.Add(notes); }
-        return Card(panel);
-    }
-    private FrameworkElement BuildCatalog(string group, string? selected)
-    {
-        var panel = Stack(); panel.Children.Add(Text("Obsah je přenesený. Příslušný trenažér nebo hudební nástroj ještě dokončujeme.",true));
-        var entries = catalog!.Items(group).Select(item => new ListEntry(item.GetProperty("id").GetString()!,
-            item.TryGetProperty("name", out var name) ? name.GetString()! : item.TryGetProperty("title", out var title) ? title.GetString()! : item.GetProperty("label").GetString()!,
-            item.TryGetProperty("description", out var description) ? description.GetString()! : item.TryGetProperty("focus", out var focus) ? focus.GetString()! : item.GetProperty("id").GetString()!)).ToArray();
-        var list = new ListView { DisplayMemberPath = "Title", SelectionMode = ListViewSelectionMode.Single, ItemsSource = entries };
-        var detail = Text("Vyber položku.",true);
-        list.SelectionChanged += (_,_) => { if (list.SelectedItem is ListEntry entry) detail.Text = entry.Detail; };
-        if (selected is not null) list.SelectedItem = entries.FirstOrDefault(entry => entry.Id == selected);
-        var search = new TextBox { Header = "Hledat", PlaceholderText = "Název nebo popis", MaxLength = 128 };
-        search.TextChanged += (_,_) => list.ItemsSource = entries.Where(entry => entry.Title.Contains(search.Text,StringComparison.CurrentCultureIgnoreCase) || entry.Detail.Contains(search.Text,StringComparison.CurrentCultureIgnoreCase)).ToArray();
-        panel.Children.Add(search); panel.Children.Add(list); panel.Children.Add(detail); return Card(panel);
+        throw new InvalidOperationException("Chybí nativní pohled: "+target.ViewId);
     }
     private async void About_Click(object sender, RoutedEventArgs args)
     {
@@ -266,6 +235,7 @@ public sealed partial class MainWindow
         await VerifyOverviewLiveAsync();
         await VerifyFirstRunAsync();
         await VerifyFileCommandsAsync();
+        await VerifyAllDesignViewsAsync();
         await VerifyDevicesAsync();
         VerifyComponents();
         if (Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTIC_VIEW") == "components") ShowComponents();

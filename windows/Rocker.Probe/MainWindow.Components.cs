@@ -46,7 +46,7 @@ public sealed partial class MainWindow
         var listPanel = Stack(); listPanel.Children.Add(Text("Nativní seznam · Ctrl/Shift pro více položek")); listPanel.Children.Add(list); panel.Children.Add(Card(listPanel));
         return panel;
     }
-    private async Task CaptureNativeViewAsync()
+    private async Task CaptureNativeViewAsync(string name="native-content.png")
     {
         var directory = Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTICS_DIR");
         if (string.IsNullOrEmpty(directory)) return;
@@ -63,7 +63,7 @@ public sealed partial class MainWindow
         await encoder.FlushAsync();
         stream.Seek(0); var png = new byte[checked((int)stream.Size)];
         using (var reader = new DataReader(stream)) { await reader.LoadAsync((uint)png.Length); reader.ReadBytes(png); }
-        await File.WriteAllBytesAsync(Path.Combine(directory,"native-content.png"),png);
+        await File.WriteAllBytesAsync(Path.Combine(directory,name),png);
     }
     private void VerifyComponents()
     {

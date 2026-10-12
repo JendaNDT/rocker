@@ -7,6 +7,13 @@ namespace Rocker.Probe;
 public sealed partial class MainWindow
 {
     private sealed record PlanTask(string Id,string Title,string Detail,int Minutes,NavigationTarget Target);
+    private NavigationTarget? appliedNavigationTask;
+    private void ApplyNavigationTask(NavigationTarget target)
+    {
+        if(!persistenceReady || catalog is null || target==appliedNavigationTask)return;appliedNavigationTask=target;if(target.ItemId is not { } id)return;
+        if(target.ViewId=="03" && AllTunings().FirstOrDefault(t=>t.Id==id) is { } tuning){appSettings=appSettings with{TuningId=tuning.Id};SaveSettings();RefreshTuningSelector();RebuildTunerStrings();}
+        if(target.ViewId=="04" && AllMetroPresets().FirstOrDefault(p=>p.Id==id) is { } preset){metroConfig=preset.Config;metroPresetId=preset.Id;QueueMetronome();RebuildMetroBeats();}
+    }
     private string planKind="daily";private (string Key,PlanTask Task)? openedPlanTask;
     private string CurrentPlanKey=>planKind=="ai" && aiSettings.Plan is { } ai?"ai:"+(ai.AcceptedAt?.UtcTicks.ToString()??"legacy"):"day:"+DateOnly.FromDateTime(TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow,practiceTimeZone).DateTime).ToString("yyyy-MM-dd");
     private PlanProgress? SelectedPlanProgress=>planKind=="ai"?appSettings.AiPlanProgress:appSettings.PracticePlan;
@@ -31,9 +38,10 @@ public sealed partial class MainWindow
     private string TaskTitle(NavigationTarget target)
     {
         if(target.ViewId=="06" && target.ItemId is { } lesson)return catalog!.Lessons.FirstOrDefault(l=>l.Id==lesson)?.Title??WorkspaceViews.Get(target.ViewId).Title;
-        return target.ItemId is { } id?ExerciseTitle(id):WorkspaceViews.Get(target.ViewId).Title;
+        if(target.ItemId is { } id){foreach(string group in new[]{"riffs","surgicalExercises","powerChordExercises","gallopExercises","palmMuteDrills","chords","scales"})if(catalog!.Find(group,id) is { } item)return item.TryGetProperty("title",out var title)?title.GetString()??id:item.TryGetProperty("name",out var name)?name.GetString()??id:id;}
+        return WorkspaceViews.Get(target.ViewId).Title;
     }
-    private void OpenPlanTask(string key,PlanTask task){openedPlanTask=(key,task);Navigate(task.Target);}
+    private void OpenPlanTask(string key,PlanTask task){openedPlanTask=(key,task);appliedNavigationTask=null;workspaceCache.Remove(task.Target);Navigate(task.Target);}
     private void RefreshPlanControls(){PlanButtons.Visibility=openedPlanTask is not null && navigation.Current.ViewId!="01"?Visibility.Visible:Visibility.Collapsed;PlanTaskLabel.Text=openedPlanTask is { } p?"Plán · "+p.Task.Title:"";CompletePlan.IsEnabled=openedPlanTask is { } o && o.Key==CurrentPlanKey && navigation.Current==o.Task.Target && !PlanDone(o.Key,o.Task.Id);}
     private void ReturnPlan_Click(object sender,RoutedEventArgs args)=>Navigate(new("01"));
     private void CompletePlan_Click(object sender,RoutedEventArgs args)
