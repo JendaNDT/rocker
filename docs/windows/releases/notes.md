@@ -1,6 +1,14 @@
-# Rocker 0.2.0 RC2 — přehlednější UI a UX
+# Rocker 0.2.0 RC3 — propracovaný Vintage vzhled
 
 Nativní WinUI 3 aplikace ve Vintage designu se všemi 32 pracovními pohledy a společným C++/JUCE zvukovým jádrem. Obsahuje Live, ladičku, rozšířený metronom, aparát, lekce a trenažéry, knihovny a hry, vlastní skladby/noty, nahrávání, Looper, Studio, profil/pokrok, volitelnou AI, YouTube, převod webových dat a úplné zálohy.
+
+## Nový vzhled
+
+- Kovové knoflíky aparátu s obvodovými stupnicemi a adaptivním rozložením.
+- Společná přesná ladička pro Live a samostatný pohled; bez měřeného tónu je ukazatel skrytý.
+- Segmentové měřáky −60 až 0 dBFS, velký údaj tempa a propracovanější akordy/hmatník.
+- Sjednocené povrchy, měděné akcenty, typografie a vlastní ikona aplikace. Tmavá i světlá varianta.
+- Standardní Windows ovládání, klávesnice a automatizační jména zůstávají funkční.
 
 ## Změny rozložení
 
@@ -23,7 +31,7 @@ Volitelný **Rocker-Windows-x64.zip** je přenosná varianta: Extrahovat vše, p
 
 ## Ověření a hranice
 
-Windows běh 38262050417, revize 601af35, prošel novou kontrolou UX layoutu. Tato konkrétní revize prošla automatickým sestavením na Windows, všemi 22 nativními sadami, doménovými/datovými/migračními a mediálními kontrolami, konstrukcí všech 32 pohledů a UI Automation. Instalační cyklus ověřil přechod verzí, blokování neplatného profilu bez změny zástupce/asociace, shodu všech souborů s přenosným balíkem, opravu DLL, aktivaci projektu a odinstalaci se zachováním dat. SHA256SUMS.txt a candidate-validation.json identifikují ověřený balík.
+Windows běh 38301809142, revize 6be7ff9, prošel kontrolou UX layoutu a devíti detailními snímky nového vzhledu. Tato konkrétní revize prošla automatickým sestavením na Windows, všemi 22 nativními sadami, doménovými/datovými/migračními a mediálními kontrolami, konstrukcí všech 32 pohledů a UI Automation. Instalační cyklus ověřil přechod verzí, blokování neplatného profilu bez změny zástupce/asociace, shodu všech souborů s přenosným balíkem, opravu DLL, aktivaci projektu a odinstalaci se zachováním dat. SHA256SUMS.txt a candidate-validation.json identifikují ověřený balík.
 
 Skutečné hraní, celkovou odezvu a stabilní ASIO buffer na bratrově M-Track Solo je ještě potřeba potvrdit. Online YouTube/OpenAI, fyzické uspání/odpojení, Narrator/DPI a čistá offline VM nebyly ručně ověřené. Zrychlený hodinový render není hodina skutečného hraní. Přechod verzí používá označené instalační fixture se stejnými kandidátními binárkami; netvrdí kompatibilitu se všemi historickými verzemi.
 

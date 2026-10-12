@@ -1,0 +1,124 @@
+{
+  "result": "passed",
+  "recordedAtUtc": "2026-10-12T18:32:25.442043+00:00",
+  "sourceCommit": "6be7ff90dad38ddd4f901af7ecf6c11caf86881d",
+  "scope": "Native Vintage graphics; C++ audio graph, data formats and PWA sources unchanged.",
+  "csharpSemantic": {
+    "files": 53,
+    "errors": 0,
+    "xamlFieldsStubbed": true,
+    "windowsRuntimeVerified": false
+  },
+  "domain": {
+    "result": "passed",
+    "referenceCases": 69,
+    "boundaryChecks": 168,
+    "contentGroups": 15,
+    "surgicalStatesCompared": 37,
+    "extendedReferenceCases": 372,
+    "extendedStatesCompared": 350
+  },
+  "pwaRegression": {
+    "testsPassed": 567,
+    "testFilesPassed": 55,
+    "typescript": "passed"
+  },
+  "windowsLayoutVerified": false,
+  "manualVisualAcceptanceVerified": false,
+  "themeTokenParity": "passed: dark, light and high contrast",
+  "explicitTextColorPairs": {
+    "pairs": [
+      {
+        "pair": "dark instrument text",
+        "foreground": "#1D1D1B",
+        "background": "#EFE2C8",
+        "contrast": 13.17
+      },
+      {
+        "pair": "light instrument text",
+        "foreground": "#1D1D1B",
+        "background": "#F4E5CC",
+        "contrast": 13.61
+      },
+      {
+        "pair": "dark primary action",
+        "foreground": "#1D1D1B",
+        "background": "#D6A66C",
+        "contrast": 7.66
+      },
+      {
+        "pair": "light primary action",
+        "foreground": "#FFFFFF",
+        "background": "#905622",
+        "contrast": 5.93
+      },
+      {
+        "pair": "dark brand",
+        "foreground": "#D6A66C",
+        "background": "#1D1D1B",
+        "contrast": 7.66
+      },
+      {
+        "pair": "light brand",
+        "foreground": "#905622",
+        "background": "#FAF6F0",
+        "contrast": 5.51
+      }
+    ],
+    "minimumRatio": 4.5,
+    "scope": "Explicit paired colors only; system text, rendered gradients and manual high contrast are not asserted."
+  },
+  "msbuildIconContent": {
+    "count": 1,
+    "copyToOutput": "PreserveNewest",
+    "copyToPublish": "PreserveNewest",
+    "result": "passed"
+  },
+  "diagnosedWindowsBuildFailure": {
+    "runId": 38291837757,
+    "sourceCommit": "6dac1959075380eeb40641eccefb9b72746d955c",
+    "cause": "Duplicate WinUI default Assets/Rocker.ico Content entry (PRI277).",
+    "correction": "Update the default item instead of Include; actual MSBuild item evaluation confirms a single copied asset.",
+    "nativeSuitesPassedBeforePackagingFailure": 22
+  },
+  "visualReviewCorrections": {
+    "initialPassedRun": 38293664687,
+    "initialPassedCommit": "728baa6519a94d3fe9a35135cff182a8c38695ed",
+    "corrections": [
+      "Align legacy native accent brushes with Vintage colors.",
+      "Move dedicated tuning face before setup fields.",
+      "Compact Live note and scale into one row; check desktop scale visibility.",
+      "Light native button theme inside the cream instrument face."
+    ]
+  },
+  "nativeTemplateReferenceSources": [
+    "https://github.com/microsoft/microsoft-ui-xaml/blob/main/controls/dev/CommonStyles/Slider_themeresources.xaml",
+    "https://github.com/microsoft/microsoft-ui-xaml/blob/main/controls/dev/CommonStyles/CheckBox_themeresources.xaml",
+    "https://github.com/microsoft/microsoft-ui-xaml/blob/main/controls/dev/NavigationView/NavigationView_themeresources.xaml"
+  ],
+  "diagnosedLayoutFailure": {
+    "runId": 38296872287,
+    "sourceCommit": "07ae4f11c8e4f0befd3d92b6bed67958460d971b",
+    "result": "failed",
+    "liveScaleBottomDip": 689,
+    "cause": "Scale failed the desktop visibility check in the startup window fitted to the runner work area.",
+    "correction": "Constrain Live gauge height to 70 DIP and run the desktop check at the same requested 1280x940 window size as gallery captures; retain the separate narrow-window check."
+  },
+  "diagnosedColdStartFailure": {
+    "runId": 38299059595,
+    "sourceCommit": "f27012dc9a4a651073199e116d97adf0445e42d6",
+    "result": "failed",
+    "cause": "Shared 45-second window/notation deadline elapsed; uploaded notation-view.json independently reports successful bitmap decode and prepared MIDI.",
+    "correction": "Keep 45-second HWND check, give notation 60 seconds from opening the window and video its own 45 seconds, retaining every result assertion; total shell deadline 180 seconds."
+  },
+  "powershellParse": "passed",
+  "lastMeasuredLayoutFailure": {
+    "runId": 38300355817,
+    "sourceCommit": "d1f3591591d4812a54d6db8b78261bef87d86ccc",
+    "result": "failed",
+    "clientHeightDip": 749,
+    "scaleBottomDip": 690,
+    "allowedScaleBottomDip": 680,
+    "correction": "Monitoring StackPanel spacing 12 to 6 DIP across three gaps; keep the visibility assertion and capture its actual viewport."
+  }
+}

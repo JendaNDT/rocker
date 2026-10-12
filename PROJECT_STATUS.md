@@ -1,6 +1,8 @@
 # Rocker — stav projektu
 
-Aktualizováno 12. 10. 2026. Windows verze 0.2.0 má implementovaný celý rozsah W04–W43: 32 skutečných WinUI pohledů ve Vintage designu, společné C++/JUCE jádro, všechny původní výukové a pracovní funkce, data/migraci, zálohy a instalátor pro uživatele. Závěrečné automatické Windows kontroly aplikace, instalátoru a úplného kandidáta prošly v [běhu 38262050417](https://github.com/JendaNDT/rocker/actions/runs/38262050417), revize `601af35`. [Sestavený soukromý kandidát](https://github.com/JendaNDT/rocker/releases/tag/windows-0.2.0-rc2-20261012) obsahuje instalátor, přenosný ZIP, samostatné zdroje a kontrolní součty.
+Aktualizováno 12. 10. 2026. Windows verze 0.2.0 má implementovaný celý rozsah W04–W43: 32 skutečných WinUI pohledů ve Vintage designu, společné C++/JUCE jádro, všechny původní výukové a pracovní funkce, data/migraci, zálohy a instalátor pro uživatele. Závěrečné automatické Windows kontroly aplikace, instalátoru a úplného kandidáta prošly v [běhu 38301809142](https://github.com/JendaNDT/rocker/actions/runs/38301809142), revize `6be7ff9`. [Sestavený soukromý kandidát](https://github.com/JendaNDT/rocker/releases/tag/windows-0.2.0-rc3-20261012) obsahuje instalátor, přenosný ZIP, samostatné zdroje a kontrolní součty.
+
+Grafika: dokončená [úprava Vintage vzhledu](docs/windows/graphics/README.md) — kovové ovladače, přesná stupnice ladičky, segmentové měřáky, vlastní ikona a sjednocené povrchy/typografie. [Galerie skutečné Windows aplikace](docs/windows/graphics/gallery.html) obsahuje i světlou variantu. Automatické kontroly a instalační cyklus prošly; ruční přijetí vzhledu zůstává na Jendovi.
 
 UI/UX: dokončená [úprava přehlednosti a rozložení](docs/windows/ux/README.md) — přímá čitelná navigace, kontextový spodní panel, přehled dalšího kroku a soustředěné ovládání Live. Nové rozložení i instalační cyklus prošly stejným Windows během.
 

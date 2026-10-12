@@ -9,7 +9,7 @@
         "Z profilu se dvěma dokončenými lekcemi nabídnout správnou následující lekci; ověřit součet minut a režim Zen."
       ],
       "implemented": true,
-      "nativeConstructionAndCapture": "passed: Windows run 38262050417, commit 601af35",
+      "nativeConstructionAndCapture": "passed: Windows run 38301809142, commit 6be7ff9",
       "manualAcceptance": "deferred, not performed",
       "requiredHardwareOrOnlineAcceptance": "not performed"
     },
@@ -21,7 +21,7 @@
         "Změnit tempo, spustit/zastavit záznam, odejít a vrátit se bez zdvojení audio hostu; ověřit platný uložený take."
       ],
       "implemented": true,
-      "nativeConstructionAndCapture": "passed: Windows run 38262050417, commit 601af35",
+      "nativeConstructionAndCapture": "passed: Windows run 38301809142, commit 6be7ff9",
       "manualAcceptance": "deferred, not performed",
       "requiredHardwareOrOnlineAcceptance": "not performed"
     },
@@ -33,7 +33,7 @@
         "Přehrát syntetické E2 a A4, ověřit tóny a ticho; obnovit vlastní ladění a H/B; referenční tón zastavit při uvolnění tlačítka."
       ],
       "implemented": true,
-      "nativeConstructionAndCapture": "passed: Windows run 38262050417, commit 601af35",
+      "nativeConstructionAndCapture": "passed: Windows run 38301809142, commit 6be7ff9",
       "manualAcceptance": "deferred, not performed",
       "requiredHardwareOrOnlineAcceptance": "not performed"
     },
@@ -45,7 +45,7 @@
         "Znovu načíst vlastní preset; ověřit hranice předtaktu, rampy a ticha i součet swingových dob; přepnutí vizualizace nemění časování."
       ],
       "implemented": true,
-      "nativeConstructionAndCapture": "passed: Windows run 38262050417, commit 601af35",
+      "nativeConstructionAndCapture": "passed: Windows run 38301809142, commit 6be7ff9",
       "manualAcceptance": "deferred, not performed",
       "requiredHardwareOrOnlineAcceptance": "not performed"
     },
@@ -57,7 +57,7 @@
         "Každou lekci najít podle stabilního ID; po importu jsou stejné dokončené lekce."
       ],
       "implemented": true,
-      "nativeConstructionAndCapture": "passed: Windows run 38262050417, commit 601af35",
+      "nativeConstructionAndCapture": "passed: Windows run 38301809142, commit 6be7ff9",
       "manualAcceptance": "deferred, not performed",
       "requiredHardwareOrOnlineAcceptance": "not performed"
     },
@@ -69,7 +69,7 @@
         "Projít každý typ kroku, opakovaným potvrzením nevytvořit duplicitu dokončení; bez vstupu se tónová kontrola netváří úspěšně."
       ],
       "implemented": true,
-      "nativeConstructionAndCapture": "passed: Windows run 38262050417, commit 601af35",
+      "nativeConstructionAndCapture": "passed: Windows run 38301809142, commit 6be7ff9",
       "manualAcceptance": "deferred, not performed",
       "requiredHardwareOrOnlineAcceptance": "not performed"
     },
@@ -81,7 +81,7 @@
         "Otevřít referenční WAV/MP3, nastavit A/B a rychlost, opakovaně seekovat; ověřit délku a ukončení starého přehrávání."
       ],
       "implemented": true,
-      "nativeConstructionAndCapture": "passed: Windows run 38262050417, commit 601af35",
+      "nativeConstructionAndCapture": "passed: Windows run 38301809142, commit 6be7ff9",
       "manualAcceptance": "deferred, not performed",
       "requiredHardwareOrOnlineAcceptance": "not performed"
     },
@@ -93,7 +93,7 @@
         "Obnovit zkušební smyčku bez síťového požadavku; samostatně ověřit povolené živé video, chybu vložení a offline stav."
       ],
       "implemented": true,
-      "nativeConstructionAndCapture": "passed: Windows run 38262050417, commit 601af35",
+      "nativeConstructionAndCapture": "passed: Windows run 38301809142, commit 6be7ff9",
       "manualAcceptance": "deferred, not performed",
       "requiredHardwareOrOnlineAcceptance": "not performed"
     },
@@ -105,7 +105,7 @@
         "Přehrát zaznamenané stopy čistého průchodu, chyby a tří drillů; ověřit i tón o oktávu výše."
       ],
       "implemented": true,
-      "nativeConstructionAndCapture": "passed: Windows run 38262050417, commit 601af35",
+      "nativeConstructionAndCapture": "passed: Windows run 38301809142, commit 6be7ff9",
       "manualAcceptance": "deferred, not performed",
       "requiredHardwareOrOnlineAcceptance": "not performed"
     },
@@ -117,7 +117,7 @@
         "Projít kolo proti metronomu, správně změnit akord i tempo a uložit pouze lepší rekord."
       ],
       "implemented": true,
-      "nativeConstructionAndCapture": "passed: Windows run 38262050417, commit 601af35",
+      "nativeConstructionAndCapture": "passed: Windows run 38301809142, commit 6be7ff9",
       "manualAcceptance": "deferred, not performed",
       "requiredHardwareOrOnlineAcceptance": "not performed"
     },
@@ -129,7 +129,7 @@
         "Ověřit časové pozice patternu a změnu kola/tempa; zastavení ukončí všechny naplánované události."
       ],
       "implemented": true,
-      "nativeConstructionAndCapture": "passed: Windows run 38262050417, commit 601af35",
+      "nativeConstructionAndCapture": "passed: Windows run 38301809142, commit 6be7ff9",
       "manualAcceptance": "deferred, not performed",
       "requiredHardwareOrOnlineAcceptance": "not performed"
     },
@@ -141,7 +141,7 @@
         "Ověřit čistou logiku kalibrace a skóre, ticho a nedostatečnou kalibraci; konečné rozlišení na konkrétní kytaře."
       ],
       "implemented": true,
-      "nativeConstructionAndCapture": "passed: Windows run 38262050417, commit 601af35",
+      "nativeConstructionAndCapture": "passed: Windows run 38301809142, commit 6be7ff9",
       "manualAcceptance": "deferred, not performed",
       "requiredHardwareOrOnlineAcceptance": "not performed"
     },
@@ -153,7 +153,7 @@
         "Obnovit vlastní preset, změnit parametr, přejít do jiné obrazovky a zaznamenat zaaparátovaný zvuk."
       ],
       "implemented": true,
-      "nativeConstructionAndCapture": "passed: Windows run 38262050417, commit 601af35",
+      "nativeConstructionAndCapture": "passed: Windows run 38301809142, commit 6be7ff9",
       "manualAcceptance": "deferred, not performed",
       "requiredHardwareOrOnlineAcceptance": "not performed"
     },
@@ -165,7 +165,7 @@
         "Načíst všech 5 referenčních záznamů, obnovit značku a přehrát; názvy souborů a MIME souhlasí; export není přejmenovaný blob."
       ],
       "implemented": true,
-      "nativeConstructionAndCapture": "passed: Windows run 38262050417, commit 601af35",
+      "nativeConstructionAndCapture": "passed: Windows run 38301809142, commit 6be7ff9",
       "manualAcceptance": "deferred, not performed",
       "requiredHardwareOrOnlineAcceptance": "not performed"
     },
@@ -177,7 +177,7 @@
         "Vrstvit známé signály, ztlumit jednu stopu, exportovat mix a ověřit délku a kanály."
       ],
       "implemented": true,
-      "nativeConstructionAndCapture": "passed: Windows run 38262050417, commit 601af35",
+      "nativeConstructionAndCapture": "passed: Windows run 38301809142, commit 6be7ff9",
       "manualAcceptance": "deferred, not performed",
       "requiredHardwareOrOnlineAcceptance": "not performed"
     },
@@ -189,7 +189,7 @@
         "Ověřit délku první smyčky a opakované vrstvení, zastavení a reset; posun vrstev přiznat."
       ],
       "implemented": true,
-      "nativeConstructionAndCapture": "passed: Windows run 38262050417, commit 601af35",
+      "nativeConstructionAndCapture": "passed: Windows run 38301809142, commit 6be7ff9",
       "manualAcceptance": "deferred, not performed",
       "requiredHardwareOrOnlineAcceptance": "not performed"
     },
@@ -201,7 +201,7 @@
         "Zkontrolovat všechny diagramy a MIDI tóny, zrcadlení pro leváka a české H."
       ],
       "implemented": true,
-      "nativeConstructionAndCapture": "passed: Windows run 38262050417, commit 601af35",
+      "nativeConstructionAndCapture": "passed: Windows run 38301809142, commit 6be7ff9",
       "manualAcceptance": "deferred, not performed",
       "requiredHardwareOrOnlineAcceptance": "not performed"
     },
@@ -213,7 +213,7 @@
         "Změnit toniku a vlastní ladění; zkontrolovat polohy v pravé i levé orientaci."
       ],
       "implemented": true,
-      "nativeConstructionAndCapture": "passed: Windows run 38262050417, commit 601af35",
+      "nativeConstructionAndCapture": "passed: Windows run 38301809142, commit 6be7ff9",
       "manualAcceptance": "deferred, not performed",
       "requiredHardwareOrOnlineAcceptance": "not performed"
     },
@@ -225,7 +225,7 @@
         "Zkontrolovat ID, noty a časování všech riffů; samostatně prověřit distribuční práva k pojmenovaným skladbám."
       ],
       "implemented": true,
-      "nativeConstructionAndCapture": "passed: Windows run 38262050417, commit 601af35",
+      "nativeConstructionAndCapture": "passed: Windows run 38301809142, commit 6be7ff9",
       "manualAcceptance": "deferred, not performed",
       "requiredHardwareOrOnlineAcceptance": "not performed"
     },
@@ -237,7 +237,7 @@
         "Importovat vlastní MusicXML a samostatně vzorky GP formátů; správně zobrazit tóny a přehrát zvolenou stopu."
       ],
       "implemented": true,
-      "nativeConstructionAndCapture": "passed: Windows run 38262050417, commit 601af35",
+      "nativeConstructionAndCapture": "passed: Windows run 38301809142, commit 6be7ff9",
       "manualAcceptance": "deferred, not performed",
       "requiredHardwareOrOnlineAcceptance": "not performed"
     },
@@ -249,7 +249,7 @@
         "Správná i chybná odpověď mění skóre podle současné logiky; vlastní ladění odpovídá hmatníku."
       ],
       "implemented": true,
-      "nativeConstructionAndCapture": "passed: Windows run 38262050417, commit 601af35",
+      "nativeConstructionAndCapture": "passed: Windows run 38301809142, commit 6be7ff9",
       "manualAcceptance": "deferred, not performed",
       "requiredHardwareOrOnlineAcceptance": "not performed"
     },
@@ -261,7 +261,7 @@
         "Ověřit intervaly a vyhodnocení odpovědí; fungovat jen s výstupním zařízením."
       ],
       "implemented": true,
-      "nativeConstructionAndCapture": "passed: Windows run 38262050417, commit 601af35",
+      "nativeConstructionAndCapture": "passed: Windows run 38301809142, commit 6be7ff9",
       "manualAcceptance": "deferred, not performed",
       "requiredHardwareOrOnlineAcceptance": "not performed"
     },
@@ -273,7 +273,7 @@
         "Mock server: úspěch, zrušení, síť a neplatný klíč; obnovit stejné role/texty z referenční zálohy."
       ],
       "implemented": true,
-      "nativeConstructionAndCapture": "passed: Windows run 38262050417, commit 601af35",
+      "nativeConstructionAndCapture": "passed: Windows run 38301809142, commit 6be7ff9",
       "manualAcceptance": "deferred, not performed",
       "requiredHardwareOrOnlineAcceptance": "not performed"
     },
@@ -285,7 +285,7 @@
         "Odmítnout neplatné JSON a neznámé cíle; součet minut odpovídá blokům."
       ],
       "implemented": true,
-      "nativeConstructionAndCapture": "passed: Windows run 38262050417, commit 601af35",
+      "nativeConstructionAndCapture": "passed: Windows run 38301809142, commit 6be7ff9",
       "manualAcceptance": "deferred, not performed",
       "requiredHardwareOrOnlineAcceptance": "not performed"
     },
@@ -297,7 +297,7 @@
         "Vstupní text musí odpovídat testovací historii a nesmí tvrdit, že byly analyzované audio vzorky."
       ],
       "implemented": true,
-      "nativeConstructionAndCapture": "passed: Windows run 38262050417, commit 601af35",
+      "nativeConstructionAndCapture": "passed: Windows run 38301809142, commit 6be7ff9",
       "manualAcceptance": "deferred, not performed",
       "requiredHardwareOrOnlineAcceptance": "not performed"
     },
@@ -309,7 +309,7 @@
         "Obnovit umělý profil, změnit snímače a ověřit doporučení; ladění nesmí mít dvě různé uložené hodnoty."
       ],
       "implemented": true,
-      "nativeConstructionAndCapture": "passed: Windows run 38262050417, commit 601af35",
+      "nativeConstructionAndCapture": "passed: Windows run 38301809142, commit 6be7ff9",
       "manualAcceptance": "deferred, not performed",
       "requiredHardwareOrOnlineAcceptance": "not performed"
     },
@@ -321,7 +321,7 @@
         "Ověřit půlnoc, sérii do včerejška, deduplikaci odměn a zachování historie po importu."
       ],
       "implemented": true,
-      "nativeConstructionAndCapture": "passed: Windows run 38262050417, commit 601af35",
+      "nativeConstructionAndCapture": "passed: Windows run 38301809142, commit 6be7ff9",
       "manualAcceptance": "deferred, not performed",
       "requiredHardwareOrOnlineAcceptance": "not performed"
     },
@@ -333,7 +333,7 @@
         "Obnovit všechny smysluplné preference; Zen a notace přežijí restart, neplatná data se opraví."
       ],
       "implemented": true,
-      "nativeConstructionAndCapture": "passed: Windows run 38262050417, commit 601af35",
+      "nativeConstructionAndCapture": "passed: Windows run 38301809142, commit 6be7ff9",
       "manualAcceptance": "deferred, not performed",
       "requiredHardwareOrOnlineAcceptance": "not performed"
     },
@@ -345,7 +345,7 @@
         "Ověřit start/stop/závody a chyby oprávnění; referenční dvoukanálové WAV rozlišují každý vstup."
       ],
       "implemented": true,
-      "nativeConstructionAndCapture": "passed: Windows run 38262050417, commit 601af35",
+      "nativeConstructionAndCapture": "passed: Windows run 38301809142, commit 6be7ff9",
       "manualAcceptance": "deferred, not performed",
       "requiredHardwareOrOnlineAcceptance": "not performed"
     },
@@ -357,7 +357,7 @@
         "Prohlédnout úplnou, starší, částečnou i chybnou umělou zálohu; samostatně ověřit nahrávky a markery."
       ],
       "implemented": true,
-      "nativeConstructionAndCapture": "passed: Windows run 38262050417, commit 601af35",
+      "nativeConstructionAndCapture": "passed: Windows run 38301809142, commit 6be7ff9",
       "manualAcceptance": "deferred, not performed",
       "requiredHardwareOrOnlineAcceptance": "not performed"
     },
@@ -369,7 +369,7 @@
         "Spustit čistý profil i profil s onboarded=true; další start nesmí znovu vynutit průvodce."
       ],
       "implemented": true,
-      "nativeConstructionAndCapture": "passed: Windows run 38262050417, commit 601af35",
+      "nativeConstructionAndCapture": "passed: Windows run 38301809142, commit 6be7ff9",
       "manualAcceptance": "deferred, not performed",
       "requiredHardwareOrOnlineAcceptance": "not performed"
     },
@@ -381,7 +381,7 @@
         "Zkontrolovat MIME, skutečný obsah souboru, diakritiku a zakázané znaky; WAV má správné kanály/délku."
       ],
       "implemented": true,
-      "nativeConstructionAndCapture": "passed: Windows run 38262050417, commit 601af35",
+      "nativeConstructionAndCapture": "passed: Windows run 38301809142, commit 6be7ff9",
       "manualAcceptance": "deferred, not performed",
       "requiredHardwareOrOnlineAcceptance": "not performed"
     }

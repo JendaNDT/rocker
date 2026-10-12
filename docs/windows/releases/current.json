@@ -1,6 +1,6 @@
 {
-  "runId": 38262050417,
-  "commit": "601af35834c05921f811f216169ed411d61f32f0",
-  "tag": "windows-0.2.0-rc2-20261012",
-  "title": "Rocker 0.2.0 RC2 — přehlednější UI a UX"
+  "runId": 38301809142,
+  "commit": "6be7ff90dad38ddd4f901af7ecf6c11caf86881d",
+  "tag": "windows-0.2.0-rc3-20261012",
+  "title": "Rocker 0.2.0 RC3 — propracovaný Vintage vzhled"
 }

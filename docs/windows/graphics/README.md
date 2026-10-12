@@ -9,6 +9,12 @@ Zadání Jendy: propracovaný vzhled celého nativního programu. Navazuje na ro
 - Měřáky: segmenty na stupnici −60 až 0 dBFS, barevná pásma, číselný údaj a nativní přístupný ukazatel. Segmenty zobrazují skutečný signál; žádná ozdobná simulace.
 - Metronom: velký skutečný údaj BPM na Vintage přístrojové ploše. Akordy: čitelná čísla prstů a strun, nultý pražec; hmatník: struny, pražce a zaoblená tlačítka s ponechanou orientací pro leváky.
 
-Ověření: C# s reálnými WinUI referencemi, doménové reference, Windows kompilace a běžné kontroly celé aplikace. Vedle všech 32 standardních snímků pořizuje runner devět detailních snímků při zavřeném souborovém přehrávači, v tmavé i světlé variantě (`visual-finish.json`). Skutečné snímky a revize se uloží po úspěšném sestavení.
+Ověření: C# s reálnými WinUI referencemi, doménové reference, Windows kompilace a běžné kontroly celé aplikace. Vedle všech 32 standardních snímků pořizuje runner devět detailních snímků při zavřeném souborovém přehrávači, v tmavé i světlé variantě (`visual-finish.json`). [Skutečné snímky](gallery.html) a [ověřená revize](windows-validation.json): Windows běh 38301809142, commit `6be7ff9`, prošel.
 
 Přijetí vzhledu Jendou, fyzické DPI, Narrator a systémový vysoký kontrast zůstávají ručními kontrolami; automatická konstrukce není jejich náhradou. Zvuková cesta, formáty uživatelských dat a funkce nejsou touto grafickou úpravou změněné.
+
+## Poznámky pro sestavení
+
+WinUI `EnableDefaultAssets` už zahrnuje soubory v `Assets/**`: metadata ikony nastavovat přes `Content Update`, nikoli druhé `Include` (jinak PRI277). Ověřeno skutečným MSBuild seznamem Content. Názvy XAML polí nesmí zastínit zděděné vlastnosti, například `UIElement.Scale`; stupnice používá `GaugeCanvas`.
+
+Kontrola běžného desktopového okna na runneru měří celou stupnici Live: její konec je v 672 DIP při výšce klienta 749 DIP, nad kontextovým panelem. [Snímek kontrolované obrazovky](../w36/native-gallery/screens/ux-live.png). V malém okně používá obsah posouvání. Diagnostické pole `liveScaleWidthDip` se zapisuje až po odpojení stránky z vizuálního stromu, a proto je nula; samotná kontrola šířky probíhá před odpojením a uspěla.

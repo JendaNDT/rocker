@@ -1,7 +1,7 @@
 {
-  "runId": 38262050417,
-  "runUrl": "https://github.com/JendaNDT/rocker/actions/runs/38262050417",
-  "commit": "601af35834c05921f811f216169ed411d61f32f0",
+  "runId": 38301809142,
+  "runUrl": "https://github.com/JendaNDT/rocker/actions/runs/38301809142",
+  "commit": "6be7ff90dad38ddd4f901af7ecf6c11caf86881d",
   "result": "passed",
   "storage": {
     "result": "passed",
@@ -19,22 +19,22 @@
     "manualHardwareVerified": false
   },
   "installedUpdate": {
+    "installedNativeWindow": true,
+    "smartAppControlVerified": false,
+    "failedUpdatePreservedShortcutAndAssociation": true,
+    "perUserInstall": true,
     "transitionUsesSameCandidateBinariesWithSyntheticVersionLabels": true,
     "hardwareVerified": false,
-    "versionTransitionPreservedDataAndPriorBinary": true,
-    "offlineSelfContainedStart": true,
-    "uninstallPreservedDatabaseAndSentinel": true,
-    "historicBinaryDowngradeVerified": false,
-    "result": "passed",
-    "perUserInstall": true,
-    "unicodeProjectActivation": true,
-    "adminRequired": false,
-    "smartAppControlVerified": false,
-    "installedInventoryMatchesPortableArchive": true,
-    "installedNativeWindow": true,
     "preUpdateFullBackupAndRawDatabase": true,
+    "adminRequired": false,
+    "projectAssociationRegistered": true,
+    "historicBinaryDowngradeVerified": false,
+    "offlineSelfContainedStart": true,
+    "unicodeProjectActivation": true,
+    "installedInventoryMatchesPortableArchive": true,
     "exactDllRepair": true,
-    "failedUpdatePreservedShortcutAndAssociation": true,
-    "projectAssociationRegistered": true
+    "result": "passed",
+    "versionTransitionPreservedDataAndPriorBinary": true,
+    "uninstallPreservedDatabaseAndSentinel": true
   }
 }
