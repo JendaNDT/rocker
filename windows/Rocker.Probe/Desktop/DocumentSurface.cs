@@ -16,12 +16,12 @@ public sealed class DocumentSurface : Grid
         RowSpacing=0;Padding=new(0);
         RowDefinitions.Add(new(){Height=GridLength.Auto});RowDefinitions.Add(new(){Height=new(1,GridUnitType.Star)});RowDefinitions.Add(new(){Height=GridLength.Auto});
         var commands=new ScrollViewer{Content=Toolbar,HorizontalScrollMode=ScrollMode.Enabled,HorizontalScrollBarVisibility=ScrollBarVisibility.Auto,VerticalScrollBarVisibility=ScrollBarVisibility.Disabled};
-        Children.Add(new Border{Child=commands,Padding=new(10,6,10,6),BorderThickness=new(0,0,0,1),BorderBrush=(Brush)Application.Current.Resources["CardStrokeColorDefaultBrush"]});
+        Children.Add(new Border{Child=commands,Padding=new(10,6,10,6),Style=(Style)Application.Current.Resources["VintageWorkbenchBandStyle"]});
         Grid.SetRow(Body,1);Children.Add(Body);
         ScrollViewer? outlineScroll=null,inspectorScroll=null;
         if(outline is not null){Body.ColumnDefinitions.Add(new(){Width=new(190)});outlineScroll=new(){Content=outline,Padding=new(10),HorizontalScrollBarVisibility=ScrollBarVisibility.Disabled};Body.Children.Add(outlineScroll);}
         int center=Body.ColumnDefinitions.Count;Body.ColumnDefinitions.Add(new(){Width=new(1,GridUnitType.Star)});var workspace=new Border{Child=main,Padding=new(12)};Grid.SetColumn(workspace,center);Body.Children.Add(workspace);
-        if(inspector is not null){Body.ColumnDefinitions.Add(new(){Width=new(240)});inspectorScroll=new(){Content=inspector,Padding=new(12),HorizontalScrollBarVisibility=ScrollBarVisibility.Disabled,Background=(Brush)Application.Current.Resources["VintagePanelMaterial"]};Grid.SetColumn(inspectorScroll,center+1);Body.Children.Add(inspectorScroll);}
+        if(inspector is not null){Body.ColumnDefinitions.Add(new(){Width=new(240)});inspectorScroll=new(){Content=inspector,Padding=new(12),HorizontalScrollBarVisibility=ScrollBarVisibility.Disabled,Style=(Style)Application.Current.Resources["VintageWorkbenchPaneStyle"]};Grid.SetColumn(inspectorScroll,center+1);Body.Children.Add(inspectorScroll);}
         Button? PaneButton(string title,ScrollViewer? source,FrameworkElement? content)
         {
             if(source is null || content is null)return null;

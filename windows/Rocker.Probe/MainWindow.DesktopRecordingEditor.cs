@@ -21,7 +21,7 @@ public sealed partial class MainWindow
         var heading = Text(playingRecording?.Name ?? "Nahrávka"); heading.FontSize = 18;
         recordingWaveformCaption = heading; heading.FontWeight = Microsoft.UI.Text.FontWeights.SemiBold; heading.Margin = new(0, 0, 0, 12); body.Children.Add(heading);
         recordingWaveform!.Height = double.NaN; recordingWaveform.MinHeight = 180;
-        var wave = new Border { Child = recordingWaveform, BorderThickness = new(1), BorderBrush = (Brush)Application.Current.Resources["CardStrokeColorDefaultBrush"], Background = (Brush)Application.Current.Resources["VintagePanelMaterial"] };
+        var wave = new Border { Child = recordingWaveform, Style = (Style)Application.Current.Resources["VintageWorkbenchWellStyle"] };
         Grid.SetRow(wave, 1); body.Children.Add(wave);
         var ruler = new Canvas { Height = 30, IsHitTestVisible = false };
         Grid.SetRow(ruler, 2); body.Children.Add(ruler);

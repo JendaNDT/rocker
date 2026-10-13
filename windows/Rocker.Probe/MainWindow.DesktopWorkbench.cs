@@ -25,7 +25,7 @@ public sealed partial class MainWindow
         commands.Children.Add(new TextBlock
         {
             Text = "ROCKER", CharacterSpacing = 100, FontWeight = Microsoft.UI.Text.FontWeights.Bold,
-            Foreground = (Brush)Application.Current.Resources["VintageAccent"], Margin = new(4, 0, 16, 0), VerticalAlignment = VerticalAlignment.Center
+            Style = (Style)Application.Current.Resources["VintageSectionTextStyle"], Margin = new(4, 0, 16, 0), VerticalAlignment = VerticalAlignment.Center
         });
         void Command(string label, Symbol icon, string help, Action action)
         {
@@ -51,8 +51,7 @@ public sealed partial class MainWindow
         strip.Children.Add(ShellNotice);
         var frame = new Border
         {
-            Child = strip, Padding = new(8, 5, 8, 5), BorderThickness = new(0, 1, 0, 1),
-            BorderBrush = (Brush)Application.Current.Resources["VintageAccent"], Background = (Brush)Application.Current.Resources["VintagePanelMaterial"]
+            Child = strip, Padding = new(8, 5, 8, 5), Style = (Style)Application.Current.Resources["VintageWorkbenchStripStyle"]
         };
         Grid.SetRow(frame, 1); ShellRoot.Children.Add(frame);
         InitializeDesktopTransportStrip();
