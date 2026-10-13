@@ -41,5 +41,15 @@
     "installerHashAndPeVerified": true,
     "installerExecuted": false,
     "userWindowsAuthenticationVerified": false
+  },
+  "gallery": {
+    "result": "passed",
+    "cards": 7,
+    "localLinksVerified": true,
+    "imagesDecoded": true,
+    "filtersVerified": true,
+    "enlargedViewAndEscapeVerified": true,
+    "browserErrors": 0,
+    "method": "internal HTTP; file navigation is disabled by browser policy"
   }
 }

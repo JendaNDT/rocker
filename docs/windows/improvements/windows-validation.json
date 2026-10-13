@@ -175,5 +175,14 @@
     "transitionUsesSameCandidateBinariesWithSyntheticVersionLabels": true,
     "installedInventoryMatchesPortableArchive": true,
     "perUserInstall": true
+  },
+  "publication": {
+    "result": "passed",
+    "runId": 38364693556,
+    "tag": "windows-0.2.0-rc4-20261013",
+    "url": "https://github.com/JendaNDT/rocker/releases/tag/windows-0.2.0-rc4-20261013",
+    "privateRepository": true,
+    "publishedAssets": 5,
+    "assetSizesAndSha256MatchVerifiedDownloads": true
   }
 }
