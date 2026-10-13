@@ -27,12 +27,12 @@ public sealed partial class MainWindow
 
         if(!desktopEnabled || desktopRestoring)return;
         var windows=new List<DesktopWindowLayout>();
-        windows.Add(new("workspace",DesktopWindowRole.Workspace,new(normalBounds.X,normalBounds.Y,normalBounds.Width,normalBounds.Height),documentTabs.TabItems.OfType<TabViewItem>().Select(t=>t.Tag).OfType<Rocker.AppCore.DocumentSession>().Select(s=>s.Key!).Where(k=>k is not null).ToArray(),Maximized:AppWindow.Presenter is OverlappedPresenter{State:OverlappedPresenterState.Maximized}));
-        foreach(var pair in floatingHosts)
+        windows.Add(new("workspace",DesktopWindowRole.Workspace,new(normalBounds.X,normalBounds.Y,normalBounds.Width,normalBounds.Height),documentTabs.TabItems.OfType<TabViewItem>().Select(t=>t.Tag).OfType<Rocker.AppCore.DocumentSession>().Select(s=>s.Key!).Where(k=>k is not null).ToArray(),Maximized:AppWindow.Presenter is OverlappedPresenter{State:OverlappedPresenterState.Maximized},SelectedDocumentIndex:Math.Max(0,documentTabs.SelectedIndex)));
+        foreach(var window in desktopWindows.Where(w=>floatingHosts.ContainsValue(w)))
         {
-            var session=(Rocker.AppCore.DocumentSession)pair.Key.Tag;var window=pair.Value;
-            var role=desktopDocuments.ContainsKey(session)?DesktopWindowRole.Document:session.Target.ViewId=="02"?DesktopWindowRole.Live:DesktopRoutes.ToolViews.Contains(session.Target.ViewId)?DesktopWindowRole.Tool:DesktopWindowRole.Settings;
-            windows.Add(new(window.Id,role,DesktopBounds(window),session.Key is null?[]:[session.Key],role==DesktopWindowRole.Tool?session.Target.ViewId:null,window.AppWindow.Presenter is OverlappedPresenter{State:OverlappedPresenterState.Maximized},window.AppWindow.Presenter is OverlappedPresenter{IsAlwaysOnTop:true},window.AppWindow.IsVisible));
+            var sessions=window.Tabs.TabItems.OfType<TabViewItem>().Select(t=>t.Tag).OfType<Rocker.AppCore.DocumentSession>().ToArray();if(sessions.Length==0)continue;
+            var session=sessions[0];var role=desktopDocuments.ContainsKey(session)?DesktopWindowRole.Document:session.Target.ViewId=="02"?DesktopWindowRole.Live:DesktopRoutes.ToolViews.Contains(session.Target.ViewId)?DesktopWindowRole.Tool:DesktopWindowRole.Settings;
+            windows.Add(new(window.Id,role,DesktopBounds(window),sessions.Where(s=>s.Key is not null).Select(s=>s.Key!).ToArray(),role==DesktopWindowRole.Tool?session.Target.ViewId:null,window.AppWindow.Presenter is OverlappedPresenter{State:OverlappedPresenterState.Maximized},window.AppWindow.Presenter is OverlappedPresenter{IsAlwaysOnTop:true},window.AppWindow.IsVisible,role==DesktopWindowRole.Document?Math.Max(0,window.Tabs.SelectedIndex):0));
         }
         var attached=desktopTools.Values.Where(t=>DesktopRoutes.ToolViews.Contains(t.Session.Target.ViewId) && toolTabs.TabItems.Contains(t.Tab)).Select(t=>t.Session.Target.ViewId).ToArray();
         var layout=new DesktopWorkspaceLayout(1,windows,Math.Max(140,desktopRoot.ColumnDefinitions[0].Width.Value),Math.Max(140,desktopRoot.ColumnDefinitions[4].Width.Value),desktopRoot.ColumnDefinitions[0].Width.Value!=0,desktopRoot.ColumnDefinitions[4].Width.Value!=0,attached);
@@ -72,7 +72,8 @@ public sealed partial class MainWindow
                 }
             }
             foreach(string tool in layout.AttachedTools??[])OpenDesktop(new(tool));
-            if(documentTabs.TabItems.OfType<TabViewItem>().FirstOrDefault() is{ } first)ActivateDesktopTab(first);
+            var main=layout.Windows.Single(w=>w.Role==DesktopWindowRole.Workspace);var selectedKey=main.Documents.Count>0?main.Documents[main.SelectedDocumentIndex]:null;
+            var selected=desktopDocuments.FirstOrDefault(p=>p.Key.Key?.Equals(selectedKey)==true).Value??documentTabs.TabItems.OfType<TabViewItem>().FirstOrDefault();if(selected is not null)ActivateDesktopTab(selected);
         }
         catch(Exception error){ShowPersistenceError("Rozložení nelze obnovit; používá se výchozí pracovní plocha. Hudební data zůstala zachovaná. "+error.Message);}
         finally{desktopRestoring=false;}

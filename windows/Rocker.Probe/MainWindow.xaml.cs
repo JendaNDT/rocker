@@ -193,7 +193,7 @@ public sealed partial class MainWindow : Window
     private void SetBusy(bool value)
     {
         busy = value;
-        foreach(var control in NotationControls.Children.OfType<Control>())control.IsEnabled=!value && notationDocument is not null;
+        foreach(var control in new Control[]{NotationTrackBox,NotationAllTracks,NotationZoom,NotationBar,NotationFollow,NotationLoopFirst,NotationLoopLast,NotationOccurrence})control.IsEnabled=!value && notationDocument is not null;
         XmlButton.IsEnabled = GpButton.IsEnabled = OpenScoreButton.IsEnabled = OpenScoreMenu.IsEnabled =
             OpenMediaButton.IsEnabled = OpenMediaMenu.IsEnabled = !value;
         if (value)

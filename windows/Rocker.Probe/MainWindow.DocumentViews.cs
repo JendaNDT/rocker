@@ -7,7 +7,7 @@ namespace Rocker.Probe;
 public sealed partial class MainWindow
 {
     private ScoreDocumentView scoreDocumentView => documentContext.Current.Get("ScoreDocumentView", () => CreateScoreDocumentView(documentContext.Current));
-    private StackPanel NotationPanel => desktopEnabled && CurrentTarget.ViewId=="20" ? scoreDocumentView.NotationPanelControl : LegacyNotationPanel;
+    private FrameworkElement NotationPanel => desktopEnabled && CurrentTarget.ViewId=="20" ? scoreDocumentView.NotationPanelControl : LegacyNotationPanel;
     private StackPanel ScoreButtons => desktopEnabled && CurrentTarget.ViewId=="20" ? scoreDocumentView.ScoreButtonsControl : LegacyScoreButtons;
     private Button XmlButton => desktopEnabled && CurrentTarget.ViewId=="20" ? scoreDocumentView.XmlButtonControl : LegacyXmlButton;
     private Button GpButton => desktopEnabled && CurrentTarget.ViewId=="20" ? scoreDocumentView.GpButtonControl : LegacyGpButton;
@@ -51,7 +51,7 @@ public sealed partial class MainWindow
         return view;
     }
     private VideoDocumentView videoDocumentView => documentContext.Current.Get("VideoDocumentView", () => CreateVideoDocumentView(documentContext.Current));
-    private Border VideoPanel => desktopEnabled && CurrentTarget.ViewId=="08" ? videoDocumentView.VideoPanelControl : LegacyVideoPanel;
+    private FrameworkElement VideoPanel => desktopEnabled && CurrentTarget.ViewId=="08" ? videoDocumentView.VideoPanelControl : LegacyVideoPanel;
     private TextBox VideoUrl => desktopEnabled && CurrentTarget.ViewId=="08" ? videoDocumentView.VideoUrlControl : LegacyVideoUrl;
     private StackPanel VideoButtons => desktopEnabled && CurrentTarget.ViewId=="08" ? videoDocumentView.VideoButtonsControl : LegacyVideoButtons;
     private Button VideoLoadButton => desktopEnabled && CurrentTarget.ViewId=="08" ? videoDocumentView.VideoLoadButtonControl : LegacyVideoLoadButton;

@@ -8,10 +8,12 @@ public sealed partial class MainWindow
 {
     private FrameworkElement ComposeDesktopStudio(StackPanel source)
     {
-        var elements=source.Children.ToArray();source.Children.Clear();
+        var elements=source.Children.ToArray();foreach(var element in elements)source.Children.Remove(element);
         var timelineHost=elements.OfType<ScrollViewer>().FirstOrDefault(s=>ReferenceEquals(s.Content,studioTimeline))??new ScrollViewer{Content=studioTimeline};timelineHost.MaxHeight=double.PositiveInfinity;
-        var outline=Stack();outline.Children.Add(new TextBlock{Text="STOPY",FontSize=12,CharacterSpacing=80});if(studioTrackList is not null)outline.Children.Add(studioTrackList);
-        var inspector=Stack();if(studioTrackEditor?.Parent is Border card)card.Child=null;if(studioTrackEditor is not null)inspector.Children.Add(studioTrackEditor);
+        var tracks=studioTrackList;var outline=Stack();outline.Children.Add(new TextBlock{Text="STOPY",FontSize=12,CharacterSpacing=80});
+        WriteShellDiagnostic("desktop-composition-stage.json",new{stage="attach-track-list",parent=tracks?.Parent?.GetType().Name,session=documentContext.Current.Id,removedFromSource=tracks is null || !source.Children.Contains(tracks)});
+        if(tracks is not null)outline.Children.Add(tracks);
+        var inspector=Stack();var card=elements.OfType<Border>().FirstOrDefault(b=>ReferenceEquals(b.Child,studioTrackEditor));if(card is not null)card.Child=null;if(studioTrackEditor is not null)inspector.Children.Add(studioTrackEditor);
         var surface=new DocumentSurface(timelineHost,outline,inspector);
         var fileActions=Stack();var recordActions=Stack();var exportActions=Stack();
         foreach(var element in elements)
@@ -34,6 +36,31 @@ public sealed partial class MainWindow
         AddMenu("Nahrávání",recordActions);AddMenu("Export",exportActions);AddMenu("Projekt",fileActions);
         return surface;
     }
+    private FrameworkElement ComposeDesktopSong(StackPanel source)
+    {
+        var elements=source.Children.ToArray();foreach(var element in elements)source.Children.Remove(element);
+        var body=new Grid{RowSpacing=8};body.RowDefinitions.Add(new(){Height=GridLength.Auto});body.RowDefinitions.Add(new(){Height=new(1,GridUnitType.Star)});
+        var waveform=elements.OfType<Border>().FirstOrDefault(b=>ReferenceEquals(b.Child,songWaveform));if(waveform is not null)body.Children.Add(waveform);
+        if(songSections is not null){Grid.SetRow(songSections,1);body.Children.Add(songSections);}
+        var range=elements.OfType<Border>().FirstOrDefault(b=>!ReferenceEquals(b,waveform));var editor=Stack();if(range is not null)editor.Children.Add(range);
+        var surface=new DocumentSurface(body,inspector:editor);var practice=Stack();
+        foreach(var element in elements)
+        {
+            if(element==waveform || element==range || element==songSections)continue;
+            if(element is Button button)
+            {
+                string label=button.Content as string??"";button.MinHeight=32;
+                if(label is "Otevřít skladbu…" or "Spustit skladbu" or "Pozastavit skladbu" or "Zrušit načítání")
+                {button.Content=label switch{"Otevřít skladbu…"=>"Otevřít","Spustit skladbu"=>"Přehrát","Pozastavit skladbu"=>"Pauza",_=>"Zrušit"};surface.Toolbar.Children.Add(button);}
+                else editor.Children.Add(button);
+            }
+            else if(element==songReading)surface.Footer.Children.Add(element);
+            else if(element is TextBlock)continue;
+            else practice.Children.Add(element);
+        }
+        surface.Toolbar.Children.Add(new Button{Content="Cvičení a rychlost",MinHeight=32,Flyout=new Flyout{Content=new ScrollViewer{Content=practice,MaxHeight=500,Width=320}}});
+        return surface;
+    }
     private static UIElement DesktopDocumentContent(FrameworkElement page)
-        =>page is DocumentSurface or Views.ScoreDocumentView ? page : new ScrollViewer{Content=page,Padding=new Thickness(16),HorizontalScrollBarVisibility=ScrollBarVisibility.Disabled};
+        =>page is DocumentSurface or Views.ScoreDocumentView or Views.VideoDocumentView ? page : new ScrollViewer{Content=page,Padding=new Thickness(16),HorizontalScrollBarVisibility=ScrollBarVisibility.Disabled};
 }

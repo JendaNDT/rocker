@@ -97,7 +97,7 @@ public sealed record DesktopTransportOwnership(DesktopDocumentKey? Owner, bool C
 // Bounds are physical screen pixels; panel dimensions are DIPs. No HWND/UI types.
 public sealed record DesktopPixelBounds(int X, int Y, int Width, int Height);
 public sealed record DesktopWindowLayout(string Id, DesktopWindowRole Role, DesktopPixelBounds Bounds,
-    IReadOnlyList<DesktopDocumentKey> Documents, string? ToolViewId = null, bool Maximized = false, bool AlwaysOnTop = false, bool Visible = true);
+    IReadOnlyList<DesktopDocumentKey> Documents, string? ToolViewId = null, bool Maximized = false, bool AlwaysOnTop = false, bool Visible = true, int SelectedDocumentIndex = 0);
 public sealed record DesktopWorkspaceLayout(int SchemaVersion, IReadOnlyList<DesktopWindowLayout> Windows,
     double LibraryWidthDip = 220, double InspectorWidthDip = 240, bool LibraryVisible = true, bool InspectorVisible = true, IReadOnlyList<string>? AttachedTools = null)
 {
@@ -116,7 +116,7 @@ public sealed record DesktopWorkspaceLayout(int SchemaVersion, IReadOnlyList<Des
         {
             if (window is null || !UserData.ValidId(window.Id) || !ids.Add(window.Id) || !Enum.IsDefined(window.Role) ||
                 window.Bounds is null || window.Bounds.Width is < 120 or > 16384 || window.Bounds.Height is < 100 or > 16384 ||
-                window.Documents is null || window.Documents.Count > 64)
+                window.Documents is null || window.Documents.Count > 64 || window.SelectedDocumentIndex<0 || (window.Documents.Count>0?window.SelectedDocumentIndex>=window.Documents.Count:window.SelectedDocumentIndex!=0))
                 throw new InvalidDataException("Uložené okno není platné.");
             if (window.Role == DesktopWindowRole.Tool)
             {

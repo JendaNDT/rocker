@@ -17,20 +17,22 @@ public sealed partial class MainWindow
     private readonly Grid desktopRoot = new() { ColumnSpacing=0 };
     private readonly TabView documentTabs = new() { IsAddTabButtonVisible=false, CanDragTabs=true, CanReorderTabs=true };
     private readonly TabView toolTabs = new() { IsAddTabButtonVisible=false, CanDragTabs=true, CanReorderTabs=true };
-    private readonly ListView desktopLibrary = new() { IsItemClickEnabled=true, SelectionMode=ListViewSelectionMode.Single, DisplayMemberPath="Title" };
+    private readonly TreeView desktopLibrary = new() { SelectionMode=TreeViewSelectionMode.Single };
     private readonly TextBox librarySearch = new() { PlaceholderText="Hledat v knihovně",MaxLength=128 };
     private readonly TextBlock inspectorTitle = new() { Text="Dokument",FontSize=16 };
     private readonly TextBlock inspectorDetails = new() { TextWrapping=TextWrapping.Wrap,IsTextSelectionEnabled=true };
     private readonly TextBlock desktopSource = new() { Text="Zdroj: žádný",TextTrimming=TextTrimming.CharacterEllipsis };
     private readonly TextBlock operationStatus = new() { TextWrapping=TextWrapping.Wrap };
     private readonly Dictionary<DocumentSession,TabViewItem> desktopDocuments = [];
+    private readonly Dictionary<string,DesktopDocumentKey> desktopFileAliases = [];
+    private readonly Dictionary<string,string> desktopProjectAliases = [];
     private readonly Dictionary<string,(DocumentSession Session,TabViewItem Tab)> desktopTools = [];
     private readonly Dictionary<TabViewItem,DesktopWindow> floatingHosts = [];
     
     private readonly List<DesktopWindow> desktopWindows = [];
     private DocumentSession? draggingDocument;
     private TabViewItem? draggingTab;
-    private sealed record LibraryEntry(string Title,NavigationTarget Target);
+    private sealed record LibraryEntry(string Title,NavigationTarget Target) { public override string ToString()=>Title; }
     private DialogService? dialogService;
     private Task<ContentDialogResult> ShowDialogAsync(ContentDialog dialog) => (dialogService??=new(services.Operations)).ShowAsync(dialog,new(HostWindow(documentContext.Current),HostRoot(documentContext.Current),documentContext.Current));
     private XamlRoot DialogRoot => desktopEnabled ? HostRoot(documentContext.Current).XamlRoot ?? ShellRoot.XamlRoot : ShellRoot.XamlRoot;
@@ -53,7 +55,7 @@ public sealed partial class MainWindow
         desktopRoot.ColumnDefinitions.Add(new(){Width=new(280)});
         var library=new Grid{Padding=new Thickness(12),RowSpacing=8};library.RowDefinitions.Add(new(){Height=GridLength.Auto});library.RowDefinitions.Add(new(){Height=GridLength.Auto});library.RowDefinitions.Add(new(){Height=new(1,GridUnitType.Star)});
         library.Children.Add(new TextBlock{Text="KNIHOVNA",FontSize=12,CharacterSpacing=100});Grid.SetRow(librarySearch,1);library.Children.Add(librarySearch);Grid.SetRow(desktopLibrary,2);library.Children.Add(desktopLibrary);
-        librarySearch.TextChanged+=(_,_)=>RefreshDesktopLibrary();desktopLibrary.ItemClick+=(_,e)=>{if(e.ClickedItem is LibraryEntry entry)Navigate(entry.Target);};
+        librarySearch.TextChanged+=(_,_)=>RefreshDesktopLibrary();desktopLibrary.ItemInvoked+=(_,e)=>{if(e.InvokedItem is TreeViewNode{Content:LibraryEntry entry})Navigate(entry.Target);else if(e.InvokedItem is LibraryEntry item)Navigate(item.Target);};
         desktopRoot.Children.Add(library);Grid.SetColumn(documentTabs,2);desktopRoot.Children.Add(documentTabs);
         var right=new Grid{Padding=new Thickness(12),RowSpacing=10};right.RowDefinitions.Add(new(){Height=GridLength.Auto});right.RowDefinitions.Add(new(){Height=GridLength.Auto});right.RowDefinitions.Add(new(){Height=GridLength.Auto});right.RowDefinitions.Add(new(){Height=new(1,GridUnitType.Star)});
         right.Children.Add(inspectorTitle);Grid.SetRow(inspectorDetails,1);right.Children.Add(inspectorDetails);Grid.SetRow(operationStatus,2);right.Children.Add(operationStatus);Grid.SetRow(toolTabs,3);right.Children.Add(toolTabs);Grid.SetColumn(right,4);desktopRoot.Children.Add(right);
@@ -75,7 +77,7 @@ public sealed partial class MainWindow
         var sourceRow=new StackPanel{Orientation=Orientation.Horizontal,Spacing=10};sourceRow.Children.Add(desktopSource);var stopAll=new Button{Content="Zastavit vše",MinHeight=30};stopAll.Click+=Stop_Click;sourceRow.Children.Add(stopAll);MediaTitle.Visibility=Visibility.Collapsed;
         Grid.SetColumn(sourceRow,0);MediaTransportRow.Children.Add(sourceRow);
         services.Operations.Changed+=DesktopOperationsChanged;
-        InitializeDesktopCommands();BindDesktopCommands(ShellRoot);RefreshDesktopLibrary();OpenDesktop(new("01"));
+        InitializeDesktopCommands();BindDesktopCommands(ShellRoot);RefreshDesktopLibrary();_=RefreshDesktopLibraryAssetsAsync();OpenDesktop(new("01"));
         if(!appSettings.Onboarded)_=ShowDesktopDialogAsync(new("31"));
     }
     private void AddDesktopSplitter(int column,int resized)
@@ -87,13 +89,6 @@ public sealed partial class MainWindow
         Grid.SetColumn(thumb,column);desktopRoot.Children.Add(thumb);
     }
     private void ResizeDesktopPane(int index,double delta)=>desktopRoot.ColumnDefinitions[index].Width=new(Math.Clamp(desktopRoot.ColumnDefinitions[index].Width.Value+delta,140,Math.Max(140,ShellRoot.ActualWidth*.35)));
-    private void RefreshDesktopLibrary()
-    {
-        var entries=WorkspaceViews.All.Where(v=>v.Id is not("31" or "32")).Select(v=>new LibraryEntry(v.Group+" · "+v.Title,new(v.Id))).ToList();
-        if(catalog is not null)entries.AddRange(catalog.Lessons.Select(l=>new LibraryEntry("Lekce · "+l.Title,new("06",l.Id))));
-        entries.AddRange(songs.Values.Select(s=>new LibraryEntry("Skladba · "+s.Name,new("07",s.Id))));
-        string query=librarySearch.Text.Trim();desktopLibrary.ItemsSource=entries.Where(e=>query.Length==0 || e.Title.Contains(query,StringComparison.CurrentCultureIgnoreCase)).ToArray();
-    }
     private DocumentSession OpenDesktop(NavigationTarget target,DesktopDocumentKey? key=null)
     {
         var route=DesktopRoutes.Resolve(target);
@@ -114,13 +109,21 @@ public sealed partial class MainWindow
             ActivateDesktopTab(tab);return session;
         }
         if(key is null && target.ViewId=="07" && target.ItemId is{ } songId && songs.TryGetValue(songId,out var savedSong))key=DesktopDocumentKey.ForCanonicalFile("07",RecentFiles.ValidatePath(savedSong.SourcePath));
-        key??=DesktopDocumentKey.ForObject(target.ViewId,target.ItemId??"default");var document=services.Documents.Open(key,target);
+        key??=DesktopDocumentKey.ForObject(target.ViewId,target.ItemId??"default");
+        if(key.Scope==DocumentIdentityScope.CanonicalFile && File.Exists(key.ResourceId))
+        {
+            var file=CanonicalFiles.ResolveExisting(key.ResourceId);string alias=key.ViewId+":"+file.Identity;
+            if(desktopFileAliases.TryGetValue(alias,out var existingKey))key=existingKey;
+            else{key=DesktopDocumentKey.ForCanonicalFile(key.ViewId,file.Path);desktopFileAliases[alias]=key;}
+        }
+        var document=services.Documents.Open(key,target);
         if(!desktopDocuments.TryGetValue(document,out var item))
         {
             using var scope=documentContext.Enter(document);
             ApplyNavigationTask(target);FrameworkElement page=target.ViewId switch{"20"=>scoreDocumentView,"08"=>videoDocumentView,_=>BuildWorkspace(target)};
             item=CreateDesktopTab(document,page,true);desktopDocuments.Add(document,item);documentTabs.TabItems.Add(item);
             if(target.ViewId=="08")_=EnsureVideoAsync();
+            if(target.ViewId=="14" && target.ItemId is{ } recordingId)_=LoadDesktopRecordingAsync(document,recordingId);
             if(target.ViewId=="15" && target.ItemId is{ } projectId)_=LoadDesktopProjectAsync(document,projectId);
             if(target.ViewId=="07" && key.Scope==DocumentIdentityScope.CanonicalFile)_=OpenDesktopSongAsync(key.ResourceId,songs.Values.FirstOrDefault(s=>string.Equals(s.SourcePath,key.ResourceId,StringComparison.OrdinalIgnoreCase))?.Name??Path.GetFileNameWithoutExtension(key.ResourceId),null);
         }
@@ -139,14 +142,24 @@ public sealed partial class MainWindow
         var menu=new MenuFlyout();var detach=new MenuFlyoutItem{Text="Otevřít v samostatném okně"};detach.Click+=(_,_)=>DetachDesktopTab(item);menu.Items.Add(detach);var attach=new MenuFlyoutItem{Text="Připojit do pracovní plochy"};attach.Click+=(_,_)=>AttachDesktopTab(item);menu.Items.Add(attach);item.ContextFlyout=menu;
         LabelNativeControls(page);return item;
     }
-    private void BindDesktopTabs(TabView tabs)
+    private void BindDesktopTabs(TabView tabs,DesktopWindow? targetHost=null)
     {
         tabs.SelectionChanged+=(_,_)=>{if(tabs.SelectedItem is TabViewItem{Tag:DocumentSession session} tab){documentContext.Select(session);RefreshDesktopInspector(session);}};
         tabs.TabCloseRequested+=(sender,e)=>{_=CloseDesktopTabAsync(e.Tab);};
         tabs.TabDragStarting+=(_,e)=>{draggingTab=e.Tab;draggingDocument=e.Tab.Tag as DocumentSession;e.Data.SetText("rocker-desktop:"+draggingDocument?.Id);};
         tabs.TabDragCompleted+=(_,_)=>{draggingTab=null;draggingDocument=null;};
         tabs.AllowDrop=true;tabs.DragOver+=(_,e)=>{if(draggingTab is not null)e.AcceptedOperation=DataPackageOperation.Move;};
-        tabs.Drop+=(_,e)=>{if(draggingTab is{ } tab){RemoveDesktopTabParent(tab);tabs.TabItems.Add(tab);tabs.SelectedItem=tab;floatingHosts.Remove(tab);e.Handled=true;}};
+        tabs.Drop+=(_,e)=>
+        {
+            if(draggingTab is not{Tag:DocumentSession session} tab)return;
+            bool document=desktopDocuments.ContainsKey(session);
+            if(tabs==toolTabs && document || tabs==documentTabs && !document)return;
+            if(targetHost is not null && tabs.TabItems.OfType<TabViewItem>().FirstOrDefault()?.Tag is DocumentSession target && desktopDocuments.ContainsKey(target)!=document)return;
+            if(!document && !DesktopRoutes.ToolViews.Contains(session.Target.ViewId))return;
+            floatingHosts.TryGetValue(tab,out var oldHost);RemoveDesktopTabParent(tab);floatingHosts.Remove(tab);tabs.TabItems.Add(tab);tabs.SelectedItem=tab;if(targetHost is not null)floatingHosts[tab]=targetHost;
+            if(oldHost is not null && oldHost!=targetHost && oldHost.Tabs.TabItems.Count==0){dialogService?.Forget(oldHost.Root.XamlRoot);oldHost.ExitApproved=true;oldHost.Close();desktopWindows.Remove(oldHost);}
+            e.Handled=true;
+        };
     }
     private void RemoveDesktopTabParent(TabViewItem item)
     {
@@ -164,9 +177,9 @@ public sealed partial class MainWindow
     private void DetachDesktopTab(TabViewItem? item)
     {
         if(item is null)return;if(floatingHosts.TryGetValue(item,out var current)){current.AppWindow.Show();current.Activate();return;}
-        RemoveDesktopTabParent(item);var window=new DesktopWindow("Rocker — "+item.Header);desktopWindows.Add(window);floatingHosts[item]=window;window.Tabs.TabItems.Add(item);window.Tabs.SelectedItem=item;BindDesktopTabs(window.Tabs);window.Root.RequestedTheme=ShellRoot.RequestedTheme;InitializeDesktopWindowMenu(window,item);BindDesktopCommands(window.Root);
-        window.Activated+=(_,_)=>{if(item.Tag is DocumentSession session)documentContext.Select(session);};
-        window.AppWindow.Closing+=(sender,e)=>{if(window.ExitApproved)return;e.Cancel=true;if(item.Tag is DocumentSession session && !desktopDocuments.ContainsKey(session))window.AppWindow.Hide();else _=CloseDesktopTabAsync(item);};
+        RemoveDesktopTabParent(item);var window=new DesktopWindow("Rocker — "+item.Header);desktopWindows.Add(window);floatingHosts[item]=window;window.Tabs.TabItems.Add(item);window.Tabs.SelectedItem=item;BindDesktopTabs(window.Tabs,window);window.Root.RequestedTheme=ShellRoot.RequestedTheme;InitializeDesktopWindowMenu(window,item);BindDesktopCommands(window.Root);
+        window.Activated+=(_,_)=>{if(window.Tabs.SelectedItem is TabViewItem{Tag:DocumentSession session})documentContext.Select(session);};
+        window.AppWindow.Closing+=(sender,e)=>{if(window.ExitApproved)return;e.Cancel=true;if(window.Tabs.TabItems.OfType<TabViewItem>().Any(t=>t.Tag is DocumentSession session && desktopDocuments.ContainsKey(session)))_=CloseDesktopHostAsync(window);else window.AppWindow.Hide();};
         window.Closed+=(_,_)=>
         {
             dialogService?.Forget(window.Root.XamlRoot);
@@ -181,9 +194,14 @@ public sealed partial class MainWindow
     }
     private void AttachDesktopTab(TabViewItem? item)
     {
-        if(item is null)return;RemoveDesktopTabParent(item);
-        if(floatingHosts.Remove(item,out var host)){dialogService?.Forget(host.Root.XamlRoot);host.ExitApproved=true;host.Close();desktopWindows.Remove(host);}
+        if(item is null)return;if(item.Tag is DocumentSession moving && moving.Target.ViewId is "02" or "26" or "28" or "29" or "30")return;RemoveDesktopTabParent(item);
+        if(floatingHosts.Remove(item,out var host) && host.Tabs.TabItems.Count==0){dialogService?.Forget(host.Root.XamlRoot);host.ExitApproved=true;host.Close();desktopWindows.Remove(host);}
         var session=(DocumentSession)item.Tag;var target=desktopDocuments.ContainsKey(session)?documentTabs:toolTabs;target.TabItems.Add(item);target.SelectedItem=item;Activate();
+    }
+    private async Task CloseDesktopHostAsync(DesktopWindow window)
+    {
+        foreach(var tab in window.Tabs.TabItems.OfType<TabViewItem>().ToArray())
+        {await CloseDesktopTabAsync(tab);if(tab.Tag is DocumentSession session && session.IsAlive && desktopDocuments.ContainsKey(session))return;}
     }
     private async Task CloseDesktopTabAsync(TabViewItem item)
     {
@@ -204,7 +222,7 @@ public sealed partial class MainWindow
         if(services.Transport.Owner==session){if(captureDraft is not null){ShowPersistenceError("Nejdřív zastav a ulož nahrávání.");return;}if(audio is not null)await audio.PauseAsync();services.Transport.Release(session);}
         if(session.Target.ViewId=="08"){SendVideo(new{op="stop"});VideoView.Close();}
         RemoveDesktopTabParent(item);desktopDocuments.Remove(session);services.Documents.Close(session);services.Transport.Release(session);
-        if(floatingHosts.Remove(item,out var host)){dialogService?.Forget(host.Root.XamlRoot);host.ExitApproved=true;host.Close();desktopWindows.Remove(host);}
+        if(floatingHosts.Remove(item,out var host) && host.Tabs.TabItems.Count==0){dialogService?.Forget(host.Root.XamlRoot);host.ExitApproved=true;host.Close();desktopWindows.Remove(host);}
         documentContext.Select(documentTabs.SelectedItem is TabViewItem{Tag:DocumentSession selected}?selected:documentContext.Default);RefreshDesktopInspector(documentContext.Active);
     }
     private async Task ShowDesktopDialogAsync(NavigationTarget target)
@@ -215,9 +233,22 @@ public sealed partial class MainWindow
     }
     private void RefreshDesktopInspector(DocumentSession session)
     {
-        inspectorTitle.Text=WorkspaceViews.Get(session.Target.ViewId).Title;
-        inspectorDetails.Text=(session.Key?.ResourceId??"Společný nástroj")+"\n"+(services.Transport.Owner==session?"Ovládá přehrávání":"Výběr nezměnil přehrávání");
-        desktopSource.Text="Zdroj: "+(services.Transport.Owner is{ } owner?WorkspaceViews.Get(owner.Target.ViewId).Title+" · "+(owner.Key?.ResourceId??"náhled"):"žádný");
+        using var scope=documentContext.Enter(session);
+        string title=TabFor(session)?.Header as string??WorkspaceViews.Get(session.Target.ViewId).Title;
+        string details=session.Target.ViewId switch
+        {
+            "15" when studioProject is{ } project=>$"{project.Name}\n{project.Tracks.Count} stop · {project.SampleRate:N0} Hz",
+            "07" when song is{ } track=>$"{track.Name}\n{FormatTime(track.Duration)} · {track.Speed:0.##}×\n{track.SourcePath}",
+            "14" when playingRecording is{ } recording=>$"{recording.Name}\n{FormatTime(recording.DurationSec)} · {recording.Markers.Count} značek",
+            "20" when notationDocument is{ } score=>$"{notationName}\n{score.Tracks.Count} stop · {score.BarCount} taktů",
+            _=>WorkspaceDescription(session.Target)
+        };
+        if(services.Transport.Owner==session)details+="\nZdroj společného přehrávače";
+        if(inspectorTitle.Text!=title)inspectorTitle.Text=title;if(inspectorDetails.Text!=details)inspectorDetails.Text=details;
+        string source=services.Transport.Owner is{ } owner?TabFor(owner)?.Header as string??WorkspaceViews.Get(owner.Target.ViewId).Title:"žádný";
+        if(desktopSource.Text!="Zdroj: "+source)desktopSource.Text="Zdroj: "+source;
+        desktopSource.MaxWidth=Math.Max(100,ShellRoot.ActualWidth-580);
+        if(HostWindow(session) is DesktopWindow window){window.Status.Text=source=="žádný"?"Přehrávání není připravené":"Zdroj: "+source;window.Title="Rocker — "+title;}
     }
     private void DesktopOperationsChanged(object? sender,EventArgs args)=>DispatcherQueue.TryEnqueue(()=>{if(!closed)operationStatus.Text=string.Join("\n",services.Operations.Snapshot().Select(o=>o.Title+(o.Progress is{ } p?$" · {p:P0}":"")));});
 }

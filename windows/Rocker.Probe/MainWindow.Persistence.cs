@@ -54,7 +54,7 @@ public sealed partial class MainWindow
         { ShowColdRecovery();ShowPersistenceError("Uložená data nelze otevřít. Původní soubory zůstávají zachované. Změny se nyní neukládají; obnov data ze zálohy nebo zkontroluj složku dat."); }
     }
     private void ShowPersistenceError(string message)
-    { ShellNotice.IsOpen=true; ShellNotice.Severity=InfoBarSeverity.Error; ShellNotice.Message=message; }
+    { ShellNotice.IsOpen=true; ShellNotice.Severity=InfoBarSeverity.Error; ShellNotice.Message=message;if(desktopEnabled && HostWindow(documentContext.Current) is Desktop.DesktopWindow window)window.Status.Text=message; }
     private void SaveSettings()
     { if (persistenceReady) autosave!.Queue(UserData.Document("settings","default",appSettings)); }
     private void SaveLessonProgress()

@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 namespace Rocker.Probe.Views;
 public sealed partial class ScoreDocumentView : UserControl
 { public ScoreDocumentView() { InitializeComponent(); }
-internal StackPanel NotationPanelControl => NotationPanel;
+internal Grid NotationPanelControl => NotationPanel;
 internal StackPanel ScoreButtonsControl => ScoreButtons;
 internal Button XmlButtonControl => XmlButton;
 internal Button GpButtonControl => GpButton;

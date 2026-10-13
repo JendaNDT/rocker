@@ -31,3 +31,9 @@ The portable service suite now has 36 checks, including failed/canceled save, ca
 Windows run 38450045555 compiled and passed the older checks; the new tool reopen scenario exposed that `Window.Close()` forcibly destroys a WinUI window rather than simulating its title-bar close. The scenario now sends the real WM_CLOSE message and the registry also removes unexpectedly destroyed window hosts. No passing desktop runtime claim is attached to that failed run.
 
 Current integration adds captured async invocation scopes, owner-bound commands, menus/status in auxiliary windows, Studio undo/redo and a bounded timeline composition, fullscreen Live, adopted-source identity verification, and profile restoration barriers. Final desktop compositions/coverage, layout refinements, migration and installer handoff remain in progress.
+
+## Document layouts and library
+
+The third Windows run (38455495191, 9ed3d93) compiled and passed the pre-existing checks, but the new Studio composition encountered a WinUI reparenting exception. Composition now explicitly removes each element and releases the editor from its former Border before attaching it; an exact attachment-stage report is included for the next run.
+
+The current code adds a native category tree with concrete lesson/exercise/song/project/recording entries, bounded song/score/video layouts, real file identities for alias/duplicate resolution, project-file activation, tab selection persistence, and transfers between document hosts. These changes still require Windows runtime verification.

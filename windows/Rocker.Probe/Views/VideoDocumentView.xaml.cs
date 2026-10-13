@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 namespace Rocker.Probe.Views;
 public sealed partial class VideoDocumentView : UserControl
 { public VideoDocumentView() { InitializeComponent(); }
-internal Border VideoPanelControl => VideoPanel;
+internal Grid VideoPanelControl => VideoPanel;
 internal TextBox VideoUrlControl => VideoUrl;
 internal StackPanel VideoButtonsControl => VideoButtons;
 internal Button VideoLoadButtonControl => VideoLoadButton;

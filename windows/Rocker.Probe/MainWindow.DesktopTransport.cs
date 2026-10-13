@@ -11,7 +11,7 @@ public sealed partial class MainWindow
     {
         using var invocationScope=documentContext.Enter(documentContext.Current);
 
-        path=Rocker.Infrastructure.RecentFiles.ValidatePath(path);
+        path=Rocker.Infrastructure.CanonicalFiles.ResolveExisting(path).Path;
         var key=DesktopDocumentKey.ForCanonicalFile("07",path);
         var session=OpenDesktop(new("07",relocated?.Id),key);
         using var scope=documentContext.Enter(session);

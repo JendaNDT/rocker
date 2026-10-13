@@ -6,6 +6,17 @@ namespace Rocker.Probe;
 
 public sealed partial class MainWindow
 {
+    private async Task OpenDesktopProjectFileAsync(string path,CancellationToken cancellation)
+    {
+        var source=Rocker.Infrastructure.CanonicalFiles.ResolveExisting(path);
+        string? id=desktopProjectAliases.GetValueOrDefault(source.Identity);
+        var repository=services.Storage!.Projects;
+        if(id is null && source.Path.StartsWith(userFiles.DirectoryFor("projects")+Path.DirectorySeparatorChar,StringComparison.OrdinalIgnoreCase) && Guid.TryParse(Path.GetFileName(Path.GetDirectoryName(source.Path)),out var ownedId))id=ownedId.ToString();
+        if(id is not null){OpenDesktop(new("15",id));return;}
+        using var operation=services.Operations.Begin(documentContext.Current.Id,"project-import","Import projektu",cancellable:false);
+        var project=await repository.ImportAsync(source.Path,cancellation);cancellation.ThrowIfCancellationRequested();desktopProjectAliases[source.Identity]=project.Id;
+        var session=OpenDesktop(new("15",project.Id));using var scope=documentContext.Enter(session);studioProject=project;studioUndo.Clear();RebuildDesktopDocument(session);await RefreshDesktopLibraryAssetsAsync();
+    }
     private async Task LoadDesktopProjectAsync(DocumentSession session,string id)
     {
         using var invocationScope=documentContext.Enter(documentContext.Current);
@@ -21,6 +32,18 @@ public sealed partial class MainWindow
             RebuildDesktopDocument(session);
         }
         catch(Exception error){if(session.IsAlive)ShowPersistenceError("Projekt nelze otevřít: "+error.Message);}
+    }
+    private async Task LoadDesktopRecordingAsync(DocumentSession session,string id)
+    {
+        using var scope=documentContext.Enter(session);
+        try
+        {
+            if(recordingLibrary is null)return;var value=(await recordingLibrary.ListAsync()).FirstOrDefault(r=>r.Id==id);
+            if(value is null)throw new FileNotFoundException("Nahrávka už není v knihovně.");
+            if(!session.IsAlive || playingRecording is not null)return;
+            await OpenDesktopRecordingAsync(value);
+        }
+        catch(Exception error){if(session.IsAlive)ShowPersistenceError("Nahrávku nelze otevřít: "+error.Message);}
     }
     private FrameworkElement BuildDesktopRecordingView()
     {
