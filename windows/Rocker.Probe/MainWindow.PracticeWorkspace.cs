@@ -116,7 +116,7 @@ public sealed partial class MainWindow
             var status = Text("", true);
             var favorite = new Button { Content = "Přidat do oblíbených", IsEnabled = false };
             panel.Children.Add(query); panel.Children.Add(only); panel.Children.Add(list); panel.Children.Add(status); panel.Children.Add(favorite);
-            var dialog = new ContentDialog { RequestedTheme = ShellRoot.RequestedTheme, XamlRoot = ShellRoot.XamlRoot, Title = "Hledání a oblíbené", Content = panel, PrimaryButtonText = "Otevřít", CloseButtonText = "Zavřít", IsPrimaryButtonEnabled = false };
+            var dialog = new ContentDialog { RequestedTheme = ShellRoot.RequestedTheme, XamlRoot = ShellRoot.XamlRoot, Title = "Hledání a oblíbené", Content = panel, DefaultButton=ContentDialogButton.Primary,PrimaryButtonText = "Otevřít", CloseButtonText = "Zavřít", IsPrimaryButtonEnabled = false };
             void Refresh()
             {
                 string? selected = (list.SelectedItem as SearchEntry)?.Key;
@@ -215,7 +215,7 @@ public sealed partial class MainWindow
     {
         selected = PracticeWorkspaceRules.Validate(selected);
         if (audio is null || !persistenceReady || busy || workspaceOperation || powerTransition || deviceOperationRunning || fileOperation
-            || captureDraft is not null || recordingOperation || studioOperation || studioEditTask is { IsCompleted: false } || looperOperation || backupOperationRunning || closingWindow)
+            || captureDraft is not null || recordingOperation || studioOperation || studioEditTask is { IsCompleted: false } || looperOperation || backupOperationRunning || profileOperation || secretOperationRunning || closingWindow)
             throw new InvalidOperationException("Nejdřív dokonči práci nebo zastav nahrávání.");
         workspaceOperation = true;ShellInteractionRoot.IsEnabled=false;
         try
@@ -250,7 +250,7 @@ public sealed partial class MainWindow
                 appliedSongLoopId = song.Id; appliedSongLoopStart = selected.LoopStart; appliedSongLoopEnd = selected.LoopEnd;
                 song = song with { Ramp = false }; SaveSong();
             }
-            else { await CancelSongRampAsync(); await audio.ClearMediaAsync(); mediaPath = null; mediaMidi = null; song = null; songPeaks = []; MediaTitle.Text = "Připrav nahrávku nebo noty"; }
+            else { await CancelSongRampAsync(); await audio.ClearMediaAsync(); mediaPath = null; mediaMidi = null; song = null; songPeaks = [];appliedSongLoopId=null;studioOwnsPlayback=false;studioTicket=0;workspaceCache.Remove(new("07")); MediaTitle.Text = "Připrav nahrávku nebo noty"; }
             ampSettings = selected.Amp; metroConfig = selected.Metronome; metroEnabled = false;
             appSettings = appSettings with { AmpEnabled = selected.AmpEnabled, TuningId = selected.TuningId }; SaveSettings();
             QueueAmplifier(); QueueMetronome(); await ApplyAmplifierAsync(); await ApplyMetronomeAsync();
