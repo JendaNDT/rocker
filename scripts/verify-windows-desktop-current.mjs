@@ -7,6 +7,11 @@ const [folder, expectedCommit] = process.argv.slice(2);
 if (!folder || !/^[a-f0-9]{40}$/.test(expectedCommit ?? '')) throw new Error('Usage: node scripts/verify-windows-desktop-current.mjs REPORTS SOURCE_COMMIT');
 const json = async name => JSON.parse((await readFile(path.join(folder, name), 'utf8')).replace(/^\uFEFF/, ''));
 const reports = await Promise.all(['desktop-runtime.json', 'desktop-interactions.json', 'desktop-functional-coverage.json'].map(json));
+const workbench = await json('desktop-workbench.json');
+if (workbench.result !== 'passed' || workbench.sourceCommit !== expectedCommit || workbench.interfaceRevision !== 2 ||
+    workbench.samples?.length !== 3 || !workbench.samples.every(sample => sample.documentHeightDip >= 300 && sample.transportHeightDip >= 32 && sample.transportHeightDip <= 62)) {
+  throw new Error('The compact workbench requires fresh geometry checks at three window widths.');
+}
 for (const report of reports) {
   if (report.result !== 'passed' || report.sourceCommit !== expectedCommit || report.actualWindows !== true) throw new Error('Desktop report is stale, failed or not from Windows.');
   if (report.scenarios && (report.checks !== report.scenarios.length || new Set(report.scenarios).size !== report.checks)) throw new Error('Scenario counts must match actual unique assertions.');

@@ -198,7 +198,7 @@ public sealed partial class MainWindow
 
         if (closingWindow) return;
         if(services.Operations.Snapshot().Any(op=>op.Kind=="profile-load")){ShowPersistenceError("Počkej na dokončení načítání místního profilu.");return;}
-        var dialog = new ContentDialog { XamlRoot = DialogRoot, Title = "Rocker", Content = $"Nativní kytarový pomocník pro Windows · verze {typeof(App).Assembly.GetName().Version!.ToString(3)}.\nLekce, aparát, metronom, nahrávky, Looper, Studio a knihovna.\nLicence najdeš u aplikace; odpovídající zdroje lze stáhnout zvlášť u stejného vydání.", CloseButtonText = "Zavřít" };
+        var dialog = new ContentDialog { XamlRoot = DialogRoot, Title = "Rocker", Content = $"Nativní kytarový pomocník pro Windows · verze {typeof(App).Assembly.GetName().Version!.ToString(3)}.\nPracovní plocha 2 · sestavení {InstalledBuild().Commit}.\nLekce, aparát, metronom, nahrávky, Looper, Studio a knihovna.\nLicence najdeš u aplikace; odpovídající zdroje lze stáhnout zvlášť u stejného vydání.", CloseButtonText = "Zavřít" };
         try { await ShowDialogAsync(dialog); } catch (InvalidOperationException) { }
     }
     // Each recording/project feature registers its actual state and actions.
