@@ -16,14 +16,15 @@ public sealed partial class MainWindow
     private float[] recordingPeaks = [];
     private bool recordingRangeUpdating;
     private double? recordingDragStart;
-    private Line? recordingPlayhead;
+    private Line? recordingPlayhead;private TextBlock? recordingWaveformCaption;
     private FrameworkElement BuildRecordingWaveform()
     {
-        var panel = Stack(); panel.Children.Add(Text("Průběh a úsek nahrávky"));
+        var panel = Stack();recordingWaveformCaption=Text("PRŮBĚH NAHRÁVKY");recordingWaveformCaption.Style=(Style)Application.Current.Resources["VintageSectionTextStyle"];panel.Children.Add(recordingWaveformCaption);
         recordingWaveformStatus = Text("Vyber nahrávku a použij Zobrazit průběh nebo Přehrát. Přetažením ve zvukové vlně vybereš úsek; kliknutím změníš pozici.", true); panel.Children.Add(recordingWaveformStatus);
-        recordingWaveform = new Canvas { Height = 160, HorizontalAlignment = HorizontalAlignment.Stretch, Background = (Brush)Application.Current.Resources["VintageBackground"] };
+        recordingWaveform = new Canvas { Height = 160, HorizontalAlignment = HorizontalAlignment.Stretch, Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent) };
         Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(recordingWaveform, "Průběh nahrávky; úsek lze vybrat také políčky A a B a pozici posuvníkem přehrávače.");
         recordingWaveform.SizeChanged += (_, _) => DrawRecordingWaveform();
+        recordingWaveform.ActualThemeChanged += (_, _) => DrawRecordingWaveform();
         recordingWaveform.PointerPressed += (_, args) =>
         {
             if (!RecordingWaveformReady() || !args.GetCurrentPoint(recordingWaveform).Properties.IsLeftButtonPressed) return;
@@ -121,8 +122,8 @@ public sealed partial class MainWindow
         recordingWaveform.Children.Clear(); recordingPlayhead = null;
         if (playingRecording is null || recordingPeaks.Length == 0 || recordingWaveform.ActualWidth <= 0) return;
         double width = recordingWaveform.ActualWidth, duration = Math.Max(.000001, playingRecording.DurationSec);
-        var accent = (Brush)Application.Current.Resources["VintageAccent"];
-        var secondary = (Brush)Application.Current.Resources["TextFillColorSecondaryBrush"];
+        var accent = recordingWaveformCaption!.Foreground;
+        var secondary = recordingWaveformStatus!.Foreground;
         double a = recordingRangeA?.Value ?? 0, b = recordingRangeB?.Value ?? duration;
         if (double.IsFinite(a) && double.IsFinite(b) && b > a)
         {
@@ -145,7 +146,7 @@ public sealed partial class MainWindow
             var label = Text(marker.Label); label.FontSize = 10; label.MaxWidth = Math.Min(120, width); label.TextWrapping = TextWrapping.NoWrap; label.TextTrimming = TextTrimming.CharacterEllipsis; label.IsHitTestVisible = false;
             Canvas.SetLeft(label, Math.Clamp(x + 3, 0, Math.Max(0, width - label.MaxWidth))); recordingWaveform.Children.Add(label);
         }
-        recordingPlayhead = new Line { Y1 = 0, Y2 = 160, Stroke = (Brush)Application.Current.Resources["TextFillColorPrimaryBrush"], StrokeThickness = 2, IsHitTestVisible = false };
+        recordingPlayhead = new Line { Y1 = 0, Y2 = 160, Stroke = recordingRangeA!.Foreground, StrokeThickness = 2, IsHitTestVisible = false };
         recordingWaveform.Children.Add(recordingPlayhead); RefreshRecordingWaveform();
     }
     private void RefreshRecordingWaveform()

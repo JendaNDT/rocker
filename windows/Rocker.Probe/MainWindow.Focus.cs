@@ -40,6 +40,7 @@ public sealed partial class MainWindow
     }
     private void RefreshFocusChrome()
     {
+        RefreshWorkspaceChrome();
         Navigation.IsPaneVisible = !focusMode;
         Navigation.IsBackButtonVisible = focusMode ? NavigationViewBackButtonVisible.Collapsed : NavigationViewBackButtonVisible.Visible;
         if (focusMode) Navigation.IsPaneOpen = false;

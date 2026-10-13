@@ -116,7 +116,7 @@ public sealed partial class MainWindow
             var status = Text("", true);
             var favorite = new Button { Content = "Přidat do oblíbených", IsEnabled = false };
             panel.Children.Add(query); panel.Children.Add(only); panel.Children.Add(list); panel.Children.Add(status); panel.Children.Add(favorite);
-            var dialog = new ContentDialog { RequestedTheme = ShellRoot.RequestedTheme, XamlRoot = ShellRoot.XamlRoot, Title = "Hledání a oblíbené", Content = panel, DefaultButton=ContentDialogButton.Primary,PrimaryButtonText = "Otevřít", CloseButtonText = "Zavřít", IsPrimaryButtonEnabled = false };
+            var dialog = new ContentDialog { PrimaryButtonStyle=(Style)Application.Current.Resources["VintageRootButtonStyle"],RequestedTheme = ShellRoot.RequestedTheme, XamlRoot = ShellRoot.XamlRoot, Title = "Hledání a oblíbené", Content = panel, DefaultButton=ContentDialogButton.Primary,PrimaryButtonText = "Otevřít", CloseButtonText = "Zavřít", IsPrimaryButtonEnabled = false };
             void Refresh()
             {
                 string? selected = (list.SelectedItem as SearchEntry)?.Key;
@@ -141,6 +141,7 @@ public sealed partial class MainWindow
             Refresh(); LabelNativeControls(panel);activeWorkspaceDialog=dialog;
             if (await dialog.ShowAsync() == ContentDialogResult.Primary && list.SelectedItem is SearchEntry result) await OpenSearchEntryAsync(result);
         }
+        catch(OperationCanceledException){ShowPreparationCancelled();}
         catch (Exception error) { ShowPersistenceError("Položku nelze otevřít. " + error.Message); }
         finally { activeWorkspaceDialog=null; }
     }
@@ -162,7 +163,7 @@ public sealed partial class MainWindow
             if (practiceWorkspace.Setups.Count >= 100) throw new InvalidOperationException("Nejdřív odstraň některou ze 100 sestav.");
             var name = new TextBox { Header = "Název sestavy", Text = TaskTitle(navigation.Current), MaxLength = 120 };
             var panel = Stack(); panel.Children.Add(name); panel.Children.Add(Text("Uloží se tento pohled, ladění, nastavení aparátu a metronomu; u připravené skladby také rychlost, pozice a smyčka. Monitoring ani přehrávání se při otevření samy nezapnou.", true));
-            var dialog = new ContentDialog { RequestedTheme = ShellRoot.RequestedTheme, XamlRoot = ShellRoot.XamlRoot, Title = "Uložit sestavu cvičení", Content = panel, PrimaryButtonText = "Uložit", CloseButtonText = "Zrušit", DefaultButton = ContentDialogButton.Primary };
+            var dialog = new ContentDialog { PrimaryButtonStyle=(Style)Application.Current.Resources["VintageRootButtonStyle"],RequestedTheme = ShellRoot.RequestedTheme, XamlRoot = ShellRoot.XamlRoot, Title = "Uložit sestavu cvičení", Content = panel, PrimaryButtonText = "Uložit", CloseButtonText = "Zrušit", DefaultButton = ContentDialogButton.Primary };
             if (await dialog.ShowAsync() != ContentDialogResult.Primary || string.IsNullOrWhiteSpace(name.Text)) return;
             var setup = CapturePracticeSetup(name.Text);
             await SavePracticeWorkspaceAsync(practiceWorkspace with { Setups = [.. practiceWorkspace.Setups, setup] });
@@ -182,7 +183,7 @@ public sealed partial class MainWindow
             var rename = new Button { Content = "Uložit nový název", IsEnabled = false };
             var remove = new Button { Content = "Odstranit vybranou sestavu…", IsEnabled = false };
             panel.Children.Add(list); panel.Children.Add(name); panel.Children.Add(rename); panel.Children.Add(remove); panel.Children.Add(status);
-            var dialog = new ContentDialog { RequestedTheme = ShellRoot.RequestedTheme, XamlRoot = ShellRoot.XamlRoot, Title = "Sestavy cvičení", Content = panel, PrimaryButtonText = "Otevřít sestavu", CloseButtonText = "Zavřít", IsPrimaryButtonEnabled = false };
+            var dialog = new ContentDialog { PrimaryButtonStyle=(Style)Application.Current.Resources["VintageRootButtonStyle"],RequestedTheme = ShellRoot.RequestedTheme, XamlRoot = ShellRoot.XamlRoot, Title = "Sestavy cvičení", Content = panel, PrimaryButtonText = "Otevřít sestavu", CloseButtonText = "Zavřít", IsPrimaryButtonEnabled = false };
             void Refresh(string? id = null)
             {
                 list.ItemsSource = practiceWorkspace.Setups.OrderBy(s => s.Name).ToArray();
@@ -208,6 +209,7 @@ public sealed partial class MainWindow
             Refresh(); LabelNativeControls(panel);activeWorkspaceDialog=dialog;
             if (await dialog.ShowAsync() == ContentDialogResult.Primary && list.SelectedItem is PracticeSetup result) await ApplyPracticeSetupAsync(result);
         }
+        catch(OperationCanceledException){ShowPreparationCancelled();}
         catch (Exception error) { ShowPersistenceError("Sestavu nelze otevřít. " + error.Message); }
         finally { activeWorkspaceDialog=null; }
     }
@@ -271,7 +273,7 @@ public sealed partial class MainWindow
         foreach (var setup in practiceWorkspace.Setups.Take(3))
         {
             var button = new Button { Content = setup.Name + " · " + setup.Metronome.Bpm + " BPM", MinHeight = 40 };
-            button.Click += async (_, _) => { try { await ApplyPracticeSetupAsync(setup); } catch (Exception error) { ShowPersistenceError(error.Message); } }; panel.Children.Add(button);
+            button.Click += async (_, _) => { try { await ApplyPracticeSetupAsync(setup); } catch(OperationCanceledException){ShowPreparationCancelled();}catch (Exception error) { ShowPersistenceError(error.Message); } }; panel.Children.Add(button);
         }
         return Card(panel);
     }

@@ -31,6 +31,8 @@ public sealed partial class MainWindow
     private void RefreshWorkspaceChrome()
     {
         if (!shellReady || closed) return;
+        PracticeRestNotice.Visibility=focusMode?Visibility.Collapsed:Visibility.Visible;
+        ShellNotice.Visibility=focusMode && ShellNotice.Severity is InfoBarSeverity.Informational or InfoBarSeverity.Success?Visibility.Collapsed:Visibility.Visible;
         bool running = practiceSession.Phase == PracticePhase.Running;
         bool paused = practiceSession.Phase == PracticePhase.Paused;
         bool practice = PracticeViews.Contains(navigation.Current.ViewId) || running || paused;

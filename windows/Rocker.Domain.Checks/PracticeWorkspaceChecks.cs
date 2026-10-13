@@ -11,8 +11,9 @@ internal static class PracticeWorkspaceChecks
         var workspace = new PracticeWorkspace([setup], ["view:06:lesson-id", "view:06:lesson-id", "song:" + setup.SongId]);
         var restored = UserData.Read<PracticeWorkspace>(UserData.Document("practice-workspace", "default", workspace).Value);
         check(restored.Setups[0].Name == "Moje cvičení" && restored.Setups[0].Amp.Drive == .37 && restored.Setups[0].Metronome.Bpm == 87 && restored.Setups[0].LoopEnd == 15 && restored.Favorites.Count == 2, "complete practice setup retains sound, timing, exact task and deduplicated favorites");
+        check(PracticeWorkspaceRules.Validate(setup with{RecordingId="w01-recording-2"}).RecordingId=="w01-recording-2","legacy recording identifiers remain usable in saved practice setups");
         check(PracticeWorkspaceRules.Validate(PracticeWorkspaceRules.Empty).Setups.Count == 0, "old profiles start with an empty practice workspace");
-        foreach (var invalid in new[] { setup with { Speed = double.NaN }, setup with { LoopEnd = 4 }, setup with { SongId = null }, setup with { Target = new("unknown") }, setup with { Name = "\n" }, setup with { Position = -1 }, setup with { RecordingId = "bad-id" } })
+        foreach (var invalid in new[] { setup with { Speed = double.NaN }, setup with { LoopEnd = 4 }, setup with { SongId = null }, setup with { Target = new("unknown") }, setup with { Name = "\n" }, setup with { Position = -1 }, setup with { RecordingId = "" } })
         {
             bool rejected = false;
             try { PracticeWorkspaceRules.Validate(invalid); } catch (Exception e) when (e is InvalidDataException or ArgumentException) { rejected = true; }

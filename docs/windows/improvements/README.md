@@ -14,8 +14,8 @@ Aktualizace čtou pouze Windows vydání JendaNDT/rocker, včetně soukromých p
 
 ## Ověření
 
-Místně: 59 C# souborů s reálnými WinUI referencemi bez chyb; doménové reference 69 + 183 hraničních kontrol a 372 dalších případů / 350 stavů; infrastruktura včetně 15 nových kontrol aktualizací a knihovny; TypeScript a 567 testů. Podklady: `local-validation.json`.
+Místně: 60 C# souborů s reálnými WinUI referencemi bez chyb; doménové reference 69 + 184 hraničních kontrol a 372 dalších případů / 350 stavů; infrastruktura včetně 15 nových kontrol aktualizací a knihovny; TypeScript a 567 testů. Podklady: `local-validation.json`.
 
-Windows: čeká na aktuální běh. Nový `workspace-enhancements.json` vyžaduje 18 kontrol skutečného okna, sdíleného audia, obnovení sestavy, vyhledávání, dekódované vlny a A/B při zpomalení. Snímky režimu hraní, dialogů, nahrávek a aktualizací vznikají z izolovaného syntetického profilu. Jejich existence není ruční přejímka.
+Windows: čeká na aktuální běh. Nový `workspace-enhancements.json` vyžaduje 18 kontrol skutečného okna, sdíleného audia, obnovení sestavy, vyhledávání, dekódované vlny a A/B při zpomalení. Snímky režimu hraní, dialogů, nahrávek a aktualizací vznikají z izolovaného syntetického profilu. Pro vlnu a skutečné zpomalení se vytváří dvousekundová vlastní PCM24 fráze se čtyřmi syntetickými tóny, nikdy přehraná na zařízení; krátká 10ms nahrávka nadále ověřuje původní ukládání. Jejich existence není ruční přejímka.
 
 Online kontrola soukromých aktualizací s uživatelským tokenem a potvrzené spuštění instalátoru z aplikace zůstávají ručními scénáři. Automatické testy používají syntetické HTTP odpovědi a nespouštějí stažený kontrolní EXE. Fyzická hra na M-Track, skutečná odezva a ostatní dřívější W44 scénáře zůstávají neprovedené.

@@ -18,9 +18,10 @@ public sealed partial class MainWindow
         void Check(string name, bool value) { checks[name] = value; if (!value) throw new InvalidOperationException("Workspace enhancement failed: " + name); }
         try
         {
+            ApplyTheme("dark");ShellNotice.IsOpen=PracticeRestNotice.IsOpen=false;
             await audio.StopAsync(); await audio.ClearMediaAsync(); song = null; mediaPath = null; mediaMidi = null;
             Navigate(new("02")); SetFocusMode(true); RefreshState(); await Task.Delay(350);
-            Check("focusUsesSharedLiveHost", navigation.Current.ViewId == "02" && audioHostsCreated == 1 && !Navigation.IsPaneVisible && FocusExitButton.Visibility == Visibility.Visible && liveTunerNote?.FontSize == 56 && !liveTunerNeedle!.HasReading);
+            Check("focusUsesSharedLiveHost", navigation.Current.ViewId == "02" && audioHostsCreated == 1 && !Navigation.IsPaneVisible && FocusExitButton.Visibility == Visibility.Visible && liveTunerNote?.FontSize == 56 && !liveTunerNeedle!.HasReading && liveTunerNeedle.TransformToVisual(ShellRoot).TransformPoint(new Windows.Foundation.Point(0,liveTunerNeedle.ActualHeight)).Y<ShellRoot.ActualHeight-MediaPanel.ActualHeight);
             Check("focusRecorderActionsAreLarge", recordingStarts.Where(b => b.Tag as string == "compact-recording").All(b => b.MinHeight >= 48));
             await CaptureNativeViewAsync("screens/improved-focus-dark.png");
             ApplyTheme("light"); await Task.Delay(350); await CaptureNativeViewAsync("screens/improved-focus-light.png");
@@ -53,7 +54,7 @@ public sealed partial class MainWindow
             await CaptureNativeViewAsync("screens/improved-setups.png", activeWorkspaceDialog);
             activeWorkspaceDialog!.Hide(); await Task.Delay(50);
             Navigate(new("14")); await ReloadRecordingsAsync();
-            var recording = (await recordingLibrary.ListAsync()).First();
+            var recording = await CreateWorkspaceWaveformFixtureAsync();await ReloadRecordingsAsync();
             await PreviewRecordingAsync(recording); await Task.Delay(100);
             Check("recordingPreviewHasDecodedWaveform", recordingPeaks.Length > 0 && recordingWaveform!.Children.Count >= 3 && recordingRangeA!.IsEnabled && audio.GetTransport().Playing == 0);
             SetRecordingRange(0, recording.DurationSec * .5);

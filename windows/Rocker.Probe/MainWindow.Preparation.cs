@@ -21,6 +21,11 @@ public sealed partial class MainWindow
         PreparationCancelButton.IsEnabled = false;
         PreparationNotice.Message = "Ruším přípravu. Původní soubory zůstávají zachované…";
     }
+    private void ShowPreparationCancelled()
+    {
+        ShellNotice.IsOpen=true;ShellNotice.Severity=Microsoft.UI.Xaml.Controls.InfoBarSeverity.Informational;
+        ShellNotice.Message="Příprava byla zrušená. Zvukové soubory zůstávají zachované a přehrávání se samo nespustí.";
+    }
     private void EndPreparation()
     {
         preparationCancellation?.Dispose(); preparationCancellation = null;

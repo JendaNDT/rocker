@@ -128,7 +128,7 @@ public sealed partial class MainWindow
         { ShowPersistenceError("Nejdřív dokonči probíhající práci. Stažený instalátor zůstane připravený."); return; }
         try
         {
-            var dialog = new ContentDialog { RequestedTheme = ShellRoot.RequestedTheme, XamlRoot = ShellRoot.XamlRoot, Title = "Nainstalovat aktualizaci?", Content = candidate.Release.Title + "\nRocker uloží práci, zastaví zvuk a zavře se. Potom se otevře běžný instalátor; tvoje data zůstanou zachovaná.", PrimaryButtonText = "Uložit a nainstalovat", CloseButtonText = "Zrušit", DefaultButton = ContentDialogButton.Close };
+            var dialog = new ContentDialog { PrimaryButtonStyle=(Style)Application.Current.Resources["VintageRootButtonStyle"],RequestedTheme = ShellRoot.RequestedTheme, XamlRoot = ShellRoot.XamlRoot, Title = "Nainstalovat aktualizaci?", Content = candidate.Release.Title + "\nRocker uloží práci, zastaví zvuk a zavře se. Potom se otevře běžný instalátor; tvoje data zůstanou zachovaná.", PrimaryButtonText = "Uložit a nainstalovat", CloseButtonText = "Zrušit", DefaultButton = ContentDialogButton.Close };
             if (await dialog.ShowAsync() != ContentDialogResult.Primary) return;
             updateInstalling = true; RefreshUpdateControls();
             await ReleaseUpdates.VerifyInstallerAsync(path, candidate.Release.Installer);

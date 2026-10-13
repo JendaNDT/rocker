@@ -1,11 +1,11 @@
 {
   "result": "passed",
-  "csharpSemanticFiles": 59,
+  "csharpSemanticFiles": 60,
   "windowsRuntimeVerified": false,
   "domain": {
     "result": "passed",
     "referenceCases": 69,
-    "boundaryChecks": 183,
+    "boundaryChecks": 184,
     "contentGroups": 15,
     "surgicalStatesCompared": 37,
     "extendedReferenceCases": 372,
