@@ -28,7 +28,7 @@ public sealed partial class MainWindow
         var file=System.IO.Path.Combine(AppContext.BaseDirectory,"fixtures","notation-phrases.gp");
         var score=OpenDesktop(new("20"),DesktopDocumentKey.ForCanonicalFile("20",System.IO.Path.GetFullPath(file)));
         object image;UIElement view;double selectedBar;
-        using(documentContext.Enter(score)){await LoadScoreAsync(file);Check(preview is not null && ScoreImage.Source is not null,"actual-score-decoded");NotationBar.Value=Math.Min(2,NotationBar.Maximum);selectedBar=NotationBar.Value;image=ScoreImage.Source;view=scoreDocumentView;}
+        using(documentContext.Enter(score)){await LoadScoreAsync(file);Check(preview is not null && ScoreImage.Source is not null,"actual-score-decoded");NotationBar.Value=Math.Min(2,NotationBar.Maximum);selectedBar=NotationBar.Value;image=ScoreImage.Source!;view=scoreDocumentView;}
         var tab=desktopDocuments[score];var rootBefore=((FrameworkElement)view).XamlRoot;
         DetachDesktopTab(tab);await Task.Delay(150);
         Check(floatingHosts.ContainsKey(tab) && floatingHosts[tab].Tabs.XamlRoot is not null,"actual-document-window");

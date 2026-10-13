@@ -23,7 +23,7 @@ public sealed partial class MainWindow
             await InitializeRecordingsAsync();
             ResetLooperWorkspace();
             ResetStudioWorkspace();
-            var snapshot = await database.SnapshotAsync();
+            var snapshot = await services.Storage!.Database.SnapshotAsync();
             if (closed) return;
             var settings = snapshot.Documents.FirstOrDefault(d=>d.Kind=="settings" && d.Id=="default");
             if (settings is not null) appSettings = UserData.Read<AppSettings>(settings.Value);

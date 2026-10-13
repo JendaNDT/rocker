@@ -1,6 +1,6 @@
 # Rocker — implementační plán přestavby desktopového prostředí
 
-Datum: 13. 10. 2026. Stav: **realizace D01–D36 schválená; D01–D04 dokončené v jejich rozsahu, navazuje D05**.
+Datum: 13. 10. 2026. Stav: **realizace D01–D36 schválená; D01–D30 implementované, dokončuje se D31–D36 a finální Windows přejímka**.
 
 Jenda chce změnit způsob práce s Rockerem na profesionální Windows nástroj:
 pracovní plochu s dokumenty, panely a více skutečnými okny. Vintage zůstává
@@ -449,6 +449,8 @@ se předá až po D35/D36.
 - Výsledek: model neobsahuje HWND/XAML; odlišuje relaci, pohled, vlastníka zvuku a uložené rozložení.
 - Hotovo, když: duplicate open aktivuje stávající relaci, přesun nemění její ID a neznámé/poškozené vstupy se odmítnou.
 - Ověření: doménové scénáře open/move/close/cancel, limitů rozložení a převodu všech starých ID.
+
+Aktuální realizační poznámky: [implementace](docs/windows/desktop/implementation.md), [migrace a návrat](docs/windows/desktop/migration.md). Poslední Windows přejímka 7f5868a doložila všech 32 pohledů, 41 desktopových kontrol a jejich opakování po instalaci; následná aktivace projektu ještě vyžadovala opravu. D36 zatím není uzavřené.
 
 #### D05 — Zavést aplikační služby a koordinaci operací
 

@@ -2,9 +2,23 @@
 
 ## Instalace
 
-Na stránce soukromého GitHub vydání stáhni `Rocker-Windows-Setup-0.2.0-x64.exe`. Musíš být přihlášený účtem s přístupem k repozitáři. Spusť instalátor a potom **Rocker** z nabídky Start. Nejsou potřeba vývojové nástroje ani zdrojové soubory. Vyžaduje Windows 11 x64 od 24H2.
+Na stránce soukromého GitHub vydání stáhni `Rocker-Windows-Setup-0.3.0-x64.exe`. Musíš být přihlášený účtem s přístupem k repozitáři. Spusť instalátor a potom **Rocker** z nabídky Start. Nejsou potřeba vývojové nástroje ani zdrojové soubory. Vyžaduje Windows 11 x64 od 24H2.
 
 Volitelný `Rocker-Windows-x64.zip` je přenosná alternativa: **Extrahovat vše**, potom `Rocker.Probe.exe`; soubory musí zůstat pohromadě. GitHub **Code → Download ZIP** obsahuje projekt, nikoli hotovou aplikaci. Odpovídající zdroje jsou samostatný `Rocker-Windows-sources.zip`.
+
+## Pracovní plocha, dokumenty a okna
+
+Vlevo je knihovna, uprostřed otevřené dokumenty v záložkách a vpravo inspektor a připojené nástroje. Knihovna obsahuje konkrétní lekce, tréninky, skladby, projekty i nahrávky. Hledání a oblíbené jsou dostupné přes Ctrl+K. Panely mají posuvné děliče; nabídka Okno je umí skrýt a obnovit.
+
+Záložku přes pravé tlačítko **Otevřít v samostatném okně** odpoj na další monitor. **Připojit do pracovní plochy** ji vrátí. Stejné ovládání je v nabídce Okno; záložky lze přetahovat mezi okny. Dokument si zachová výběr a rozpracovanou práci. Znovu otevřený stejný soubor či projekt aktivuje existující záložku. Ctrl+Tab přepíná záložky daného okna, Ctrl+W zavře aktivní dokument.
+
+Ladička, metronom, aparát a looper mají jedinou instanci. Jejich X pouze skryje nástroj; zvuk zůstává společný. Live je vlastní okno; F11 přepne celou obrazovku, Esc ji opustí. **Vždy navrchu** je výslovná volba v nabídce pomocného okna. Hlavní X ukončuje celou aplikaci po vyřešení rozpracované práce.
+
+Otevření skladby či nahrávky zobrazí obsah a průběh bez přepnutí přehrávání. Spodní transport uvádí jeho skutečný **Zdroj**. Tlačítko Přehrát v konkrétním editoru převezme společný zdroj; při nahrávání nebo aktivním looperu nejprve dokonči tento záznam. Vypnutý monitoring kytary neztlumí skladbu ani metronom. Když za aparátem vidíš signál a kytara v mixu chybí, zkontroluj **Poslech kytary** v Live.
+
+Lekce mají kroky vlevo a úlohu uprostřed. Studio má stopy, časovou osu a vlastnosti; Ctrl+S, Ctrl+Z a Ctrl+Y pracují s aktivním projektem. V úzkém editoru jsou vlastnosti přes tlačítko Vlastnosti. Průběh nahrávky lze vybírat i při přehrávání jiného dokumentu; kliknutí na pozici nebo zapnutí smyčky zdroj výslovně převezme.
+
+Rozměry oken, skupiny a výběr záložek se vrátí při dalším spuštění. Zvuk se s nimi nespustí. **Nastavení → Zálohy a soubory → Uložit / Načíst rozložení oken** předává samostatný `.rockerlayout`. Hudbu a média zálohuj také do `.rockerbackup`.
 
 ## První nastavení a M-Track Solo
 
@@ -44,16 +58,16 @@ Při potížích napiš verzi, obrazovku, provedené kroky a chybovou hlášku. 
 
 ## Pohodlnější každodenní hraní
 
-- **Jen hraju:** na přehledu nebo přes Zobrazení → Jen hraju / F11. Skryje navigaci a podrobnosti Live, zvětší ladičku i hlavní akce. Esc nebo Zpět obnoví studio. Samotné přepnutí nezapíná zvuk.
+- **Jen hraju:** na přehledu nebo přes Zobrazení → Jen hraju / F11. Otevře samostatné Live na celé obrazovce. Esc vrátí běžné okno Live. Samotné přepnutí nezapíná zvuk.
 - **Sestavy:** připrav pohled, aparát, ladění a metronom. U skladby nastav rychlost a A/B smyčku. Nástroje → Uložit sestavu cvičení. Otevření přes přehled, hledání nebo Moje sestavy připraví všechny uložené hodnoty; přehrávání a monitoring spustíš sám. Chybějící skladbu nejdřív přemísti přes Vlastní skladbu. Sestavy lze přejmenovat a odstranění potvrdit druhým kliknutím. Úplná záloha je obsahuje.
-- **Hledání a oblíbené:** Ctrl+K nebo lupa u nadpisu hledá obrazovky, jednotlivé lekce, akordy, stupnice, riffy, trenažéry, skladby, nahrávky a sestavy. Hledání rozumí českým názvům bez diakritiky. Hvězda u nadpisu uloží aktuální pohled či konkrétní úlohu; v hledání lze uložit i nahrávku nebo sestavu. Filtr Pouze oblíbené ukáže připnuté dostupné položky.
+- **Hledání a oblíbené:** Ctrl+K nebo Hledat na přehledu hledá obrazovky, jednotlivé lekce, akordy, stupnice, riffy, trenažéry, skladby, nahrávky a sestavy. Hledání rozumí českým názvům bez diakritiky. Pravé tlačítko na záložce přidá nebo odebere její úlohu z oblíbených; v hledání lze uložit i nahrávku nebo sestavu. Filtr Pouze oblíbené ukáže připnuté dostupné položky.
 - **Průběh nahrávky:** v Nahrávkách vyber položku a Zobrazit průběh bez přehrávání. Kliknutí do zvukové vlny změní pozici, přetažení vybere A/B úsek. Stejné hodnoty nastavíš přes číselná pole; opakování zapneš tlačítkem. Značka na aktuální pozici se uloží k nahrávce, její popis upravíš přes Značky a poznámky. Průběh vychází z dekódovaného souboru; nejde o hodnocení hry. Výběr a smyčka zvukový soubor neupravují.
 - **Aktualizace:** Nápověda → Aktualizace otevře kontrolu vydání v Nastavení. Instalace se nikdy nespustí sama; volitelně lze povolit nabídku při spuštění. Repozitář je soukromý: přímá kontrola/stažení potřebuje vlastní GitHub token s Contents: read pro JendaNDT/rocker, uložený přes chráněné pole v aplikaci. Token se chrání DPAPI a není v zálohách. Bez něj použij tlačítko pro přihlášený systémový prohlížeč a stáhni instalátor z vydání. Nativní stažení ověřuje SHA-256 a dokončený Windows balík. Tlačítko Nainstalovat a zavřít Rocker po potvrzení a případném uložení rozpracované práce zastaví zvuk a otevře instalátor.
 
 ## Viditelná vizualizace metronomu
 
-Otevři **Live → Metronom**. Nahoře je přepínač **Vizualizace: Doby / Kyvadlo**, přímo u přístroje a nastavení tempa. Tlačítkem Spustit metronom zapneš zvuk i časování. Kyvadlo je skutečná pohybující se páčka; pod ní svítí aktuální očíslovaná doba. Připravený přístroj je vidět i před spuštěním, se zastavenou páčkou.
+Otevři **Okno → Metronom**. Nahoře je přepínač **Vizualizace: Doby / Kyvadlo**, přímo u přístroje a nastavení tempa. Tlačítkem Spustit metronom zapneš zvuk i časování. Kyvadlo je skutečná pohybující se páčka; pod ní svítí aktuální očíslovaná doba. Připravený přístroj je vidět i před spuštěním, se zastavenou páčkou.
 
-Stejný přístroj najdeš nahoře v **Live** a v režimu **Jen hraju (F11)**. Tempo zadej v číselném poli; vedle něj přepni Doby nebo Kyvadlo. Volba platí ve všech pohledech a zůstane uložená. Podrobné rytmy, zvuky, akcenty, odpočet a tréninkové vrstvy jsou v sekci **Rytmus, zvuky a trénink** samostatného metronomu.
+Stejný přístroj najdeš v samostatném okně **Live** a v režimu **Jen hraju (F11)**. Tempo zadej v číselném poli; vedle něj přepni Doby nebo Kyvadlo. Volba platí ve všech pohledech a zůstane uložená. Podrobné rytmy, zvuky, akcenty, odpočet a tréninkové vrstvy jsou v sekci **Rytmus, zvuky a trénink** samostatného metronomu.
 
 Při odpočtu nebo tichém taktu se stále ukazují doby; text odlišuje, co právě probíhá. Vypnutí metronomu vrátí kyvadlo doprostřed. Pokud máš ve Windows vypnuté animace, páčka se nehýbe a aktuální doba se nadále mění.

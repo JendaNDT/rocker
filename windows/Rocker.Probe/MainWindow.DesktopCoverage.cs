@@ -24,7 +24,7 @@ public sealed partial class MainWindow
             }
             else
             {
-                var session=OpenDesktop(target);await Task.Delay(180);
+                var session=view.Id=="15" && desktopDiagnosticProject is not null?OpenDesktop(new("15",desktopDiagnosticProject)):view.Id=="07" && desktopDiagnosticRecording is not null?OpenDesktop(new("07"),DesktopDocumentKey.ForCanonicalFile("07",Rocker.Infrastructure.OwnedPaths.Resolve(userFiles.Root,(await recordingLibrary!.ListAsync()).Single(r=>r.Id==desktopDiagnosticRecording).RelativePath))):view.Id=="20"?OpenDesktop(new("20"),DesktopDocumentKey.ForCanonicalFile("20",Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,"fixtures","notation-phrases.gp")))):OpenDesktop(target);await Task.Delay(180);
                 if(route.Destination is DesktopDestination.Tool or DesktopDestination.Live or DesktopDestination.Settings)
                 {var tab=TabFor(session)??throw new InvalidOperationException("Missing tool host: "+view.Id);DetachDesktopTab(tab);root=HostRoot(session);}
                 else root=ShellRoot;

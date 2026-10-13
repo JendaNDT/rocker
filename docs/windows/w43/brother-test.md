@@ -26,6 +26,14 @@ Stav: **neprovedeno**. Vyplnit až s celým sestaveným kandidátem; uživatel n
 | Záloha a náhled obsahu; převod starých dat, pokud je potřeba | | |
 | YouTube se zvukem; AI jen s vlastním klíčem, pokud ji chceš | | |
 | Běžné zavření a nové spuštění zachová uloženou práci | | |
+| Odpojit a připojit partituru, projekt a nástroj; zachovat výběr a práci | | |
+| Druhé vyvolání metronomu aktivuje stejné okno; jeho X nezastaví zvuk | | |
+| Zavřít Live během záznamu, znovu otevřít a dokončit stejnou nahrávku | | |
+| Dva projekty: ukládání a undo míří do aktivního projektu | | |
+| Přehrávání jednoho dokumentu pokračuje při prohlížení druhého | | |
+| Obnova skupin záložek a poloh oken; přehrávání ani monitoring se samy nezapnou | | |
+| Systémové pickery a potvrzení patří správnému samostatnému oknu | | |
+| Klávesnice, Narrator, vysoký kontrast a fyzické DPI podle dostupného počítače | | |
 | Delší běžné hraní: výpadky, zatížení, pocit odezvy | | |
 
 ## Odezva

@@ -10,6 +10,8 @@ on:
       - 'src/lib/migrationArchive.ts'
       - 'docs/windows/w12/**'
       - 'scripts/export-windows-domain-reference.mjs'
+      - 'scripts/verify-windows-desktop-current.mjs'
+      - 'scripts/export-windows-desktop-gallery.mjs'
       - 'docs/windows/w06/domain-reference.json'
       - 'src/lib/**'
       - 'src/audio/tunings.ts'
@@ -63,6 +65,17 @@ jobs:
         run: ./windows/installer/smoke.ps1
       - name: Check complete candidate evidence
         run: ./windows/verify-candidate.ps1
+      - name: Verify and package the actual desktop gallery
+        run: |
+          node scripts/verify-windows-desktop-current.mjs windows/out/reports $env:GITHUB_SHA
+          if ($LASTEXITCODE -ne 0) { throw 'Desktop evidence validation failed.' }
+          node scripts/export-windows-desktop-gallery.mjs windows/out/reports windows/out/reports/desktop-gallery-final $env:GITHUB_SHA $env:GITHUB_RUN_ID
+          if ($LASTEXITCODE -ne 0) { throw 'Desktop gallery export failed.' }
+          Copy-Item docs/windows/desktop/gallery.css,docs/windows/desktop/gallery.js windows/out/reports/desktop-gallery-final
+          $gallery=Join-Path $PWD 'windows/out/packages/Rocker-Windows-desktop-gallery.zip'
+          Compress-Archive -Path windows/out/reports/desktop-gallery-final/* -DestinationPath $gallery
+          $digest=(Get-FileHash $gallery -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$digest  Rocker-Windows-desktop-gallery.zip" | Add-Content windows/out/packages/SHA256SUMS.txt -Encoding ascii
       - name: Upload verified candidate
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:

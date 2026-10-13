@@ -8,6 +8,8 @@ namespace Rocker.Probe;
 
 public sealed partial class MainWindow
 {
+    private string? desktopDiagnosticProject;
+    private string? desktopDiagnosticRecording;
     private async Task VerifyDesktopInteractionsAsync()
     {
         using var invocationScope=documentContext.Enter(documentContext.Current);
@@ -15,6 +17,7 @@ public sealed partial class MainWindow
         var checks=new List<string>();void Check(bool pass,string name){if(!pass)throw new InvalidOperationException("Desktop interaction: "+name);checks.Add(name);}
         await audio.StopAsync();await audio.ClearMediaAsync();if(services.Transport.Owner is{ } oldOwner)services.Transport.Release(oldOwner);
         var fixture=await CreateWorkspaceWaveformFixtureAsync();string path=OwnedPaths.Resolve(userFiles.Root,fixture.RelativePath);
+        desktopDiagnosticRecording=fixture.Id;
         await OpenDesktopSongAsync(path,"První syntetický zdroj",null);var first=OpenDesktop(new("07"),DesktopDocumentKey.ForCanonicalFile("07",path));
         using(documentContext.Enter(first)){await ClaimDesktopSourceAsync(first);Check(audio.GetTransport().Ready!=0 && audio.GetTransport().Playing==0,"explicit-source-preparation-remains-paused");}
         ulong ticket=await audio.GetMediaSourceTicketAsync();
@@ -25,6 +28,8 @@ public sealed partial class MainWindow
         bool refused=false;try{await services.Transport.TakeAsync(second,()=>Task.CompletedTask);}catch(InvalidOperationException){refused=true;}finally{services.Transport.Capturing=false;}
         Check(refused && services.Transport.Owner==first && await audio.GetMediaSourceTicketAsync()==ticket,"capture-conflict-preserves-source-and-owner");
         var projectA=new ProjectManifest(1,Guid.NewGuid().ToString("D"),"Projekt A",DateTimeOffset.UtcNow,DateTimeOffset.UtcNow,48000,[]);var projectB=projectA with{Id=Guid.NewGuid().ToString("D"),Name="Projekt B"};
+        desktopDiagnosticProject=projectA.Id;var media=await services.Storage.Projects.AttachMediaAsync(projectA.Id,new(fixture.RelativePath,fixture.Sha256,fixture.Bytes));
+        projectA=projectA with{Tracks=[new(Guid.NewGuid().ToString("N"),"Kytara · syntetická ukázka",media,fixture.Sha256,fixture.DurationSec,SourceSampleRate:48000,SourceFrames:96000),new(Guid.NewGuid().ToString("N"),"Druhá stopa · ukázka posunu",media,fixture.Sha256,fixture.DurationSec,Gain:.7,OffsetFrames:48000,SourceSampleRate:48000,SourceFrames:96000)]};
         await services.Storage.Projects.SaveAsync(projectA);await services.Storage.Projects.SaveAsync(projectB);
         var a=OpenDesktop(new("15",projectA.Id));var b=OpenDesktop(new("15",projectB.Id));await LoadDesktopProjectAsync(a,projectA.Id);await LoadDesktopProjectAsync(b,projectB.Id);
         using(documentContext.Enter(a)){studioProject=projectA;studioUndo.Clear();RememberStudio();studioProject=projectA with{Name="Projekt A · editace"};studioZoom=42;}
@@ -45,7 +50,7 @@ public sealed partial class MainWindow
         Check(layout.ViewPreferences!.Any(v=>v.Key.Equals(a.Key) && v.Zoom==42) && layout.ViewPreferences!.Any(v=>v.Key.Equals(b.Key) && v.Zoom==87),"project-view-preferences-are-persisted-per-document");
         await CloseDesktopTabAsync(desktopDocuments[b]);await CloseDesktopTabAsync(desktopDocuments[a]);await RestoreDesktopLayoutAsync();
         var restoredA=services.Documents.All.Single(s=>s.Key?.Equals(a.Key)==true);var restoredB=services.Documents.All.Single(s=>s.Key?.Equals(b.Key)==true);
-        Check(HostWindow(restoredA)==HostWindow(restoredB) && HostWindow(restoredA) is Desktop.DesktopWindow restoredHost && restoredHost.Tabs.SelectedItem==desktopDocuments[restoredB],"restoration-recreates-one-window-with-the-saved-tab-group");
+        Check(HostWindow(restoredA)==HostWindow(restoredB) && HostWindow(restoredA) is Desktop.DesktopWindow restoredHost && ReferenceEquals(restoredHost.Tabs.SelectedItem,desktopDocuments[restoredB]),"restoration-recreates-one-window-with-the-saved-tab-group");
         using(documentContext.Enter(restoredA))Check(studioZoom==42,"restored-first-project-zoom");using(documentContext.Enter(restoredB))Check(studioZoom==87,"restored-second-project-zoom");
         Check(audio.GetTransport().Playing==0 && !audio.GetMeters().Monitoring,"layout-restoration-never-starts-playback-or-monitoring");
         AttachDesktopTab(desktopDocuments[restoredA]);AttachDesktopTab(desktopDocuments[restoredB]);

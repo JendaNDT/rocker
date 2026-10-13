@@ -1,5 +1,10 @@
 # D04 — identity, hostitelé a vlastnictví zdrojů
 
+Tento dokument zachycuje původní D04. Modely jsou nyní zapojené do
+produkční pracovní plochy; aktuální stav a navazující Windows důkazy jsou
+v [implementaci](implementation.md). Následující přenosné důkazy zůstávají
+historickou evidencí konkrétní revize D04.
+
 Implementované čisté modely jsou v
 [DesktopWorkspace.cs](../../../windows/Rocker.Domain/DesktopWorkspace.cs).
 Neobsahují WinUI, HWND, NativeAudio, timer nebo souborové operace.
