@@ -13,7 +13,6 @@ public sealed partial class MainWindow
     {
         var owner = documentContext.Current;
         source.Children.Clear();
-        if (recordingRangeA!.Parent is Panel ranges) ranges.Children.Clear();
         var body = new Grid { RowSpacing = 0 };
         body.RowDefinitions.Add(new() { Height = GridLength.Auto });
         body.RowDefinitions.Add(new() { Height = new(1, GridUnitType.Star) });
@@ -59,7 +58,7 @@ public sealed partial class MainWindow
         var selection = new Grid { ColumnSpacing = 12 };
         selection.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) });
         selection.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) });
-        recordingRangeA.Header = "Začátek A (s)"; recordingRangeB!.Header = "Konec B (s)";
+        recordingRangeA!.Header = "Začátek A (s)"; recordingRangeB!.Header = "Konec B (s)";
         selection.Children.Add(recordingRangeA); Grid.SetColumn(recordingRangeB, 1); selection.Children.Add(recordingRangeB);
         surface.Footer.Children.Add(selection); surface.Footer.Children.Add(recordingWaveformStatus!);
         surface.Tag = "desktop-recording-editor";

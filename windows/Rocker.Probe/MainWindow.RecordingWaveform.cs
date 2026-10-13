@@ -58,7 +58,8 @@ public sealed partial class MainWindow
         recordingRangeB = new NumberBox { Header = "B · do (sekundy)", Minimum = 0, Maximum = 86400, Value = 0, SmallChange = .1, SpinButtonPlacementMode = NumberBoxSpinButtonPlacementMode.Inline, IsEnabled = false };
         recordingRangeA.ValueChanged += (_, _) => {using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return; if (!recordingRangeUpdating) DrawRecordingWaveform(); };
         recordingRangeB.ValueChanged += (_, _) => {using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return; if (!recordingRangeUpdating) DrawRecordingWaveform(); };
-        panel.Children.Add(ResponsiveColumns(recordingRangeA, recordingRangeB));
+        // Desktop owns these editors in its fixed footer; do not first parent them in an unloaded legacy grid.
+        if(!desktopEnabled)panel.Children.Add(ResponsiveColumns(recordingRangeA, recordingRangeB));
         recordingWaveformActions.Clear();
         void Action(string label, Func<Task> action)
         {
