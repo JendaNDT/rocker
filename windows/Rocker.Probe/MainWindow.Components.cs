@@ -63,7 +63,8 @@ public sealed partial class MainWindow
         await encoder.FlushAsync();
         stream.Seek(0); var png = new byte[checked((int)stream.Size)];
         using (var reader = new DataReader(stream)) { await reader.LoadAsync((uint)png.Length); reader.ReadBytes(png); }
-        await File.WriteAllBytesAsync(Path.Combine(directory,name),png);
+        var destination=Path.Combine(directory,name);Directory.CreateDirectory(Path.GetDirectoryName(destination)!);
+        await File.WriteAllBytesAsync(destination,png);
     }
     private void VerifyComponents()
     {

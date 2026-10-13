@@ -101,18 +101,19 @@ public sealed partial class MainWindow
         if (audio is null || busy || workspaceOperation || captureDraft is not null || recordingOperation || fileOperation || closingWindow || backupOperationRunning || profileOperation || studioOperation || studioEditTask is{IsCompleted:false} || looperOperation || powerTransition || deviceOperationRunning)
             throw new InvalidOperationException("Nejdřív dokonči práci nebo zastav nahrávání.");
         if(audio.GetLoop().State is 1 or 2 or 4 or 5)throw new InvalidOperationException("Nejdřív dokonči nahrávání vrstvy v Looperu.");
-        fileOperation=true;ShellInteractionRoot.IsEnabled=false;
+        fileOperation=true;BeginPreparation("Ověřuji nahrávku a připravuji její průběh…");
         try
         {
-        if (!await new OwnedMedia(userFiles).VerifyAsync(new(value.RelativePath, value.Sha256, value.Bytes))) throw new InvalidDataException("Zvukový soubor chybí nebo je změněný.");
+        if (!await new OwnedMedia(userFiles).VerifyAsync(new(value.RelativePath, value.Sha256, value.Bytes),PreparationToken)) throw new InvalidDataException("Zvukový soubor chybí nebo je změněný.");
+        PreparationToken.ThrowIfCancellationRequested();
         string path = OwnedPaths.Resolve(userFiles.Root, value.RelativePath);
         await OpenSongFileAsync(path, value.Name);
-        if (songLoadCancelled || mediaPath != path) return false;
+        if (songLoadCancelled || mediaPath != path || PreparationToken.IsCancellationRequested) return false;
         playingRecording = value; recordingPeaks = songPeaks.ToArray();
         if (recordingRangeA is not null && recordingRangeB is not null)
         { recordingRangeA.Maximum = recordingRangeB.Maximum = value.DurationSec; SetRecordingRange(0, value.DurationSec); }
         DrawRecordingWaveform(); RefreshRecordingWaveform();return true;
-        }finally{fileOperation=false;if(!closed)ShellInteractionRoot.IsEnabled=true;}
+        }catch(OperationCanceledException){return false;}finally{fileOperation=false;EndPreparation();}
     }
     private void DrawRecordingWaveform()
     {

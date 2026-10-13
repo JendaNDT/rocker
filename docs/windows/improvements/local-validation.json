@@ -1,6 +1,6 @@
 {
   "result": "passed",
-  "csharpSemanticFiles": 58,
+  "csharpSemanticFiles": 59,
   "windowsRuntimeVerified": false,
   "domain": {
     "result": "passed",
@@ -29,5 +29,17 @@
   },
   "pwaTypecheck": "passed",
   "pwaTests": 567,
-  "manualAcceptanceVerified": false
+  "manualAcceptanceVerified": false,
+  "pwaLint": "passed",
+  "liveReleaseReadAndDownload": {
+    "result": "passed",
+    "Tag": "windows-0.2.0-rc3-20261012",
+    "RunId": 38301809142,
+    "Commit": "6be7ff90dad38ddd4f901af7ecf6c11caf86881d",
+    "privateMetadataAndProofRead": true,
+    "downloadedBytes": 70290835,
+    "installerHashAndPeVerified": true,
+    "installerExecuted": false,
+    "userWindowsAuthenticationVerified": false
+  }
 }

@@ -217,40 +217,43 @@ public sealed partial class MainWindow
         if (audio is null || !persistenceReady || busy || workspaceOperation || powerTransition || deviceOperationRunning || fileOperation
             || captureDraft is not null || recordingOperation || studioOperation || studioEditTask is { IsCompleted: false } || looperOperation || backupOperationRunning || profileOperation || secretOperationRunning || closingWindow)
             throw new InvalidOperationException("Nejdřív dokonči práci nebo zastav nahrávání.");
-        workspaceOperation = true;ShellInteractionRoot.IsEnabled=false;
+        workspaceOperation = true;BeginPreparation("Připravuji sestavu cvičení…");
         try
         {
         if(audio.GetLoop().State is 1 or 2 or 4 or 5)throw new InvalidOperationException("Nejdřív dokonči nahrávání vrstvy v Looperu.");
         if (!AllTunings().Any(t => t.Id == selected.TuningId)) throw new InvalidOperationException("Ladění sestavy chybí. Obnov jej nebo sestavu ulož znovu.");
-        SongSession? source = null;
+        SongSession? source = null;RecordingData? ownedSource=null;
         if (selected.SongId is not null)
         {
             source = songs.GetValueOrDefault(selected.SongId) ?? throw new InvalidOperationException("Skladba sestavy chybí. Otevři ji a sestavu ulož znovu.");
             if (selected.RecordingId is { } recordingId)
             {
                 var owned=(await recordingLibrary!.ListAsync()).FirstOrDefault(r=>r.Id==recordingId)??throw new FileNotFoundException("Nahrávka sestavy chybí. Obnov ji ze zálohy nebo sestavu ulož znovu.");
-                if(!await new OwnedMedia(userFiles).VerifyAsync(new(owned.RelativePath,owned.Sha256,owned.Bytes)))throw new InvalidDataException("Nahrávka sestavy chybí nebo je změněná.");
-                source=source with{SourcePath=OwnedPaths.Resolve(userFiles.Root,owned.RelativePath)};
+                if(!await new OwnedMedia(userFiles).VerifyAsync(new(owned.RelativePath,owned.Sha256,owned.Bytes),PreparationToken))throw new InvalidDataException("Nahrávka sestavy chybí nebo je změněná.");
+                ownedSource=owned;source=source with{SourcePath=OwnedPaths.Resolve(userFiles.Root,owned.RelativePath)};
             }
             if (!File.Exists(source.SourcePath)) throw new FileNotFoundException("Soubor skladby chybí. Otevři skladbu ve Vlastní skladbě, vyber její nové umístění a zkus sestavu znovu.");
             if (selected.LoopEnabled && selected.LoopEnd > source.Duration) throw new InvalidDataException("Úsek sestavy už přesahuje délku skladby.");
         }
-            if(powerTransition)throw new OperationCanceledException();
+            PreparationToken.ThrowIfCancellationRequested();if(powerTransition)throw new OperationCanceledException();
             audio.SetMonitoring(false, liveGain); await audio.StopAsync();
             metroEnabled = false; ++metroRevision; metroApplyTimer.Stop(); await ApplyMetronomeAsync();
             SendVideo(new { op = "pause" }); await StopRhythmUiAsync(); CancelPalm();
             if (source is not null)
             {
                 await OpenSongFileAsync(source.SourcePath, source.Name,source);
-                if (mediaPath != source.SourcePath || songLoadCancelled) throw new OperationCanceledException();
+                PreparationToken.ThrowIfCancellationRequested();if (mediaPath != source.SourcePath || songLoadCancelled) throw new OperationCanceledException();
                 await ChangeSongSpeedAsync(selected.Speed);
-                if (songLoadCancelled) throw new OperationCanceledException();
+                PreparationToken.ThrowIfCancellationRequested();if (songLoadCancelled) throw new OperationCanceledException();
                 await audio.SeekAsync(Math.Min(selected.Position, song!.Duration) / currentSpeed);
                 await audio.SetLoopAsync(selected.LoopStart / currentSpeed, selected.LoopEnd / currentSpeed, selected.LoopEnabled);
                 appliedSongLoopId = song.Id; appliedSongLoopStart = selected.LoopStart; appliedSongLoopEnd = selected.LoopEnd;
                 song = song with { Ramp = false }; SaveSong();
+                playingRecording=ownedSource;recordingPeaks=ownedSource is not null?songPeaks.ToArray():[];
+                if(ownedSource is not null)SetRecordingRange(selected.LoopEnabled?selected.LoopStart:0,selected.LoopEnabled?selected.LoopEnd:ownedSource.DurationSec);
             }
             else { await CancelSongRampAsync(); await audio.ClearMediaAsync(); mediaPath = null; mediaMidi = null; song = null; songPeaks = [];appliedSongLoopId=null;studioOwnsPlayback=false;studioTicket=0;workspaceCache.Remove(new("07")); MediaTitle.Text = "Připrav nahrávku nebo noty"; }
+            PreparationToken.ThrowIfCancellationRequested();PreparationCancelButton.IsEnabled=false;
             ampSettings = selected.Amp; metroConfig = selected.Metronome; metroEnabled = false;
             appSettings = appSettings with { AmpEnabled = selected.AmpEnabled, TuningId = selected.TuningId }; SaveSettings();
             QueueAmplifier(); QueueMetronome(); await ApplyAmplifierAsync(); await ApplyMetronomeAsync();
@@ -259,7 +262,7 @@ public sealed partial class MainWindow
             appliedNavigationTask=selected.Target;Navigate(selected.Target); RefreshState();
             ShellNotice.IsOpen = true; ShellNotice.Severity = InfoBarSeverity.Success; ShellNotice.Message = "Připravená sestava: " + selected.Name + ". Přehrávání a monitoring spustíš sám.";
         }
-        finally { workspaceOperation = false;if(!closed)ShellInteractionRoot.IsEnabled=true;RefreshFavoriteButton(); }
+        finally { workspaceOperation = false;EndPreparation();RefreshFavoriteButton(); }
     }
     private FrameworkElement BuildPracticeShortcuts()
     {

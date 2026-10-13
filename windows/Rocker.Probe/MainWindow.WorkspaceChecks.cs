@@ -29,6 +29,9 @@ public sealed partial class MainWindow
             await CaptureNativeViewAsync("screens/improved-focus-narrow.png");
             AppWindow.Resize(new Windows.Graphics.SizeInt32(1280, 940)); SetFocusMode(false); ApplyTheme("dark");
             Check("focusCanReturnWithoutStartingSound", Navigation.IsPaneVisible && audio.GetSnapshot().State == AudioState.Stopped && !audio.GetMeters().Monitoring);
+            BeginPreparation("Kontrola zrušení přípravy");await Task.Delay(100);
+            bool cancelAvailable=!ShellInteractionRoot.IsEnabled && PreparationCancelButton.IsEnabled && PreparationCancelButton.ActualHeight>0;
+            CancelPreparation_Click(this,new());Check("preparationCanCancelWhileWorkspaceIsDisabled",cancelAvailable && PreparationToken.IsCancellationRequested);EndPreparation();
             var setup = CapturePracticeSetup("Kontrolní sestava") with { Amp = ampSettings with { Drive = .23 }, Metronome = metroConfig with { Bpm = 93 }, AmpEnabled = true };
             await SavePracticeWorkspaceAsync(new([setup], ["view:03", "setup:" + setup.Id]));
             await ApplyPracticeSetupAsync(setup);
@@ -57,8 +60,10 @@ public sealed partial class MainWindow
             Check("waveformSelectionRetainsSourceTimes", recordingRangeB!.Value == recording.DurationSec * .5 && recordingPlayhead is not null);
             await CaptureNativeViewAsync("screens/improved-recordings.png");
             var songSetup = CapturePracticeSetup("Skladba s úsekem") with { LoopEnabled = true, LoopStart = 0, LoopEnd = recording.DurationSec * .5, Speed = .75 };
+            playingRecording=null;recordingPeaks=[];
             await ApplyPracticeSetupAsync(songSetup);
             Check("setupRestoresSongLoopAndSpeedPaused", currentSpeed == .75 && (audio.GetTransport().Reserved & 1) != 0 && audio.GetTransport().Playing == 0 && !audio.GetMeters().Monitoring);
+            Check("setupKeepsOwnedReferenceAfterReopen",CapturePracticeSetup("Znovu uložená sestava").RecordingId==recording.Id);
             Navigate(new("28")); await Task.Delay(100); updateCheckButton!.StartBringIntoView(); await Task.Delay(150);
             Check("updatesRequireExplicitActions", updateCheckButton.IsEnabled && !updateDownloadButton!.IsEnabled && !updateInstallButton!.IsEnabled && !updateOperation && !appSettings.CheckUpdatesOnStartup);
             await CaptureNativeViewAsync("screens/improved-updates.png");
@@ -71,7 +76,7 @@ public sealed partial class MainWindow
             await SavePracticeWorkspaceAsync(previousWorkspace); SaveSettings(); QueueAmplifier(); QueueMetronome(); await ApplyAmplifierAsync(); await ApplyMetronomeAsync();
             await audio.StopAsync(); await audio.ClearMediaAsync(); mediaPath = null; mediaMidi = null; song = null; playingRecording = null; recordingPeaks = [];
             ApplyTheme(previousTheme); workspaceCache.Clear(); Navigate(new("01")); WorkspaceScroll.ChangeView(null, 0, null, true);
-            WriteShellDiagnostic("workspace-enhancements.json", new { result = checks.Count == 16 && checks.Values.All(v => v) ? "passed" : "failed", checks, newViews = 0, nativeWorkspaces = 32, sharedAudioHostCount = audioHostsCreated, liveInputNotSimulated = true, onlinePrivateUpdateVerified = false, installerExecutedByAppVerified = false, manualInteractionsVerified = false });
+            WriteShellDiagnostic("workspace-enhancements.json", new { result = checks.Count == 18 && checks.Values.All(v => v) ? "passed" : "failed", checks, newViews = 0, nativeWorkspaces = 32, sharedAudioHostCount = audioHostsCreated, liveInputNotSimulated = true, onlinePrivateUpdateVerified = false, installerExecutedByAppVerified = false, manualInteractionsVerified = false });
         }
     }
 }
