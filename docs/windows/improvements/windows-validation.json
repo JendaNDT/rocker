@@ -1,7 +1,7 @@
 {
-  "runId": 38361957245,
-  "runUrl": "https://github.com/JendaNDT/rocker/actions/runs/38361957245",
-  "commit": "b550d64d8fad4d0fab1c8f0001fd4302141967a8",
+  "runId": 38401845598,
+  "runUrl": "https://github.com/JendaNDT/rocker/actions/runs/38401845598",
+  "commit": "91a1957f7dd48ea58ab211533cba08f6be7403d2",
   "result": "passed",
   "enhancements": {
     "result": "passed",
@@ -60,129 +60,124 @@
     "systemHighContrastManualVerified": false
   },
   "candidate": {
-    "manualHardwareVerified": false,
-    "smartAppControlVerified": false,
-    "result": "passed",
-    "windowsRun": "https://github.com/JendaNDT/rocker/actions/runs/38361957245",
-    "nativeWorkspaces": 32,
-    "wallClockHourOnHardwareVerified": false,
-    "nativeSuites": 22,
-    "onlineAiVerified": false,
     "onlineYouTubeVerified": false,
-    "correspondingSourcesSeparate": true,
-    "narratorAndHighContrastManualVerified": false,
-    "installer": "Rocker-Windows-Setup-0.2.0-x64.exe",
+    "onlineAiVerified": false,
+    "wallClockHourOnHardwareVerified": false,
+    "sourceCommit": "91a1957f7dd48ea58ab211533cba08f6be7403d2",
     "reports": [
       {
-        "result": "passed",
-        "report": "domain-checks.json"
+        "report": "domain-checks.json",
+        "result": "passed"
       },
       {
-        "result": "passed",
-        "report": "storage-checks.json"
+        "report": "storage-checks.json",
+        "result": "passed"
       },
       {
-        "result": "passed",
-        "report": "notation-checks.json"
+        "report": "notation-checks.json",
+        "result": "passed"
       },
       {
-        "result": "passed",
-        "report": "media-checks.json"
+        "report": "media-checks.json",
+        "result": "passed"
       },
       {
-        "result": "passed",
-        "report": "transport-checks.json"
+        "report": "transport-checks.json",
+        "result": "passed"
       },
       {
-        "result": "passed",
-        "report": "browser-ui-import.json"
+        "report": "browser-ui-import.json",
+        "result": "passed"
       },
       {
-        "result": "passed",
-        "report": "browser-bookmark-import.json"
+        "report": "browser-bookmark-import.json",
+        "result": "passed"
       },
       {
-        "result": "passed",
-        "report": "power-recovery.json"
+        "report": "power-recovery.json",
+        "result": "passed"
       },
       {
-        "result": "passed",
-        "report": "performance-checks.json"
+        "report": "performance-checks.json",
+        "result": "passed"
       },
       {
-        "result": "passed",
-        "report": "accessibility.json"
+        "report": "accessibility.json",
+        "result": "passed"
       },
       {
-        "result": "passed",
-        "report": "design-views.json"
+        "report": "design-views.json",
+        "result": "passed"
       },
       {
-        "result": "passed",
-        "report": "ux-layout.json"
+        "report": "ux-layout.json",
+        "result": "passed"
       },
       {
-        "result": "passed",
-        "report": "workspace-enhancements.json"
+        "report": "workspace-enhancements.json",
+        "result": "passed"
       },
       {
-        "result": "passed",
-        "report": "visual-finish.json"
+        "report": "retro-instruments.json",
+        "result": "passed"
       },
       {
-        "result": "passed",
-        "report": "practice-profile.json"
+        "report": "visual-finish.json",
+        "result": "passed"
       },
       {
-        "result": "passed",
-        "report": "overview-live.json"
+        "report": "practice-profile.json",
+        "result": "passed"
       },
       {
-        "result": "passed",
-        "report": "first-run.json"
+        "report": "overview-live.json",
+        "result": "passed"
       },
       {
-        "result": "passed",
-        "report": "file-commands.json"
+        "report": "first-run.json",
+        "result": "passed"
       },
       {
-        "result": "passed",
-        "report": "window-smoke.json"
+        "report": "file-commands.json",
+        "result": "passed"
       },
       {
-        "result": "passed",
-        "report": "installer/installer-smoke.json"
+        "report": "window-smoke.json",
+        "result": "passed"
+      },
+      {
+        "report": "installer/installer-smoke.json",
+        "result": "passed"
       }
     ],
+    "narratorAndHighContrastManualVerified": false,
     "actualLatencyVerified": false,
-    "sourceCommit": "b550d64d8fad4d0fab1c8f0001fd4302141967a8"
+    "manualHardwareVerified": false,
+    "smartAppControlVerified": false,
+    "nativeWorkspaces": 32,
+    "result": "passed",
+    "installer": "Rocker-Windows-Setup-0.2.0-x64.exe",
+    "nativeSuites": 22,
+    "correspondingSourcesSeparate": true,
+    "windowsRun": "https://github.com/JendaNDT/rocker/actions/runs/38401845598"
   },
   "installed": {
+    "perUserInstall": true,
     "result": "passed",
+    "adminRequired": false,
+    "historicBinaryDowngradeVerified": false,
+    "transitionUsesSameCandidateBinariesWithSyntheticVersionLabels": true,
+    "preUpdateFullBackupAndRawDatabase": true,
+    "uninstallPreservedDatabaseAndSentinel": true,
     "unicodeProjectActivation": true,
     "failedUpdatePreservedShortcutAndAssociation": true,
+    "installedInventoryMatchesPortableArchive": true,
     "installedNativeWindow": true,
     "hardwareVerified": false,
-    "preUpdateFullBackupAndRawDatabase": true,
-    "historicBinaryDowngradeVerified": false,
-    "adminRequired": false,
-    "projectAssociationRegistered": true,
-    "versionTransitionPreservedDataAndPriorBinary": true,
-    "offlineSelfContainedStart": true,
-    "uninstallPreservedDatabaseAndSentinel": true,
-    "smartAppControlVerified": false,
     "exactDllRepair": true,
-    "transitionUsesSameCandidateBinariesWithSyntheticVersionLabels": true,
-    "installedInventoryMatchesPortableArchive": true,
-    "perUserInstall": true
-  },
-  "publication": {
-    "result": "passed",
-    "runId": 38364693556,
-    "tag": "windows-0.2.0-rc4-20261013",
-    "url": "https://github.com/JendaNDT/rocker/releases/tag/windows-0.2.0-rc4-20261013",
-    "privateRepository": true,
-    "publishedAssets": 5,
-    "assetSizesAndSha256MatchVerifiedDownloads": true
+    "offlineSelfContainedStart": true,
+    "smartAppControlVerified": false,
+    "projectAssociationRegistered": true,
+    "versionTransitionPreservedDataAndPriorBinary": true
   }
 }

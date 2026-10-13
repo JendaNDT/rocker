@@ -4,7 +4,9 @@ Aktualizováno 13. 10. 2026. W04–W43 jsou implementované a automaticky ověř
 
 Dokončeno i [pět rozšíření pohodlí při hraní](docs/windows/improvements/README.md): Jen hraju (F11 / Esc), společné sestavy cvičení, vyhledávání a oblíbené (Ctrl+K), zvuková vlna nahrávek s A/B a značkami, kontrola/stažení aktualizací s výslovným potvrzením instalace. Nativní ovládání a společné zvukové jádro zůstávají. [Galerie](docs/windows/improvements/gallery.html).
 
-Ověřený RC4: Windows běh [38361957245](https://github.com/JendaNDT/rocker/actions/runs/38361957245), revize `b550d64`. Všech 18 nových kontrol skutečného okna, původní nativní/doménové/datové kontroly, 32 pohledů i instalační cyklus prošly. [Soukromý instalátor](https://github.com/JendaNDT/rocker/releases/tag/windows-0.2.0-rc4-20261013); zdroje jsou zvlášť. Main/PWA beze změny.
+Dále dokončené [retro přístroje](docs/windows/retro/README.md): ořechové bočnice, textura koženky a mřížka komba, měděné štítky a šroubky, bakelitové knoflíky, skutečný stav páčky/kontrolky aparátu a podsvícené ručkové peak dBFS měřáky. [Skutečné snímky](docs/windows/retro/gallery.html).
+
+Ověřený RC5: Windows běh [38401845598](https://github.com/JendaNDT/rocker/actions/runs/38401845598), revize `91a1957`. Všech 18 nových kontrol skutečného okna, původní nativní/doménové/datové kontroly, 32 pohledů i instalační cyklus prošly. [Soukromý instalátor](https://github.com/JendaNDT/rocker/releases/tag/windows-0.2.0-rc5-20261013); zdroje jsou zvlášť. Main/PWA beze změny.
 
 Aktualizace soukromého repozitáře přímo z aplikace potřebují vlastní GitHub přístup chráněný DPAPI; bez něj je dostupný přihlášený systémový prohlížeč. Živý cloudový modul skutečně stáhl a ověřil předchozí instalátor; přihlášení uživatele a spuštění aktualizace z aplikace na jeho Windows zůstávají ručními scénáři. Sestavy a oblíbené patří do úplné zálohy, klíče a cache instalátorů nikoli.
 

@@ -1,0 +1,43 @@
+{
+  "result": "passed",
+  "csharpFiles": 61,
+  "csharpErrors": 0,
+  "csharpLimitation": "XAML fields stubbed; actual WinUI compilation/runtime validated separately on Windows",
+  "typeCheck": true,
+  "lint": true,
+  "vitestFiles": 55,
+  "vitestTests": 567,
+  "domain": {
+    "result": "passed",
+    "referenceCases": 69,
+    "boundaryChecks": 184,
+    "contentGroups": 15,
+    "surgicalStatesCompared": 37,
+    "extendedReferenceCases": 372,
+    "extendedStatesCompared": 350
+  },
+  "storage": {
+    "result": "passed",
+    "fileChecks": 17,
+    "aiChecks": 28,
+    "storageChecks": 40,
+    "secretChecks": 2,
+    "backupChecks": 20,
+    "migrationChecks": 28,
+    "diagnosticChecks": 10,
+    "recordingChecks": 25,
+    "updateChecks": 16,
+    "releaseUpdateChecks": 15,
+    "dpapiVerified": false,
+    "forcedTerminationVerified": true,
+    "manualHardwareVerified": false
+  },
+  "manualAudioVerified": false,
+  "staticContrast": {
+    "plaqueInkOnDarkestCopper": 4.63,
+    "instrumentInkOnCream": 11.46,
+    "lightPointerOnBakelite": 5.86,
+    "darkPointerOnBakelite": 4.22,
+    "physicalAccessibilityVerified": false
+  }
+}

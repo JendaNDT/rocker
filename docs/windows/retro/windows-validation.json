@@ -1,0 +1,244 @@
+{
+  "runId": 38401845598,
+  "runUrl": "https://github.com/JendaNDT/rocker/actions/runs/38401845598",
+  "commit": "91a1957f7dd48ea58ab211533cba08f6be7403d2",
+  "result": "passed",
+  "retro": {
+    "result": "passed",
+    "meterBoundaryChecks": 6,
+    "nativePowerStateChecks": 2,
+    "cabinetCheck": true,
+    "needleUsesPeakDbfs": true,
+    "invalidOrAbsentInputHasNoNeedle": true,
+    "decorationsOwnNoInput": true,
+    "sharedAudioHostCount": 1,
+    "realInputVerified": false,
+    "highContrastManualVerified": false
+  },
+  "graphics": {
+    "result": "passed",
+    "captures": [
+      {
+        "file": "screens/finish-dark-01.png",
+        "theme": "dark",
+        "view": "01",
+        "clientWidthDip": 1028,
+        "clientHeightDip": 749
+      },
+      {
+        "file": "screens/finish-dark-02.png",
+        "theme": "dark",
+        "view": "02",
+        "clientWidthDip": 1028,
+        "clientHeightDip": 749
+      },
+      {
+        "file": "screens/finish-dark-03.png",
+        "theme": "dark",
+        "view": "03",
+        "clientWidthDip": 1028,
+        "clientHeightDip": 749
+      },
+      {
+        "file": "screens/finish-dark-04.png",
+        "theme": "dark",
+        "view": "04",
+        "clientWidthDip": 1028,
+        "clientHeightDip": 749
+      },
+      {
+        "file": "screens/finish-dark-13.png",
+        "theme": "dark",
+        "view": "13",
+        "clientWidthDip": 1028,
+        "clientHeightDip": 749
+      },
+      {
+        "file": "screens/finish-dark-17.png",
+        "theme": "dark",
+        "view": "17",
+        "clientWidthDip": 1028,
+        "clientHeightDip": 749
+      },
+      {
+        "file": "screens/finish-dark-18.png",
+        "theme": "dark",
+        "view": "18",
+        "clientWidthDip": 1028,
+        "clientHeightDip": 749
+      },
+      {
+        "file": "screens/finish-light-02.png",
+        "theme": "light",
+        "view": "02",
+        "clientWidthDip": 1028,
+        "clientHeightDip": 749
+      },
+      {
+        "file": "screens/finish-light-13.png",
+        "theme": "light",
+        "view": "13",
+        "clientWidthDip": 1028,
+        "clientHeightDip": 749
+      }
+    ],
+    "iconPublished": true,
+    "liveInputAndMonitoringNotSimulated": true,
+    "manualVisualAcceptanceVerified": false,
+    "systemHighContrastManualVerified": false
+  },
+  "layout": {
+    "result": "passed",
+    "idleSettingsHasNoPlayerOrPracticeBar": true,
+    "desktopNavigationShowsLabels": true,
+    "liveHasPrimarySetupAndRelevantActions": true,
+    "liveFooterHeightDip": 45,
+    "liveTuningScaleVisible": true,
+    "liveTuningScaleBottomDip": 672,
+    "clientHeightDip": 749,
+    "liveScaleHeightDip": 70,
+    "liveScaleWidthDip": 0,
+    "emptyMediaDoesNotOccupyLive": true,
+    "narrowWorkspaceFits": true,
+    "loadedMediaHasAccessibleTransport": true,
+    "manualUsabilityVerified": false
+  },
+  "accessibility": {
+    "result": "passed",
+    "authoredControlsChecked": 642,
+    "unnamed": [],
+    "standardInvokeAndRangePatterns": true,
+    "narratorManualVerified": false,
+    "keyboardManualVerified": false,
+    "physicalDpiVerified": false,
+    "systemHighContrastManualVerified": false
+  },
+  "components": {
+    "result": "passed",
+    "checks": 44,
+    "realInputVerified": false,
+    "keyboardAndScreenReaderManualVerified": false,
+    "highContrastManualVerified": false
+  },
+  "candidate": {
+    "onlineYouTubeVerified": false,
+    "onlineAiVerified": false,
+    "wallClockHourOnHardwareVerified": false,
+    "sourceCommit": "91a1957f7dd48ea58ab211533cba08f6be7403d2",
+    "reports": [
+      {
+        "report": "domain-checks.json",
+        "result": "passed"
+      },
+      {
+        "report": "storage-checks.json",
+        "result": "passed"
+      },
+      {
+        "report": "notation-checks.json",
+        "result": "passed"
+      },
+      {
+        "report": "media-checks.json",
+        "result": "passed"
+      },
+      {
+        "report": "transport-checks.json",
+        "result": "passed"
+      },
+      {
+        "report": "browser-ui-import.json",
+        "result": "passed"
+      },
+      {
+        "report": "browser-bookmark-import.json",
+        "result": "passed"
+      },
+      {
+        "report": "power-recovery.json",
+        "result": "passed"
+      },
+      {
+        "report": "performance-checks.json",
+        "result": "passed"
+      },
+      {
+        "report": "accessibility.json",
+        "result": "passed"
+      },
+      {
+        "report": "design-views.json",
+        "result": "passed"
+      },
+      {
+        "report": "ux-layout.json",
+        "result": "passed"
+      },
+      {
+        "report": "workspace-enhancements.json",
+        "result": "passed"
+      },
+      {
+        "report": "retro-instruments.json",
+        "result": "passed"
+      },
+      {
+        "report": "visual-finish.json",
+        "result": "passed"
+      },
+      {
+        "report": "practice-profile.json",
+        "result": "passed"
+      },
+      {
+        "report": "overview-live.json",
+        "result": "passed"
+      },
+      {
+        "report": "first-run.json",
+        "result": "passed"
+      },
+      {
+        "report": "file-commands.json",
+        "result": "passed"
+      },
+      {
+        "report": "window-smoke.json",
+        "result": "passed"
+      },
+      {
+        "report": "installer/installer-smoke.json",
+        "result": "passed"
+      }
+    ],
+    "narratorAndHighContrastManualVerified": false,
+    "actualLatencyVerified": false,
+    "manualHardwareVerified": false,
+    "smartAppControlVerified": false,
+    "nativeWorkspaces": 32,
+    "result": "passed",
+    "installer": "Rocker-Windows-Setup-0.2.0-x64.exe",
+    "nativeSuites": 22,
+    "correspondingSourcesSeparate": true,
+    "windowsRun": "https://github.com/JendaNDT/rocker/actions/runs/38401845598"
+  },
+  "installer": {
+    "perUserInstall": true,
+    "result": "passed",
+    "adminRequired": false,
+    "historicBinaryDowngradeVerified": false,
+    "transitionUsesSameCandidateBinariesWithSyntheticVersionLabels": true,
+    "preUpdateFullBackupAndRawDatabase": true,
+    "uninstallPreservedDatabaseAndSentinel": true,
+    "unicodeProjectActivation": true,
+    "failedUpdatePreservedShortcutAndAssociation": true,
+    "installedInventoryMatchesPortableArchive": true,
+    "installedNativeWindow": true,
+    "hardwareVerified": false,
+    "exactDllRepair": true,
+    "offlineSelfContainedStart": true,
+    "smartAppControlVerified": false,
+    "projectAssociationRegistered": true,
+    "versionTransitionPreservedDataAndPriorBinary": true
+  }
+}
