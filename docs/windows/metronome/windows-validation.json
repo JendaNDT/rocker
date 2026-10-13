@@ -226,5 +226,43 @@
     "durationPerFrameMs": 75,
     "labelledSyntheticClockSnapshots": true,
     "liveAudioPlayback": false
+  },
+  "publication": {
+    "result": "passed",
+    "runId": 38420819603,
+    "url": "https://github.com/JendaNDT/rocker/releases/tag/windows-0.2.0-rc6-20261013",
+    "assets": [
+      {
+        "name": "candidate-validation.json",
+        "size": 2419,
+        "digest": "sha256:d37b5bcb2b6de37b100391265b6faa6815fea565016f9824d82e23ea55aa9157",
+        "url": "https://github.com/JendaNDT/rocker/releases/download/windows-0.2.0-rc6-20261013/candidate-validation.json"
+      },
+      {
+        "name": "Rocker-Windows-Setup-0.2.0-x64.exe",
+        "size": 70309190,
+        "digest": "sha256:a006a1e698baedfe85e1abd8afcab3cb3f662dbef1c62319fa41f2b8a06699ad",
+        "url": "https://github.com/JendaNDT/rocker/releases/download/windows-0.2.0-rc6-20261013/Rocker-Windows-Setup-0.2.0-x64.exe"
+      },
+      {
+        "name": "Rocker-Windows-sources.zip",
+        "size": 136752530,
+        "digest": "sha256:ff712a9995f39b6319022914bd63bdf43834e7ce28a249661a6da2bbbd78a028",
+        "url": "https://github.com/JendaNDT/rocker/releases/download/windows-0.2.0-rc6-20261013/Rocker-Windows-sources.zip"
+      },
+      {
+        "name": "Rocker-Windows-x64.zip",
+        "size": 103839782,
+        "digest": "sha256:9c7a8d698ec993ca7a3d281c490404f8c3d679147a50811d24c45aa3bddd621d",
+        "url": "https://github.com/JendaNDT/rocker/releases/download/windows-0.2.0-rc6-20261013/Rocker-Windows-x64.zip"
+      },
+      {
+        "name": "SHA256SUMS.txt",
+        "size": 286,
+        "digest": "sha256:2d5a21632c658c1c571a2b229d8f9b67eb40102b41ba8a3fe90dd04c5b7f8023",
+        "url": "https://github.com/JendaNDT/rocker/releases/download/windows-0.2.0-rc6-20261013/SHA256SUMS.txt"
+      }
+    ],
+    "allFiveAssetsMatchVerifiedLocalBytes": true
   }
 }
