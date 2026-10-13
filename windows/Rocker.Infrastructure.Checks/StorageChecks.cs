@@ -69,7 +69,11 @@ internal static class StorageChecks
         }
         database = await DataRepository.OpenAsync(files);
         Check(UserData.Read<AppSettings>((await database.SnapshotAsync()).Documents.Single(x=>x.Kind=="settings").Value)==initial,"forced termination rolls back uncommitted SQLite write");
-        Check(!System.Text.Encoding.UTF8.GetString(await File.ReadAllBytesAsync(database.DatabasePath)).Contains("SECRET_CANARY_DO_NOT_STORE",StringComparison.Ordinal),"rejected structured secret absent from database");
+        // Windows may still have a SQLite/inspection handle after the crash check.
+        // Inspect the same bytes using read sharing compatible with SQLite.
+        await using(var raw=new FileStream(database.DatabasePath,FileMode.Open,FileAccess.Read,FileShare.ReadWrite))
+        using(var bytes=new MemoryStream())
+        {await raw.CopyToAsync(bytes);Check(!System.Text.Encoding.UTF8.GetString(bytes.ToArray()).Contains("SECRET_CANARY_DO_NOT_STORE",StringComparison.Ordinal),"rejected structured secret absent from database");}
         using var duplicate = new MemoryStream(source.ToArray());
         Check(await mediaStore.ImportAsync(duplicate,".wav")==media && await mediaStore.VerifyAsync(media),"immutable media deduplicates and verifies");
         using (var cancellation = new CancellationTokenSource())
