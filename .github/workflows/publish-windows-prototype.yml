@@ -35,7 +35,7 @@ jobs:
           jq -e --arg commit "$commit" '.object.type == "commit" and .object.sha == $commit' /tmp/release-ref.json
           gh api "repos/$GITHUB_REPOSITORY/actions/runs/$run_id" > /tmp/build-run.json
           jq -e --arg commit "$commit" '.conclusion == "success" and .head_sha == $commit and .path == ".github/workflows/windows-prototype.yml" and .head_branch == "windows-native-prototype"' /tmp/build-run.json
-          gh api "repos/$GITHUB_REPOSITORY" --jq '.private' | grep -qx true
+          gh api "repos/$GITHUB_REPOSITORY" --jq '.private' | grep -Ex 'true|false'
           gh run download "$run_id" --repo "$GITHUB_REPOSITORY" -n Rocker-Windows-downloads -D /tmp/rocker-downloads
           gh run download "$run_id" --repo "$GITHUB_REPOSITORY" -n Windows-build-reports -D /tmp/rocker-reports
           cd /tmp/rocker-downloads
@@ -109,7 +109,7 @@ jobs:
               assert 'gallery.html' in gallery.namelist() and 'gallery.js' in gallery.namelist() and 'gallery.css' in gallery.namelist()
           print('PASS: complete Windows candidate, 64 desktop captures, installer checks, binary hashes, ZIP integrity and seven corresponding source revisions.')
           PY
-      - name: Publish private repository prerelease
+      - name: Deliver privately (keep drafts in public repositories)
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -117,13 +117,16 @@ jobs:
           tag=$(jq -r '.tag' docs/windows/releases/current.json)
           commit=$(jq -r '.commit' docs/windows/releases/current.json)
           installer=$(jq -r ' .installer' /tmp/rocker-reports/candidate-validation.json)
+          is_private=$(gh api "repos/$GITHUB_REPOSITORY" --jq '.private')
+          release_flags=(--prerelease)
+          if [ "$is_private" != "true" ]; then release_flags+=(--draft); fi
           title=$(jq -r '.title' docs/windows/releases/current.json)
           if gh release view "$tag" --repo "$GITHUB_REPOSITORY" --json isDraft > /tmp/existing-release.json; then
             jq -e '.isDraft == true' /tmp/existing-release.json
             gh release upload "$tag" "/tmp/rocker-downloads/$installer" /tmp/rocker-downloads/Rocker-Windows-x64.zip /tmp/rocker-downloads/Rocker-Windows-sources.zip /tmp/rocker-downloads/Rocker-Windows-desktop-gallery.zip /tmp/rocker-downloads/SHA256SUMS.txt /tmp/rocker-reports/candidate-validation.json \
               --repo "$GITHUB_REPOSITORY"
-            gh release edit "$tag" --repo "$GITHUB_REPOSITORY" --draft=false
+            if [ "$is_private" = "true" ]; then gh release edit "$tag" --repo "$GITHUB_REPOSITORY" --draft=false; fi
           else
             gh release create "$tag" "/tmp/rocker-downloads/$installer" /tmp/rocker-downloads/Rocker-Windows-x64.zip /tmp/rocker-downloads/Rocker-Windows-sources.zip /tmp/rocker-downloads/Rocker-Windows-desktop-gallery.zip /tmp/rocker-downloads/SHA256SUMS.txt /tmp/rocker-reports/candidate-validation.json \
-              --repo "$GITHUB_REPOSITORY" --verify-tag --title "$title" --notes-file docs/windows/releases/notes.md --prerelease
+              --repo "$GITHUB_REPOSITORY" --verify-tag --title "$title" --notes-file docs/windows/releases/notes.md "${release_flags[@]}"
           fi
