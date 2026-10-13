@@ -16,7 +16,9 @@ This working log tracks implementation and evidence separately. The approved sco
 
 27 portable application/session contracts passed locally. The native recording contract includes independent inspection, unchanged host counters and decode cancellation. C# semantic checks use real API references and stubbed XAML fields; they do not substitute for the Windows compiler/runtime.
 
-The new Windows runtime suite exercises two project states, duplicate activation, actual score decoding and XAML-root transfer, tool singleton/hide/reopen, independent close and unchanged audio counters. Its first actual Windows run is pending.
+The new Windows runtime suite exercises two project states, duplicate activation, actual score decoding and XAML-root transfer, tool singleton/hide/reopen, independent close and unchanged audio counters. The first actual Windows build, 38447931873 at fd9ccef, compiled successfully and passed the pre-existing domain/storage/native and legacy UI checks. Its new desktop scenario failed because the single-bar fixture could not select bar 2; no claim of passing desktop acceptance is made for that run. The test now uses the multi-bar GP fixture and preserves the actual validated selection.
+
+Layout storage has seven additional passing portable checks: Unicode/canonical identities, negative monitor coordinates, hidden/attached tool state, canceled atomic replacement, duplicate tools, malformed/future layouts and recovery. Practice/exit ownership and owner-bound serialized dialogs are integrated. Full acceptance remains pending.
 
 ## Remaining integration
 

@@ -19,7 +19,7 @@ public sealed partial class MainWindow
     private readonly Dictionary<NavigationTarget, FrameworkElement> workspaceCache = [];
     private readonly Dictionary<string, LessonSession> lessonSessions = [];
     private readonly HashSet<string> completedLessons = [], visitedViews = [];
-    private readonly Dictionary<string, CloseGuard> closeGuards = [];
+    private Dictionary<string,Rocker.AppCore.PendingWork> closeGuards => services.Exit.Guards;
     private ContentCatalog? catalog => services.Catalog;
     private WindowPreferencesStore? windowStore;
     private WindowRectangle normalBounds = new(40,40,1280,940);
@@ -27,7 +27,7 @@ public sealed partial class MainWindow
     private string selectedTheme = "system";
     private int audioHostsCreated;
     private sealed record ListEntry(string Id, string Title, string Detail);
-    private sealed record CloseGuard(WorkState State, Func<Task<bool>> Save, Action Discard);
+
     private void InitializeShell()
     {
         foreach (var group in WorkspaceViews.All.GroupBy(view => view.Group))
@@ -160,7 +160,7 @@ public sealed partial class MainWindow
         if (target.ViewId == "09") return BuildSurgical(target.ItemId);
         if (target.ViewId == "15") return BuildStudio();
         if (target.ViewId == "16") return BuildLooper();
-        if (target.ViewId == "14") return BuildRecordings();
+        if (target.ViewId == "14") return desktopEnabled && target.ItemId is not null?BuildDesktopRecordingView():BuildRecordings();
         if (target.ViewId == "32") return BuildRecordingExport();
         if (target.ViewId == "07") return BuildSong();
         if (target.ViewId == "03") return BuildTuner();
@@ -183,14 +183,14 @@ public sealed partial class MainWindow
         if(closed)return;
         var content=new ScrollViewer{MaxHeight=480,Content=new TextBlock{Text=text,TextWrapping=TextWrapping.Wrap,IsTextSelectionEnabled=true}};
         var dialog=new ContentDialog{XamlRoot=DialogRoot,Title="Návod k používání",Content=content,CloseButtonText="Zavřít"};
-        try{await dialog.ShowAsync();}catch(InvalidOperationException){}
+        try{await ShowDialogAsync(dialog);}catch(InvalidOperationException){}
     }
     private async void About_Click(object sender, RoutedEventArgs args)
     {
         if (closingWindow) return;
         if(services.Operations.Snapshot().Any(op=>op.Kind=="profile-load")){ShowPersistenceError("Počkej na dokončení načítání místního profilu.");return;}
         var dialog = new ContentDialog { XamlRoot = DialogRoot, Title = "Rocker", Content = $"Nativní kytarový pomocník pro Windows · verze {typeof(App).Assembly.GetName().Version!.ToString(3)}.\nLekce, aparát, metronom, nahrávky, Looper, Studio a knihovna.\nLicence najdeš u aplikace; odpovídající zdroje lze stáhnout zvlášť u stejného vydání.", CloseButtonText = "Zavřít" };
-        try { await dialog.ShowAsync(); } catch (InvalidOperationException) { }
+        try { await ShowDialogAsync(dialog); } catch (InvalidOperationException) { }
     }
     // Each recording/project feature registers its actual state and actions.
     // No simulated recording or unsaved document is installed by the shell.
@@ -199,12 +199,13 @@ public sealed partial class MainWindow
         var session=documentContext.Current;string key=desktopEnabled && id=="studio"?session.Id+"/"+id:id;
         closeGuards[key]=new(state,async()=>{using var scope=documentContext.Enter(session);return await save();},()=>{using var scope=documentContext.Enter(session);discard();});
     }
-    private void RemoveCloseGuard(string id) => closeGuards.Remove(id);
+    private void RemoveCloseGuard(string id) => closeGuards.Remove(desktopEnabled && id=="studio"?documentContext.Current.Id+"/"+id:id);
     private async void Shell_Closing(AppWindow sender, AppWindowClosingEventArgs args)
     {
         if (closeApproved) return;
         args.Cancel = true;
         if (closingWindow) return;
+        if(DesktopHasCriticalOperation()){ShowPersistenceError("Počkej na dokončení probíhající operace.");return;}
         if (workspaceOperation || updateInstalling) { ShowPersistenceError("Počkej na dokončení sestavy nebo přípravy aktualizace."); return; }
         if (studioOperation || studioEditTask is{IsCompleted:false}) { ShowPersistenceError("Počkej na dokončení práce ve Studiu."); return; }
         if (looperOperation) { ShowPersistenceError("Počkej na dokončení práce s Looperem."); return; }
@@ -218,25 +219,23 @@ public sealed partial class MainWindow
         try
         {
             await powerStopTask;
-            foreach (var guard in closeGuards.Values.Where(guard => guard.State.RequiresConfirmation).ToArray())
+            if(!await services.Exit.ResolveAsync(async guard=>
             {
                 var dialog = new ContentDialog { XamlRoot = DialogRoot, Title = "Zavřít Rocker?", Content = guard.State.Prompt, PrimaryButtonText = "Uložit a zavřít", SecondaryButtonText = guard.State.Recording ? "" : "Zahodit", CloseButtonText = "Zrušit", DefaultButton = ContentDialogButton.Primary };
-                var choice = await dialog.ShowAsync();
-                if (choice == ContentDialogResult.None) return;
-                if (choice == ContentDialogResult.Primary && !await guard.Save()) return;
-                if (choice == ContentDialogResult.Secondary) guard.Discard();
-            }
+                return await ShowDialogAsync(dialog) switch {ContentDialogResult.Primary=>CloseChoice.Save,ContentDialogResult.Secondary=>CloseChoice.Discard,_=>CloseChoice.Cancel};
+            }))return;
             practiceSession.End();UpdateWakeLock();FlushPractice();
-            await CancelAiAsync();await recentSaveTask;
+            await StopDesktopSessionsAsync();await CancelAiAsync();await recentSaveTask;
             SendVideo(new{op="pause"});
             CancelPalm();await StopRhythmUiAsync();
             if (autosave is not null) await autosave.FlushAsync();
             TrackWindowBounds();
             try { await windowStore!.SaveAsync(new(1,normalBounds,AppWindow.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Maximized },selectedTheme)); }
             catch (Exception error) { WriteShellDiagnostic("window-state-error.json",new { error = error.Message }); }
+            await SaveDesktopLayoutAsync();
             ampApplyTimer.Stop();metroApplyTimer.Stop();timer.Stop();
             await services.DisposeAsync();
-            LaunchPendingInstaller();closeApproved = true; foreach(var host in desktopWindows.ToArray()){host.ExitApproved=true;host.Close();} Close();
+            LaunchPendingInstaller();closeApproved = true; DisposeDesktopViews(); Close();
         }
         catch (Exception error) { ShellNotice.IsOpen = true; ShellNotice.Severity = InfoBarSeverity.Error; ShellNotice.Message = "Okno nelze zavřít. " + error.Message; }
         finally { closingWindow = false;if(!closeApproved)pendingUpdateInstaller=null; }

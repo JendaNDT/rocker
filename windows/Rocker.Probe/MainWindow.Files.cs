@@ -40,7 +40,7 @@ public sealed partial class MainWindow
     {
         if(!persistenceReady || fileOperation || busy || studioOperation || studioEditTask is{IsCompleted:false} || captureDraft is not null || backupOperationRunning || profileOperation){ShowPersistenceError("Počkej na dokončení práce nebo zastav nahrávání před otevřením souboru.");return;}path=RecentFiles.ValidatePath(path);if(!File.Exists(path))throw new FileNotFoundException("Soubor není dostupný. Vyber jeho nové umístění.");fileOperation=true;fileCancellation=new();CancelFileMenu.IsEnabled=true;
         try{switch(RecentFiles.Kind(path)){
-            case WorkspaceFileKind.Audio:Navigate(new("07"));await OpenSongFileAsync(path,Path.GetFileNameWithoutExtension(path));break;
+            case WorkspaceFileKind.Audio:if(!desktopEnabled)Navigate(new("07"));await OpenSongFileAsync(path,Path.GetFileNameWithoutExtension(path));break;
             case WorkspaceFileKind.Score:if(desktopEnabled){var session=OpenDesktop(new("20"),DesktopDocumentKey.ForCanonicalFile("20",path));using var scope=documentContext.Enter(session);if(notationSourcePath!=path)await LoadScoreAsync(path);}else{Navigate(new("20"));await LoadScoreAsync(path);}break;
             case WorkspaceFileKind.Project:
                 if(closeGuards.TryGetValue("studio",out var guard) && guard.State.RequiresConfirmation && !await guard.Save())return;

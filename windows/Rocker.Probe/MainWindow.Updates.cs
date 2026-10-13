@@ -129,7 +129,7 @@ public sealed partial class MainWindow
         try
         {
             var dialog = new ContentDialog { PrimaryButtonStyle=(Style)Application.Current.Resources["VintageRootButtonStyle"],RequestedTheme = ShellRoot.RequestedTheme, XamlRoot = DialogRoot, Title = "Nainstalovat aktualizaci?", Content = candidate.Release.Title + "\nRocker uloží práci, zastaví zvuk a zavře se. Potom se otevře běžný instalátor; tvoje data zůstanou zachovaná.", PrimaryButtonText = "Uložit a nainstalovat", CloseButtonText = "Zrušit", DefaultButton = ContentDialogButton.Close };
-            if (await dialog.ShowAsync() != ContentDialogResult.Primary) return;
+            if (await ShowDialogAsync(dialog) != ContentDialogResult.Primary) return;
             updateInstalling = true; RefreshUpdateControls();
             await ReleaseUpdates.VerifyInstallerAsync(path, candidate.Release.Installer);
             updateInstalling = false; pendingUpdateInstaller = path; Close();

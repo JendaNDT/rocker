@@ -21,16 +21,16 @@ public sealed partial class MainWindow
         using(documentContext.Enter(a))Check(studioZoom==31,"first-project-zoom-preserved");
         using(documentContext.Enter(b))Check(studioZoom==79,"second-project-zoom-independent");
         Check(OpenDesktop(new("15","desktop-project-a"))==a,"duplicate-project-activation");
-        var file=System.IO.Path.Combine(AppContext.BaseDirectory,"fixtures","notation-scale.musicxml");
+        var file=System.IO.Path.Combine(AppContext.BaseDirectory,"fixtures","notation-phrases.gp");
         var score=OpenDesktop(new("20"),DesktopDocumentKey.ForCanonicalFile("20",System.IO.Path.GetFullPath(file)));
-        object image;UIElement view;
-        using(documentContext.Enter(score)){await LoadScoreAsync(file);Check(preview is not null && ScoreImage.Source is not null,"actual-score-decoded");NotationBar.Value=2;image=ScoreImage.Source;view=scoreDocumentView;}
+        object image;UIElement view;double selectedBar;
+        using(documentContext.Enter(score)){await LoadScoreAsync(file);Check(preview is not null && ScoreImage.Source is not null,"actual-score-decoded");NotationBar.Value=Math.Min(2,NotationBar.Maximum);selectedBar=NotationBar.Value;image=ScoreImage.Source;view=scoreDocumentView;}
         var tab=desktopDocuments[score];var rootBefore=((FrameworkElement)view).XamlRoot;
         DetachDesktopTab(tab);await Task.Delay(150);
         Check(floatingHosts.ContainsKey(tab) && floatingHosts[tab].Tabs.XamlRoot is not null,"actual-document-window");
-        using(documentContext.Enter(score)){Check(ReferenceEquals(image,ScoreImage.Source) && NotationBar.Value==2,"detach-preserves-score-and-selection");Check(!ReferenceEquals(rootBefore,scoreDocumentView.XamlRoot),"actual-xaml-root-transfer");}
+        using(documentContext.Enter(score)){Check(ReferenceEquals(image,ScoreImage.Source) && NotationBar.Value==selectedBar,"detach-preserves-score-and-selection");Check(!ReferenceEquals(rootBefore,scoreDocumentView.XamlRoot),"actual-xaml-root-transfer");}
         AttachDesktopTab(tab);await Task.Delay(100);
-        using(documentContext.Enter(score))Check(ReferenceEquals(image,ScoreImage.Source) && NotationBar.Value==2,"reattach-preserves-score-state");
+        using(documentContext.Enter(score))Check(ReferenceEquals(image,ScoreImage.Source) && NotationBar.Value==selectedBar,"reattach-preserves-score-state");
         var tuner=OpenDesktop(new("03"));var tunerTab=TabFor(tuner)!;DetachDesktopTab(tunerTab);await Task.Delay(100);
         Check(OpenDesktop(new("03"))==tuner && TabFor(tuner)==tunerTab,"tool-singleton");
         var tunerHost=floatingHosts[tunerTab];tunerHost.Close();await Task.Delay(100);

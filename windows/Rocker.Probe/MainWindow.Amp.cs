@@ -108,7 +108,7 @@ public sealed partial class MainWindow
         if(!persistenceReady || closingWindow)return;
         try{
             var name=new TextBox{Header="Název",MaxLength=120};var dialog=new ContentDialog{XamlRoot=DialogRoot,Title="Uložit preset",Content=name,PrimaryButtonText="Uložit",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Primary};
-            if(await dialog.ShowAsync()!=ContentDialogResult.Primary || string.IsNullOrWhiteSpace(name.Text))return;
+            if(await ShowDialogAsync(dialog)!=ContentDialogResult.Primary || string.IsNullOrWhiteSpace(name.Text))return;
             var preset=new AmpPreset("user-"+Guid.NewGuid().ToString("N"),name.Text.Trim(),ampSettings with{PresetId=null});userAmpPresets.Add(preset);ampSettings=ampSettings with{PresetId=preset.Id};
             autosave!.Queue(UserData.Document("amp-presets","default",userAmpPresets.ToArray()));QueueAmplifier();
         }catch(Exception error){ShowPersistenceError("Preset nelze uložit. "+error.Message);}
@@ -119,7 +119,7 @@ public sealed partial class MainWindow
         if(!persistenceReady || closingWindow)return;
         try{
             var dialog=new ContentDialog{XamlRoot=DialogRoot,Title="Odstranit preset?",Content=preset.Name,PrimaryButtonText="Odstranit",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Close};
-            if(await dialog.ShowAsync()!=ContentDialogResult.Primary)return;userAmpPresets.Remove(preset);ampSettings=ampSettings with{PresetId=null};autosave!.Queue(UserData.Document("amp-presets","default",userAmpPresets.ToArray()));QueueAmplifier();
+            if(await ShowDialogAsync(dialog)!=ContentDialogResult.Primary)return;userAmpPresets.Remove(preset);ampSettings=ampSettings with{PresetId=null};autosave!.Queue(UserData.Document("amp-presets","default",userAmpPresets.ToArray()));QueueAmplifier();
         }catch(Exception error){ShowPersistenceError("Preset nelze odstranit. "+error.Message);}
     }
 }

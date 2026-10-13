@@ -57,7 +57,7 @@ public sealed partial class MainWindow
         var save=new Button{Content="Uložit pojmenovaný úsek…"};save.Click+=async(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);try{await SaveSongSectionAsync();}catch(Exception error){ShowError(error);}};range.Children.Add(save);panel.Children.Add(Card(range));
         songSections=new ListView{Header="Uložené úseky",DisplayMemberPath="Label",IsItemClickEnabled=true,SelectionMode=ListViewSelectionMode.Single,ItemsSource=song?.Sections??[]};
         songSections.ItemClick+=async(_,e)=>{using var documentScope = documentContext.Enter(capturedDocument);if(e.ClickedItem is SongSection section){songA.Value=section.Start;songB.Value=section.End;try{await ApplySongLoopAsync();}catch(Exception error){ShowError(error);}}};panel.Children.Add(songSections);
-        var remove=new Button{Content="Odstranit vybraný úsek"};remove.Click+=async(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(song is null || songSections.SelectedItem is not SongSection selected)return;var dialog=new ContentDialog{XamlRoot=DialogRoot,Title="Odstranit úsek?",Content=selected.Label,PrimaryButtonText="Odstranit",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Close};if(await dialog.ShowAsync()==ContentDialogResult.Primary){song=song with{Sections=song.Sections!.Where(s=>s.Id!=selected.Id).ToArray()};SaveSong();songSections.ItemsSource=song.Sections;}};panel.Children.Add(remove);
+        var remove=new Button{Content="Odstranit vybraný úsek"};remove.Click+=async(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(song is null || songSections.SelectedItem is not SongSection selected)return;var dialog=new ContentDialog{XamlRoot=DialogRoot,Title="Odstranit úsek?",Content=selected.Label,PrimaryButtonText="Odstranit",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Close};if(await ShowDialogAsync(dialog)==ContentDialogResult.Primary){song=song with{Sections=song.Sections!.Where(s=>s.Id!=selected.Id).ToArray()};SaveSong();songSections.ItemsSource=song.Sections;}};panel.Children.Add(remove);
         songSpeed=SongNumber("Rychlost bez změny výšky",currentSpeed,.25,2,.05);songSpeed.ValueChanged+=async(_,e)=>{using var documentScope = documentContext.Enter(capturedDocument);if(songUpdating || busy || !double.IsFinite(e.NewValue))return;try{await ChangeSongSpeedAsync(e.NewValue);}catch(Exception error){ShowError(error);}};panel.Children.Add(songSpeed);
         var countIn=SongNumber("Předtakt (takty)",song?.CountInBars??0,0,2,1);var bpm=SongNumber("Tempo předtaktu (BPM)",song?.Bpm??100,40,240,1);var beats=SongNumber("Doby v taktu",song?.Beats??4,1,16,1);
         void SavePractice(){if(song is null || songUpdating || !double.IsFinite(countIn.Value) || !double.IsFinite(bpm.Value) || !double.IsFinite(beats.Value))return;song=song with{CountInBars=(uint)countIn.Value,Bpm=Math.Round(bpm.Value),Beats=(uint)beats.Value};SaveSong();}
@@ -73,7 +73,7 @@ public sealed partial class MainWindow
     private static NumberBox SongNumber(string label,double value,double minimum,double maximum,double step)=>new(){Header=label,Minimum=minimum,Maximum=maximum,Value=value,SmallChange=step,LargeChange=step*10,SpinButtonPlacementMode=NumberBoxSpinButtonPlacementMode.Compact};
     private async Task RelocateSongAsync(SongSession missing)
     {
-        var dialog=new ContentDialog{XamlRoot=DialogRoot,Title="Soubor skladby chybí",Content=missing.Name,PrimaryButtonText="Najít soubor…",CloseButtonText="Zrušit"};if(await dialog.ShowAsync()!=ContentDialogResult.Primary)return;
+        var dialog=new ContentDialog{XamlRoot=DialogRoot,Title="Soubor skladby chybí",Content=missing.Name,PrimaryButtonText="Najít soubor…",CloseButtonText="Zrušit"};if(await ShowDialogAsync(dialog)!=ContentDialogResult.Primary)return;
         var picker=new FileOpenPicker();WinRT.Interop.InitializeWithWindow.Initialize(picker,DialogWindowHandle);foreach(var ext in new[]{".wav",".mp3",".ogg",".opus",".webm",".m4a",".mp4"})picker.FileTypeFilter.Add(ext);var file=await picker.PickSingleFileAsync();if(file is not null)await OpenSongFileAsync(file.Path,missing.Name,missing);
     }
     private async Task WaitForSongAsync(double speed)
@@ -140,7 +140,7 @@ public sealed partial class MainWindow
     {
         if(song is null || songA is null || songB is null)return;await ApplySongLoopAsync();
         var name=new TextBox{Header="Název úseku",MaxLength=128};var dialog=new ContentDialog{XamlRoot=DialogRoot,Title="Uložit úsek",Content=name,PrimaryButtonText="Uložit",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Primary};
-        if(await dialog.ShowAsync()!=ContentDialogResult.Primary || string.IsNullOrWhiteSpace(name.Text))return;
+        if(await ShowDialogAsync(dialog)!=ContentDialogResult.Primary || string.IsNullOrWhiteSpace(name.Text))return;
         song=SongRules.Validate(song with{Sections=[..song.Sections??[],new SongSection(Guid.NewGuid().ToString("N"),name.Text.Trim(),songA.Value,songB.Value)]});SaveSong();if(songSections is not null)songSections.ItemsSource=song.Sections;
     }
     private void SaveSong(){if(song is null || !persistenceReady)return;song=SongRules.Validate(song);songs[song.Id]=song;autosave!.Queue(UserData.Document("song",song.Id,song));}

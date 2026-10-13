@@ -14,6 +14,13 @@ public sealed partial class MainWindow
         var session=OpenDesktop(new("07",relocated?.Id),key);
         using var scope=documentContext.Enter(session);
         if(song is not null && mediaPath==path)return;
+        if(session.Get<Task?>("song-loading",()=>null) is{ } pending){await pending;return;}
+        var loading=LoadDesktopSongCoreAsync(session,path,name,relocated);session.Set("song-loading",loading);
+        try{await loading;}finally{session.Set<Task?>("song-loading",null);}
+    }
+    private async Task LoadDesktopSongCoreAsync(DocumentSession session,string path,string name,SongSession? relocated)
+    {
+        using var scope=documentContext.Enter(session);
         using var operation=services.Operations.Begin(session.Id,"inspect-media","Čtení skladby a zvukové časové osy");
         try
         {

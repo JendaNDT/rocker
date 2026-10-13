@@ -28,7 +28,7 @@ public sealed partial class MainWindow
                 if(migration.Warnings.Count>0)details.Children.Add(Text(string.Join("\n",migration.Warnings.Take(10)),true));
                 var scroll=new ScrollViewer{Content=details,MaxHeight=420,VerticalScrollBarVisibility=ScrollBarVisibility.Auto};
                 var dialog=new ContentDialog{XamlRoot=DialogRoot,Title="Převést webová data?",Content=scroll,PrimaryButtonText="Převést",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Close};
-                if(await dialog.ShowAsync()!=ContentDialogResult.Primary)return;
+                if(await ShowDialogAsync(dialog)!=ContentDialogResult.Primary)return;
                 ShellInteractionRoot.IsEnabled=false;if(audio is not null)await audio.StopAsync();
                 var result=await service.CommitAsync(migration,choice.SelectedIndex==0?RestoreStrategy.MergeKeepCurrent:RestoreStrategy.ReplaceIncluded,key.IsChecked==true);
                 lessonSessions.Clear();completedLessons.Clear();savedLessonPositions.Clear();persistenceReady=false;await InitializePersistenceAsync();

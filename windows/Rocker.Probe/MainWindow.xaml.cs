@@ -42,7 +42,7 @@ public sealed partial class MainWindow : Window
             await InitializePersistenceAsync();
             if (closed) return;
             if (!closed && !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTICS_DIR"))) { await LoadScoreAsync(Path.Combine(AppContext.BaseDirectory, "fixtures", "notation-phrases.gp"));await VerifyShellAsync(); }
-            else { NotationStatus.Text="Otevři Guitar Pro nebo MusicXML. Noty fungují bez internetu."; InitializeDesktop(); if(appSettings.CheckUpdatesOnStartup)_ = CheckUpdatesAsync(true); }
+            else { NotationStatus.Text="Otevři Guitar Pro nebo MusicXML. Noty fungují bez internetu."; InitializeDesktop(); await RestoreDesktopLayoutAsync(); if(appSettings.CheckUpdatesOnStartup)_ = CheckUpdatesAsync(true); }
         };
         timer.Tick += (_, _) => RefreshState();
         try
@@ -202,7 +202,7 @@ public sealed partial class MainWindow : Window
             foreach (var extension in new[] { ".wav", ".mp3", ".ogg", ".opus", ".webm", ".m4a", ".mp4" }) picker.FileTypeFilter.Add(extension);
             var file = await picker.PickSingleFileAsync();
             if (file is null || closed || busy) return;
-            Navigate(new("07"));
+            if(!desktopEnabled)Navigate(new("07"));
             await OpenSongFileAsync(file.Path,file.Name);
         }
         catch (Exception error) { if (!closed) MediaStatus.Text = "Nahrávku nelze otevřít. " + error.Message; }

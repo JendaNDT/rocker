@@ -139,7 +139,7 @@ public sealed partial class MainWindow
             };
             dialog.Opened += (_, _) => query.Focus(FocusState.Programmatic);
             Refresh(); LabelNativeControls(panel);activeWorkspaceDialog=dialog;
-            if (await dialog.ShowAsync() == ContentDialogResult.Primary && list.SelectedItem is SearchEntry result) await OpenSearchEntryAsync(result);
+            if (await ShowDialogAsync(dialog) == ContentDialogResult.Primary && list.SelectedItem is SearchEntry result) await OpenSearchEntryAsync(result);
         }
         catch(OperationCanceledException){ShowPreparationCancelled();}
         catch (Exception error) { ShowPersistenceError("Položku nelze otevřít. " + error.Message); }
@@ -164,7 +164,7 @@ public sealed partial class MainWindow
             var name = new TextBox { Header = "Název sestavy", Text = TaskTitle(CurrentTarget), MaxLength = 120 };
             var panel = Stack(); panel.Children.Add(name); panel.Children.Add(Text("Uloží se tento pohled, ladění, nastavení aparátu a metronomu; u připravené skladby také rychlost, pozice a smyčka. Monitoring ani přehrávání se při otevření samy nezapnou.", true));
             var dialog = new ContentDialog { PrimaryButtonStyle=(Style)Application.Current.Resources["VintageRootButtonStyle"],RequestedTheme = ShellRoot.RequestedTheme, XamlRoot = DialogRoot, Title = "Uložit sestavu cvičení", Content = panel, PrimaryButtonText = "Uložit", CloseButtonText = "Zrušit", DefaultButton = ContentDialogButton.Primary };
-            if (await dialog.ShowAsync() != ContentDialogResult.Primary || string.IsNullOrWhiteSpace(name.Text)) return;
+            if (await ShowDialogAsync(dialog) != ContentDialogResult.Primary || string.IsNullOrWhiteSpace(name.Text)) return;
             var setup = CapturePracticeSetup(name.Text);
             await SavePracticeWorkspaceAsync(practiceWorkspace with { Setups = [.. practiceWorkspace.Setups, setup] });
             ShellNotice.Severity = InfoBarSeverity.Success; ShellNotice.Message = "Sestava je uložená: " + setup.Name; ShellNotice.IsOpen = true;
@@ -207,7 +207,7 @@ public sealed partial class MainWindow
                 catch (Exception) { status.Text = "Sestavu se nepodařilo odstranit."; }
             };
             Refresh(); LabelNativeControls(panel);activeWorkspaceDialog=dialog;
-            if (await dialog.ShowAsync() == ContentDialogResult.Primary && list.SelectedItem is PracticeSetup result) await ApplyPracticeSetupAsync(result);
+            if (await ShowDialogAsync(dialog) == ContentDialogResult.Primary && list.SelectedItem is PracticeSetup result) await ApplyPracticeSetupAsync(result);
         }
         catch(OperationCanceledException){ShowPreparationCancelled();}
         catch (Exception error) { ShowPersistenceError("Sestavu nelze otevřít. " + error.Message); }

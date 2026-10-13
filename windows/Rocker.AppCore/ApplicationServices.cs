@@ -15,6 +15,8 @@ public sealed class ApplicationServices : IAsyncDisposable
     public AudioSession Audio { get; }
     public DocumentRegistry Documents { get; } = new();
     public TransportCoordinator Transport { get; } = new();
+    public PracticeCoordinator Practice { get; }=new();
+    public ExitCoordinator Exit { get; }=new();
     public AppSettings Settings { get; set; } = new();
     public ContentCatalog? Catalog { get; private set; }
     public bool IsClosing { get; private set; }

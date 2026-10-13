@@ -97,9 +97,9 @@ public sealed record DesktopTransportOwnership(DesktopDocumentKey? Owner, bool C
 // Bounds are physical screen pixels; panel dimensions are DIPs. No HWND/UI types.
 public sealed record DesktopPixelBounds(int X, int Y, int Width, int Height);
 public sealed record DesktopWindowLayout(string Id, DesktopWindowRole Role, DesktopPixelBounds Bounds,
-    IReadOnlyList<DesktopDocumentKey> Documents, string? ToolViewId = null, bool Maximized = false, bool AlwaysOnTop = false);
+    IReadOnlyList<DesktopDocumentKey> Documents, string? ToolViewId = null, bool Maximized = false, bool AlwaysOnTop = false, bool Visible = true);
 public sealed record DesktopWorkspaceLayout(int SchemaVersion, IReadOnlyList<DesktopWindowLayout> Windows,
-    double LibraryWidthDip = 220, double InspectorWidthDip = 240, bool LibraryVisible = true, bool InspectorVisible = true)
+    double LibraryWidthDip = 220, double InspectorWidthDip = 240, bool LibraryVisible = true, bool InspectorVisible = true, IReadOnlyList<string>? AttachedTools = null)
 {
     public const int CurrentSchema = 1;
     public DesktopWorkspaceLayout Validate()
@@ -134,6 +134,8 @@ public sealed record DesktopWorkspaceLayout(int SchemaVersion, IReadOnlyList<Des
         if (windows.Count(w => w.Role == DesktopWindowRole.Workspace) != 1 ||
             windows.Count(w => w.Role == DesktopWindowRole.Live) > 1 || windows.Count(w => w.Role == DesktopWindowRole.Settings) > 1)
             throw new InvalidDataException("Hlavní, Live a nastavovací okno musí být jednoznačné.");
-        return this with { Windows = windows.AsReadOnly() };
+        foreach(var attached in AttachedTools??[])
+            if(!DesktopRoutes.ToolViews.Contains(attached) || !tools.Add(attached))throw new InvalidDataException("Připojený nástroj není jednoznačný.");
+        return this with { Windows = windows.AsReadOnly(), AttachedTools=Array.AsReadOnly((AttachedTools??[]).ToArray()) };
     }
 }

@@ -5,6 +5,7 @@ namespace Rocker.Probe.Desktop;
 
 public sealed class DesktopWindow : Window
 {
+    public string Id { get; } = "window-"+Guid.NewGuid().ToString("N");
     public Grid Root { get; } = new() { RowSpacing = 0 };
     public TabView Tabs { get; } = new() { IsAddTabButtonVisible = false, CanDragTabs = true, CanReorderTabs = true };
     public bool ExitApproved { get; set; }

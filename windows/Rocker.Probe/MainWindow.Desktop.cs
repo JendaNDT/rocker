@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Windowing;
 using Rocker.AppCore;
 using Rocker.Domain;
+using Rocker.Infrastructure;
 using Rocker.Probe.Desktop;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
@@ -30,6 +31,8 @@ public sealed partial class MainWindow
     private DocumentSession? draggingDocument;
     private TabViewItem? draggingTab;
     private sealed record LibraryEntry(string Title,NavigationTarget Target);
+    private DialogService? dialogService;
+    private Task<ContentDialogResult> ShowDialogAsync(ContentDialog dialog) => (dialogService??=new(services.Operations)).ShowAsync(dialog,new(HostWindow(documentContext.Current),HostRoot(documentContext.Current),documentContext.Current));
     private XamlRoot DialogRoot => desktopEnabled ? HostRoot(documentContext.Current).XamlRoot ?? ShellRoot.XamlRoot : ShellRoot.XamlRoot;
     private nint DialogWindowHandle => WinRT.Interop.WindowNative.GetWindowHandle(desktopEnabled ? HostWindow(documentContext.Current) : this);
     private Window HostWindow(DocumentSession session)
@@ -110,6 +113,7 @@ public sealed partial class MainWindow
             else{toolTabs.TabItems.Add(tab);DetachDesktopTab(tab);}
             ActivateDesktopTab(tab);return session;
         }
+        if(key is null && target.ViewId=="07" && target.ItemId is{ } songId && songs.TryGetValue(songId,out var savedSong))key=DesktopDocumentKey.ForCanonicalFile("07",RecentFiles.ValidatePath(savedSong.SourcePath));
         key??=DesktopDocumentKey.ForObject(target.ViewId,target.ItemId??"default");var document=services.Documents.Open(key,target);
         if(!desktopDocuments.TryGetValue(document,out var item))
         {
@@ -117,6 +121,8 @@ public sealed partial class MainWindow
             ApplyNavigationTask(target);FrameworkElement page=target.ViewId switch{"20"=>scoreDocumentView,"08"=>videoDocumentView,_=>BuildWorkspace(target)};
             item=CreateDesktopTab(document,page,true);desktopDocuments.Add(document,item);documentTabs.TabItems.Add(item);
             if(target.ViewId=="08")_=EnsureVideoAsync();
+            if(target.ViewId=="15" && target.ItemId is{ } projectId)_=LoadDesktopProjectAsync(document,projectId);
+            if(target.ViewId=="07" && key.Scope==DocumentIdentityScope.CanonicalFile)_=OpenDesktopSongAsync(key.ResourceId,songs.Values.FirstOrDefault(s=>string.Equals(s.SourcePath,key.ResourceId,StringComparison.OrdinalIgnoreCase))?.Name??Path.GetFileNameWithoutExtension(key.ResourceId),null);
         }
         ActivateDesktopTab(item);return document;
     }
@@ -175,21 +181,23 @@ public sealed partial class MainWindow
         if(!desktopDocuments.ContainsKey(session)){if(floatingHosts.TryGetValue(item,out var tool))tool.AppWindow.Hide();else toolTabs.TabItems.Remove(item);return;}
         if(services.Operations.Snapshot().Any(o=>o.Owner==session.Id)){ShowPersistenceError("Počkej na dokončení operace dokumentu nebo ji zruš.");return;}
         using var scope=documentContext.Enter(session);
+        if(studioCaptureSession==session && captureDraft is not null){ShowPersistenceError("Nejdřív zastav a ulož stopu nahrávanou do tohoto projektu.");return;}
         if(studioEditTask is{IsCompleted:false})await studioEditTask;
-        if(aiBusy)await CancelAiAsync();
+        if(aiBusy){var dialog=new ContentDialog{XamlRoot=DialogRoot,Title="Dotaz AI ještě běží",Content="Zavření dokumentu zruší probíhající dotaz.",PrimaryButtonText="Zrušit dotaz a zavřít",CloseButtonText="Zůstat"};if(await ShowDialogAsync(dialog)!=ContentDialogResult.Primary)return;await CancelAiAsync();}
+        if(!await services.Exit.ResolveAsync(async guard=>
+        {
+            var dialog=new ContentDialog{XamlRoot=DialogRoot,Title="Zavřít dokument?",Content=guard.State.Prompt,PrimaryButtonText="Uložit",SecondaryButtonText=guard.State.Recording?"":"Zahodit",CloseButtonText="Zrušit"};
+            return await ShowDialogAsync(dialog) switch{ContentDialogResult.Primary=>CloseChoice.Save,ContentDialogResult.Secondary=>CloseChoice.Discard,_=>CloseChoice.Cancel};
+        },session.Id))return;
         if(services.Transport.Owner==session){if(captureDraft is not null){ShowPersistenceError("Nejdřív zastav a ulož nahrávání.");return;}if(audio is not null)await audio.PauseAsync();services.Transport.Release(session);}
         if(session.Target.ViewId=="08"){SendVideo(new{op="stop"});VideoView.Close();}
-        foreach(var guard in closeGuards.Where(p=>p.Key.StartsWith(session.Id+"/",StringComparison.Ordinal)).ToArray())
-        {
-            if(!guard.Value.State.RequiresConfirmation)continue;var dialog=new ContentDialog{XamlRoot=DialogRoot,Title="Zavřít dokument?",Content=guard.Value.State.Prompt,PrimaryButtonText="Uložit",SecondaryButtonText="Zahodit",CloseButtonText="Zrušit"};var choice=await dialog.ShowAsync();if(choice==ContentDialogResult.None)return;if(choice==ContentDialogResult.Primary && !await guard.Value.Save())return;closeGuards.Remove(guard.Key);
-        }
         RemoveDesktopTabParent(item);desktopDocuments.Remove(session);services.Documents.Close(session);services.Transport.Release(session);
         if(floatingHosts.Remove(item,out var host)){host.ExitApproved=true;host.Close();desktopWindows.Remove(host);}
         documentContext.Select(documentTabs.SelectedItem is TabViewItem{Tag:DocumentSession selected}?selected:documentContext.Default);RefreshDesktopInspector(documentContext.Active);
     }
     private async Task ShowDesktopDialogAsync(NavigationTarget target)
     {
-        try{var dialog=new ContentDialog{XamlRoot=DialogRoot,Title=WorkspaceViews.Get(target.ViewId).Title,Content=new ScrollViewer{Content=BuildWorkspace(target),MaxHeight=520},CloseButtonText="Zavřít"};await dialog.ShowAsync();}catch(InvalidOperationException){ShowPersistenceError("Dokonči nejdřív otevřený dialog.");}
+        try{var dialog=new ContentDialog{XamlRoot=DialogRoot,Title=WorkspaceViews.Get(target.ViewId).Title,Content=new ScrollViewer{Content=BuildWorkspace(target),MaxHeight=520},CloseButtonText="Zavřít"};await ShowDialogAsync(dialog);}catch(InvalidOperationException){ShowPersistenceError("Dokonči nejdřív otevřený dialog.");}
     }
     private void RefreshDesktopInspector(DocumentSession session)
     {

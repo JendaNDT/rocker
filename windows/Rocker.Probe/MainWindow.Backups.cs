@@ -43,7 +43,7 @@ public sealed partial class MainWindow
                 var details=Stack();details.Children.Add(Text($"{preview.Documents} záznamů · {preview.Recordings} nahrávek · {preview.Projects} projektů\n{preview.Bytes/1024d/1024:F1} MB · {preview.Conflicts} konfliktů"));
                 details.Children.Add(Text("Nahradí se jen typy zahrnuté v této záloze. Vratná kopie zachová původní databázi a soubory. AI klíč zůstává ve Windows.",true));details.Children.Add(choice);
                 var dialog=new ContentDialog {XamlRoot=DialogRoot,Title="Obnovit zálohu?",Content=details,PrimaryButtonText="Obnovit",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Close};
-                if(await dialog.ShowAsync()!=ContentDialogResult.Primary)return;
+                if(await ShowDialogAsync(dialog)!=ContentDialogResult.Primary)return;
                 ShellInteractionRoot.IsEnabled=false;if(audio is not null)await audio.StopAsync();
                 var result=await service.RestoreAsync(file.Path,preview,choice.SelectedIndex==0 ? RestoreStrategy.MergeKeepCurrent:RestoreStrategy.ReplaceIncluded);
                 lessonSessions.Clear();completedLessons.Clear();savedLessonPositions.Clear();persistenceReady=false;
@@ -57,7 +57,7 @@ public sealed partial class MainWindow
         {
             if(powerTransition || fileOperation || busy || deviceOperationRunning || database is null || profileOperation || backupOperationRunning || studioOperation || studioEditTask is{IsCompleted:false} || looperOperation || exportOperation)return;
             var dialog=new ContentDialog {XamlRoot=DialogRoot,Title="Vrátit poslední obnovu?",Content="Aktuální data se odloží a obnoví se stav před posledním importem zálohy.",PrimaryButtonText="Vrátit obnovu",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Close};
-            if(await dialog.ShowAsync()!=ContentDialogResult.Primary)return;
+            if(await ShowDialogAsync(dialog)!=ContentDialogResult.Primary)return;
             backupOperationRunning=true;ShellInteractionRoot.IsEnabled=false;
             try
             {

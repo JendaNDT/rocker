@@ -25,7 +25,7 @@ public sealed partial class MainWindow
             if(audio is not null){audio.SetMonitoring(false,liveGain);audio.CancelMediaPreparation();}
             if(liveMonitor is not null){liveUpdating=true;liveMonitor.IsChecked=false;liveUpdating=false;}
             metroEnabled=false;++metroRevision;metroApplyTimer.Stop();
-            await CancelAiAsync();await StopRhythmUiAsync();
+            await StopDesktopSessionsAsync();await CancelAiAsync();await StopRhythmUiAsync();
             if(audio is not null){await audio.StopAsync();await StopCaptureAsync();await ApplyMetronomeAsync();}
             if(autosave is not null)await autosave.FlushAsync();
             if(!closed){RefreshState();ShellNotice.IsOpen=true;ShellNotice.Message="Po uspání je zvuk zastavený a monitoring vypnutý. Spusť jej znovu až podle potřeby.";}

@@ -7,8 +7,12 @@ using Rocker.Interop;
 namespace Rocker.Probe;
 public sealed partial class MainWindow
 {
-    private readonly PracticeSession practiceSession=new();
-    private ulong practiceAudioFrame;private uint practiceAudioEpoch;private double practiceLastFlush,practicePreviewUntil,practiceLastUiInteraction=double.NegativeInfinity;
+    private PracticeSession practiceSession=>services.Practice.Session;
+    private ulong practiceAudioFrame { get=>services.Practice.AudioFrame; set=>services.Practice.AudioFrame=value; }
+    private uint practiceAudioEpoch { get=>services.Practice.AudioEpoch; set=>services.Practice.AudioEpoch=value; }
+    private double practiceLastFlush { get=>services.Practice.LastFlush; set=>services.Practice.LastFlush=value; }
+    private double practicePreviewUntil { get=>services.Practice.PreviewUntil; set=>services.Practice.PreviewUntil=value; }
+    private double practiceLastUiInteraction { get=>services.Practice.LastInteraction; set=>services.Practice.LastInteraction=value; }
     private static readonly HashSet<string> PracticeViews=["02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","17","18","19","20","21","22"];
     private static double MonotonicMs=>System.Diagnostics.Stopwatch.GetTimestamp()*1000.0/System.Diagnostics.Stopwatch.Frequency;
     private void InitializePracticeTracking()
