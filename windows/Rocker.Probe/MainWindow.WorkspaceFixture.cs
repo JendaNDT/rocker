@@ -9,6 +9,8 @@ public sealed partial class MainWindow
     // and never presented as a real guitar take: two seconds of authored tones.
     private async Task<RecordingData> CreateWorkspaceWaveformFixtureAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         const int rate=48000, frames=rate*2;
         var draft=await recordingLibrary!.BeginAsync("Ukázka průběhu · syntetické tóny",rate,1,0);
         byte[] wave=new byte[44+frames*3];"RIFF"u8.CopyTo(wave);"WAVEfmt "u8.CopyTo(wave.AsSpan(8));"data"u8.CopyTo(wave.AsSpan(36));

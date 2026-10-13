@@ -21,14 +21,15 @@ public sealed partial class MainWindow
             WinRT.Interop.InitializeWithWindow.Initialize(picker,DialogWindowHandle);
             var file=await picker.PickSaveFileAsync();if(file is null || closed)return;
             backupOperationRunning=true;export.IsEnabled=restore.IsEnabled=false;
+            using var profileLease=services.Operations.Begin("application","backup","Záloha nebo obnova profilu",cancellable:false);
             try
             {
-                practiceSession.Pause();FlushPractice();await CancelAiAsync();CancelPalm();await StopRhythmUiAsync();if(!await StopCaptureAsync())return;await autosave!.FlushAsync();
+                SetDesktopInteraction(false);await FlushDesktopWorkAsync();practiceSession.Pause();FlushPractice();await CancelAiAsync();CancelPalm();await StopRhythmUiAsync();if(!await StopCaptureAsync())return;await autosave!.FlushAsync();
                 await new BackupService(userFiles,database).ExportAsync(file.Path,recordings.IsChecked==true,projects.IsChecked==true);
                 status.Text="Záloha je uložená: "+file.Path;
             }
             catch(Exception){status.Text="Zálohu se nepodařilo vytvořit. Zkontroluj volné místo, přístup k souboru a dostupnost všech médií.";}
-            finally{backupOperationRunning=false;if(!closed)export.IsEnabled=restore.IsEnabled=true;}
+            finally{backupOperationRunning=false;SetDesktopInteraction(true);if(!closed)export.IsEnabled=restore.IsEnabled=true;}
         };
         restore.Click+=async (_,_)=>
         {
@@ -36,9 +37,10 @@ public sealed partial class MainWindow
             var picker=new FileOpenPicker();picker.FileTypeFilter.Add(".rockerbackup");WinRT.Interop.InitializeWithWindow.Initialize(picker,DialogWindowHandle);
             var file=await picker.PickSingleFileAsync();if(file is null || closed)return;
             backupOperationRunning=true;export.IsEnabled=restore.IsEnabled=false;
+            using var profileLease=services.Operations.Begin("application","backup","Záloha nebo obnova profilu",cancellable:false);
             try
             {
-                practiceSession.Pause();FlushPractice();await CancelAiAsync();CancelPalm();await StopRhythmUiAsync();if(!await StopCaptureAsync())return;await autosave!.FlushAsync();var service=new BackupService(userFiles,database);var preview=await service.PreviewAsync(file.Path);
+                SetDesktopInteraction(false);await FlushDesktopWorkAsync();practiceSession.Pause();FlushPractice();await CancelAiAsync();CancelPalm();await StopRhythmUiAsync();if(!await StopCaptureAsync())return;await autosave!.FlushAsync();var service=new BackupService(userFiles,database);var preview=await service.PreviewAsync(file.Path);
                 var choice=new ComboBox {Header="Řešení konfliktů",ItemsSource=new[]{"Sloučit · existující položky zachovat","Nahradit zahrnutá data ze zálohy"},SelectedIndex=0,HorizontalAlignment=HorizontalAlignment.Stretch};
                 var details=Stack();details.Children.Add(Text($"{preview.Documents} záznamů · {preview.Recordings} nahrávek · {preview.Projects} projektů\n{preview.Bytes/1024d/1024:F1} MB · {preview.Conflicts} konfliktů"));
                 details.Children.Add(Text("Nahradí se jen typy zahrnuté v této záloze. Vratná kopie zachová původní databázi a soubory. AI klíč zůstává ve Windows.",true));details.Children.Add(choice);
@@ -46,12 +48,12 @@ public sealed partial class MainWindow
                 if(await ShowDialogAsync(dialog)!=ContentDialogResult.Primary)return;
                 ShellInteractionRoot.IsEnabled=false;if(audio is not null)await audio.StopAsync();
                 var result=await service.RestoreAsync(file.Path,preview,choice.SelectedIndex==0 ? RestoreStrategy.MergeKeepCurrent:RestoreStrategy.ReplaceIncluded);
-                lessonSessions.Clear();completedLessons.Clear();savedLessonPositions.Clear();persistenceReady=false;
-                await InitializePersistenceAsync();
+                await ResetDesktopDocumentsAfterRestoreAsync();lessonSessions.Clear();completedLessons.Clear();savedLessonPositions.Clear();persistenceReady=false;
+                using(var scope=documentContext.Enter(documentContext.Default))await InitializePersistenceAsync();ReopenDesktopAfterRestore();
                 ShellNotice.IsOpen=true;ShellNotice.Severity=InfoBarSeverity.Success;ShellNotice.Title="Záloha obnovena";ShellNotice.Message=$"Převzato {result.Imported}, zachováno {result.KeptCurrent}. Vratná kopie: {result.RollbackDirectory}";
             }
             catch(Exception){status.Text="Záloha se neobnovila. Soubor může být poškozený, z novější verze nebo chybí místo. Původní data zůstávají zachovaná; případnou přerušenou obnovu Rocker vrátí při příštím spuštění.";}
-            finally{backupOperationRunning=false;if(!closed){ShellInteractionRoot.IsEnabled=true;export.IsEnabled=restore.IsEnabled=true;}}
+            finally{backupOperationRunning=false;SetDesktopInteraction(true);if(!closed){ShellInteractionRoot.IsEnabled=true;export.IsEnabled=restore.IsEnabled=true;}}
         };
         undo.Click+=async (_,_)=>
         {
@@ -59,14 +61,15 @@ public sealed partial class MainWindow
             var dialog=new ContentDialog {XamlRoot=DialogRoot,Title="Vrátit poslední obnovu?",Content="Aktuální data se odloží a obnoví se stav před posledním importem zálohy.",PrimaryButtonText="Vrátit obnovu",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Close};
             if(await ShowDialogAsync(dialog)!=ContentDialogResult.Primary)return;
             backupOperationRunning=true;ShellInteractionRoot.IsEnabled=false;
+            using var profileLease=services.Operations.Begin("application","backup","Vrácení obnovy profilu",cancellable:false);
             try
             {
-                practiceSession.Pause();FlushPractice();await CancelAiAsync();CancelPalm();await StopRhythmUiAsync();if(!await StopCaptureAsync())return;await autosave!.FlushAsync();if(audio is not null)await audio.StopAsync();await new BackupService(userFiles,database).UndoLastRestoreAsync();
-                lessonSessions.Clear();completedLessons.Clear();savedLessonPositions.Clear();persistenceReady=false;await InitializePersistenceAsync();
+                SetDesktopInteraction(false);await FlushDesktopWorkAsync();practiceSession.Pause();FlushPractice();await CancelAiAsync();CancelPalm();await StopRhythmUiAsync();if(!await StopCaptureAsync())return;await autosave!.FlushAsync();if(audio is not null)await audio.StopAsync();await new BackupService(userFiles,database).UndoLastRestoreAsync();
+                await ResetDesktopDocumentsAfterRestoreAsync();lessonSessions.Clear();completedLessons.Clear();savedLessonPositions.Clear();persistenceReady=false;using(var scope=documentContext.Enter(documentContext.Default))await InitializePersistenceAsync();ReopenDesktopAfterRestore();
                 ShellNotice.IsOpen=true;ShellNotice.Severity=InfoBarSeverity.Success;ShellNotice.Title="Obnova vrácena";ShellNotice.Message="Předchozí stav dat je obnovený.";
             }
             catch(Exception){status.Text="Vratnou kopii se nepodařilo použít. Původní soubory kopie zůstávají zachované.";}
-            finally{backupOperationRunning=false;if(!closed)ShellInteractionRoot.IsEnabled=true;}
+            finally{backupOperationRunning=false;SetDesktopInteraction(true);if(!closed)ShellInteractionRoot.IsEnabled=true;}
         };
         panel.Children.Add(BuildLegacyImport());
         panel.Children.Add(recordings);panel.Children.Add(projects);panel.Children.Add(export);panel.Children.Add(restore);panel.Children.Add(undo);panel.Children.Add(status);

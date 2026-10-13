@@ -19,7 +19,9 @@ public sealed partial class MainWindow
     private SavedVideoLoop? pendingVideoLoop { get => documentContext.Current.Get<SavedVideoLoop?>("pendingVideoLoop", () => default); set => documentContext.Current.Set("pendingVideoLoop",value); }
     private SavedVideoLoop? deletedVideoLoop { get => documentContext.Current.Get<SavedVideoLoop?>("deletedVideoLoop", () => default); set => documentContext.Current.Set("deletedVideoLoop",value); }
     private async Task InitializeVideoAsync()
-    {var capturedDocument = documentContext.Current;
+    {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+var capturedDocument = documentContext.Current;
         try
         {
             var profile = userFiles.DirectoryFor("WebView2");
@@ -125,7 +127,7 @@ public sealed partial class MainWindow
     {
         var values=JsonSerializer.SerializeToElement(command).EnumerateObject().ToDictionary(p=>p.Name,p=>(object?)p.Value);values["token"]=videoPractice.Token;return values;
     }
-    private void VideoPlay_Click(object sender, RoutedEventArgs e) { if (videoReady) SendVideo(new { op = "play" }); }
+    private async void VideoPlay_Click(object sender, RoutedEventArgs e) {using var scope=documentContext.Enter(documentContext.Current);if(desktopEnabled)await ClaimDesktopVideoAsync();else if(videoReady)SendVideo(new {op="play"});}
     private void VideoPause_Click(object sender, RoutedEventArgs e) { if (videoReady) SendVideo(new { op = "pause" }); }
     private void VideoStop_Click(object sender, RoutedEventArgs e) { if (videoReady) SendVideo(new { op = "stop" }); }
     private void VideoRate_Changed(object sender, SelectionChangedEventArgs e)
@@ -134,6 +136,8 @@ public sealed partial class MainWindow
     }
     private async void VideoExternal_Click(object sender, RoutedEventArgs e)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         var id = VideoProtocol.ExtractId(VideoUrl.Text);
         if (id is null) { VideoStatus.Text = "Nejdřív vlož platný odkaz na video."; return; }
         try { await Windows.System.Launcher.LaunchUriAsync(new Uri("https://www.youtube.com/watch?v=" + id)); }

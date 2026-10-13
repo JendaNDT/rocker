@@ -9,6 +9,8 @@ public sealed partial class MainWindow
     private DocumentSession? studioCaptureSession;
     private async Task StopDesktopSessionsAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(!desktopEnabled)return;
         foreach(var operation in services.Operations.Snapshot().Where(o=>o.CanCancel))services.Operations.Cancel(operation.Id);
         foreach(var session in services.Documents.All)

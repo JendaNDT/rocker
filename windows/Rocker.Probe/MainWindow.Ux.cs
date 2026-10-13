@@ -50,6 +50,8 @@ public sealed partial class MainWindow
     }
     private async void ToggleMedia_Click(object sender, RoutedEventArgs args)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if (audio is null || busy || powerTransition || deviceOperationRunning || closingWindow || deviceSelectionUnavailable) return;
         try
         {
@@ -62,6 +64,8 @@ public sealed partial class MainWindow
     }
     private async Task VerifyWorkspaceUxAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if (audio is null) throw new InvalidOperationException("UX check requires the native host.");
         var previous = CurrentTarget;
         // Use the same desktop size as design captures before checking the scale.

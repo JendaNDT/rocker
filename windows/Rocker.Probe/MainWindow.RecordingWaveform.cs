@@ -24,23 +24,23 @@ public sealed partial class MainWindow
         recordingWaveformStatus = Text("Vyber nahrávku a použij Zobrazit průběh nebo Přehrát. Přetažením ve zvukové vlně vybereš úsek; kliknutím změníš pozici.", true); panel.Children.Add(recordingWaveformStatus);
         recordingWaveform = new Canvas { Height = 160, HorizontalAlignment = HorizontalAlignment.Stretch, Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent) };
         Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(recordingWaveform, "Průběh nahrávky; úsek lze vybrat také políčky A a B a pozici posuvníkem přehrávače.");
-        recordingWaveform.SizeChanged += (_, _) => {using var documentScope = documentContext.Enter(capturedDocument);DrawRecordingWaveform();};
-        recordingWaveform.ActualThemeChanged += (_, _) => {using var documentScope = documentContext.Enter(capturedDocument);DrawRecordingWaveform();};
+        recordingWaveform.SizeChanged += (_, _) => {using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;DrawRecordingWaveform();};
+        recordingWaveform.ActualThemeChanged += (_, _) => {using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;DrawRecordingWaveform();};
         recordingWaveform.PointerPressed += (_, args) =>
-        {using var documentScope = documentContext.Enter(capturedDocument);
+        {using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;
             if (!RecordingWaveformReady() || !args.GetCurrentPoint(recordingWaveform).Properties.IsLeftButtonPressed) return;
             recordingDragStart = args.GetCurrentPoint(recordingWaveform).Position.X;
             recordingWaveform.CapturePointer(args.Pointer); args.Handled = true;
         };
         recordingWaveform.PointerMoved += (_, args) =>
-        {using var documentScope = documentContext.Enter(capturedDocument);
+        {using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;
             if (recordingDragStart is not double start || !RecordingWaveformReady()) return;
             var finish = args.GetCurrentPoint(recordingWaveform).Position.X;
             if (Math.Abs(start - finish) < 4) return;
             SetRecordingRange(WaveformSeconds(Math.Min(start, finish)), WaveformSeconds(Math.Max(start, finish)));
         };
         recordingWaveform.PointerReleased += async (_, args) =>
-        {using var documentScope = documentContext.Enter(capturedDocument);
+        {using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;
             if (recordingDragStart is not double start) return;
             recordingDragStart = null; recordingWaveform.ReleasePointerCapture(args.Pointer); args.Handled = true;
             if (!RecordingWaveformReady()) return;
@@ -52,18 +52,18 @@ public sealed partial class MainWindow
             }
             catch (Exception) { ShowPersistenceError("Pozici nahrávky se nepodařilo změnit."); }
         };
-        recordingWaveform.PointerCaptureLost += (_, _) => {using var documentScope = documentContext.Enter(capturedDocument);recordingDragStart = null;};
+        recordingWaveform.PointerCaptureLost += (_, _) => {using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;recordingDragStart = null;};
         panel.Children.Add(recordingWaveform);
         recordingRangeA = new NumberBox { Header = "A · od (sekundy)", Minimum = 0, Maximum = 86400, Value = 0, SmallChange = .1, SpinButtonPlacementMode = NumberBoxSpinButtonPlacementMode.Inline, IsEnabled = false };
         recordingRangeB = new NumberBox { Header = "B · do (sekundy)", Minimum = 0, Maximum = 86400, Value = 0, SmallChange = .1, SpinButtonPlacementMode = NumberBoxSpinButtonPlacementMode.Inline, IsEnabled = false };
-        recordingRangeA.ValueChanged += (_, _) => {using var documentScope = documentContext.Enter(capturedDocument); if (!recordingRangeUpdating) DrawRecordingWaveform(); };
-        recordingRangeB.ValueChanged += (_, _) => {using var documentScope = documentContext.Enter(capturedDocument); if (!recordingRangeUpdating) DrawRecordingWaveform(); };
+        recordingRangeA.ValueChanged += (_, _) => {using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return; if (!recordingRangeUpdating) DrawRecordingWaveform(); };
+        recordingRangeB.ValueChanged += (_, _) => {using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return; if (!recordingRangeUpdating) DrawRecordingWaveform(); };
         panel.Children.Add(ResponsiveColumns(recordingRangeA, recordingRangeB));
         recordingWaveformActions.Clear();
         void Action(string label, Func<Task> action)
         {
             var button = new Button { Content = label, MinHeight = 40, IsEnabled = false };
-            button.Click += async (_, _) => {using var documentScope = documentContext.Enter(capturedDocument); try { if (RecordingWaveformReady()) await action(); } catch (Exception error) { ShowPersistenceError(error.Message); } };
+            button.Click += async (_, _) => {using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return; try { if (RecordingWaveformReady()) await action(); } catch (Exception error) { ShowPersistenceError(error.Message); } };
             recordingWaveformActions.Add(button); panel.Children.Add(button);
         }
         Action("Opakovat vybraný úsek A–B", async () =>
@@ -100,6 +100,8 @@ public sealed partial class MainWindow
     }
     private async Task<bool> PreviewRecordingAsync(RecordingData value)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(desktopEnabled)return await OpenDesktopRecordingAsync(value);
         if (audio is null || busy || workspaceOperation || captureDraft is not null || recordingOperation || fileOperation || closingWindow || backupOperationRunning || profileOperation || studioOperation || studioEditTask is{IsCompleted:false} || looperOperation || powerTransition || deviceOperationRunning)
             throw new InvalidOperationException("Nejdřív dokonči práci nebo zastav nahrávání.");

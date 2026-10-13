@@ -76,11 +76,15 @@ public sealed partial class MainWindow
     }
     private async void Updates_Click(object sender, RoutedEventArgs args)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         Navigate(new("28")); await Task.Yield();
         updateCheckButton?.StartBringIntoView(); updateCheckButton?.Focus(FocusState.Programmatic);
     }
     private async Task CheckUpdatesAsync(bool startup)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if (updateOperation || updateInstalling || closingWindow || closed || !persistenceReady) return;
         updateOperation = true; availableUpdate = null; downloadedUpdate = null;
         updateCancellation = new(TimeSpan.FromSeconds(90)); updateMessage = "Kontroluji ověřená Windows vydání na GitHubu…"; RefreshUpdateControls();
@@ -106,6 +110,8 @@ public sealed partial class MainWindow
     }
     private async Task DownloadUpdateAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if (availableUpdate is not { } candidate || updateOperation || closingWindow || closed) return;
         updateOperation = true; downloadedUpdate = null; updateCancellation = new(TimeSpan.FromMinutes(10)); updateMessage = "Stahuji instalátor…";
         if (updateProgress is not null) { updateProgress.IsIndeterminate = false; updateProgress.Value = 0; } RefreshUpdateControls();
@@ -123,6 +129,8 @@ public sealed partial class MainWindow
     }
     private async Task InstallUpdateAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if (downloadedUpdate is not { } path || availableUpdate is not { } candidate || updateOperation || updateInstalling || pendingUpdateInstaller is not null || closingWindow) return;
         if (busy || workspaceOperation || deviceOperationRunning || fileOperation || recordingOperation || studioOperation || studioEditTask is { IsCompleted: false } || looperOperation || exportOperation || backupOperationRunning || profileOperation || secretOperationRunning)
         { ShowPersistenceError("Nejdřív dokonči probíhající práci. Stažený instalátor zůstane připravený."); return; }

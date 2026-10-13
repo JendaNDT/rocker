@@ -21,6 +21,8 @@ public sealed partial class MainWindow
     {yield return root;for(int i=0;i<VisualTreeHelper.GetChildrenCount(root);++i)foreach(var child in Descendants(VisualTreeHelper.GetChild(root,i)))yield return child;}
     private async Task VerifyAllDesignViewsAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         string? directory=Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTICS_DIR");if(string.IsNullOrEmpty(directory))return;string previousTheme=selectedTheme;var screenshots=new List<string>();var captures=new List<object>();ShellNotice.IsOpen=false;PracticeRestNotice.IsOpen=false;ApplyTheme("dark");Directory.CreateDirectory(System.IO.Path.Combine(directory,"screens"));
         foreach(var view in Rocker.Domain.WorkspaceViews.All){Navigate(new(view.Id));await Task.Delay(350);string name="screens/view-"+view.Id+".png";await CaptureNativeViewAsync(name);screenshots.Add(name);captures.Add(new{file=name,clientWidthDip=ShellRoot.ActualWidth,clientHeightDip=ShellRoot.ActualHeight,windowWidthPixels=AppWindow.Size.Width,windowHeightPixels=AppWindow.Size.Height});}
         foreach(var (width,height) in new[]{(640,720),(1680,1000)}){AppWindow.Resize(new Windows.Graphics.SizeInt32(width,height));Navigate(new("02"));await Task.Delay(350);string name=$"screens/live-{width}.png";await CaptureNativeViewAsync(name);screenshots.Add(name);captures.Add(new{file=name,clientWidthDip=ShellRoot.ActualWidth,clientHeightDip=ShellRoot.ActualHeight,windowWidthPixels=AppWindow.Size.Width,windowHeightPixels=AppWindow.Size.Height});}

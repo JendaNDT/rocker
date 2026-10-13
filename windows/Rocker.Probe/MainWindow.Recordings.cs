@@ -22,6 +22,8 @@ public sealed partial class MainWindow
     private string recordingName="Moje kytara";
     private async Task InitializeRecordingsAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         var messages=await recordingLibrary!.RecoverAsync();
         recordingLabels.Clear();recordingStarts.Clear();recordingStops.Clear();recordingList=null;playingRecording=null;
         if(messages.Count>0){ShellNotice.IsOpen=true;ShellNotice.Severity=InfoBarSeverity.Warning;ShellNotice.Message=string.Join("\n",messages);}
@@ -60,17 +62,23 @@ public sealed partial class MainWindow
     }
     private async Task ReloadRecordingsAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(recordingLibrary is null || recordingList is null)return;
         try{var values=await recordingLibrary.ListAsync();if(closed || recordingList is null)return;recordingList.ItemsSource=values;if(playingRecording is not null){playingRecording=values.FirstOrDefault(r=>r.Id==playingRecording.Id);DrawRecordingWaveform();}var summary=string.Join("\n",values.Select(r=>$"{r.Name} · {FormatTime(r.DurationSec)}"+(r.Capture?.Partial==true?" · neúplná / obnovená":"")));Microsoft.UI.Xaml.Automation.AutomationProperties.SetHelpText(recordingList,summary);}
         catch(Exception error){if(!closed)ShowPersistenceError("Knihovnu nelze načíst. "+error.Message);}
     }
     private async Task<string?> AskRecordingNameAsync(string title,string current)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         var text=new TextBox{Text=current,MaxLength=256,Header="Název"};var dialog=new ContentDialog{XamlRoot=DialogRoot,Title=title,Content=text,PrimaryButtonText="Uložit",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Primary};
         return await ShowDialogAsync(dialog)==ContentDialogResult.Primary && !string.IsNullOrWhiteSpace(text.Text)?text.Text.Trim():null;
     }
     private async Task StartCaptureAsync(ulong projectTicket=0)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(recordingOperation || captureDraft is not null || audio is null || recordingLibrary is null || closingWindow || busy)return;
         if(deviceSelectionUnavailable || deviceOperationRunning || (recordingBus<2 && appSettings.AudioDevice is not{InputChannel:>=0})){ShowPersistenceError("Vyber konkrétní vstup kytary v nastavení zvuku.");return;}
         var selectedBus=recordingBus;var selectedCountIn=recordingCountIn;var selectedName=recordingName;
@@ -85,6 +93,8 @@ public sealed partial class MainWindow
     }
     private async Task<bool> StopCaptureAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(recordingOperation)return false;if(captureDraft is null)return true;if(audio is null || recordingLibrary is null)return false;
         recordingOperation=true;try
         {
@@ -109,11 +119,15 @@ public sealed partial class MainWindow
     }
     private async Task PlayRecordingAsync(RecordingData value)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(await PreviewRecordingAsync(value) && audio is not null && playingRecording?.Id==value.Id && RecordingWaveformReady())await audio.PlayAsync();
         else if(desktopEnabled && audio is not null && documentContext.Current.Target.ViewId=="14"){await ClaimDesktopSourceAsync(documentContext.Current);await audio.PlayAsync();}
     }
     private async Task EditRecordingMarkersAsync(RecordingData value)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         var panel=Stack();var markers=value.Markers.ToList();var list=new ListView{ItemsSource=markers,DisplayMemberPath="Label",SelectionMode=ListViewSelectionMode.Single};panel.Children.Add(list);
         var label=new TextBox{Header="Popisek značky",MaxLength=256};panel.Children.Add(label);var time=new NumberBox{Header="Čas (sekundy)",Minimum=0,Maximum=value.DurationSec,Value=playingRecording?.Id==value.Id && audio is not null?Math.Min(value.DurationSec,audio.GetTransport().PositionSeconds*currentSpeed):0,SpinButtonPlacementMode=NumberBoxSpinButtonPlacementMode.Inline};panel.Children.Add(time);
         var add=new Button{Content="Přidat značku"};add.Click+=(_,_)=>{if(string.IsNullOrWhiteSpace(label.Text)||!double.IsFinite(time.Value)||markers.Count>=1000)return;markers.Add(new(Guid.NewGuid().ToString("N"),Math.Clamp(time.Value,0,value.DurationSec),label.Text.Trim()));list.ItemsSource=markers.OrderBy(m=>m.TimeSec).ToArray();};panel.Children.Add(add);
@@ -123,6 +137,8 @@ public sealed partial class MainWindow
     }
     private async Task ExportRecordingAsync(RecordingData value)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(exportOperation)return;
         var options=Stack();options.Children.Add(Text(value.Capture is { } capture?new[]{"Suchá kytara","Kytara za aparátem","Výsledný mix"}[capture.Bus]:"Původní importovaná nahrávka"));
         var format=new ComboBox{Header="Formát",ItemsSource=new[]{"Původní soubor beze změny","WAV · PCM 24 bit"},SelectedIndex=0};options.Children.Add(format);
@@ -142,6 +158,8 @@ public sealed partial class MainWindow
     }
     private async Task VerifyRecordingsAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(recordingLibrary is null || database is null)throw new InvalidOperationException("Recording library did not initialize.");
         Navigate(new("14"));await ReloadRecordingsAsync();
         var draft=await recordingLibrary.BeginAsync("Kontrolní nahrávka",48000,1,0);

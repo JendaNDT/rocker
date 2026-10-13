@@ -23,3 +23,11 @@ Layout storage has seven additional passing portable checks: Unicode/canonical i
 ## Remaining integration
 
 Layout persistence, all document-specific source/command routes, operation/exit barriers, capture ownership, full layout compositions, accessibility and broad desktop acceptance still need implementation/validation. D05–D36 are not declared complete by this log.
+
+## Commands, compositions and cancellation
+
+The portable service suite now has 36 checks, including failed/canceled save, captured command ownership and actual adopted native media tickets. All 21 Linux native suites passed; the two relevant recording/transport suites passed again after the media-identity ABI addition. TypeScript and all 567 web tests passed, and lint passed.
+
+Windows run 38450045555 compiled and passed the older checks; the new tool reopen scenario exposed that `Window.Close()` forcibly destroys a WinUI window rather than simulating its title-bar close. The scenario now sends the real WM_CLOSE message and the registry also removes unexpectedly destroyed window hosts. No passing desktop runtime claim is attached to that failed run.
+
+Current integration adds captured async invocation scopes, owner-bound commands, menus/status in auxiliary windows, Studio undo/redo and a bounded timeline composition, fullscreen Live, adopted-source identity verification, and profile restoration barriers. Final desktop compositions/coverage, layout refinements, migration and installer handoff remain in progress.

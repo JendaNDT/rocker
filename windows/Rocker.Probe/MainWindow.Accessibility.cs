@@ -32,6 +32,8 @@ public sealed partial class MainWindow
     }
     private async Task VerifyAccessibilityAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         int controls=0;var missing=new List<string>();
         foreach(var view in Rocker.Domain.WorkspaceViews.All)
         {

@@ -20,10 +20,17 @@ public sealed class TransportCoordinator
                 throw new InvalidOperationException("Před změnou zdroje zastav a ulož nahrávání nebo looper.");
             cancellation.ThrowIfCancellationRequested();
             await prepare();
+            cancellation.ThrowIfCancellationRequested();
             if (!requested.IsAlive) return false;
             Owner = requested; ++Revision; return true;
         }
         finally { transition.Release(); }
+    }
+    public async Task UpdateOwnerAsync(DocumentSession requested,Func<Task> update)
+    {
+        await transition.WaitAsync();
+        try{if(Owner==requested && requested.IsAlive)await update();}
+        finally{transition.Release();}
     }
     public void SetGrader(DocumentSession? requested)
     {

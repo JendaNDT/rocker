@@ -13,6 +13,8 @@ public sealed partial class MainWindow
     private (double Start,double End)? notationLoop { get => documentContext.Current.Get<(double Start,double End)?>("notationLoop", () => default); set => documentContext.Current.Set("notationLoop",value); }private DateTime nextNotationFollowRender { get => documentContext.Current.Get<DateTime>("nextNotationFollowRender", () => default); set => documentContext.Current.Set("nextNotationFollowRender",value); }
     private async Task SetNotationImageAsync(ScorePreview result)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         using var stream=new InMemoryRandomAccessStream();using(var writer=new DataWriter(stream.GetOutputStreamAt(0))){writer.WriteBytes(result.Png);await writer.StoreAsync();await writer.FlushAsync();writer.DetachStream();}stream.Seek(0);var bitmap=new BitmapImage();await bitmap.SetSourceAsync(stream);if(closed)return;
         preview=result;ScoreImage.Source=bitmap;ScoreImage.Width=ScoreCanvas.Width=result.Width;ScoreImage.Height=ScoreCanvas.Height=result.Height;NotationPlayhead.Visibility=Visibility.Collapsed;SelectionBox.Visibility=Visibility.Collapsed;
     }
@@ -32,6 +34,8 @@ public sealed partial class MainWindow
     }
     private async Task ChangeNotationViewAsync(NotationOptions options,bool prepareAudio)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(busy || notationDocument is null || closed)return;SetBusy(true);var document=notationDocument;var previousOptions=notationOptions;
         try{var result=await Task.Run(()=>document.Render(options));if(closed)return;await SetNotationImageAsync(result);notationOptions=options;MarkNotationBar(double.IsFinite(NotationBar.Value)?(int)NotationBar.Value:options.FirstBar);NotationStatus.Text=$"{notationName} · {document.Tracks[options.Track].Name} · takty {options.FirstBar}–{Math.Min(document.BarCount,options.FirstBar+options.PageBars-1)} · {options.Scale:P0}";
             if(prepareAudio && audio is not null && (!desktopEnabled || services.Transport.Owner==documentContext.Current)){if(!await StopCaptureAsync())return;var old=audio.GetTransport();bool wasNotation=ReferenceEquals(mediaMidi,notationPlayingMidi) && mediaMidi is not null;double position=wasNotation?old.PositionSeconds*currentSpeed:0;await PrepareNotationAsync(result);await audio.SeekAsync(Math.Min(position/currentSpeed,audio.GetTransport().DurationSeconds));if(wasNotation && old.Playing!=0)await audio.PlayAsync();}
@@ -40,37 +44,57 @@ public sealed partial class MainWindow
     }
     private async Task PrepareNotationAsync(ScorePreview result)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(desktopEnabled && services.Transport.Owner!=documentContext.Current)await ClaimDesktopSourceAsync(documentContext.Current);
         else await PrepareNotationCoreAsync(result);
     }
     private async Task PrepareNotationCoreAsync(ScorePreview score)
     {
-        if(audio is null)return;songLoadCancelled=false;await StopRhythmUiAsync();await audio.PrepareMidiAsync(score.Midi,currentSpeed);await WaitForSongAsync(currentSpeed);if(closed)return;
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
+        if(audio is null)return;songLoadCancelled=false;await StopRhythmUiAsync();if(desktopEnabled){var ticket=await audio.PrepareMidiWithIdentityAsync(score.Midi,currentSpeed);await WaitForDesktopSourceAsync(ticket);}else{await audio.PrepareMidiAsync(score.Midi,currentSpeed);await WaitForSongAsync(currentSpeed);}if(closed)return;
         studioOwnsPlayback=false;studioTicket=0;mediaMidi=score.Midi;notationPlayingMidi=score.Midi;mediaPath=null;song=null;songPeaks=[];workspaceCache.Remove(new("07"));MediaTitle.Text="Noty · "+notationName;await audio.SetLoopAsync(0,0,false);if(notationLoop is { } loop)await audio.SetLoopAsync(loop.Start/currentSpeed,loop.End/currentSpeed,true);
     }
-    private async void NotationTrack_Changed(object sender,SelectionChangedEventArgs args){if(notationUpdating || NotationTrackBox.SelectedItem is not NotationTrack track)return;await ChangeNotationViewAsync(notationOptions with{Track=track.Index},!notationOptions.AllTracksAudio);}
-    private async void NotationAudio_Changed(object sender,RoutedEventArgs args){if(notationUpdating || notationDocument is null)return;await ChangeNotationViewAsync(notationOptions with{AllTracksAudio=NotationAllTracks.IsChecked==true},true);}
-    private async void NotationZoom_Changed(object sender,SelectionChangedEventArgs args){if(notationUpdating || notationDocument is null || NotationZoom.SelectedItem is not ComboBoxItem item)return;await ChangeNotationViewAsync(notationOptions with{Scale=double.Parse((string)item.Tag,System.Globalization.CultureInfo.InvariantCulture)},false);}
+    private async void NotationTrack_Changed(object sender,SelectionChangedEventArgs args){
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+if(notationUpdating || NotationTrackBox.SelectedItem is not NotationTrack track)return;await ChangeNotationViewAsync(notationOptions with{Track=track.Index},!notationOptions.AllTracksAudio);}
+    private async void NotationAudio_Changed(object sender,RoutedEventArgs args){
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+if(notationUpdating || notationDocument is null)return;await ChangeNotationViewAsync(notationOptions with{AllTracksAudio=NotationAllTracks.IsChecked==true},true);}
+    private async void NotationZoom_Changed(object sender,SelectionChangedEventArgs args){
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+if(notationUpdating || notationDocument is null || NotationZoom.SelectedItem is not ComboBoxItem item)return;await ChangeNotationViewAsync(notationOptions with{Scale=double.Parse((string)item.Tag,System.Globalization.CultureInfo.InvariantCulture)},false);}
     private async void NotationBar_Changed(NumberBox sender,NumberBoxValueChangedEventArgs args)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(notationUpdating || notationDocument is null || !double.IsFinite(args.NewValue))return;int number=(int)Math.Clamp(args.NewValue,1,notationDocument.BarCount);int first=(number-1)/12*12+1;if(first!=notationOptions.FirstBar)await ChangeNotationViewAsync(notationOptions with{FirstBar=first},false);MarkNotationBar(number);
     }
     private void NotationLoopFirst_Changed(NumberBox sender,NumberBoxValueChangedEventArgs args){if(!notationUpdating)UpdateNotationOccurrences();}
     private async void NotationLoop_Click(object sender,RoutedEventArgs args)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(audio is null || notationDocument is null || preview is null || busy || !double.IsFinite(NotationLoopFirst.Value) || !double.IsFinite(NotationLoopLast.Value))return;
         try{var loop=notationDocument.LoopSeconds((int)NotationLoopFirst.Value,(int)NotationLoopLast.Value,Math.Max(0,NotationOccurrence.SelectedIndex));SetBusy(true);if(!await StopCaptureAsync())return;if(!ReferenceEquals(mediaMidi,notationPlayingMidi) || mediaMidi is null)await PrepareNotationAsync(preview);await audio.SetLoopAsync(loop.Start/currentSpeed,loop.End/currentSpeed,true);notationLoop=loop;SelectionStatus.Text=$"Smyčka taktů {(int)NotationLoopFirst.Value}–{(int)NotationLoopLast.Value} · {FormatTime(loop.Start)} až {FormatTime(loop.End)}.";}
         catch(Exception error){NotationStatus.Text="Smyčku nelze použít. "+error.Message;}finally{if(!closed)SetBusy(false);}
     }
-    private async void NotationLoopOff_Click(object sender,RoutedEventArgs args){notationLoop=null;try{if(audio is not null && mediaMidi is not null && ReferenceEquals(mediaMidi,notationPlayingMidi))await audio.SetLoopAsync(0,0,false);}catch(Exception error){ShowError(error);}}
+    private async void NotationLoopOff_Click(object sender,RoutedEventArgs args){
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+notationLoop=null;try{if(audio is not null && mediaMidi is not null && ReferenceEquals(mediaMidi,notationPlayingMidi))await audio.SetLoopAsync(0,0,false);}catch(Exception error){ShowError(error);}}
     private async void NotationSeek_Click(object sender,RoutedEventArgs args)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(audio is null || notationDocument is null || preview is null || busy || !double.IsFinite(NotationBar.Value))return;
         try{SetBusy(true);if(!await StopCaptureAsync())return;if(!ReferenceEquals(mediaMidi,notationPlayingMidi) || mediaMidi is null)await PrepareNotationAsync(preview);var bar=notationDocument.Playback.First(b=>b.Number==(int)NotationBar.Value);await audio.SeekAsync(Math.Min(bar.StartSeconds/currentSpeed,audio.GetTransport().DurationSeconds));}
         catch(Exception error){ShowError(error);}finally{if(!closed)SetBusy(false);}
     }
     private async Task VerifyNotationIntegratedAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         Navigate(new("20"));await LoadScoreAsync(Path.Combine(AppContext.BaseDirectory,"fixtures","notation-multitrack.musicxml"));
         var document=notationDocument!;bool structure=document.Tracks.Count==3 && NotationTrackBox.Items.Count==3;
         await ChangeNotationViewAsync(new(Track:2,FirstBar:3,PageBars:2,Scale:1.5),false);

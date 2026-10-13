@@ -75,7 +75,7 @@ public sealed partial class MainWindow
         var sourceRow=new StackPanel{Orientation=Orientation.Horizontal,Spacing=10};sourceRow.Children.Add(desktopSource);var stopAll=new Button{Content="Zastavit vše",MinHeight=30};stopAll.Click+=Stop_Click;sourceRow.Children.Add(stopAll);MediaTitle.Visibility=Visibility.Collapsed;
         Grid.SetColumn(sourceRow,0);MediaTransportRow.Children.Add(sourceRow);
         services.Operations.Changed+=DesktopOperationsChanged;
-        RefreshDesktopLibrary();OpenDesktop(new("01"));
+        InitializeDesktopCommands();BindDesktopCommands(ShellRoot);RefreshDesktopLibrary();OpenDesktop(new("01"));
         if(!appSettings.Onboarded)_=ShowDesktopDialogAsync(new("31"));
     }
     private void AddDesktopSplitter(int column,int resized)
@@ -134,7 +134,7 @@ public sealed partial class MainWindow
     private TabViewItem CreateDesktopTab(DocumentSession session,FrameworkElement page,bool document)
     {
         var view=WorkspaceViews.Get(session.Target.ViewId);
-        var scroll=page is Views.ScoreDocumentView? (UIElement)page : new ScrollViewer{Content=page,Padding=new Thickness(16),HorizontalScrollBarVisibility=ScrollBarVisibility.Disabled};
+        var scroll=DesktopDocumentContent(page);
         var item=new TabViewItem{Header=view.Title,Tag=session,Content=scroll,IsClosable=true};
         var menu=new MenuFlyout();var detach=new MenuFlyoutItem{Text="Otevřít v samostatném okně"};detach.Click+=(_,_)=>DetachDesktopTab(item);menu.Items.Add(detach);var attach=new MenuFlyoutItem{Text="Připojit do pracovní plochy"};attach.Click+=(_,_)=>AttachDesktopTab(item);menu.Items.Add(attach);item.ContextFlyout=menu;
         LabelNativeControls(page);return item;
@@ -164,22 +164,34 @@ public sealed partial class MainWindow
     private void DetachDesktopTab(TabViewItem? item)
     {
         if(item is null)return;if(floatingHosts.TryGetValue(item,out var current)){current.AppWindow.Show();current.Activate();return;}
-        RemoveDesktopTabParent(item);var window=new DesktopWindow("Rocker — "+item.Header);desktopWindows.Add(window);floatingHosts[item]=window;window.Tabs.TabItems.Add(item);window.Tabs.SelectedItem=item;BindDesktopTabs(window.Tabs);window.Root.RequestedTheme=ShellRoot.RequestedTheme;
+        RemoveDesktopTabParent(item);var window=new DesktopWindow("Rocker — "+item.Header);desktopWindows.Add(window);floatingHosts[item]=window;window.Tabs.TabItems.Add(item);window.Tabs.SelectedItem=item;BindDesktopTabs(window.Tabs);window.Root.RequestedTheme=ShellRoot.RequestedTheme;InitializeDesktopWindowMenu(window,item);BindDesktopCommands(window.Root);
         window.Activated+=(_,_)=>{if(item.Tag is DocumentSession session)documentContext.Select(session);};
         window.AppWindow.Closing+=(sender,e)=>{if(window.ExitApproved)return;e.Cancel=true;if(item.Tag is DocumentSession session && !desktopDocuments.ContainsKey(session))window.AppWindow.Hide();else _=CloseDesktopTabAsync(item);};
+        window.Closed+=(_,_)=>
+        {
+            dialogService?.Forget(window.Root.XamlRoot);
+            foreach(var hosted in window.Tabs.TabItems.OfType<TabViewItem>().ToArray())
+            {
+                window.Tabs.TabItems.Remove(hosted);floatingHosts.Remove(hosted);
+                if(!window.ExitApproved && hosted.Tag is DocumentSession live && desktopDocuments.ContainsKey(live))documentTabs.TabItems.Add(hosted);
+            }
+            desktopWindows.Remove(window);
+        };
         window.Activate();
     }
     private void AttachDesktopTab(TabViewItem? item)
     {
         if(item is null)return;RemoveDesktopTabParent(item);
-        if(floatingHosts.Remove(item,out var host)){host.ExitApproved=true;host.Close();desktopWindows.Remove(host);}
+        if(floatingHosts.Remove(item,out var host)){dialogService?.Forget(host.Root.XamlRoot);host.ExitApproved=true;host.Close();desktopWindows.Remove(host);}
         var session=(DocumentSession)item.Tag;var target=desktopDocuments.ContainsKey(session)?documentTabs:toolTabs;target.TabItems.Add(item);target.SelectedItem=item;Activate();
     }
     private async Task CloseDesktopTabAsync(TabViewItem item)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         var session=(DocumentSession)item.Tag;
         if(!desktopDocuments.ContainsKey(session)){if(floatingHosts.TryGetValue(item,out var tool))tool.AppWindow.Hide();else toolTabs.TabItems.Remove(item);return;}
-        if(services.Operations.Snapshot().Any(o=>o.Owner==session.Id)){ShowPersistenceError("Počkej na dokončení operace dokumentu nebo ji zruš.");return;}
+        if(services.Operations.Snapshot().Any(o=>o.Owner==session.Id && o.Kind!="ai-request")){ShowPersistenceError("Počkej na dokončení operace dokumentu nebo ji zruš.");return;}
         using var scope=documentContext.Enter(session);
         if(studioCaptureSession==session && captureDraft is not null){ShowPersistenceError("Nejdřív zastav a ulož stopu nahrávanou do tohoto projektu.");return;}
         if(studioEditTask is{IsCompleted:false})await studioEditTask;
@@ -192,11 +204,13 @@ public sealed partial class MainWindow
         if(services.Transport.Owner==session){if(captureDraft is not null){ShowPersistenceError("Nejdřív zastav a ulož nahrávání.");return;}if(audio is not null)await audio.PauseAsync();services.Transport.Release(session);}
         if(session.Target.ViewId=="08"){SendVideo(new{op="stop"});VideoView.Close();}
         RemoveDesktopTabParent(item);desktopDocuments.Remove(session);services.Documents.Close(session);services.Transport.Release(session);
-        if(floatingHosts.Remove(item,out var host)){host.ExitApproved=true;host.Close();desktopWindows.Remove(host);}
+        if(floatingHosts.Remove(item,out var host)){dialogService?.Forget(host.Root.XamlRoot);host.ExitApproved=true;host.Close();desktopWindows.Remove(host);}
         documentContext.Select(documentTabs.SelectedItem is TabViewItem{Tag:DocumentSession selected}?selected:documentContext.Default);RefreshDesktopInspector(documentContext.Active);
     }
     private async Task ShowDesktopDialogAsync(NavigationTarget target)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         try{var dialog=new ContentDialog{XamlRoot=DialogRoot,Title=WorkspaceViews.Get(target.ViewId).Title,Content=new ScrollViewer{Content=BuildWorkspace(target),MaxHeight=520},CloseButtonText="Zavřít"};await ShowDialogAsync(dialog);}catch(InvalidOperationException){ShowPersistenceError("Dokonči nejdřív otevřený dialog.");}
     }
     private void RefreshDesktopInspector(DocumentSession session)

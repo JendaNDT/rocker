@@ -554,6 +554,14 @@ rocker_audio_result ROCKER_CALL rocker_audio_copy_last_error(rocker_audio_handle
 void ROCKER_CALL rocker_audio_destroy(rocker_audio_handle host) {
     try { delete host; } catch (...) { /* Never unwind through the C ABI. */ }
 }
+rocker_audio_result ROCKER_CALL rocker_audio_get_media_source_ticket(rocker_audio_handle host,uint64_t* active_ticket){
+    if(!host || !active_ticket)return ROCKER_INVALID_ARGUMENT;
+    return withHost(host,[&](auto& h)->rocker_audio_result{
+        *active_ticket=0;const auto lease=h.tone.clipLease();if(!lease.valid)return ROCKER_OK;
+        for(const auto& clip:h.stagedClips)if(clip.generation==lease.current){*active_ticket=clip.mediaTicket;break;}
+        return ROCKER_OK;
+    });
+}
 rocker_audio_result ROCKER_CALL rocker_audio_inspect_file(const char* source,float* peaks,uint32_t capacity,double* duration,rocker_export_cancel cancel,void* context){
 #if ROCKER_WITH_MEDIA
     if(!source || !peaks || !duration || capacity!=1024 || std::strlen(source)>32768)return ROCKER_INVALID_ARGUMENT;

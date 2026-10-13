@@ -26,6 +26,8 @@ public sealed partial class MainWindow
     }
     private async Task SaveInstrumentAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(!persistenceReady || database is null || profileName is null)throw new InvalidOperationException("Úložiště není dostupné.");var profile=new InstrumentProfile(profileName.Text,profileBody!.Text,pickupEditors.Select(p=>new Pickup((string)p.Position.SelectedValue,(string)p.Type.SelectedValue)).ToArray(),profileScale!.Text,profileGauge!.Text,profileNotes!.Text);var record=UserData.Document("instrument","default",profile);string tuning=(string)profileTuning!.SelectedValue;if(!AllTunings().Any(t=>t.Id==tuning))throw new InvalidDataException("Ladění neexistuje.");await CancelAiAsync();CancelPalm();surgicalListening=false;await StopRhythmUiAsync();if(audio is not null)await audio.StopPreviewAsync();instrumentProfile=profile;appSettings=appSettings with{TuningId=tuning,Handedness=profileHand!.SelectedIndex==1?"left":"right"};autosave!.Queue(record);SaveSettings();await autosave.FlushAsync();workspaceCache.Clear();RefreshTuningSelector();RebuildTunerStrings();ShowWorkspace();ShellNotice.IsOpen=true;ShellNotice.Severity=InfoBarSeverity.Informational;ShellNotice.Message="Profil a orientace jsou uložené. Fyzické struny ověř ladičkou; případnou kalibraci palm mute proveď znovu.";
     }
 }

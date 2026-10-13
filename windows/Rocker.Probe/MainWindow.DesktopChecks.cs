@@ -8,6 +8,8 @@ public sealed partial class MainWindow
 {
     private async Task VerifyDesktopRuntimeAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         var checks=new List<string>();
         void Check(bool condition,string name){if(!condition)throw new InvalidOperationException("Desktop: "+name);checks.Add(name);}
         if(audio is null)throw new InvalidOperationException("Desktop check requires the existing host.");
@@ -33,7 +35,7 @@ public sealed partial class MainWindow
         using(documentContext.Enter(score))Check(ReferenceEquals(image,ScoreImage.Source) && NotationBar.Value==selectedBar,"reattach-preserves-score-state");
         var tuner=OpenDesktop(new("03"));var tunerTab=TabFor(tuner)!;DetachDesktopTab(tunerTab);await Task.Delay(100);
         Check(OpenDesktop(new("03"))==tuner && TabFor(tuner)==tunerTab,"tool-singleton");
-        var tunerHost=floatingHosts[tunerTab];tunerHost.Close();await Task.Delay(100);
+        var tunerHost=floatingHosts[tunerTab];SendMessageW(WinRT.Interop.WindowNative.GetWindowHandle(tunerHost),0x0010,0,0);await Task.Delay(100);
         Check(desktopEnabled && !closed && floatingHosts.ContainsKey(tunerTab),"closing-tool-keeps-application");
         OpenDesktop(new("03"));AttachDesktopTab(tunerTab);
         Check(TabFor(tuner)==tunerTab,"reopening-tool-preserves-instance");
@@ -49,6 +51,8 @@ public sealed partial class MainWindow
     }
     private async Task CaptureDesktopRuntimeAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         string? folder=Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTICS_DIR");if(string.IsNullOrEmpty(folder))return;
         await Task.Delay(150);var bitmap=new Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap();await bitmap.RenderAsync(ShellRoot);
         var buffer=await bitmap.GetPixelsAsync();var pixels=new byte[(int)buffer.Length];using(var source=Windows.Storage.Streams.DataReader.FromBuffer(buffer))source.ReadBytes(pixels);

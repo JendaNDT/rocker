@@ -45,6 +45,8 @@ public sealed partial class MainWindow
     private void VideoSeek_KeyUp(object sender,KeyRoutedEventArgs args){if(args.Key is Windows.System.VirtualKey.Left or Windows.System.VirtualKey.Right or Windows.System.VirtualKey.Home or Windows.System.VirtualKey.End)SeekVideo();}
     private async Task VerifyVideoPracticeAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         var previous=savedVideoLoops.ToArray();savedVideoLoops.Clear();videoPractice.Begin("M7lc1UVf-VE");videoPractice.Observe(new("ready",Token:videoPractice.Token));videoPractice.Observe(new("progress",Position:12,Duration:120,Rate:1,Token:videoPractice.Token));videoReady=true;VideoRates.ItemsSource=new double[]{.5,1,2};VideoRates.SelectedItem=1.0;VideoLoopA.Value=4;VideoLoopB.Value=10;VideoLoopLabel.Text="Kontrolní úsek";VideoSaveLoop_Click(this,new());
         bool saved=savedVideoLoops.Count==1 && savedVideoLoops[0].Start==4 && savedVideoLoops[0].End==10;VideoSavedLoops.SelectedIndex=0;VideoLoopLabel.Text="Přejmenovaný úsek";VideoRenameLoop_Click(this,new());bool renamed=savedVideoLoops[0].Label=="Přejmenovaný úsek";VideoSavedLoops.SelectedIndex=0;VideoDeleteLoop_Click(this,new());bool deleted=savedVideoLoops.Count==0;VideoUndoLoop_Click(this,new());bool undone=savedVideoLoops.Count==1;
         await autosave!.FlushAsync();var snapshot=await (await DataRepository.OpenAsync(userFiles)).SnapshotAsync();bool persisted=UserData.Read<SavedVideoLoop[]>(snapshot.Documents.Single(d=>d.Kind=="yt-loops").Value).Single()==savedVideoLoops.Single();
@@ -53,6 +55,8 @@ public sealed partial class MainWindow
     }
     private async void VideoSharedAudio_Click(object sender,RoutedEventArgs args)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         Navigate(new("29"));await DeviceOperationAsync(async()=>{await RefreshDeviceListAsync();if(closed)return;if(deviceCatalog?.Backends.Any(b=>b.Name=="Windows Audio")==true){DeviceBackendBox.SelectedItem="Windows Audio";DeviceSelectionStatus.Text="Sdílené WASAPI je vybrané. Zvol interfejs pro vstup a výstup a potvrď Ověřit a použít. Ve Windows nastav stejné zařízení pro přehrávání videa.";}else DeviceSelectionStatus.Text="Sdílené Windows Audio není dostupné. Zkontroluj ovladač zvukového zařízení.";});
     }
 }

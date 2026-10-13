@@ -8,6 +8,8 @@ public sealed partial class MainWindow
 {
     private async Task LoadDesktopProjectAsync(DocumentSession session,string id)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         using var scope=documentContext.Enter(session);
         using var operation=services.Operations.Begin(session.Id,"project-load","Načítání projektu",cancellable:false);
         try

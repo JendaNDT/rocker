@@ -39,12 +39,12 @@ public sealed partial class MainWindow
         bool power=view=="10";var panel=Stack();panel.Children.Add(Text(power?"Power chord · přesuny v tempu":"Gallop · rytmická buňka"));
         var exercises=power?catalog!.Items("powerChordExercises").Select(UserData.Read<PowerChordExercise>).Select(e=>new ListEntry(e.Id,e.Name,e.Description)).ToArray():catalog!.Items("gallopExercises").Select(UserData.Read<GallopExercise>).Select(e=>new ListEntry(e.Id,e.Name,e.Description)).ToArray();
         var selector=new ComboBox{Header="Cvičení",ItemsSource=exercises,DisplayMemberPath="Title"};var tempo=new NumberBox{Header="Tempo BPM",Minimum=40,Maximum=240,Value=power?70:90,SpinButtonPlacementMode=NumberBoxSpinButtonPlacementMode.Inline};var speed=new CheckBox{Content="Zvýšit tempo o 5 % po dokončeném kole",IsChecked=false};var countIn=new ComboBox{Header="Předtakt",ItemsSource=new[]{"Bez předtaktu","1 takt","2 takty"},SelectedIndex=1};
-        selector.SelectionChanged+=async(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(selector.SelectedItem is not ListEntry selected)return;if(rhythmRunning)await StopRhythmUiAsync();if(power){powerExercise=UserData.Read<PowerChordExercise>(catalog!.Find("powerChordExercises",selected.Id)!.Value);tempo.Value=powerExercise.StartBpm;}else{gallopExercise=UserData.Read<GallopExercise>(catalog!.Find("gallopExercises",selected.Id)!.Value);tempo.Value=gallopExercise.StartBpm;}ShowRhythmChord(view,0);};
+        selector.SelectionChanged+=async(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;if(selector.SelectedItem is not ListEntry selected)return;if(rhythmRunning)await StopRhythmUiAsync();if(power){powerExercise=UserData.Read<PowerChordExercise>(catalog!.Find("powerChordExercises",selected.Id)!.Value);tempo.Value=powerExercise.StartBpm;}else{gallopExercise=UserData.Read<GallopExercise>(catalog!.Find("gallopExercises",selected.Id)!.Value);tempo.Value=gallopExercise.StartBpm;}ShowRhythmChord(view,0);};
         panel.Children.Add(selector);panel.Children.Add(tempo);panel.Children.Add(speed);panel.Children.Add(countIn);var target=Text("Vyber cvičení.");target.FontSize=28;rhythmTargets[view]=target;panel.Children.Add(target);var diagram=new ChordDiagram();rhythmDiagrams[view]=diagram;panel.Children.Add(diagram);var reading=Text("Zastaveno.",true);rhythmReadings[view]=reading;panel.Children.Add(reading);
         rhythmEditors[view]=[selector,tempo,speed,countIn];
         var bar=new ProgressBar{Minimum=0,Maximum=100,Value=0};rhythmRoundBars[view]=bar;panel.Children.Add(bar);if(!power){var cell=Text("",true);rhythmCells[view]=cell;panel.Children.Add(cell);}
         var start=new Button{Content="Začít kolo"};start.Click+=async(_,_)=>
-        {using var documentScope = documentContext.Enter(capturedDocument);
+        {using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;
             if(rhythmOperation || audio is null || !double.IsFinite(tempo.Value))return;rhythmOperation=true;start.IsEnabled=false;
             try{await ClaimDesktopGraderAsync();if(deviceSelectionUnavailable)throw new InvalidOperationException("Vyber dostupné výstupní zařízení.");await StopRhythmUiAsync();var generation=rhythmUiGeneration;await audio.PauseAsync();var tuning=CurrentTuning().Strings.Select(s=>s.Midi).ToArray();IReadOnlyList<TeachingNote> notes;double pattern,round;
                 if(power){var exercise=powerExercise??throw new InvalidOperationException("Vyber cvičení.");notes=RhythmPreview.Power(exercise,tuning);pattern=round=RhythmTrainers.RoundBeats(exercise);rhythmExerciseId=exercise.Id;}else{var exercise=gallopExercise??throw new InvalidOperationException("Vyber cvičení.");notes=RhythmPreview.Gallop(exercise,tuning);pattern=exercise.Cell.Sum();round=pattern*RhythmTrainers.CellsPerRound;rhythmExerciseId=exercise.Id;}
@@ -52,10 +52,10 @@ public sealed partial class MainWindow
                 rhythmView=view;rhythmSavedRounds=0;rhythmTicket=await audio.StartRhythmAsync(notes.Select(n=>new PreviewNote(n.Start,n.Duration,TunerFrequency(n.Midi),n.Volume)).ToArray(),pattern,round,(uint)Music.ClampBpm(tempo.Value),speed.IsChecked==true,(uint)Math.Max(0,countIn.SelectedIndex)*4);if(generation!=rhythmUiGeneration || CurrentTarget.ViewId!=view){await audio.StopRhythmAsync();return;}rhythmRunning=true;selector.IsEnabled=tempo.IsEnabled=speed.IsEnabled=countIn.IsEnabled=false;
             }catch(Exception error){ShowError(error);}finally{rhythmOperation=false;start.IsEnabled=true;}
         };panel.Children.Add(start);
-        var stop=new Button{Content="Zastavit kolo"};stop.Click+=async(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);await StopRhythmUiAsync();selector.IsEnabled=tempo.IsEnabled=speed.IsEnabled=countIn.IsEnabled=true;};panel.Children.Add(stop);
-        var listen=new Button{Content="Poslechnout aktuální power chord"};listen.Click+=async(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);await StopRhythmUiAsync();selector.IsEnabled=tempo.IsEnabled=speed.IsEnabled=countIn.IsEnabled=true;var shape=CurrentRhythmChord(view,0);if(shape is not null)await PlayTeachingAsync(MusicShapes.PowerChordMidiNotes(shape).Select(m=>new TeachingNote(0,1,m)).ToArray());};panel.Children.Add(listen);
+        var stop=new Button{Content="Zastavit kolo"};stop.Click+=async(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;await StopRhythmUiAsync();selector.IsEnabled=tempo.IsEnabled=speed.IsEnabled=countIn.IsEnabled=true;};panel.Children.Add(stop);
+        var listen=new Button{Content="Poslechnout aktuální power chord"};listen.Click+=async(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;await StopRhythmUiAsync();selector.IsEnabled=tempo.IsEnabled=speed.IsEnabled=countIn.IsEnabled=true;var shape=CurrentRhythmChord(view,0);if(shape is not null)await PlayTeachingAsync(MusicShapes.PowerChordMidiNotes(shape).Select(m=>new TeachingNote(0,1,m)).ToArray());};panel.Children.Add(listen);
         panel.Children.Add(Text("Rekord znamená absolvované tempo celého kola. Správnost akordu ani přesnost tvých úhozů tento trenažér automaticky nehodnotí. Doprovod a změny tempa řídí zvukové jádro.",true));panel.Children.Add(BuildRecordingControls());
-        var amp=new Button{Content="Aparát a efekty"};amp.Click+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);Navigate(new("13"));};panel.Children.Add(amp);selector.SelectedItem=exercises.FirstOrDefault(e=>e.Id==id)??exercises[0];return Card(panel);
+        var amp=new Button{Content="Aparát a efekty"};amp.Click+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;Navigate(new("13"));};panel.Children.Add(amp);selector.SelectedItem=exercises.FirstOrDefault(e=>e.Id==id)??exercises[0];return Card(panel);
     }
     private PowerChord? CurrentRhythmChord(string view,double elapsed)
     {
@@ -69,6 +69,8 @@ public sealed partial class MainWindow
     }
     private async Task StopRhythmUiAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         ++rhythmUiGeneration;rhythmRunning=false;if(audio is null)return;
         if(rhythmStopTask is not null){await rhythmStopTask;return;}
         async Task Stop()

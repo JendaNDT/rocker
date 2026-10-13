@@ -16,6 +16,8 @@ public sealed partial class MainWindow
     private bool powerTransition;
     private async Task StopForPowerTransitionAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         powerTransition=true;
         try
         {
@@ -53,6 +55,8 @@ public sealed partial class MainWindow
     private void DetachNativeEvents(){SetThreadExecutionState(0x80000000u);wakeLockApplied=false;if(nativeWindowCallback is { } callback){RemoveWindowSubclass(nativeWindow,callback,0x524b);nativeWindowCallback=null;}}
     private async Task VerifyPowerRecoveryAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(audio is null)throw new InvalidOperationException("Power recovery requires the native host.");
         practiceSession.Start(0,DateTimeOffset.UtcNow);
         SendMessageW(nativeWindow,0x0218,4,0);await powerStopTask;

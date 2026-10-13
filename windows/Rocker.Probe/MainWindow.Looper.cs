@@ -51,6 +51,8 @@ public sealed partial class MainWindow
     private void ResetLooperWorkspace(){looperReading=null;looperLayers=null;looperSessions=null;looperShownLayers=uint.MaxValue;looperProjectId=null;looperSavedFingerprint=null;}
     private async Task PauseLooperForSaveAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(audio is null)return;var state=audio.GetLoop();
         if(state.State==2){await audio.LoopCommandAsync(2);var deadline=DateTime.UtcNow.AddSeconds(30);while(audio.GetLoop().State==2 && DateTime.UtcNow<deadline)await Task.Delay(20);if(audio.GetLoop().State==2)throw new IOException("První smyčka se nedokončila. Zastav zvuk a ulož zachovanou část.");}
         state=audio.GetLoop();if(state.State==4)await audio.LoopCommandAsync(6);else if(state.State==5){var finish=DateTime.UtcNow.AddSeconds(Math.Min(60,state.Duration+2));while(audio.GetLoop().State==5 && DateTime.UtcNow<finish)await Task.Delay(20);if(audio.GetLoop().State==5)throw new IOException("Vrstva se nedokončila. Zastav zvuk pro zachování předchozích vrstev a zkus uložení znovu.");}
@@ -58,6 +60,8 @@ public sealed partial class MainWindow
     }
     private async Task<bool> SaveLooperSessionAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(looperOperation || database is null || audio is null)return false;looperOperation=true;
         string temporary=Path.Combine(userFiles.DirectoryFor("projects"),".rocker-loop-export-"+Guid.NewGuid().ToString("N"));
         try{
@@ -70,10 +74,14 @@ public sealed partial class MainWindow
     }
     private async Task ReloadLooperSessionsAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(database is null || looperSessions is null)return;try{var snapshot=await database.SnapshotAsync();var selected=new List<ProjectIndex>();var repository=new ProjectRepository(userFiles,database);foreach(var item in snapshot.Documents.Where(d=>d.Kind=="project")){var index=UserData.Read<ProjectIndex>(item.Value);if((await repository.LoadAsync(index.Id)).Project.Looper is not null)selected.Add(index);}if(!closed && looperSessions is not null)looperSessions.ItemsSource=selected;}catch(Exception error){if(!closed)ShowPersistenceError("Seznam sessions nelze načíst. "+error.Message);}
     }
     private async Task OpenLooperSessionAsync(string id)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(database is null || audio is null)return;var repository=new ProjectRepository(userFiles,database);var loaded=await repository.LoadAsync(id);if(loaded.Project.Looper is null || loaded.MissingMedia.Count>0)throw new InvalidDataException("Session nemá dostupné zvukové vrstvy.");
         if(audio.GetLoop().Frames>0){var dialog=new ContentDialog{XamlRoot=DialogRoot,Title="Otevřít jinou session?",Content="Aktuální neuložené vrstvy nahradí zvolená session.",PrimaryButtonText="Otevřít",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Close};if(await ShowDialogAsync(dialog)!=ContentDialogResult.Primary)return;}
         await PauseLooperForSaveAsync();await audio.StopAsync();await audio.LoopCommandAsync(7);
@@ -84,11 +92,15 @@ public sealed partial class MainWindow
     }
     private async Task ExportLoopRecordingAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(database is null || audio is null)return;await PauseLooperForSaveAsync();var state=audio.GetLoop();if(state.Frames==0)return;var name=await AskRecordingNameAsync("Mix Looperu do nahrávek","Looper · mix");if(name is null)return;
         var path=Path.Combine(userFiles.DirectoryFor("recordings"),".rocker-loop-export-"+Guid.NewGuid().ToString("N")+".wav");try{await audio.ExportLoopAsync(path);await using var input=File.OpenRead(path);var media=await new OwnedMedia(userFiles).ImportAsync(input,".wav");var value=new RecordingData(Guid.NewGuid().ToString(),name+((state.Flags&1)!=0?" · neúplný Looper":""),"audio/wav",state.Duration,DateTimeOffset.UtcNow,media.RelativePath,media.Bytes,media.Sha256,[]);await recordingLibrary!.SaveAsync(value);await ReloadRecordingsAsync();ShellNotice.IsOpen=true;ShellNotice.Severity=InfoBarSeverity.Success;ShellNotice.Message="Mix Looperu je v knihovně nahrávek.";}finally{if(File.Exists(path))File.Delete(path);}
     }
     private async Task VerifyLooperAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(audio is null || database is null || recordingLibrary is null)throw new InvalidOperationException("Looper dependencies did not initialize.");
         var recording=(await recordingLibrary.ListAsync()).First(r=>r.Capture?.Frames==480);await audio.StopAsync();await audio.LoopCommandAsync(7);var source=OwnedPaths.Resolve(userFiles.Root,recording.RelativePath);await audio.LoadLoopLayerAsync(source,0,.4);await audio.LoadLoopLayerAsync(source,1,.5);Navigate(new("16"));RefreshLooper();var state=audio.GetLoop();
         var id=Guid.NewGuid().ToString();var repository=new ProjectRepository(userFiles,database);var media=await repository.AttachMediaAsync(id,new(recording.RelativePath,recording.Sha256,recording.Bytes));var now=DateTimeOffset.UtcNow;var project=new ProjectManifest(1,id,"Kontrolní Looper session",now,now,48000,[new("layer-one","Vrstva 1",media,recording.Sha256,.01,.4),new("layer-two","Vrstva 2",media,recording.Sha256,.01,.5)],new(0,480,0,false,false));await repository.SaveAsync(project);var reopened=await new ProjectRepository(userFiles,await DataRepository.OpenAsync(userFiles)).LoadAsync(id);await ReloadLooperSessionsAsync();

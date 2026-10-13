@@ -23,7 +23,8 @@ public sealed partial class MainWindow
     private ContentCatalog? catalog => services.Catalog;
     private WindowPreferencesStore? windowStore;
     private WindowRectangle normalBounds = new(40,40,1280,940);
-    private bool selectingNavigation, shellReady, closingWindow, closeApproved, videoInitializationStarted;
+    private bool selectingNavigation, shellReady, closingWindow, closeApproved;
+    private bool videoInitializationStarted { get=>documentContext.Current.Get<bool>("videoInitializationStarted",()=>false);set=>documentContext.Current.Set("videoInitializationStarted",value); }
     private string selectedTheme = "system";
     private int audioHostsCreated;
     private sealed record ListEntry(string Id, string Title, string Detail);
@@ -68,7 +69,7 @@ public sealed partial class MainWindow
         if (AppWindow.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Restored })
             normalBounds = new(AppWindow.Position.X,AppWindow.Position.Y,AppWindow.Size.Width,AppWindow.Size.Height);
     }
-    private void Navigate(NavigationTarget target) { if(desktopEnabled){OpenDesktop(target);return;}componentMode = false; navigation.Navigate(target);if(persistenceReady && PracticeViews.Contains(target.ViewId)){appSettings=appSettings with{ResumeTask=target};SaveSettings();}ShowWorkspace(); }
+    private void Navigate(NavigationTarget target) { if(desktopEnabled){var session=OpenDesktop(target);if(persistenceReady && PracticeViews.Contains(target.ViewId)){appSettings=appSettings with{ResumeTask=session.Target};SaveSettings();}return;}componentMode = false; navigation.Navigate(target);if(persistenceReady && PracticeViews.Contains(target.ViewId)){appSettings=appSettings with{ResumeTask=target};SaveSettings();}ShowWorkspace(); }
     private void ShowWorkspace()
     {
         if (!shellReady || closed) return;
@@ -109,6 +110,8 @@ public sealed partial class MainWindow
     }
     private async Task EnsureVideoAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if (videoInitializationStarted || closed) return;
         videoInitializationStarted = true;
         await InitializeVideoAsync();
@@ -128,6 +131,7 @@ public sealed partial class MainWindow
         selectedTheme = theme;
         appSettings = appSettings with { Theme=theme }; SaveSettings();
         ShellRoot.RequestedTheme = theme switch { "dark" => ElementTheme.Dark, "light" => ElementTheme.Light, _ => ElementTheme.Default };
+        foreach(var window in desktopWindows)window.Root.RequestedTheme=ShellRoot.RequestedTheme;
         RefreshSettingsControls();
     }
     private void Shell_SizeChanged(object sender, SizeChangedEventArgs args)
@@ -176,6 +180,8 @@ public sealed partial class MainWindow
     }
     private async void Guide_Click(object sender, RoutedEventArgs args)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(closingWindow)return;
         string path=Path.Combine(AppContext.BaseDirectory,"help","user-guide.txt");
         string text="Návod je součástí instalačního balíku. Nastavení lze projít také přes Nastavení → První spuštění.";
@@ -187,6 +193,8 @@ public sealed partial class MainWindow
     }
     private async void About_Click(object sender, RoutedEventArgs args)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if (closingWindow) return;
         if(services.Operations.Snapshot().Any(op=>op.Kind=="profile-load")){ShowPersistenceError("Počkej na dokončení načítání místního profilu.");return;}
         var dialog = new ContentDialog { XamlRoot = DialogRoot, Title = "Rocker", Content = $"Nativní kytarový pomocník pro Windows · verze {typeof(App).Assembly.GetName().Version!.ToString(3)}.\nLekce, aparát, metronom, nahrávky, Looper, Studio a knihovna.\nLicence najdeš u aplikace; odpovídající zdroje lze stáhnout zvlášť u stejného vydání.", CloseButtonText = "Zavřít" };
@@ -202,6 +210,8 @@ public sealed partial class MainWindow
     private void RemoveCloseGuard(string id) => closeGuards.Remove(desktopEnabled && id=="studio"?documentContext.Current.Id+"/"+id:id);
     private async void Shell_Closing(AppWindow sender, AppWindowClosingEventArgs args)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if (closeApproved) return;
         args.Cancel = true;
         if (closingWindow) return;
@@ -215,7 +225,7 @@ public sealed partial class MainWindow
         if(fileOperation){ShowPersistenceError("Počkej na otevření souboru nebo načítání zruš.");return;}
         if (profileOperation) { ShowPersistenceError("Počkej na dokončení uložení profilu kytary."); return; }
         if (secretOperationRunning) { ShowPersistenceError("Počkej na dokončení uložení nebo odstranění klíče."); return; }
-        closingWindow = true;
+        closingWindow = true;SetDesktopInteraction(false);
         try
         {
             await powerStopTask;
@@ -238,10 +248,12 @@ public sealed partial class MainWindow
             LaunchPendingInstaller();closeApproved = true; DisposeDesktopViews(); Close();
         }
         catch (Exception error) { ShellNotice.IsOpen = true; ShellNotice.Severity = InfoBarSeverity.Error; ShellNotice.Message = "Okno nelze zavřít. " + error.Message; }
-        finally { closingWindow = false;if(!closeApproved)pendingUpdateInstaller=null; }
+        finally { closingWindow = false;if(!closeApproved){SetDesktopInteraction(true);pendingUpdateInstaller=null;} }
     }
     private async Task VerifyShellAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         foreach (var view in WorkspaceViews.All) { Navigate(new(view.Id)); await Task.Yield(); }
         if (closed) return;
         var task = new NavigationTarget("06",catalog!.Lessons[0].Id);

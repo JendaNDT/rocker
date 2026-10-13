@@ -11,6 +11,8 @@ public sealed partial class MainWindow
     private ContentDialog? activeWorkspaceDialog;
     private async Task VerifyWorkspaceEnhancementsAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if (audio is null || database is null || recordingLibrary is null) throw new InvalidOperationException("Workspace checks require initialized services.");
         var previousWorkspace = practiceWorkspace; var previousSettings = appSettings; var previousAmp = ampSettings; var previousMetro = metroConfig;
         var previousTheme = selectedTheme;

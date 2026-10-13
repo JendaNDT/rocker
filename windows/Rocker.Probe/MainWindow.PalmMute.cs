@@ -19,27 +19,27 @@ public sealed partial class MainWindow
     private FrameworkElement BuildPalmMute(string? itemId=null)
     {var capturedDocument = documentContext.Current;
         var panel=Stack();panel.Children.Add(Text("Palm mute · kalibrace a skutečné úhozy"));
-        var pickup=new TextBox{Header="Snímač / poloha přepínače pro tuto kalibraci",Text=palmPickup,MaxLength=64};pickup.TextChanged+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);palmPickup=pickup.Text.Trim();CancelPalm();UpdatePalm();};panel.Children.Add(pickup);
+        var pickup=new TextBox{Header="Snímač / poloha přepínače pro tuto kalibraci",Text=palmPickup,MaxLength=64};pickup.TextChanged+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;palmPickup=pickup.Text.Trim();CancelPalm();UpdatePalm();};panel.Children.Add(pickup);
         palmReading=Text("Kalibruj alespoň tři otevřené a tři tlumené úhozy.",true);panel.Children.Add(palmReading);palmSummary=Text("",true);panel.Children.Add(palmSummary);
         async Task Collect(string technique)
         {
             if(palmOperation || audio is null)return;palmOperation=true;var generation=++palmGeneration;
             try{await ClaimDesktopGraderAsync();var value=await PreparePalmAsync();if(generation!=palmGeneration || CurrentTarget.ViewId!="12")return;var context=PalmContext();if(palmSampleContext!=context){palmOpen.Clear();palmMuted.Clear();palmSampleContext=context;}BaselinePalm(value);palmCollect=technique;palmListening=false;(technique=="open"?palmOpen:palmMuted).Clear();UpdatePalm();}catch(Exception error){ShowError(error);}finally{palmOperation=false;}
         }
-        var open=new Button{Content="Nasbírat otevřené úhozy"};open.Click+=async(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);await Collect("open");};panel.Children.Add(open);var muted=new Button{Content="Nasbírat tlumené úhozy"};muted.Click+=async(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);await Collect("muted");};panel.Children.Add(muted);
+        var open=new Button{Content="Nasbírat otevřené úhozy"};open.Click+=async(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;await Collect("open");};panel.Children.Add(open);var muted=new Button{Content="Nasbírat tlumené úhozy"};muted.Click+=async(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;await Collect("muted");};panel.Children.Add(muted);
         var save=new Button{Content="Vypočítat a uložit kalibraci"};save.Click+=(_,_)=>
-        {using var documentScope = documentContext.Enter(capturedDocument);
+        {using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;
             if(palmSampleContext!=PalmContext()){ShowPersistenceError("Nastavení se změnilo. Nasbírej oba typy úhozů znovu.");return;}var calibration=PalmMuteRules.Calibrate(palmOpen,palmMuted);if(calibration is null){ShowPersistenceError("Potřebuješ alespoň tři úhozy každého typu. Otevřené úhozy musí mít vyšší průměrný jas než tlumené.");return;}
             if(string.IsNullOrWhiteSpace(palmPickup)){ShowPersistenceError("Vyplň použitou polohu snímače.");return;}appSettings=appSettings with{PalmMute=new(PalmDeviceFingerprint(),appSettings.TuningId,InstrumentFingerprint(),calibration,1,palmPickup)};palmCollect=null;SaveSettings();UpdatePalm();
             if(palmOpen.Min()<=palmMuted.Max()){ShellNotice.IsOpen=true;ShellNotice.Severity=InfoBarSeverity.Warning;ShellNotice.Message="Vzorky kalibrace se překrývají. Rozpoznání může být nejisté; zkontroluj úhozy a případně kalibruj znovu.";}
         };panel.Children.Add(save);
-        var sensitivity=new Slider{Header="Citlivost hranice (%)",Minimum=50,Maximum=150,Value=(appSettings.PalmMute?.Sensitivity??1)*100};sensitivity.ValueChanged+=(_,e)=>{using var documentScope = documentContext.Enter(capturedDocument);if(appSettings.PalmMute is not { } profile)return;appSettings=appSettings with{PalmMute=profile with{Sensitivity=e.NewValue/100}};SaveSettings();UpdatePalm();};panel.Children.Add(sensitivity);
-        var drills=catalog!.Items("palmMuteDrills").Select(UserData.Read<PalmMuteDrill>).ToArray();var choose=new ComboBox{Header="Cvičení",ItemsSource=drills,DisplayMemberPath="Name"};choose.SelectionChanged+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(choose.SelectedItem is PalmMuteDrill drill){CancelPalm();palmState=PalmMuteRules.Start(drill);UpdatePalm();}};panel.Children.Add(choose);
+        var sensitivity=new Slider{Header="Citlivost hranice (%)",Minimum=50,Maximum=150,Value=(appSettings.PalmMute?.Sensitivity??1)*100};sensitivity.ValueChanged+=(_,e)=>{using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;if(appSettings.PalmMute is not { } profile)return;appSettings=appSettings with{PalmMute=profile with{Sensitivity=e.NewValue/100}};SaveSettings();UpdatePalm();};panel.Children.Add(sensitivity);
+        var drills=catalog!.Items("palmMuteDrills").Select(UserData.Read<PalmMuteDrill>).ToArray();var choose=new ComboBox{Header="Cvičení",ItemsSource=drills,DisplayMemberPath="Name"};choose.SelectionChanged+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;if(choose.SelectedItem is PalmMuteDrill drill){CancelPalm();palmState=PalmMuteRules.Start(drill);UpdatePalm();}};panel.Children.Add(choose);
         var start=new Button{Content="Začít hodnocení úhozů"};start.Click+=async(_,_)=>
-        {using var documentScope = documentContext.Enter(capturedDocument);
+        {using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;
             if(palmOperation || audio is null)return;palmOperation=true;var generation=++palmGeneration;
             try{if(!PalmProfileMatches())throw new InvalidOperationException("Kalibrace neodpovídá vstupu, ladění, profilu nebo snímači. Překalibruj aktuální nastavení.");if(palmState is null)return;var drill=palmState.Drill;await ClaimDesktopGraderAsync();var value=await PreparePalmAsync();if(generation!=palmGeneration || CurrentTarget.ViewId!="12" || palmState?.Drill.Id!=drill.Id)return;palmState=PalmMuteRules.Start(drill);BaselinePalm(value);palmCollect=null;palmListening=true;UpdatePalm();}catch(Exception error){ShowError(error);}finally{palmOperation=false;}
-        };panel.Children.Add(start);var stop=new Button{Content="Pozastavit měření"};stop.Click+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);CancelPalm();UpdatePalm();};panel.Children.Add(stop);
+        };panel.Children.Add(start);var stop=new Button{Content="Pozastavit měření"};stop.Click+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;CancelPalm();UpdatePalm();};panel.Children.Add(stop);
         palmResults=new ListView{Header="Očekávané a měřené úhozy"};panel.Children.Add(palmResults);panel.Children.Add(Text("Klasifikace používá jas těla úhozu ze skutečného vstupu. Odstup od hranice je orientační pomůcka, nikoli statistická pravděpodobnost. Po změně kytary, snímače nebo gainu překalibruj. Měření úhozů má minimální rozestup přibližně 320 ms; rychlé pasáže posuzuj při poslechu.",true));panel.Children.Add(BuildRecordingControls());choose.SelectedItem=drills.FirstOrDefault(d=>d.Id==itemId)??drills[0];UpdatePalm();return Card(panel);
     }
     private void UpdatePalm()
@@ -52,6 +52,8 @@ public sealed partial class MainWindow
     private string PalmContext()=>PalmDeviceFingerprint()+"/"+appSettings.TuningId+"/"+InstrumentFingerprint()+"/"+palmPickup;
     private async Task<AnalysisSnapshot> PreparePalmAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(audio is null || closingWindow || deviceOperationRunning || backupOperationRunning || deviceSelectionUnavailable || appSettings.AudioDevice is not{InputChannel:>=0})throw new InvalidOperationException("Vyber vstup kytary.");
         await audio.StartLiveAsync();var value=audio.GetAnalysis();for(int wait=0;wait<50 && (!value.ActiveInput || value.Stale || value.Epoch!=audio.GetClock().Epoch);++wait){await Task.Delay(20);value=audio.GetAnalysis();}
         if(!value.ActiveInput || value.Stale || value.Epoch!=audio.GetClock().Epoch)throw new InvalidOperationException("Vstup zatím nedodává aktuální měření. Zkus to znovu.");return value;
@@ -76,6 +78,8 @@ public sealed partial class MainWindow
     }
     private async Task VerifyRhythmAndPalmAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         Navigate(new("10"));Navigate(new("11"));bool controls=rhythmEditors.ContainsKey("10") && rhythmEditors.ContainsKey("11") && rhythmDiagrams.Count==2 && rhythmRoundBars.ContainsKey("10") && rhythmRoundBars.ContainsKey("11");
         string exercise=catalog!.Items("powerChordExercises").First().GetProperty("id").GetString()!;RecordTempo(exercise,123);RecordTempo(exercise,100);Navigate(new("12"));
         var calibration=PalmMuteRules.Calibrate(new double[]{2400,2300,2500},new double[]{600,550,650})!;appSettings=appSettings with{PalmMute=new(PalmDeviceFingerprint(),appSettings.TuningId,InstrumentFingerprint(),calibration,1,palmPickup)};SaveSettings();

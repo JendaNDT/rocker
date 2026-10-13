@@ -239,6 +239,7 @@ ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_export_loop(rocker_audio
 typedef uint32_t (ROCKER_CALL *rocker_export_cancel)(void*);
 typedef void (ROCKER_CALL *rocker_export_progress)(void*,double);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_export_project(const rocker_project_track*,uint32_t,uint32_t,const char*,double,double,rocker_export_cancel,rocker_export_progress,void*);
+ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_get_media_source_ticket(rocker_audio_handle host,uint64_t* active_ticket);
 /* Independent file inspection never touches an audio host or its active media slot. */
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_inspect_file(const char* source,float* peaks,uint32_t capacity,double* duration,rocker_export_cancel cancel,void* context);
 ROCKER_API rocker_audio_result ROCKER_CALL rocker_audio_export_wav(const char* source,const char* destination,double start_seconds,double end_seconds,rocker_export_cancel cancel,rocker_export_progress progress,void* context);

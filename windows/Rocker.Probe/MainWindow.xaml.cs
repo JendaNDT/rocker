@@ -56,6 +56,8 @@ public sealed partial class MainWindow : Window
     }
     private async void Start_Click(object sender, RoutedEventArgs e)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(powerTransition)return;
         try { ++playbackIntent; SetBusy(true); if(audio is not null)await audio.StartAsync(); if(!closingWindow && !closed)RefreshState(); }
         catch (Exception error) { ShowError(error); }
@@ -63,6 +65,9 @@ public sealed partial class MainWindow : Window
     }
     private async void Stop_Click(object sender, RoutedEventArgs e)
     {
+        if(desktopEnabled){await ExecuteDesktopCommandAsync("transport.stop");return;}
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         try { SendVideo(new{op="pause"});++playbackIntent; metroEnabled=false;++metroRevision;metroApplyTimer.Stop();if(audio is not null){await audio.StopAsync();await StopCaptureAsync();await ApplyMetronomeAsync();} if(!closingWindow && !closed)RefreshState(); }
         catch (Exception error) { ShowError(error); }
     }
@@ -130,6 +135,8 @@ public sealed partial class MainWindow : Window
         await LoadScoreAsync(Path.Combine(AppContext.BaseDirectory, "fixtures", "notation-phrases.gp"));
     private async void OpenScore_Click(object sender, RoutedEventArgs e)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         try
         {
             var picker = new FileOpenPicker();
@@ -144,6 +151,8 @@ public sealed partial class MainWindow : Window
 
     private async Task LoadScoreAsync(string path)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(busy || closed)return;SetBusy(true);var previous=preview;NotationStatus.Text="Načítám a vykresluji noty…";
         try
         {
@@ -162,6 +171,8 @@ public sealed partial class MainWindow : Window
 
     private async void ExportMidi_Click(object sender, RoutedEventArgs e)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         var current = preview;
         if (current is null) return;
         try
@@ -194,6 +205,8 @@ public sealed partial class MainWindow : Window
     }
     private async void OpenMedia_Click(object sender, RoutedEventArgs e)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if (busy || audio is null) return;
         try
         {
@@ -210,6 +223,8 @@ public sealed partial class MainWindow : Window
     }
     private async void PlayMedia_Click(object sender, RoutedEventArgs e)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if (busy || audio is null) return;
         try { if(desktopEnabled)await ClaimDesktopSourceAsync(documentContext.Current); ++playbackIntent; SetBusy(true); await audio.PlayAsync(); if(!closingWindow && !closed)RefreshState(); }
         catch (Exception error) { ShowError(error); }
@@ -217,6 +232,8 @@ public sealed partial class MainWindow : Window
     }
     private async void PlayScore_Click(object sender, RoutedEventArgs e)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if (busy || audio is null || preview is null) return;
         var intent = ++playbackIntent;
         var current = preview;
@@ -235,11 +252,15 @@ public sealed partial class MainWindow : Window
     }
     private async void Rewind_Click(object sender, RoutedEventArgs e)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         try { ++playbackIntent; if(audio is not null)await audio.SeekAsync(0); RefreshState(); }
         catch (Exception error) { ShowError(error); }
     }
     private async void Speed_Changed(object sender, SelectionChangedEventArgs e)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if (audio is null || busy || SpeedBox.SelectedItem is not ComboBoxItem item) return;
         var speed = double.Parse((string)item.Tag, System.Globalization.CultureInfo.InvariantCulture);
         if (speed == currentSpeed || (mediaPath is null && mediaMidi is null)) return;
@@ -271,6 +292,8 @@ public sealed partial class MainWindow : Window
     }
     private async void SeekPosition()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         using var sourceScope=desktopEnabled && services.Transport.Owner is{ } owner?documentContext.Enter(owner):null;
         if (updatingPosition || busy || audio is null || !PositionSlider.IsEnabled) return;
         try { ++playbackIntent; await audio.SeekAsync(PositionSlider.Value); RefreshState(); }

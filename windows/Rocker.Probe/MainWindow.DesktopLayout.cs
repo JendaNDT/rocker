@@ -23,6 +23,8 @@ public sealed partial class MainWindow
     }
     private async Task SaveDesktopLayoutAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(!desktopEnabled || desktopRestoring)return;
         var windows=new List<DesktopWindowLayout>();
         windows.Add(new("workspace",DesktopWindowRole.Workspace,new(normalBounds.X,normalBounds.Y,normalBounds.Width,normalBounds.Height),documentTabs.TabItems.OfType<TabViewItem>().Select(t=>t.Tag).OfType<Rocker.AppCore.DocumentSession>().Select(s=>s.Key!).Where(k=>k is not null).ToArray(),Maximized:AppWindow.Presenter is OverlappedPresenter{State:OverlappedPresenterState.Maximized}));
@@ -38,6 +40,8 @@ public sealed partial class MainWindow
     }
     private async Task RestoreDesktopLayoutAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(!desktopEnabled || desktopRestoring)return;desktopRestoring=true;
         try
         {

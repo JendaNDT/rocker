@@ -80,6 +80,8 @@ public sealed partial class MainWindow
     }
     private async Task ApplyAmplifierAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(ampApplying is not null){await ampApplying;return;}
         if(audio is null || closed || closingWindow)return;
         async Task ApplyCore(){while(appliedAmpRevision<ampRevision && !closed && !closingWindow){int revision=ampRevision;await audio.SetAmplifierAsync(NativeAmplifier());appliedAmpRevision=revision;}}
@@ -87,12 +89,16 @@ public sealed partial class MainWindow
     }
     private async Task InitializeAmplifierAsync(IReadOnlyList<DataDocument> documents)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         var settings=documents.FirstOrDefault(d=>d.Kind=="amp" && d.Id=="default");if(settings is not null)ampSettings=UserData.Read<AmpSettings>(settings.Value);
         userAmpPresets.Clear();var presets=documents.FirstOrDefault(d=>d.Kind=="amp-presets" && d.Id=="default");if(presets is not null)userAmpPresets.AddRange(UserData.Read<AmpPreset[]>(presets.Value));
         ++ampRevision;await ApplyAmplifierAsync();RefreshAmplifierControls();
     }
     private async Task VerifyAmplifierAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(!persistenceReady || audio is null)throw new InvalidOperationException("Amp persistence unavailable.");
         var factory=AllAmpPresets().First();ampSettings=factory.Settings with{PresetId=factory.Id};appSettings=appSettings with{AmpEnabled=false};SaveSettings();QueueAmplifier();await ApplyAmplifierAsync();
         var expected=NativeAmplifier();if(audio.GetAmplifier()!=expected)throw new InvalidOperationException("Factory preset did not reach native DSP.");
@@ -105,6 +111,8 @@ public sealed partial class MainWindow
     }
     private async void SaveAmpPreset_Click(object sender,RoutedEventArgs args)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(!persistenceReady || closingWindow)return;
         try{
             var name=new TextBox{Header="Název",MaxLength=120};var dialog=new ContentDialog{XamlRoot=DialogRoot,Title="Uložit preset",Content=name,PrimaryButtonText="Uložit",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Primary};
@@ -115,6 +123,8 @@ public sealed partial class MainWindow
     }
     private async void DeleteAmpPreset_Click(object sender,RoutedEventArgs args)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         var preset=userAmpPresets.FirstOrDefault(p=>p.Id==ampSettings.PresetId);if(preset is null){ShowPersistenceError("Vyber vlastní preset. Tovární presety se nemažou.");return;}
         if(!persistenceReady || closingWindow)return;
         try{

@@ -168,7 +168,7 @@ public sealed partial class NativeAudio : IDisposable, IAsyncDisposable
         var owned = (byte[])bytes.Clone();
         return PrepareAsync((pointer,ticket) => SongMethods.Midi(pointer,ticket,owned,(uint)owned.Length,speed));
     }
-    private Task PrepareAsync(Func<IntPtr,ulong,uint> operation)
+    private Task<ulong> PrepareAsync(Func<IntPtr,ulong,uint> operation)
     {
         lock (control)
         {
@@ -189,6 +189,7 @@ public sealed partial class NativeAudio : IDisposable, IAsyncDisposable
                     {
                         var result = operation(pointer,ticket);
                         if (result != 0) throw new InvalidOperationException($"Načtení zvuku selhalo (stav {result}). {ReadWorkerError(pointer)}");
+                        return ticket;
                     }
                     finally { lock (control) preparing = false; handle.DangerousRelease(); }
                 });

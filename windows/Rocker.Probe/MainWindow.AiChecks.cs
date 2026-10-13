@@ -6,6 +6,8 @@ public sealed partial class MainWindow
 {
     private async Task VerifyAiViewsAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         var previousSettings=aiSettings;var previousHistory=aiHistory.ToArray();Navigate(new("23"));Navigate(new("25"));Navigate(new("24"));bool views=aiPages.Count==3 && aiPages.Values.All(p=>p.Response.IsTextSelectionEnabled && p.Context.Text.Contains("Neobdržel jsi žádný zvuk",StringComparison.Ordinal));
         string lesson=catalog!.Lessons[0].Id;aiPlanDraft=new([new("Ladění","Nalaď kytaru",2,"03"),new("Rytmus","Rozehřej prsty",3,"04"),new("Lekce","Pokračuj lekcí",5,"06",lesson)],10);RenderAiPlanDraft();aiPlanEditors[2].Detail.Text="Upravený pokyn";AcceptAiPlan();var editedPlan=aiSettings.Plan;bool edited=editedPlan is not null && editedPlan.Items[2].Detail=="Upravený pokyn" && editedPlan.Items[2].ItemId==lesson;
         aiPlanEditors[2].Item.ItemsSource=new[]{new ListEntry("unknown-task","Neplatná úloha","")};aiPlanEditors[2].Item.SelectedValue="unknown-task";bool rejected=false;try{AcceptAiPlan();}catch(System.IO.InvalidDataException){rejected=aiSettings.Plan?.Items[2].ItemId==lesson;}

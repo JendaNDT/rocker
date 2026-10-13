@@ -27,6 +27,11 @@ public sealed partial class MainWindow
     private void SetFocusMode(bool enabled)
     {
         if (focusMode == enabled) return;
+        if(desktopEnabled)
+        {
+            var session=OpenDesktop(new("02"));var tab=TabFor(session)!;DetachDesktopTab(tab);var host=floatingHosts[tab];
+            host.AppWindow.SetPresenter(enabled?AppWindowPresenterKind.FullScreen:AppWindowPresenterKind.Overlapped);focusMode=enabled;RefreshFocusChrome();return;
+        }
         if (enabled)
         {
             focusPaneWasOpen = Navigation.IsPaneOpen;

@@ -57,6 +57,17 @@ try{await transport.TakeAsync(docB,()=>Task.CompletedTask);throw new Exception("
 transport.Capturing=false;await transport.TakeAsync(docB,()=>Task.CompletedTask);
 transport.SetGrader(docA);documents.Close(docA);transport.Release(docA);
 Check(transport.Grader is null && transport.Owner==docB && documents.All.Count==1,"Closing a grader releases only its own authority");
+var exit=new ExitCoordinator();int saved=0;
+exit.Guards["doc-a/studio"]=new(new(false,true),()=>Task.FromResult(false),()=>{});
+Check(!await exit.ResolveAsync(_=>Task.FromResult(CloseChoice.Save)) && exit.Guards.Count==1,"Failed save preserves the document and blocks shutdown");
+Check(!await exit.ResolveAsync(_=>Task.FromResult(CloseChoice.Cancel)) && exit.Guards.Count==1,"Canceled exit retains the pending work");
+exit.Guards["doc-a/studio"]=new(new(false,true),()=>{++saved;return Task.FromResult(true);},()=>{});
+Check(await exit.ResolveAsync(_=>Task.FromResult(CloseChoice.Save),"doc-a") && saved==1 && exit.Guards.Count==0,"Explicit save resolves only the requested document");
+var router=new CommandRouter();var commandContext=new CommandContext(docB,"window-b",docB);DocumentSession? commandOwner=null;
+router.Register(new("save","Uložit",_=>true,async c=>{await Task.Yield();commandOwner=c.Session;}));
+Check(await router.ExecuteAsync("save",commandContext) && commandOwner==docB,"Command retains the initiating document across an await");
+Reject(()=>router.Register(new("save","Duplicate",_=>true,_=>Task.CompletedTask)),"Command IDs remain unique");
+Check(!router.CanExecute("unknown",commandContext),"Unregistered commands do not execute arbitrary stored actions");
 string directory = Path.Combine(Path.GetTempPath(), "rocker-app-services-" + Guid.NewGuid().ToString("N"));
 try
 {
@@ -83,6 +94,20 @@ if (nativeChecked)
     var first = audio.EnsureCreated(); var same = audio.EnsureCreated();
     Check(ReferenceEquals(first, same) && audio.HostsCreated == 1, "Repeated views share exactly one native handle");
     Check(first.GetSnapshot().State == AudioState.Stopped && !first.GetMeters().Monitoring, "Construction opens no device and enables no monitoring");
+    string mediaPath=Path.Combine(Path.GetTempPath(),"rocker-desktop-ticket-"+Guid.NewGuid().ToString("N")+".wav");
+    try
+    {
+        using(var writer=new BinaryWriter(File.Create(mediaPath)))
+        {
+            int frames=4800;writer.Write(System.Text.Encoding.ASCII.GetBytes("RIFF"));writer.Write(36+frames*2);writer.Write(System.Text.Encoding.ASCII.GetBytes("WAVEfmt "));writer.Write(16);writer.Write((short)1);writer.Write((short)1);writer.Write(48000);writer.Write(96000);writer.Write((short)2);writer.Write((short)16);writer.Write(System.Text.Encoding.ASCII.GetBytes("data"));writer.Write(frames*2);for(int sample=0;sample<frames;++sample)writer.Write((short)(Math.Sin(sample*Math.PI*2*440/48000)*8192));
+        }
+        ulong ticket=await first.PrepareFileWithIdentityAsync(mediaPath);
+        Check(ticket>0 && await first.GetMediaSourceTicketAsync()==ticket,"A file preparation identifies the actual adopted source, not an old clip with the same speed");
+        var inspected=await MediaInspection.ReadAsync(mediaPath);
+        Check(Math.Abs(inspected.DurationSeconds-.1)<1e-9 && inspected.Peaks.Max()>.24,"Independent inspection returns real decoded duration and peaks");
+        Check(await first.GetMediaSourceTicketAsync()==ticket && first.GetSnapshot().State==AudioState.Stopped,"Viewing a second waveform retains the original source and stopped device");
+    }
+    finally{if(File.Exists(mediaPath))File.Delete(mediaPath);}
     await audio.DisposeAsync(); await audio.DisposeAsync();
     Check(audio.Native is null, "App shutdown releases native owner once");
     Reject(() => audio.EnsureCreated(), "A closed audio session cannot create a replacement host");

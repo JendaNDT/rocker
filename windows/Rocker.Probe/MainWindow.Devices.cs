@@ -14,6 +14,8 @@ public sealed partial class MainWindow
     private void DeviceBusy(bool value){deviceOperationRunning=value;DeviceControls.IsEnabled=!value;if(!closed)RefreshState();}
     private async Task DeviceOperationAsync(Func<Task> operation)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(deviceOperationRunning || closingWindow || powerTransition || busy || fileOperation || backupOperationRunning || profileOperation || studioOperation || looperOperation || audio is null)return;
         DeviceBusy(true);
         try{CancelPalm();await StopRhythmUiAsync();++playbackIntent;await audio.StopAsync();if(!await StopCaptureAsync())return;await operation();}
@@ -23,6 +25,8 @@ public sealed partial class MainWindow
     private async void DevicesRefresh_Click(object sender,RoutedEventArgs args)=>await DeviceOperationAsync(RefreshDeviceListAsync);
     private async Task RefreshDeviceListAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         deviceCatalog=await audio!.GetDevicesAsync();if(closed)return;
         deviceUiUpdating=true;
         DeviceBackendBox.ItemsSource=deviceCatalog.Backends.Select(b=>b.Name).ToArray();
@@ -92,12 +96,16 @@ public sealed partial class MainWindow
     private async void DeviceControlPanel_Click(object sender,RoutedEventArgs args)=>await DeviceOperationAsync(async ()=> {await audio!.ShowDeviceControlPanelAsync();if(!closed)await ShowDeviceDetailsAsync();});
     private async Task ShowDeviceDetailsAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         var details=await audio!.GetDeviceDetailsAsync();if(closed)return;
         DevicePanelButton.IsEnabled=details.ControlPanel;
         DeviceSelectionStatus.Text=$"Ověřeno: {details.Backend} · {details.Output}\n{details.SampleRate:N0} Hz · buffer {details.BufferFrames} vzorků · aktivní vstupy {details.InputChannels}, výstupy {details.OutputChannels}\nOdhad ovladače: vstup {details.InputLatencyFrames} a výstup {details.OutputLatencyFrames} vzorků. Nejde o měření celé odezvy. Zařízení je po ověření uvolněné; zvuk spustíš výslovně.";
     }
     private async Task VerifyDevicesAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(audio is null)throw new InvalidOperationException("Audio host missing.");
         var value=await audio.GetDevicesAsync();
         bool backendContract=value.Backends.Any(b=>b.Name=="Windows Audio") && value.Backends.Any(b=>b.Name=="Windows Audio (Exclusive Mode)") && value.Backends.Any(b=>b.Name=="ASIO");
@@ -106,6 +114,8 @@ public sealed partial class MainWindow
     }
     private async Task RestoreDevicePreferenceAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(appSettings.AudioDevice is not { } saved || audio is null)return;
         DeviceBusy(true);
         try{await audio.ConfigureDeviceAsync(new(saved.Backend,saved.Input,saved.Output,saved.SampleRate,saved.BufferFrames,saved.InputChannel,saved.OutputFirst));deviceSelectionUnavailable=false;await ShowDeviceDetailsAsync();}

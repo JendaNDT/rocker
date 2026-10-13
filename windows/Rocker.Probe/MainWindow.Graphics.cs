@@ -8,6 +8,8 @@ public sealed partial class MainWindow
 {
     private async Task CaptureVisualFinishAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         string? directory=Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTICS_DIR");
         if(string.IsNullOrEmpty(directory) || audio is null)return;
         string previousTheme=selectedTheme;

@@ -17,6 +17,8 @@ public sealed partial class MainWindow
     }
     private async Task SavePracticeWorkspaceAsync(PracticeWorkspace value)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         value = PracticeWorkspaceRules.Validate(value);
         autosave!.Queue(UserData.Document("practice-workspace", "default", value));
         practiceWorkspace = value;
@@ -41,6 +43,8 @@ public sealed partial class MainWindow
     }
     private async Task ToggleFavoriteAsync(string key)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if (!persistenceReady || workspaceOperation) return;
         var keys = practiceWorkspace.Favorites.ToList();
         if (!keys.Remove(key))
@@ -52,11 +56,15 @@ public sealed partial class MainWindow
     }
     private async void FavoriteView_Click(object sender, RoutedEventArgs args)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         try { await ToggleFavoriteAsync(CurrentSearchEntry().Key); }
         catch (Exception) { ShowPersistenceError("Oblíbenou položku se nepodařilo uložit."); }
     }
     private async Task<SearchEntry[]> BuildSearchIndexAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         var index = WorkspaceViews.All.Select(v => new SearchEntry("view:" + v.Id, v.Title, v.Group, new(v.Id))).ToList();
         if (catalog is not null)
         {
@@ -79,6 +87,8 @@ public sealed partial class MainWindow
     }
     private async Task OpenSearchEntryAsync(SearchEntry entry)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if (workspaceOperation || busy || fileOperation || closingWindow || captureDraft is not null || backupOperationRunning || profileOperation)
             throw new InvalidOperationException("Nejdřív dokonči práci nebo zastav nahrávání.");
         if (entry.Key.StartsWith("setup:", StringComparison.Ordinal))
@@ -105,6 +115,8 @@ public sealed partial class MainWindow
     private async void Favorites_Click(object sender, RoutedEventArgs args) => await ShowSearchAsync(true);
     private async Task ShowSearchAsync(bool favoritesOnly)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if (!persistenceReady || closingWindow || workspaceOperation) return;
         try
         {
@@ -157,6 +169,8 @@ public sealed partial class MainWindow
     }
     private async void SaveSetup_Click(object sender, RoutedEventArgs args)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if (!persistenceReady || closingWindow || workspaceOperation) return;
         try
         {
@@ -173,6 +187,8 @@ public sealed partial class MainWindow
     }
     private async void Setups_Click(object sender, RoutedEventArgs args)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if (!persistenceReady || closingWindow || workspaceOperation) return;
         try
         {
@@ -215,6 +231,8 @@ public sealed partial class MainWindow
     }
     private async Task ApplyPracticeSetupAsync(PracticeSetup selected)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         selected = PracticeWorkspaceRules.Validate(selected);
         if (audio is null || !persistenceReady || busy || workspaceOperation || powerTransition || deviceOperationRunning || fileOperation
             || captureDraft is not null || recordingOperation || studioOperation || studioEditTask is { IsCompleted: false } || looperOperation || backupOperationRunning || profileOperation || secretOperationRunning || closingWindow)

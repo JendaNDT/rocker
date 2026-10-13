@@ -48,6 +48,8 @@ public sealed partial class MainWindow
     }
     private async Task CaptureNativeViewAsync(string name="native-content.png",FrameworkElement? element=null)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         var directory = Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTICS_DIR");
         if (string.IsNullOrEmpty(directory)) return;
         var bitmap = new RenderTargetBitmap();

@@ -14,6 +14,8 @@ public sealed partial class MainWindow
     private bool persistenceReady;
     private async Task InitializePersistenceAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         using var initialization=services.Operations.Begin("application","profile-load","Načítání nastavení a pracovních relací",cancellable:false);
         try
         {
@@ -63,6 +65,8 @@ public sealed partial class MainWindow
     }
     private async Task VerifyPersistenceAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if (!persistenceReady) throw new InvalidOperationException("Persistence did not initialize.");
         // The smoke script supplies a separate disposable profile, never the user's files.
         appSettings=appSettings with { Theme="light" }; ApplyTheme("light"); SaveSettings();

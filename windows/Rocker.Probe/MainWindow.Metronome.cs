@@ -127,14 +127,20 @@ public sealed partial class MainWindow
     private void RefreshMetronomeControls()
     {metroUpdating=true;try{foreach(var refresh in metroRefresh)refresh();for(int i=0;i<metroBeatButtons.Count;++i)metroBeatButtons[i].Content=MetroBeatLabel(i);RefreshMetroVisuals();}finally{metroUpdating=false;}}
     private async Task ApplyMetronomeAsync()
-    {if(metroApplying is not null){await metroApplying;return;}if(audio is null || closingWindow || closed)return;async Task Core(){while(metroAppliedRevision<metroRevision && !closed && !closingWindow){int revision=metroRevision;await audio.SetMetronomeAsync(NativeMetronome());metroAppliedRevision=revision;}}metroApplying=Core();try{await metroApplying;}finally{metroApplying=null;}}
+    {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+if(metroApplying is not null){await metroApplying;return;}if(audio is null || closingWindow || closed)return;async Task Core(){while(metroAppliedRevision<metroRevision && !closed && !closingWindow){int revision=metroRevision;await audio.SetMetronomeAsync(NativeMetronome());metroAppliedRevision=revision;}}metroApplying=Core();try{await metroApplying;}finally{metroApplying=null;}}
     private async void MetroStart_Click(object sender,RoutedEventArgs args)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(audio is null || busy || deviceOperationRunning || closingWindow)return;if(deviceSelectionUnavailable){ShowPersistenceError("Nejdřív vyber dostupné zvukové zařízení.");Navigate(new("29"));return;}
         try{SetBusy(true);metroEnabled=true;++metroRevision;await ApplyMetronomeAsync();await audio.StartMetronomeAsync();if(!closed)RefreshState();}catch(Exception error){metroEnabled=false;if(!closed)ShowError(error);}finally{if(!closed)SetBusy(false);}
     }
     private async void MetroStop_Click(object sender,RoutedEventArgs args)
-    {if(audio is null || closingWindow)return;try{metroEnabled=false;++metroRevision;await ApplyMetronomeAsync();if(!closed)RefreshState();}catch(Exception error){if(!closed)ShowError(error);}}
+    {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+if(audio is null || closingWindow)return;try{metroEnabled=false;++metroRevision;await ApplyMetronomeAsync();if(!closed)RefreshState();}catch(Exception error){if(!closed)ShowError(error);}}
     private void RefreshMetronome(AudioSnapshot audioState)
     {
         if(audio is null)return;var state=audio.GetMetronomeSnapshot();if(audioState.State is AudioState.Stopped or AudioState.Faulted)metroEnabled=false;
@@ -145,17 +151,25 @@ public sealed partial class MainWindow
     }
     private async Task InitializeMetronomeAsync(IReadOnlyList<DataDocument> documents)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         metroApplyTimer.Stop();metroRefresh.Clear();metroBeatButtons.Clear();metroBeatPanel=null;metroVisuals.Clear();metroEnabled=false;
         var settings=documents.FirstOrDefault(d=>d.Kind=="metronome" && d.Id=="default");if(settings is not null)metroConfig=UserData.Read<MetronomeConfig>(settings.Value);metroPresets.Clear();var presets=documents.FirstOrDefault(d=>d.Kind=="metronome-presets" && d.Id=="default");if(presets is not null)metroPresets.AddRange(UserData.Read<MetroPreset[]>(presets.Value));++metroRevision;await ApplyMetronomeAsync();
     }
     private async Task VerifyMetronomeAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(audio is null || !persistenceReady)throw new InvalidOperationException("Metronome unavailable.");var preset=AllMetroPresets().First();metroConfig=preset.Config;metroEnabled=false;QueueMetronome();await ApplyMetronomeAsync();var native=audio.GetMetronome();bool match=native.Bpm==metroConfig.Bpm && native.Beats==metroConfig.BeatsPerBar && Math.Abs(native.Swing-metroConfig.Swing)<1e-12 && !native.Enabled;
         var fixture=new MetroPreset("ci-metro-roundtrip","CI metronome",metroConfig);metroPresets.RemoveAll(p=>p.Id==fixture.Id);metroPresets.Add(fixture);autosave!.Queue(UserData.Document("metronome-presets","default",metroPresets.ToArray()));await autosave.FlushAsync();var reopened=await DataRepository.OpenAsync(userFiles);var saved=await reopened.SnapshotAsync();bool restored=UserData.Read<MetronomeConfig>(saved.Documents.Single(d=>d.Kind=="metronome").Value).Bpm==metroConfig.Bpm && UserData.Read<MetroPreset[]>(saved.Documents.Single(d=>d.Kind=="metronome-presets").Value).Any(p=>p.Id==fixture.Id);
         WriteShellDiagnostic("metronome-view.json",new{result=match && restored && metroRefresh.Count>=20?"passed":"failed",nativeParametersVerified=match,persistenceReopened=restored,controlCount=metroRefresh.Count,factoryPresetCount=AllMetroPresets().Length-1,audioPlaybackVerified=false,manualDialogsVerified=false});if(!match || !restored || metroRefresh.Count<20)throw new InvalidOperationException("Metronome UI/persistence contract failed.");
     }
     private async void SaveMetroPreset_Click(object sender,RoutedEventArgs args)
-    {if(!persistenceReady || closingWindow)return;try{var name=new TextBox{Header="Název",MaxLength=120};var dialog=new ContentDialog{XamlRoot=DialogRoot,Title="Uložit metronomový preset",Content=name,PrimaryButtonText="Uložit",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Primary};if(await ShowDialogAsync(dialog)!=ContentDialogResult.Primary || string.IsNullOrWhiteSpace(name.Text))return;var preset=new MetroPreset("user-"+Guid.NewGuid().ToString("N"),name.Text.Trim(),metroConfig);metroPresets.Add(preset);metroPresetId=preset.Id;autosave!.Queue(UserData.Document("metronome-presets","default",metroPresets.ToArray()));QueueMetronome(false);}catch(Exception error){ShowPersistenceError("Preset nelze uložit. "+error.Message);}}
+    {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+if(!persistenceReady || closingWindow)return;try{var name=new TextBox{Header="Název",MaxLength=120};var dialog=new ContentDialog{XamlRoot=DialogRoot,Title="Uložit metronomový preset",Content=name,PrimaryButtonText="Uložit",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Primary};if(await ShowDialogAsync(dialog)!=ContentDialogResult.Primary || string.IsNullOrWhiteSpace(name.Text))return;var preset=new MetroPreset("user-"+Guid.NewGuid().ToString("N"),name.Text.Trim(),metroConfig);metroPresets.Add(preset);metroPresetId=preset.Id;autosave!.Queue(UserData.Document("metronome-presets","default",metroPresets.ToArray()));QueueMetronome(false);}catch(Exception error){ShowPersistenceError("Preset nelze uložit. "+error.Message);}}
     private async void DeleteMetroPreset_Click(object sender,RoutedEventArgs args)
-    {if(!persistenceReady || closingWindow)return;var preset=metroPresets.FirstOrDefault(p=>p.Id==metroPresetId);if(preset is null){ShowPersistenceError("Vyber vlastní preset. Tovární presety se nemažou.");return;}try{var dialog=new ContentDialog{XamlRoot=DialogRoot,Title="Odstranit preset?",Content=preset.Name,PrimaryButtonText="Odstranit",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Close};if(await ShowDialogAsync(dialog)!=ContentDialogResult.Primary)return;metroPresets.Remove(preset);autosave!.Queue(UserData.Document("metronome-presets","default",metroPresets.ToArray()));QueueMetronome();}catch(Exception error){ShowPersistenceError("Preset nelze odstranit. "+error.Message);}}
+    {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+if(!persistenceReady || closingWindow)return;var preset=metroPresets.FirstOrDefault(p=>p.Id==metroPresetId);if(preset is null){ShowPersistenceError("Vyber vlastní preset. Tovární presety se nemažou.");return;}try{var dialog=new ContentDialog{XamlRoot=DialogRoot,Title="Odstranit preset?",Content=preset.Name,PrimaryButtonText="Odstranit",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Close};if(await ShowDialogAsync(dialog)!=ContentDialogResult.Primary)return;metroPresets.Remove(preset);autosave!.Queue(UserData.Document("metronome-presets","default",metroPresets.ToArray()));QueueMetronome();}catch(Exception error){ShowPersistenceError("Preset nelze odstranit. "+error.Message);}}
 }

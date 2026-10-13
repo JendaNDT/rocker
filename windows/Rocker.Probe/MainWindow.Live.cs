@@ -41,6 +41,8 @@ public sealed partial class MainWindow
     }
     private async void LiveStart_Click(object sender,RoutedEventArgs args)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(audio is null || busy || powerTransition || deviceOperationRunning || closingWindow)return;
         if(deviceSelectionUnavailable || appSettings.AudioDevice is not {InputChannel:>=0}){ShowPersistenceError("Nejdřív vyber zvukovou kartu a konkrétní vstup kytary.");Navigate(new("29"));return;}
         try{if(desktopEnabled && CurrentTarget.ViewId is "06" or "09" or "12")await ClaimDesktopGraderAsync();++playbackIntent;SetBusy(true);await audio.StartLiveAsync();if(!closed && !closingWindow)RefreshState();}

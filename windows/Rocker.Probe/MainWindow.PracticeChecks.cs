@@ -8,6 +8,8 @@ public sealed partial class MainWindow
     [DllImport("user32.dll")]private static extern nint SendMessageW(nint window,uint message,nuint wParam,nint lParam);
     private async Task VerifyPracticeAndProfileAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         var oldProfile=instrumentProfile;var oldSettings=appSettings;var oldProgress=progressData;
         Navigate(new("26"));bool form=profileName is not null && profileTuning is not null && pickupEditors.Count==oldProfile.Pickups.Count;
         profileName!.Text="Testovací kytara · žluťoučká";profileHand!.SelectedIndex=1;profileTuning!.SelectedValue="standard";await SaveInstrumentAsync();bool linked=appSettings.Handedness=="left" && CurrentTuning().Id=="standard" && instrumentProfile.Name.Contains("žluťoučká",StringComparison.Ordinal);

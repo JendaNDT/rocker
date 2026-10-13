@@ -11,6 +11,8 @@ public sealed partial class MainWindow
 {
     private async Task VerifyMetronomeVisualizationAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if (audio is null) throw new InvalidOperationException("Native clock unavailable.");
         var previous = metroConfig; string theme = selectedTheme;
         var checks = new Dictionary<string,bool>();

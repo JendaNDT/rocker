@@ -22,6 +22,8 @@ public sealed partial class MainWindow
     }
     private async Task<string> CaptureDiagnosticsAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(audio is null)throw new InvalidOperationException("Zvukové jádro není dostupné.");await audio.RefreshDiagnosticsAsync();var device=await audio.GetDeviceDetailsAsync();var diagnostics=audio.GetDiagnostics();var analysis=audio.GetAnalysis();var clock=audio.GetClock();var state=audio.GetSnapshot();
         string? commit=null;var manifest=Path.Combine(AppContext.BaseDirectory,"app-build.json");try{if(File.Exists(manifest) && new FileInfo(manifest).Length<=16384){using var metadata=JsonDocument.Parse(await File.ReadAllTextAsync(manifest));if(metadata.RootElement.TryGetProperty("sourceCommit",out var source) && source.ValueKind==JsonValueKind.String){var candidate=source.GetString();if(candidate is {Length:40} && candidate.All(Uri.IsHexDigit))commit=candidate;}}}catch(Exception error) when(error is IOException or UnauthorizedAccessException or JsonException){commit=null;}
         var report=new AudioDiagnosticReport(1,DateTimeOffset.UtcNow,typeof(MainWindow).Assembly.GetName().Version?.ToString()??"unknown",commit,Environment.Version.ToString(),Environment.OSVersion.VersionString,diagnostics.AbiVersion,state.State.ToString(),diagnostics.SourceMode switch{0=>"tone",1=>"media",2=>"live",3=>"metronome",4=>"reference",_=>"unknown"},new(device.Backend,device.Input,device.Output,device.SampleRate,device.BufferFrames,device.InputLatencyFrames,device.OutputLatencyFrames),new(diagnostics.Epoch,diagnostics.SampleRate,diagnostics.Callbacks,diagnostics.Frames,diagnostics.MinFrames,diagnostics.MaxFrames,diagnostics.AverageMicroseconds,diagnostics.MaxMicroseconds,diagnostics.GraphBudgetPercent,diagnostics.OverBudget,diagnostics.InvalidCallbacks,clock.DspLatencyFrames),new(diagnostics.AnalysisDropped,diagnostics.AnalysisHighWater,analysis.AgeSeconds*1000,analysis.WindowSeconds*1000),new(diagnostics.DeviceStarts,diagnostics.DeviceFaults,diagnostics.StopRequests,diagnostics.MediaErrors,diagnostics.ConfigurationFailures,diagnostics.LastFailureReason),diagnostics.DriverXrunsKnown?diagnostics.DriverXruns:null);
@@ -29,6 +31,8 @@ public sealed partial class MainWindow
     }
     private async void ExportDiagnostics_Click(object sender,RoutedEventArgs args)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(audio is null || closingWindow || busy)return;try{SetBusy(true);string json=await CaptureDiagnosticsAsync();if(closed || closingWindow)return;
             var text=new TextBox{Header="Místní diagnostický report",Text=json,IsReadOnly=true,AcceptsReturn=true,TextWrapping=TextWrapping.NoWrap,MaxHeight=500,MinWidth=400};var dialog=new ContentDialog{XamlRoot=DialogRoot,Title="Diagnostika zvuku",Content=text,PrimaryButtonText="Uložit JSON…",CloseButtonText="Zavřít",DefaultButton=ContentDialogButton.Close};if(await ShowDialogAsync(dialog)!=ContentDialogResult.Primary)return;
             var picker=new FileSavePicker{SuggestedFileName="Rocker-diagnostika-"+DateTime.UtcNow.ToString("yyyyMMdd-HHmmss"),SuggestedStartLocation=PickerLocationId.DocumentsLibrary};picker.FileTypeChoices.Add("Diagnostika JSON",new List<string>{".json"});WinRT.Interop.InitializeWithWindow.Initialize(picker,DialogWindowHandle);var file=await picker.PickSaveFileAsync();if(file is null || closed)return;await Windows.Storage.FileIO.WriteTextAsync(file,json);diagnosticStatus!.Text="Diagnostika byla uložená. Zvuk běžel bez změny zařízení.";
@@ -36,6 +40,8 @@ public sealed partial class MainWindow
     }
     private async Task VerifyDiagnosticsAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         var json=await CaptureDiagnosticsAsync();using var value=JsonDocument.Parse(json);bool unmeasured=!value.RootElement.GetProperty("physicalRoundtripMeasured").GetBoolean() && value.RootElement.GetProperty("driverXrunCount").ValueKind==JsonValueKind.Null;
         WriteShellDiagnostic("diagnostics-view.json",new{result=unmeasured && diagnosticStatus is not null?"passed":"failed",cachedCountersRead=true,unavailableDriverXrunsNotZero=unmeasured,fixedReportSchema=true,manualExportPickerVerified=false,physicalAudioVerified=false});if(!unmeasured || diagnosticStatus is null)throw new InvalidOperationException("Diagnostic report or controls failed.");
     }

@@ -60,8 +60,12 @@ public sealed partial class MainWindow
             var reference=new Button{Content="Referenční tón"};reference.PointerPressed+=async(_,args)=>{if(!args.GetCurrentPoint(reference).Properties.IsLeftButtonPressed)return;args.Handled=true;if(!reference.CapturePointer(args.Pointer))return;await PlayTunerReferenceAsync(tuning.Strings[index].Midi);};reference.PointerReleased+=async(_,args)=>{args.Handled=true;reference.ReleasePointerCapture(args.Pointer);await StopTunerReferenceAsync();};reference.PointerCanceled+=async(_,_)=>await StopTunerReferenceAsync();reference.PointerCaptureLost+=async(_,_)=>await StopTunerReferenceAsync();reference.Click+=async(_,_)=>await PlayTunerReferenceAsync(tuning.Strings[index].Midi);box.Children.Add(reference);tunerStringsPanel.Children.Add(box);}
     }
     private async Task PlayTunerReferenceAsync(int midi)
-    {if(audio is null || closingWindow || deviceSelectionUnavailable || deviceOperationRunning)return;try{await audio.PlayReferenceAsync(TunerFrequency(midi),appSettings.ReferenceToneVolume);if(!closed)RefreshState();}catch(Exception error){if(!closed)ShowError(error);}}
-    private async Task StopTunerReferenceAsync(){if(audio is null || closingWindow)return;try{await audio.StopReferenceAsync();}catch(Exception error){if(!closed)ShowError(error);}}
+    {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+if(audio is null || closingWindow || deviceSelectionUnavailable || deviceOperationRunning)return;try{await audio.PlayReferenceAsync(TunerFrequency(midi),appSettings.ReferenceToneVolume);if(!closed)RefreshState();}catch(Exception error){if(!closed)ShowError(error);}}
+    private async Task StopTunerReferenceAsync(){
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+if(audio is null || closingWindow)return;try{await audio.StopReferenceAsync();}catch(Exception error){if(!closed)ShowError(error);}}
     private void RefreshTuner(AnalysisSnapshot reading)
     {
         if(tunerNote is null || audio is null)return;bool input=reading.ActiveInput && !reading.Stale;tunerLevel!.SetLevel(audio.GetMeters().InputPeak,input);
@@ -78,11 +82,15 @@ public sealed partial class MainWindow
         if(tunerConfirmedKey is not null && tunerConfirmedKey!=key){tunerStableSince=null;tunerConfirmedKey=null;}
         if(!inTune){tunerStableSince=null;tunerConfirmedKey=null;}else{tunerStableSince??=now;if(appSettings.TunerConfirmSound && now-tunerStableSince>=400 && tunerConfirmedKey!=key){tunerConfirmedKey=key;PlayTunerConfirmation();}}
     }
-    private async void PlayTunerConfirmation(){try{if(audio is not null && !closingWindow)await audio.PlayReferenceAsync(1320,.6,true);}catch(Exception error){if(!closed)ShowError(error);}}
+    private async void PlayTunerConfirmation(){
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+try{if(audio is not null && !closingWindow)await audio.PlayReferenceAsync(1320,.6,true);}catch(Exception error){if(!closed)ShowError(error);}}
     private void InitializeTuner(IReadOnlyList<DataDocument> documents)
     {var tunings=documents.FirstOrDefault(d=>d.Kind=="custom-tunings" && d.Id=="default");customTunings.Clear();if(tunings is not null)customTunings.AddRange(UserData.Read<CustomTuning[]>(tunings.Value));audio?.SetNoiseGate(Math.Clamp(appSettings.NoiseGate,0,.5));tunerTuningBox=null;tunerStringsPanel=null;tunerNote=null;tunerStringButtons.Clear();tunerStableSince=null;tunerConfirmedKey=null;}
     private async void SaveTuning_Click(object sender,RoutedEventArgs args)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(!persistenceReady || closingWindow)return;if(customTunings.Count>=20){ShowPersistenceError("Můžeš uložit nejvýše 20 vlastních ladění.");return;}
         try{var panel=Stack();var name=new TextBox{Header="Název",MaxLength=120};panel.Children.Add(name);var notes=CurrentTuning().Strings.Select((s,i)=>new NumberBox{Header=$"Struna {6-i}, MIDI (24–84)",Minimum=24,Maximum=84,Value=s.Midi,SpinButtonPlacementMode=NumberBoxSpinButtonPlacementMode.Inline}).ToArray();foreach(var note in notes)panel.Children.Add(note);var dialog=new ContentDialog{XamlRoot=DialogRoot,Title="Vlastní ladění",Content=new ScrollViewer{Content=panel},PrimaryButtonText="Uložit",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Primary};if(await ShowDialogAsync(dialog)!=ContentDialogResult.Primary || string.IsNullOrWhiteSpace(name.Text))return;if(notes.Any(n=>!double.IsFinite(n.Value))){ShowPersistenceError("Všechny struny musí mít platné MIDI číslo.");return;}
             var tuning=new CustomTuning("custom-"+Guid.NewGuid().ToString("N"),name.Text.Trim(),notes.Select(n=>{int midi=(int)Math.Clamp(Math.Floor(n.Value+.5),24,84);return new TuningString(Music.MidiToLabel(midi),midi);}).ToArray());customTunings.Add(tuning);appSettings=appSettings with{TuningId=tuning.Id};SaveSettings();autosave!.Queue(UserData.Document("custom-tunings","default",customTunings.ToArray()));RefreshTuningSelector();RebuildTunerStrings();
@@ -90,11 +98,15 @@ public sealed partial class MainWindow
     }
     private async void DeleteTuning_Click(object sender,RoutedEventArgs args)
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(!persistenceReady || closingWindow)return;var tuning=customTunings.FirstOrDefault(t=>t.Id==appSettings.TuningId);if(tuning is null){ShowPersistenceError("Vyber vlastní ladění. Tovární se nemažou.");return;}
         try{var dialog=new ContentDialog{XamlRoot=DialogRoot,Title="Odstranit ladění?",Content=tuning.Label,PrimaryButtonText="Odstranit",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Close};if(await ShowDialogAsync(dialog)!=ContentDialogResult.Primary)return;customTunings.Remove(tuning);appSettings=appSettings with{TuningId="standard"};SaveSettings();autosave!.Queue(UserData.Document("custom-tunings","default",customTunings.ToArray()));RefreshTuningSelector();RebuildTunerStrings();}catch(Exception error){ShowPersistenceError("Ladění nelze odstranit. "+error.Message);}
     }
     private async Task VerifyTunerAsync()
     {
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+
         if(audio is null || tunerStringsPanel is null || !persistenceReady)throw new InvalidOperationException("Tuner unavailable.");var fixture=new CustomTuning("custom-ci-native-tuner","CI tuning",CurrentTuning().Strings);customTunings.RemoveAll(t=>t.Id==fixture.Id);customTunings.Add(fixture);autosave!.Queue(UserData.Document("custom-tunings","default",customTunings.ToArray()));appSettings=appSettings with{ReferenceA=442,Notation="german"};SaveSettings();await autosave.FlushAsync();var reopened=await DataRepository.OpenAsync(userFiles);var saved=await reopened.SnapshotAsync();bool restored=UserData.Read<CustomTuning[]>(saved.Documents.Single(d=>d.Kind=="custom-tunings").Value).Any(t=>t.Id==fixture.Id) && UserData.Read<AppSettings>(saved.Documents.Single(d=>d.Kind=="settings").Value).ReferenceA==442;
         WriteShellDiagnostic("tuner-view.json",new{result=restored && tunerStringButtons.Count==6?"passed":"failed",sixStringControls=tunerStringButtons.Count,persistenceReopened=restored,factoryTunings=AllTunings().Length-customTunings.Count,nativeAnalysisQueried=true,noInputInventsNoNote=audio.GetAnalysis().Frequency==0,audioPlaybackVerified=false,manualTuningDialogsVerified=false});if(!restored || tunerStringButtons.Count!=6)throw new InvalidOperationException("Tuner persistence/controls failed.");
     }

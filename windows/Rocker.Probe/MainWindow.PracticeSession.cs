@@ -58,7 +58,9 @@ public sealed partial class MainWindow
         if(!persistenceReady)return;FlushPractice();if(practiceSession.Phase==PracticePhase.Paused)practiceSession.Resume();else if(practiceSession.Phase!=PracticePhase.Running)practiceSession.Start(MonotonicMs,DateTimeOffset.UtcNow);RefreshPracticeControls();
     }
     private void PracticePause_Click(object sender,RoutedEventArgs args){practiceSession.Pause();FlushPractice();RefreshPracticeControls();}
-    private async void PracticeEnd_Click(object sender,RoutedEventArgs args){practiceSession.End();FlushPractice();try{if(autosave is not null)await autosave.FlushAsync();}catch(Exception){ShowPersistenceError("Čas cvičení se zatím nepodařilo uložit; zůstává v paměti.");}RefreshPracticeControls();}
+    private async void PracticeEnd_Click(object sender,RoutedEventArgs args){
+        using var invocationScope=documentContext.Enter(documentContext.Current);
+practiceSession.End();FlushPractice();try{if(autosave is not null)await autosave.FlushAsync();}catch(Exception){ShowPersistenceError("Čas cvičení se zatím nepodařilo uložit; zůstává v paměti.");}RefreshPracticeControls();}
     private void RefreshPracticeControls()
     {
         UpdateWakeLock();
