@@ -35,7 +35,7 @@ public sealed partial class MainWindow
             windows.Add(new(window.Id,role,DesktopBounds(window),sessions.Where(s=>s.Key is not null).Select(s=>s.Key!).ToArray(),role==DesktopWindowRole.Tool?session.Target.ViewId:null,window.AppWindow.Presenter is OverlappedPresenter{State:OverlappedPresenterState.Maximized},window.AppWindow.Presenter is OverlappedPresenter{IsAlwaysOnTop:true},window.AppWindow.IsVisible,role==DesktopWindowRole.Document?Math.Max(0,window.Tabs.SelectedIndex):0));
         }
         var attached=desktopTools.Values.Where(t=>DesktopRoutes.ToolViews.Contains(t.Session.Target.ViewId) && toolTabs.TabItems.Contains(t.Tab)).Select(t=>t.Session.Target.ViewId).ToArray();
-        var layout=new DesktopWorkspaceLayout(1,windows,Math.Max(140,desktopRoot.ColumnDefinitions[0].Width.Value),Math.Max(140,desktopRoot.ColumnDefinitions[4].Width.Value),desktopRoot.ColumnDefinitions[0].Width.Value!=0,desktopRoot.ColumnDefinitions[4].Width.Value!=0,attached);
+        var layout=new DesktopWorkspaceLayout(1,windows,desktopLibraryWidth,desktopInspectorWidth,desktopLibraryVisible,desktopInspectorVisible,attached);
         await new WorkspaceLayoutStore(userFiles).SaveAsync(layout);
     }
     private async Task RestoreDesktopLayoutAsync()
@@ -46,7 +46,7 @@ public sealed partial class MainWindow
         try
         {
             var layout=new WorkspaceLayoutStore(userFiles).Load();if(layout is null)return;
-            desktopRoot.ColumnDefinitions[0].Width=new(layout.LibraryVisible?layout.LibraryWidthDip:0);desktopRoot.ColumnDefinitions[4].Width=new(layout.InspectorVisible?layout.InspectorWidthDip:0);
+            desktopLibraryWidth=layout.LibraryWidthDip;desktopInspectorWidth=layout.InspectorWidthDip;desktopLibraryVisible=layout.LibraryVisible;desktopInspectorVisible=layout.InspectorVisible;RefreshDesktopPaneWidths();
             foreach(var window in layout.Windows)
             {
                 if(window.Role==DesktopWindowRole.Workspace)FitDesktopWindow(this,window.Bounds,window.Maximized);

@@ -61,6 +61,32 @@ public sealed partial class MainWindow
         surface.Toolbar.Children.Add(new Button{Content="Cvičení a rychlost",MinHeight=32,Flyout=new Flyout{Content=new ScrollViewer{Content=practice,MaxHeight=500,Width=320}}});
         return surface;
     }
+    private FrameworkElement BuildDesktopDocumentPage(Rocker.Domain.NavigationTarget target)
+    {
+        var page=BuildWorkspace(target);
+        if(target.ViewId is not("09" or "10" or "11" or "12" or "17" or "18" or "19" or "21" or "22" or "23" or "24" or "25"))return page;
+        StackPanel? source=page as StackPanel;
+        if(page is Border{Child:StackPanel contents} border){border.Child=null;source=contents;}
+        if(source is null)return page;
+        var children=source.Children.ToArray();foreach(var child in children)source.Children.Remove(child);
+        var main=Stack();var inspector=Stack();var additionalActions=Stack();
+        var surface=new DocumentSurface(new ScrollViewer{Content=main,HorizontalScrollBarVisibility=ScrollBarVisibility.Disabled},inspector:inspector);
+        foreach(var child in children)
+        {
+            if(child is Button button)
+            {
+                string title=button.Content as string??"";
+                bool primary=title.StartsWith("Spustit",StringComparison.Ordinal) || title.StartsWith("Pozastavit",StringComparison.Ordinal) || title.StartsWith("Zastavit",StringComparison.Ordinal) || title.StartsWith("Poslechnout",StringComparison.Ordinal) || title.StartsWith("Nová",StringComparison.Ordinal) || title.StartsWith("Odeslat",StringComparison.Ordinal) || title.StartsWith("Vygenerovat",StringComparison.Ordinal) || title.StartsWith("Zrušit",StringComparison.Ordinal);
+                if(primary){button.MinHeight=32;surface.Toolbar.Children.Add(button);}
+                else if(target.ViewId=="22" && earAnswers.Contains(button))main.Children.Add(button);
+                else additionalActions.Children.Add(button);
+            }
+            else if(child is NumberBox or ComboBox or AutoSuggestBox or CheckBox or ToggleSwitch or Expander)inspector.Children.Add(child);
+            else main.Children.Add(child);
+        }
+        if(additionalActions.Children.Count>0)surface.Toolbar.Children.Add(new Button{Content="Další akce",MinHeight=32,Flyout=new Flyout{Content=new ScrollViewer{Content=additionalActions,MaxHeight=500,Width=320}}});
+        return surface;
+    }
     private static UIElement DesktopDocumentContent(FrameworkElement page)
         =>page is DocumentSurface or Views.ScoreDocumentView or Views.VideoDocumentView ? page : new ScrollViewer{Content=page,Padding=new Thickness(16),HorizontalScrollBarVisibility=ScrollBarVisibility.Disabled};
 }

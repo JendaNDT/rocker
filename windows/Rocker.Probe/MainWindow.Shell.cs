@@ -137,6 +137,7 @@ public sealed partial class MainWindow
     private void Shell_SizeChanged(object sender, SizeChangedEventArgs args)
     {
         if (!shellReady) return;
+        RefreshDesktopPaneWidths();
         var orientation = args.NewSize.Width < 850 ? Orientation.Vertical : Orientation.Horizontal;
         ScoreButtons.Orientation = VideoButtons.Orientation = PlanButtons.Orientation = orientation;
         if(args.NewSize.Width<780){Grid.SetColumn(PracticeStatus,0);PracticeRow.RowDefinitions.Clear();PracticeRow.RowDefinitions.Add(new(){Height=GridLength.Auto});PracticeRow.RowDefinitions.Add(new(){Height=GridLength.Auto});Grid.SetRow(PracticeStatus,1);}else{Grid.SetRow(PracticeStatus,0);Grid.SetColumn(PracticeStatus,1);PracticeRow.RowDefinitions.Clear();}

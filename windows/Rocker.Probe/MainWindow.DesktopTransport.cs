@@ -53,7 +53,7 @@ public sealed partial class MainWindow
         if(!session.IsAlive || !desktopDocuments.TryGetValue(session,out var tab))return;
         using var scope=documentContext.Enter(session);
         if(session.Target.ViewId is "08" or "20")return;
-        var page=BuildWorkspace(session.Target);tab.Content=DesktopDocumentContent(page);
+        var page=BuildDesktopDocumentPage(session.Target);tab.Content=DesktopDocumentContent(page);
         tab.Header=session.Target.ViewId=="07"?song?.Name??"Skladba":session.Target.ViewId=="15"?studioProject?.Name??"Studio":WorkspaceViews.Get(session.Target.ViewId).Title;
     }
     private async Task ClaimDesktopSourceAsync(DocumentSession requested)
@@ -126,12 +126,25 @@ public sealed partial class MainWindow
         }
         services.Transport.SetGrader(next);
     }
+    private bool CanPrepareDesktopMedia()
+    {
+        if(!desktopEnabled)return false;using var scope=documentContext.Enter(documentContext.Active);
+        return CurrentTarget.ViewId switch{"07" or "14"=>mediaPath is not null,"20"=>preview is not null,"15"=>studioProject is{Tracks.Count:>0},_=>false};
+    }
+    private async Task ToggleDesktopSharedTransportAsync()
+    {
+        if(audio is null)return;
+        var owner=services.Transport.Owner??documentContext.Active;using var scope=documentContext.Enter(owner);
+        if(services.Transport.Owner is null || audio.GetTransport().Ready==0)await ClaimDesktopSourceAsync(owner);
+        if(audio.GetTransport().Playing!=0)await audio.PauseAsync();else await audio.PlayAsync();
+    }
     private void RefreshDesktopSessions(TransportSnapshot transport,AnalysisSnapshot analysis)
     {
         foreach(var session in services.Documents.All)
         {
             using var scope=documentContext.Enter(session);
             if(services.Transport.Grader==session){RefreshLesson(analysis);RefreshSurgical(analysis);RefreshPalmMute(analysis);RefreshRhythm();}
+            if(session.Target.ViewId=="20")PlayScoreButton.IsEnabled=preview is not null && !busy && !powerTransition && !deviceSelectionUnavailable;
             if(services.Transport.Owner==session){RefreshNotation(transport);RefreshSong(transport);RefreshRecordingWaveform();}
             if(desktopDocuments.TryGetValue(session,out var tab))
             {

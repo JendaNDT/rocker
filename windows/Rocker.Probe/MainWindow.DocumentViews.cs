@@ -94,6 +94,8 @@ public sealed partial class MainWindow
         view.Action16Control.Click += (sender,args) => { using var scope=documentContext.Enter(session); VideoDeleteLoop_Click(sender,args); };
         view.Action17Control.Click += (sender,args) => { using var scope=documentContext.Enter(session); VideoUndoLoop_Click(sender,args); };
         view.Action18Control.Click += (sender,args) => { using var scope=documentContext.Enter(session); VideoSharedAudio_Click(sender,args); };
+        view.VideoSeekControl.AddHandler(UIElement.PointerPressedEvent,new Microsoft.UI.Xaml.Input.PointerEventHandler((sender,args)=>{using var scope=documentContext.Enter(session);if(args.GetCurrentPoint(view.VideoSeekControl).Properties.IsLeftButtonPressed)videoSeeking=true;}),true);
+        view.VideoSeekControl.AddHandler(UIElement.PointerCaptureLostEvent,new Microsoft.UI.Xaml.Input.PointerEventHandler((sender,args)=>{using var scope=documentContext.Enter(session);VideoSeek_Released(sender,args);}),true);
         return view;
     }
 }

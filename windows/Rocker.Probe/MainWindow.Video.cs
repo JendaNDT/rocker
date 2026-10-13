@@ -10,6 +10,7 @@ using System.Text.Json;
 namespace Rocker.Probe;
 public sealed partial class MainWindow
 {
+    private (string Id,SavedVideoLoop? Loop)? queuedDesktopVideo { get=>documentContext.Current.Get<(string Id,SavedVideoLoop? Loop)?>("queued-video",()=>null);set=>documentContext.Current.Set("queued-video",value); }
     private bool videoBridgeReady { get => documentContext.Current.Get<bool>("videoBridgeReady", () => default); set => documentContext.Current.Set("videoBridgeReady",value); }
     private bool videoReady { get => documentContext.Current.Get<bool>("videoReady", () => default); set => documentContext.Current.Set("videoReady",value); }
     private bool changingVideoRates { get => documentContext.Current.Get<bool>("changingVideoRates", () => default); set => documentContext.Current.Set("changingVideoRates",value); }
@@ -62,6 +63,7 @@ var capturedDocument = documentContext.Current;
                 {
                     case "bridge-ready":
                         videoBridgeReady = true;
+                        if(queuedDesktopVideo is{ } queued){queuedDesktopVideo=null;LoadVideoCore(queued.Id,queued.Loop);}
                         VideoLoadButton.IsEnabled = true;
                         VideoStatus.Text = "Vlož odkaz na YouTube. Načtení videa vyžaduje internet.";
                         WriteVideoReport(new { result = "passed", localBridgeVerified = true, runtimeVersion = core.Environment.BrowserVersionString,
@@ -114,6 +116,16 @@ var capturedDocument = documentContext.Current;
         LoadVideo(id);
     }
     private void LoadVideo(string id,SavedVideoLoop? loop=null)
+    {
+        if(desktopEnabled && CurrentTarget.ItemId!=id){OpenDesktopVideo(id,loop);return;}
+        LoadVideoCore(id,loop);
+    }
+    private void OpenDesktopVideo(string id,SavedVideoLoop? loop=null)
+    {
+        var session=OpenDesktop(new("08",id));using var scope=documentContext.Enter(session);
+        if(videoBridgeReady)LoadVideoCore(id,loop);else queuedDesktopVideo=(id,loop);
+    }
+    private void LoadVideoCore(string id,SavedVideoLoop? loop=null)
     {
         videoPractice.Begin(id);pendingVideoLoop=loop;videoReady=false;videoPosition=0;SetVideoControls(false);VideoUrl.Text="https://www.youtube.com/watch?v="+id;VideoLoopEnabled.IsChecked=false;VideoLoopA.Value=loop?.Start??0;VideoLoopB.Value=loop?.End??0;VideoLoopLabel.Text=loop?.Label??"";VideoStatus.Text="Načítám video…";VideoLoopStatus.Text="Smyčka je vypnutá. Přehrávání spustíš výslovně.";SendVideo(new{op="load",id});
     }

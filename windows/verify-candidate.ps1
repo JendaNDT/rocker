@@ -3,11 +3,14 @@
 param([string]$Reports=(Join-Path $PSScriptRoot 'out/reports'),[string]$Packages=(Join-Path $PSScriptRoot 'out/packages'))
 $ErrorActionPreference='Stop'
 Set-StrictMode -Version Latest
-$checks=@('application-services.json','application-host.json','desktop-runtime.json','domain-checks.json','storage-checks.json','notation-checks.json','media-checks.json','transport-checks.json','browser-ui-import.json','browser-bookmark-import.json','power-recovery.json','performance-checks.json','accessibility.json','design-views.json','ux-layout.json','workspace-enhancements.json','retro-instruments.json','metronome-visualization.json','visual-finish.json','desktop-host-experiment.json','practice-profile.json','overview-live.json','first-run.json','file-commands.json','window-smoke.json','installer/installer-smoke.json')
+$checks=@('application-services.json','application-host.json','desktop-runtime.json','desktop-functional-coverage.json','domain-checks.json','storage-checks.json','notation-checks.json','media-checks.json','transport-checks.json','browser-ui-import.json','browser-bookmark-import.json','power-recovery.json','performance-checks.json','accessibility.json','design-views.json','ux-layout.json','workspace-enhancements.json','retro-instruments.json','metronome-visualization.json','visual-finish.json','desktop-host-experiment.json','practice-profile.json','overview-live.json','first-run.json','file-commands.json','window-smoke.json','installer/installer-smoke.json')
 $results=@()
 foreach($name in $checks){$value=Get-Content (Join-Path $Reports $name) -Raw | ConvertFrom-Json;if($value.result -ne 'passed'){throw "Candidate check failed: $name"};$results+=@{report=$name;result=$value.result}}
-$design=Get-Content (Join-Path $Reports 'design-views.json') -Raw | ConvertFrom-Json
-if($design.nativeViews -ne 32 -or $design.screenshots.Count -ne 35 -or $design.captures.Count -ne 35){throw 'Candidate does not cover every native workspace.'}
+$coverage=Get-Content (Join-Path $Reports 'desktop-functional-coverage.json') -Raw | ConvertFrom-Json
+$expected=@(1..32 | ForEach-Object { $_.ToString('00') })
+$actual=@($coverage.views | ForEach-Object {$_.viewId} | Sort-Object -Unique)
+if($coverage.viewCount -ne $expected.Count -or (Compare-Object $expected $actual) -or @($coverage.views | Where-Object {-not $_.rendered -or $_.widthDip -le 0 -or $_.heightDip -le 0}).Count -gt 0){throw 'Every desktop function must have actual Windows coverage.'}
+foreach($view in $coverage.views){if(-not (Test-Path (Join-Path $Reports $view.file))){throw "Missing desktop capture: $($view.viewId)"}}
 [xml]$native=Get-Content (Join-Path $Reports 'native-tests.xml') -Raw
 if([int]$native.testsuite.failures -ne 0 -or [int]$native.testsuite.tests -ne 22){throw 'All 22 Windows native suites must pass.'}
 $installer=Get-Content (Join-Path $Reports 'installer/installer-smoke.json') -Raw | ConvertFrom-Json

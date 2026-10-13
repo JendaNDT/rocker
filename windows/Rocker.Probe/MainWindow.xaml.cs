@@ -80,7 +80,7 @@ public sealed partial class MainWindow : Window
             var state = audio.GetSnapshot();
             var transport = audio.GetTransport();
             StartButton.IsEnabled = !deviceSelectionUnavailable && !deviceOperationRunning && !powerTransition && !busy && state.State != AudioState.Running;
-            PlayMediaButton.IsEnabled = !deviceSelectionUnavailable && !deviceOperationRunning && !powerTransition && !busy && transport.Ready != 0;
+            PlayMediaButton.IsEnabled = !deviceSelectionUnavailable && !deviceOperationRunning && !powerTransition && !busy && (transport.Ready != 0 || CanPrepareDesktopMedia());
             PlayMenu.IsEnabled = PlayMediaButton.IsEnabled && transport.Playing == 0;
             string playLabel = transport.Playing != 0 ? "Pozastavit" : "Přehrát";
             if (PlayMediaButton.Label != playLabel) { PlayMediaButton.Label = playLabel; PlayMediaButton.Icon = new SymbolIcon(transport.Playing != 0 ? Symbol.Pause : Symbol.Play); }
@@ -223,6 +223,7 @@ public sealed partial class MainWindow : Window
     }
     private async void PlayMedia_Click(object sender, RoutedEventArgs e)
     {
+        if(desktopEnabled && ReferenceEquals(sender,PlayMenu)){try{await ToggleDesktopSharedTransportAsync();}catch(Exception error){ShowError(error);}return;}
         using var invocationScope=documentContext.Enter(documentContext.Current);
 
         if (busy || audio is null) return;
@@ -259,6 +260,7 @@ public sealed partial class MainWindow : Window
     }
     private async void Speed_Changed(object sender, SelectionChangedEventArgs e)
     {
+        using var sourceScope=desktopEnabled && services.Transport.Owner is{ } owner?documentContext.Enter(owner):null;
         using var invocationScope=documentContext.Enter(documentContext.Current);
 
         if (audio is null || busy || SpeedBox.SelectedItem is not ComboBoxItem item) return;

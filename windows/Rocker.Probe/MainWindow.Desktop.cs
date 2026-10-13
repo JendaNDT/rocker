@@ -22,6 +22,10 @@ public sealed partial class MainWindow
     private readonly TextBlock inspectorTitle = new() { Text="Dokument",FontSize=16 };
     private readonly TextBlock inspectorDetails = new() { TextWrapping=TextWrapping.Wrap,IsTextSelectionEnabled=true };
     private readonly TextBlock desktopSource = new() { Text="Zdroj: žádný",TextTrimming=TextTrimming.CharacterEllipsis };
+    private readonly ListView desktopOperations = new(){DisplayMemberPath="Title",MaxHeight=100,SelectionMode=ListViewSelectionMode.Single};
+    private readonly Button cancelDesktopOperation = new(){Content="Zrušit vybranou operaci",MinHeight=30};
+    private double desktopLibraryWidth=230,desktopInspectorWidth=280;
+    private bool desktopLibraryVisible=true,desktopInspectorVisible=true;
     private readonly TextBlock operationStatus = new() { TextWrapping=TextWrapping.Wrap };
     private readonly Dictionary<DocumentSession,TabViewItem> desktopDocuments = [];
     private readonly Dictionary<string,DesktopDocumentKey> desktopFileAliases = [];
@@ -58,7 +62,8 @@ public sealed partial class MainWindow
         librarySearch.TextChanged+=(_,_)=>RefreshDesktopLibrary();desktopLibrary.ItemInvoked+=(_,e)=>{if(e.InvokedItem is TreeViewNode{Content:LibraryEntry entry})Navigate(entry.Target);else if(e.InvokedItem is LibraryEntry item)Navigate(item.Target);};
         desktopRoot.Children.Add(library);Grid.SetColumn(documentTabs,2);desktopRoot.Children.Add(documentTabs);
         var right=new Grid{Padding=new Thickness(12),RowSpacing=10};right.RowDefinitions.Add(new(){Height=GridLength.Auto});right.RowDefinitions.Add(new(){Height=GridLength.Auto});right.RowDefinitions.Add(new(){Height=GridLength.Auto});right.RowDefinitions.Add(new(){Height=new(1,GridUnitType.Star)});
-        right.Children.Add(inspectorTitle);Grid.SetRow(inspectorDetails,1);right.Children.Add(inspectorDetails);Grid.SetRow(operationStatus,2);right.Children.Add(operationStatus);Grid.SetRow(toolTabs,3);right.Children.Add(toolTabs);Grid.SetColumn(right,4);desktopRoot.Children.Add(right);
+        right.Children.Add(inspectorTitle);Grid.SetRow(inspectorDetails,1);right.Children.Add(inspectorDetails);var operationPanel=Stack();operationPanel.Spacing=4;operationPanel.Children.Add(operationStatus);operationPanel.Children.Add(desktopOperations);operationPanel.Children.Add(cancelDesktopOperation);Grid.SetRow(operationPanel,2);right.Children.Add(operationPanel);
+        cancelDesktopOperation.Click+=(_,_)=>{if(desktopOperations.SelectedItem is OperationStatus operation)services.Operations.Cancel(operation.Id);};desktopOperations.SelectionChanged+=(_,_)=>cancelDesktopOperation.IsEnabled=desktopOperations.SelectedItem is OperationStatus{CanCancel:true};Grid.SetRow(toolTabs,3);right.Children.Add(toolTabs);Grid.SetColumn(right,4);desktopRoot.Children.Add(right);
         AddDesktopSplitter(1,0);AddDesktopSplitter(3,4);
         Grid.SetRow(desktopRoot,1);ShellRoot.Children.Add(desktopRoot);
         BindDesktopTabs(documentTabs);BindDesktopTabs(toolTabs);
@@ -70,9 +75,9 @@ public sealed partial class MainWindow
         windowsMenu.Items.Add(new MenuFlyoutSeparator());
         foreach(string id in new[]{"02","03","04","13","16"}){var view=WorkspaceViews.Get(id);Menu(view.Title,()=>Navigate(new(id)));}
         windowsMenu.Items.Add(new MenuFlyoutSeparator());
-        Menu("Skrýt / zobrazit knihovnu",()=>desktopRoot.ColumnDefinitions[0].Width=desktopRoot.ColumnDefinitions[0].Width.Value==0?new(230):new(0));
-        Menu("Skrýt / zobrazit inspektor a nástroje",()=>desktopRoot.ColumnDefinitions[4].Width=desktopRoot.ColumnDefinitions[4].Width.Value==0?new(280):new(0));
-        Menu("Obnovit výchozí rozložení",()=>{desktopRoot.ColumnDefinitions[0].Width=new(230);desktopRoot.ColumnDefinitions[4].Width=new(280);foreach(var tab in floatingHosts.Keys.ToArray())AttachDesktopTab(tab);});
+        Menu("Skrýt / zobrazit knihovnu",()=>{desktopLibraryVisible=!desktopLibraryVisible;RefreshDesktopPaneWidths();});
+        Menu("Skrýt / zobrazit inspektor a nástroje",()=>{desktopInspectorVisible=!desktopInspectorVisible;RefreshDesktopPaneWidths();});
+        Menu("Obnovit výchozí rozložení",()=>{desktopLibraryWidth=230;desktopInspectorWidth=280;desktopLibraryVisible=desktopInspectorVisible=true;RefreshDesktopPaneWidths();foreach(var tab in floatingHosts.Keys.ToArray())AttachDesktopTab(tab);});
         MainMenu.Items.Add(windowsMenu);
         var sourceRow=new StackPanel{Orientation=Orientation.Horizontal,Spacing=10};sourceRow.Children.Add(desktopSource);var stopAll=new Button{Content="Zastavit vše",MinHeight=30};stopAll.Click+=Stop_Click;sourceRow.Children.Add(stopAll);MediaTitle.Visibility=Visibility.Collapsed;
         Grid.SetColumn(sourceRow,0);MediaTransportRow.Children.Add(sourceRow);
@@ -88,7 +93,18 @@ public sealed partial class MainWindow
         thumb.KeyDown+=(_,e)=>{if(e.Key is VirtualKey.Left or VirtualKey.Right){ResizeDesktopPane(resized,(e.Key==VirtualKey.Left?-16:16)*(resized==0?1:-1));e.Handled=true;}};
         Grid.SetColumn(thumb,column);desktopRoot.Children.Add(thumb);
     }
-    private void ResizeDesktopPane(int index,double delta)=>desktopRoot.ColumnDefinitions[index].Width=new(Math.Clamp(desktopRoot.ColumnDefinitions[index].Width.Value+delta,140,Math.Max(140,ShellRoot.ActualWidth*.35)));
+    private void ResizeDesktopPane(int index,double delta)
+    {
+        double value=Math.Clamp((index==0?desktopLibraryWidth:desktopInspectorWidth)+delta,140,Math.Max(140,ShellRoot.ActualWidth*.35));
+        if(index==0)desktopLibraryWidth=value;else desktopInspectorWidth=value;RefreshDesktopPaneWidths();
+    }
+    private void RefreshDesktopPaneWidths()
+    {
+        if(!desktopEnabled || desktopRoot.ColumnDefinitions.Count!=5)return;
+        double width=ShellRoot.ActualWidth;
+        desktopRoot.ColumnDefinitions[0].Width=new(desktopLibraryVisible && width>=760?desktopLibraryWidth:0);
+        desktopRoot.ColumnDefinitions[4].Width=new(desktopInspectorVisible && width>=1060?desktopInspectorWidth:0);
+    }
     private DocumentSession OpenDesktop(NavigationTarget target,DesktopDocumentKey? key=null)
     {
         var route=DesktopRoutes.Resolve(target);
@@ -120,9 +136,9 @@ public sealed partial class MainWindow
         if(!desktopDocuments.TryGetValue(document,out var item))
         {
             using var scope=documentContext.Enter(document);
-            ApplyNavigationTask(target);FrameworkElement page=target.ViewId switch{"20"=>scoreDocumentView,"08"=>videoDocumentView,_=>BuildWorkspace(target)};
+            ApplyNavigationTask(target);FrameworkElement page=target.ViewId switch{"20"=>scoreDocumentView,"08"=>videoDocumentView,_=>BuildDesktopDocumentPage(target)};
             item=CreateDesktopTab(document,page,true);desktopDocuments.Add(document,item);documentTabs.TabItems.Add(item);
-            if(target.ViewId=="08")_=EnsureVideoAsync();
+            if(target.ViewId=="08"){if(target.ItemId is{ } videoId && Rocker.Video.VideoProtocol.ExtractId(videoId)==videoId)queuedDesktopVideo=(videoId,null);RefreshSavedVideoLoops();_=EnsureVideoAsync();}
             if(target.ViewId=="14" && target.ItemId is{ } recordingId)_=LoadDesktopRecordingAsync(document,recordingId);
             if(target.ViewId=="15" && target.ItemId is{ } projectId)_=LoadDesktopProjectAsync(document,projectId);
             if(target.ViewId=="07" && key.Scope==DocumentIdentityScope.CanonicalFile)_=OpenDesktopSongAsync(key.ResourceId,songs.Values.FirstOrDefault(s=>string.Equals(s.SourcePath,key.ResourceId,StringComparison.OrdinalIgnoreCase))?.Name??Path.GetFileNameWithoutExtension(key.ResourceId),null);
@@ -132,6 +148,8 @@ public sealed partial class MainWindow
     private FrameworkElement TakeDevicePanel()
     {
         if(DevicePanel.Parent is Panel parent)parent.Children.Remove(DevicePanel);
+        else if(DevicePanel.Parent is ScrollViewer scroll)scroll.Content=null;
+        else if(DevicePanel.Parent is Border border)border.Child=null;
         DevicePanel.Visibility=Visibility.Visible;return DevicePanel;
     }
     private TabViewItem CreateDesktopTab(DocumentSession session,FrameworkElement page,bool document)
@@ -148,8 +166,8 @@ public sealed partial class MainWindow
         tabs.TabCloseRequested+=(sender,e)=>{_=CloseDesktopTabAsync(e.Tab);};
         tabs.TabDragStarting+=(_,e)=>{draggingTab=e.Tab;draggingDocument=e.Tab.Tag as DocumentSession;e.Data.SetText("rocker-desktop:"+draggingDocument?.Id);};
         tabs.TabDragCompleted+=(_,_)=>{draggingTab=null;draggingDocument=null;};
-        tabs.AllowDrop=true;tabs.DragOver+=(_,e)=>{if(draggingTab is not null)e.AcceptedOperation=DataPackageOperation.Move;};
-        tabs.Drop+=(_,e)=>
+        tabs.AllowDrop=true;tabs.TabStripDragOver+=(_,e)=>{if(draggingTab is not null)e.AcceptedOperation=DataPackageOperation.Move;};
+        tabs.TabStripDrop+=(_,e)=>
         {
             if(draggingTab is not{Tag:DocumentSession session} tab)return;
             bool document=desktopDocuments.ContainsKey(session);
@@ -250,5 +268,12 @@ public sealed partial class MainWindow
         desktopSource.MaxWidth=Math.Max(100,ShellRoot.ActualWidth-580);
         if(HostWindow(session) is DesktopWindow window){window.Status.Text=source=="žádný"?"Přehrávání není připravené":"Zdroj: "+source;window.Title="Rocker — "+title;}
     }
-    private void DesktopOperationsChanged(object? sender,EventArgs args)=>DispatcherQueue.TryEnqueue(()=>{if(!closed)operationStatus.Text=string.Join("\n",services.Operations.Snapshot().Select(o=>o.Title+(o.Progress is{ } p?$" · {p:P0}":"")));});
+    private void DesktopOperationsChanged(object? sender,EventArgs args)=>DispatcherQueue.TryEnqueue(()=>
+    {
+        if(closed)return;var operations=services.Operations.Snapshot();var selected=(desktopOperations.SelectedItem as OperationStatus)?.Id;
+        desktopOperations.ItemsSource=operations;desktopOperations.SelectedItem=operations.FirstOrDefault(o=>o.Id==selected)??operations.FirstOrDefault();
+        desktopOperations.Visibility=cancelDesktopOperation.Visibility=operations.Count>0?Visibility.Visible:Visibility.Collapsed;
+        operationStatus.Text=operations.Count==0?"":$"Probíhá {operations.Count} operací";
+        cancelDesktopOperation.IsEnabled=desktopOperations.SelectedItem is OperationStatus{CanCancel:true};
+    });
 }

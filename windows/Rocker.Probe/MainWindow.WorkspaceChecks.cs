@@ -61,7 +61,8 @@ public sealed partial class MainWindow
             activeWorkspaceDialog!.Hide(); await Task.Delay(50);
             Navigate(new("14")); await ReloadRecordingsAsync();
             var recording = await CreateWorkspaceWaveformFixtureAsync();await ReloadRecordingsAsync();
-            await PreviewRecordingAsync(recording); await Task.Delay(100);
+            bool previewLoaded=await PreviewRecordingAsync(recording);await Task.Delay(100);RefreshRecording();
+            WriteShellDiagnostic("recording-preview-stage.json",new{previewLoaded,peaks=recordingPeaks.Length,children=recordingWaveform?.Children.Count,enabled=recordingRangeA?.IsEnabled,playing=audio.GetTransport().Playing,ready=audio.GetTransport().Ready,busy,fileOperation,workspaceOperation,closingWindow,powerTransition,sourceMatches=playingRecording is not null && mediaPath==OwnedPaths.Resolve(userFiles.Root,playingRecording.RelativePath)});
             Check("recordingPreviewHasDecodedWaveform", recordingPeaks.Length > 0 && recordingWaveform!.Children.Count >= 3 && recordingRangeA!.IsEnabled && audio.GetTransport().Playing == 0);
             SetRecordingRange(0, recording.DurationSec * .5);
             Check("waveformSelectionRetainsSourceTimes", recordingRangeB!.Value == recording.DurationSec * .5 && recordingPlayhead is not null);
