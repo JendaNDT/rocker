@@ -6,7 +6,8 @@ namespace Rocker.Probe;
 public sealed partial class MainWindow
 {
     private FrameworkElement BuildFirstRun()
-    {
+    {var capturedDocument=documentContext.Current;
+
         var panel=Stack();int step=appSettings.SetupStep;string[] titles=["Vítej v Rockeru","Převod původních dat","Zvuková karta a kanál","Ověření signálu","Poslech a monitoring","Připraveno ke cvičení"];
         panel.Children.Add(Text(titles[step]));panel.Children.Add(Text($"Krok {step+1} z {titles.Length} · průvodce lze kdykoliv zopakovat",true));panel.Children.Add(new ProgressBar{Minimum=0,Maximum=titles.Length,Value=step+1});
         switch(step)
@@ -18,7 +19,7 @@ public sealed partial class MainWindow
             case 4:panel.Children.Add(Text("Začni nízkou hlasitostí sluchátek. Pro aparát zapni softwarový monitoring výslovně v Live. Přímý Direct Monitor na kartě je cesta bez efektů; současný poslech obou může vytvořit dvojí zvuk. Odezvu ověří až hra na skutečné kartě."));AddSettingsLink(panel,"Ovládat monitoring a aparát","02");break;
             case 5:panel.Children.Add(Text("Data se průběžně ukládají místně. Denní plán, lekce, aparát a nahrávky fungují bez AI klíče. Zahájit cvičení ve spodním panelu počítá aktivitu; samotné otevření stránky nepřidá minuty. YouTube a AI vyžadují síť pouze při použití."));AddSettingsLink(panel,"Nastavení a složka dat","28");break;
         }
-        var previous=new Button{Content="Předchozí krok",IsEnabled=step>0};previous.Click+=(_,_)=>SetSetupStep(step-1);panel.Children.Add(previous);var next=new Button{Content=step==5?"Dokončit průvodce a otevřít přehled":"Pokračovat (tento krok lze přeskočit)",IsEnabled=persistenceReady};next.Click+=(_,_)=>{if(step<5)SetSetupStep(step+1);else{appSettings=appSettings with{Onboarded=true,SetupStep=0};SaveSettings();Navigate(new("01"));}};panel.Children.Add(next);var later=new Button{Content="Dokončit později"};later.Click+=(_,_)=>Navigate(new("01"));panel.Children.Add(later);return Card(panel);
+        var previous=new Button{Content="Předchozí krok",IsEnabled=step>0};previous.Click+=(_,_)=>{using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;SetSetupStep(step-1);};panel.Children.Add(previous);var next=new Button{Content=step==5?"Dokončit průvodce a otevřít přehled":"Pokračovat (tento krok lze přeskočit)",IsEnabled=persistenceReady};next.Click+=(_,_)=>{using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;if(step<5)SetSetupStep(step+1);else{appSettings=appSettings with{Onboarded=true,SetupStep=0};SaveSettings();Navigate(new("01"));}};panel.Children.Add(next);var later=new Button{Content="Dokončit později"};later.Click+=(_,_)=>{using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;Navigate(new("01"));};panel.Children.Add(later);return Card(panel);
     }
     private void SetSetupStep(int step){appSettings=appSettings with{SetupStep=Math.Clamp(step,0,5)};SaveSettings();workspaceCache.Remove(new("31"));ShowWorkspace();}
     private async Task VerifyFirstRunAsync()

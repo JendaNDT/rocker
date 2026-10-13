@@ -61,7 +61,7 @@ public sealed partial class MainWindow
             panel.Children.Add(previous);panel.Children.Add(next);var back=new Button{Content="Výběr lekcí"};back.Click+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;Navigate(new("05"));};panel.Children.Add(back);
             if(desktopLesson is not null)
             {
-                desktopLesson.Toolbar.Children.Clear();foreach(var button in new[]{back,previous,next}){panel.Children.Remove(button);button.MinHeight=32;desktopLesson.Toolbar.Children.Add(button);}
+                foreach(var old in desktopLesson.Toolbar.Children.OfType<Button>().Where(b=>b.Tag as string=="lesson-action").ToArray())desktopLesson.Toolbar.Children.Remove(old);foreach(var button in new[]{back,previous,next}){panel.Children.Remove(button);button.MinHeight=32;button.Tag="lesson-action";desktopLesson.Toolbar.Children.Add(button);}
                 selectingStep=true;try{stepList!.SelectedIndex=session.StepIndex;}finally{selectingStep=false;}
                 desktopLesson.Footer.Children.Clear();desktopLesson.Footer.Children.Add(Text($"Krok {session.StepIndex+1} / {lesson.Steps.Count}"+(session.Completed?" · dokončeno":""),true));
             }

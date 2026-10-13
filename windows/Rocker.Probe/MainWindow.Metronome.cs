@@ -28,13 +28,14 @@ public sealed partial class MainWindow
     private readonly List<Button> metroBeatButtons=[];
     private MetroPreset[] AllMetroPresets()=>catalog!.Items("metronomePresets").Select(value=>new MetroPreset(value.GetProperty("id").GetString()!,value.GetProperty("name").GetString()!,MetronomeRules.Sanitize(value))).Concat(metroPresets).ToArray();
     private FrameworkElement BuildMetronome()
-    {
+    {var capturedDocument=documentContext.Current;
+
         var panel=Stack();panel.Children.Add(MetroTransport());
         var tempoControls=Stack();
         var presets=new ComboBox{Header="Preset",DisplayMemberPath="Name",HorizontalAlignment=HorizontalAlignment.Stretch};
         metroRefresh.Add(()=>{presets.ItemsSource=AllMetroPresets();presets.SelectedItem=((MetroPreset[])presets.ItemsSource).FirstOrDefault(p=>p.Id==metroPresetId);});
-        presets.SelectionChanged+=(_,_)=>{if(!metroUpdating && presets.SelectedItem is MetroPreset preset){metroConfig=preset.Config;metroPresetId=preset.Id;RebuildMetroBeats();QueueMetronome(false);}};tempoControls.Children.Add(presets);
-        var tempo=new ValueDial{Label="Tempo (BPM)",Minimum=40,Maximum=240,Value=metroConfig.Bpm};metroRefresh.Add(()=>tempo.Value=metroConfig.Bpm);tempo.ValueChanged+=(_,_)=>ChangeMetro(c=>c with{Bpm=Music.ClampBpm(tempo.Value)});
+        presets.SelectionChanged+=(_,_)=>{using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;if(!metroUpdating && presets.SelectedItem is MetroPreset preset){metroConfig=preset.Config;metroPresetId=preset.Id;RebuildMetroBeats();QueueMetronome(false);}};tempoControls.Children.Add(presets);
+        var tempo=new ValueDial{Label="Tempo (BPM)",Minimum=40,Maximum=240,Value=metroConfig.Bpm};metroRefresh.Add(()=>tempo.Value=metroConfig.Bpm);tempo.ValueChanged+=(_,_)=>{using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;ChangeMetro(c=>c with{Bpm=Music.ClampBpm(tempo.Value)});};
         tempoControls.Children.Insert(0,tempo);
         var visual=CreateMetroVisual();var visualPane=Stack();visualPane.Children.Add(MetroVisualSelector());visualPane.Children.Add(visual);
         // At narrow widths the instrument stays first, rather than falling below its editors.
@@ -67,14 +68,15 @@ public sealed partial class MainWindow
         panel.Children.Add(Text("Odpočet a obě rytmické vrstvy používají stejné zvukové hodiny. Změna taktu nebo dělení začne na další době. Vizualizace čte zvukové jádro; nevytváří kliky. Nahrávání a Looper používají stejné hodiny a svůj výslovný odpočet.",true));RefreshMetronomeControls();return new VintageHousing(panel,"ROCKER / RHYTHM MASTER");
     }
     private FrameworkElement BuildCompactMetronome()
-    {
+    {var capturedDocument=documentContext.Current;
+
         var panel=Stack();panel.Spacing=6;
         var header=new Grid{ColumnSpacing=8};header.ColumnDefinitions.Add(new(){Width=new(1,GridUnitType.Star)});header.ColumnDefinitions.Add(new(){Width=new(80)});header.ColumnDefinitions.Add(new(){Width=new(110)});
         var title=Text("Metronom");title.FontWeight=Microsoft.UI.Text.FontWeights.SemiBold;title.VerticalAlignment=VerticalAlignment.Center;header.Children.Add(title);
         var tempo=MetroNumber("Tempo (BPM)",40,240,()=>metroConfig.Bpm,v=>ChangeMetro(c=>c with{Bpm=(int)v}));tempo.Header=null;tempo.SpinButtonPlacementMode=NumberBoxSpinButtonPlacementMode.Compact;Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(tempo,"Tempo metronomu (BPM)");ToolTipService.SetToolTip(tempo,"Tempo v BPM");Grid.SetColumn(tempo,1);header.Children.Add(tempo);
         var selector=MetroVisualSelector(compact:true);Grid.SetColumn(selector,2);header.Children.Add(selector);panel.Children.Add(header);
         panel.Children.Add(MetroTransport(compact:true));panel.Children.Add(CreateMetroVisual(compact:true));
-        var open=new Button{Content="Úplné nastavení metronomu",FontSize=12,MinHeight=28};open.Click+=(_,_)=>Navigate(new("04"));panel.Children.Add(open);focusSecondary.Add(open);return new VintageHousing(panel,compact:true);
+        var open=new Button{Content="Úplné nastavení metronomu",FontSize=12,MinHeight=28};open.Click+=(_,_)=>{using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;Navigate(new("04"));};panel.Children.Add(open);focusSecondary.Add(open);return new VintageHousing(panel,compact:true);
     }
     private ComboBox MetroVisualSelector(bool compact=false)
     {

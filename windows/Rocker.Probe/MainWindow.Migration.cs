@@ -7,13 +7,14 @@ namespace Rocker.Probe;
 public sealed partial class MainWindow
 {
     private FrameworkElement BuildLegacyImport()
-    {
+    {var capturedDocument=documentContext.Current;
+
         var panel=Stack();panel.Children.Add(Text("Převod z webové aplikace"));
         panel.Children.Add(Text("Ve stejném prohlížeči a profilu otevři původní Rocker. Export pro Windows zahrnuje nahrávky i značky; stará záloha JSON přenese pouze nastavení a pokrok. Webová data se nemažou.",true));
-        var helper=new Button{Content="Pomocník pro export z původního prohlížeče"};helper.Click+=async(_,_)=>{try{var file=await Windows.Storage.StorageFile.GetFileFromPathAsync(System.IO.Path.Combine(AppContext.BaseDirectory,"PwaMigration","helper.html"));await Windows.System.Launcher.LaunchFileAsync(file);}catch(Exception){ShowPersistenceError("Pomocníka nelze otevřít. Použij export pro Windows v původní webové aplikaci nebo její JSON zálohu.");}};panel.Children.Add(helper);
+        var helper=new Button{Content="Pomocník pro export z původního prohlížeče"};helper.Click+=async(_,_)=>{using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;try{var file=await Windows.Storage.StorageFile.GetFileFromPathAsync(System.IO.Path.Combine(AppContext.BaseDirectory,"PwaMigration","helper.html"));await Windows.System.Launcher.LaunchFileAsync(file);}catch(Exception){ShowPersistenceError("Pomocníka nelze otevřít. Použij export pro Windows v původní webové aplikaci nebo její JSON zálohu.");}};panel.Children.Add(helper);
         var import=new Button{Content="Otevřít soubor pro převod…",IsEnabled=persistenceReady};var status=Text("Podporované soubory: .rockermigration a původní .json zálohy.",true);
         import.Click+=async (_,_)=>
-        {
+        {using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;
             if(powerTransition || fileOperation || busy || deviceOperationRunning || database is null || catalog is null || profileOperation || backupOperationRunning)return;
             var picker=new FileOpenPicker();picker.FileTypeFilter.Add(".rockermigration");picker.FileTypeFilter.Add(".json");WinRT.Interop.InitializeWithWindow.Initialize(picker,DialogWindowHandle);
             var file=await picker.PickSingleFileAsync();if(file is null || closed)return;

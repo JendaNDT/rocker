@@ -30,25 +30,26 @@ public sealed partial class MainWindow
         catch (Exception) { return ("", 0); }
     }
     private FrameworkElement BuildUpdates()
-    {
+    {var capturedDocument=documentContext.Current;
+
         var panel = Stack(); panel.Children.Add(Text("Aktualizace Rockeru"));
         var build = InstalledBuild(); panel.Children.Add(Text(build.Commit.Length >= 12 ? "Nainstalované sestavení: " + build.Commit[..12] : "Vývojové sestavení bez údajů vydání.", true));
         updateStatus = Text(updateMessage, true); Microsoft.UI.Xaml.Automation.AutomationProperties.SetLiveSetting(updateStatus, Microsoft.UI.Xaml.Automation.Peers.AutomationLiveSetting.Polite); panel.Children.Add(updateStatus);
         updateProgress = new ProgressBar { Minimum = 0, Maximum = 100, Value = 0, Visibility = Visibility.Collapsed }; Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(updateProgress, "Stažení aktualizace"); panel.Children.Add(updateProgress);
-        updateCheckButton = PrimaryAction("Zkontrolovat nové vydání"); updateCheckButton.Click += async (_, _) => await CheckUpdatesAsync(false); panel.Children.Add(updateCheckButton);
-        updateDownloadButton = new Button { Content = "Stáhnout ověřený instalátor", MinHeight = 40, IsEnabled = false }; updateDownloadButton.Click += async (_, _) => await DownloadUpdateAsync(); panel.Children.Add(updateDownloadButton);
-        updateInstallButton = new Button { Content = "Nainstalovat a zavřít Rocker…", MinHeight = 40, IsEnabled = false }; updateInstallButton.Click += async (_, _) => await InstallUpdateAsync(); panel.Children.Add(updateInstallButton);
-        updateCancelButton = new Button { Content = "Zrušit kontrolu / stažení", Visibility = Visibility.Collapsed }; updateCancelButton.Click += (_, _) => updateCancellation?.Cancel(); panel.Children.Add(updateCancelButton);
-        var browser = new Button { Content = "Otevřít vydání v přihlášeném prohlížeči" }; browser.Click += async (_, _) => await Windows.System.Launcher.LaunchUriAsync(availableUpdate?.Release.Page ?? ReleaseUpdates.ReleasesPage); panel.Children.Add(browser);
+        updateCheckButton = PrimaryAction("Zkontrolovat nové vydání"); updateCheckButton.Click += async (_, _) => {using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;await CheckUpdatesAsync(false);}; panel.Children.Add(updateCheckButton);
+        updateDownloadButton = new Button { Content = "Stáhnout ověřený instalátor", MinHeight = 40, IsEnabled = false }; updateDownloadButton.Click += async (_, _) => {using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;await DownloadUpdateAsync();}; panel.Children.Add(updateDownloadButton);
+        updateInstallButton = new Button { Content = "Nainstalovat a zavřít Rocker…", MinHeight = 40, IsEnabled = false }; updateInstallButton.Click += async (_, _) => {using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;await InstallUpdateAsync();}; panel.Children.Add(updateInstallButton);
+        updateCancelButton = new Button { Content = "Zrušit kontrolu / stažení", Visibility = Visibility.Collapsed }; updateCancelButton.Click += (_, _) => {using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;updateCancellation?.Cancel();}; panel.Children.Add(updateCancelButton);
+        var browser = new Button { Content = "Otevřít vydání v přihlášeném prohlížeči" }; browser.Click += async (_, _) => {using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;await Windows.System.Launcher.LaunchUriAsync(availableUpdate?.Release.Page ?? ReleaseUpdates.ReleasesPage);}; panel.Children.Add(browser);
         updateAtStartup = new CheckBox { Content = "Při spuštění nabídnout novou verzi", IsChecked = appSettings.CheckUpdatesOnStartup, IsEnabled = persistenceReady };
         void Startup() { appSettings = appSettings with { CheckUpdatesOnStartup = updateAtStartup.IsChecked == true }; SaveSettings(); }
-        updateAtStartup.Checked += (_, _) => Startup(); updateAtStartup.Unchecked += (_, _) => Startup(); panel.Children.Add(updateAtStartup);
+        updateAtStartup.Checked += (_, _) => {using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;Startup();}; updateAtStartup.Unchecked += (_, _) => {using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;Startup();}; panel.Children.Add(updateAtStartup);
         panel.Children.Add(Text("Repozitář je soukromý. Pro kontrolu a stažení přímo z aplikace můžeš uložit vlastní GitHub token s přístupem jen k JendaNDT/rocker a oprávněním Contents: read. Bez tokenu použij prohlížeč přihlášený na GitHub a stáhni instalátor z vydání.", true));
         var access = Stack(); var token = new PasswordBox { Header = "GitHub token pro soukromé aktualizace", MaxLength = 4096 }; access.Children.Add(token);
         var keyState = Text("Token se chrání pro tvůj účet Windows; nepatří do záloh ani diagnostiky.", true); access.Children.Add(keyState);
         var save = new Button { Content = "Uložit přístup k aktualizacím" };
         save.Click += async (_, _) =>
-        {
+        {using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;
             if (updateOperation || closingWindow || secretOperationRunning) return;
             try { secretOperationRunning = true; await new SecretStore(userFiles, "github-updates").SetAsync(token.Password); token.Password = ""; keyState.Text = "Přístup je uložený. Oprávnění ověří tlačítko Zkontrolovat nové vydání."; }
             catch (Exception) { keyState.Text = "Přístup se nepodařilo uložit. Zkontroluj token a zkus to znovu."; }
@@ -56,7 +57,7 @@ public sealed partial class MainWindow
         }; access.Children.Add(save);
         var remove = new Button { Content = "Odstranit uložený přístup" };
         remove.Click += async (_, _) =>
-        {
+        {using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;
             if (updateOperation || closingWindow || secretOperationRunning) return;
             try { secretOperationRunning = true; await new SecretStore(userFiles, "github-updates").RemoveAsync(); token.Password = ""; keyState.Text = "Uložený přístup byl odstraněn."; }
             catch (Exception) { keyState.Text = "Přístup se nepodařilo odstranit."; }

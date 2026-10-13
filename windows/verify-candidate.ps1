@@ -3,7 +3,7 @@
 param([string]$Reports=(Join-Path $PSScriptRoot 'out/reports'),[string]$Packages=(Join-Path $PSScriptRoot 'out/packages'))
 $ErrorActionPreference='Stop'
 Set-StrictMode -Version Latest
-$checks=@('application-services.json','application-host.json','desktop-runtime.json','desktop-functional-coverage.json','domain-checks.json','storage-checks.json','notation-checks.json','media-checks.json','transport-checks.json','browser-ui-import.json','browser-bookmark-import.json','power-recovery.json','performance-checks.json','accessibility.json','design-views.json','ux-layout.json','workspace-enhancements.json','retro-instruments.json','metronome-visualization.json','visual-finish.json','desktop-host-experiment.json','practice-profile.json','overview-live.json','first-run.json','file-commands.json','window-smoke.json','installer/installer-smoke.json')
+$checks=@('application-services.json','application-host.json','desktop-runtime.json','desktop-interactions.json','desktop-functional-coverage.json','domain-checks.json','storage-checks.json','notation-checks.json','media-checks.json','transport-checks.json','browser-ui-import.json','browser-bookmark-import.json','power-recovery.json','performance-checks.json','accessibility.json','design-views.json','ux-layout.json','workspace-enhancements.json','retro-instruments.json','metronome-visualization.json','visual-finish.json','desktop-host-experiment.json','practice-profile.json','overview-live.json','first-run.json','file-commands.json','window-smoke.json','installer/installer-smoke.json')
 $results=@()
 foreach($name in $checks){$value=Get-Content (Join-Path $Reports $name) -Raw | ConvertFrom-Json;if($value.result -ne 'passed'){throw "Candidate check failed: $name"};$results+=@{report=$name;result=$value.result}}
 $coverage=Get-Content (Join-Path $Reports 'desktop-functional-coverage.json') -Raw | ConvertFrom-Json
@@ -24,4 +24,8 @@ try{
     foreach($name in @('component-manifest.json','licenses/pwa-exporter-MIT.txt','licenses/inno-setup-license.txt','PwaMigration/helper.html','help/user-guide.txt','help/brother-test.txt','build-info.json')){if(-not $archive.GetEntry($name)){throw "Required runtime/license file is missing: $name"}}
     $reader=[IO.StreamReader]::new($archive.GetEntry('build-info.json').Open());try{$info=$reader.ReadToEnd() | ConvertFrom-Json}finally{$reader.Dispose()}
 }finally{$archive.Dispose()}
+foreach($name in @('desktop-runtime.json','desktop-interactions.json','desktop-functional-coverage.json')){
+    $report=Get-Content (Join-Path $Reports $name) -Raw | ConvertFrom-Json
+    if(-not $report.actualWindows -or $report.sourceCommit -ne $info.commit){throw "Desktop evidence is stale or not from Windows: $name"}
+}
 @{result='passed';sourceCommit=$info.commit;windowsRun=$info.runUrl;nativeWorkspaces=32;nativeSuites=[int]$native.testsuite.tests;reports=$results;installer=$setup.Name;correspondingSourcesSeparate=$true;manualHardwareVerified=$false;actualLatencyVerified=$false;onlineAiVerified=$false;onlineYouTubeVerified=$false;narratorAndHighContrastManualVerified=$false;wallClockHourOnHardwareVerified=$false;smartAppControlVerified=$false} | ConvertTo-Json -Depth 6 | Set-Content (Join-Path $Reports 'candidate-validation.json')

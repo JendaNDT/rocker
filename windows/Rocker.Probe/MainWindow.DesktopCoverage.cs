@@ -16,9 +16,11 @@ public sealed partial class MainWindow
             FrameworkElement root;
             if(route.Destination==DesktopDestination.Dialog)
             {
-                var dialog=new ContentDialog{XamlRoot=ShellRoot.XamlRoot,Title=view.Title,Content=new ScrollViewer{Content=BuildWorkspace(target),MaxHeight=480},CloseButtonText="Zavřít"};
-                var shown=ShowDialogAsync(dialog);await Task.Delay(150);if(dialog.XamlRoot is null || shown.IsCompleted)throw new InvalidOperationException("Desktop dialog did not open: "+view.Id);
-                await CaptureDesktopElementAsync(dialog,name);dialog.Hide();await shown;root=ShellRoot;
+                var owner=view.Id=="32"?OpenDesktop(new("14",(await recordingLibrary!.ListAsync()).OrderByDescending(r=>r.CreatedAt).First().Id)):documentContext.Default;
+                using var scope=documentContext.Enter(owner);
+                var dialog=view.Id=="32"?CreateRecordingExportDialog((await recordingLibrary!.ListAsync()).OrderByDescending(r=>r.CreatedAt).First()).Dialog:new ContentDialog{XamlRoot=DialogRoot,Title=view.Title,Content=new ScrollViewer{Content=BuildWorkspace(target),MaxHeight=480},CloseButtonText="Zavřít"};
+                var shown=ShowDialogAsync(dialog);var dialogDeadline=DateTime.UtcNow.AddSeconds(5);while(!dialog.IsLoaded && !shown.IsCompleted && DateTime.UtcNow<dialogDeadline)await Task.Delay(25);if(!dialog.IsLoaded || shown.IsCompleted)throw new InvalidOperationException("Desktop dialog did not open: "+view.Id);
+                await CaptureDesktopThemesAsync(dialog,name);dialog.Hide();await shown;root=ShellRoot;
             }
             else
             {
@@ -30,14 +32,20 @@ public sealed partial class MainWindow
                 while((root.XamlRoot is null || root.ActualWidth<=0 || root.ActualHeight<=0) && DateTime.UtcNow<deadline)await Task.Delay(25);
                 root.UpdateLayout();await Task.Delay(100);
                 if(root.XamlRoot is null || root.ActualWidth<=0 || root.ActualHeight<=0)throw new InvalidOperationException("Desktop view has no actual layout: "+view.Id);
-                await CaptureDesktopElementAsync(root,name);
+                await CaptureDesktopThemesAsync(root,name);
             }
-            coverage.Add(new{viewId=view.Id,view.Title,destination=route.Destination.ToString(),file=name,widthDip=root.ActualWidth,heightDip=root.ActualHeight,rendered=true});
+            coverage.Add(new{viewId=view.Id,view.Title,destination=route.Destination.ToString(),file=name,widthDip=root.ActualWidth,heightDip=root.ActualHeight,rendered=true,lightFile=name.Replace(".png","-light.png"),themes=new[]{"dark","light"}});
         }
         OpenDesktop(new("01"));
         string links=string.Join("",WorkspaceViews.All.Select(v=>$"<article><h2>{System.Net.WebUtility.HtmlEncode(v.Title)}</h2><a href='desktop-screens/view-{v.Id}.png'><img src='desktop-screens/view-{v.Id}.png' alt='{System.Net.WebUtility.HtmlEncode(v.Title)}'></a></article>"));
         await File.WriteAllTextAsync(Path.Combine(folder,"desktop-gallery.html"),"<!doctype html><html lang='cs'><meta charset='utf-8'><title>Rocker — desktop Windows</title><style>body{font:16px system-ui;background:#221e19;color:#eee2d0;margin:24px}main{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px}img{width:100%}</style><h1>Pracovní plocha a skutečná Windows okna</h1><p>Automatický kontrolní profil. Snímky nepotvrzují skutečnou zvukovku, poslech ani online služby.</p><main>"+links+"</main></html>");
         WriteShellDiagnostic("desktop-functional-coverage.json",new{result="passed",views=coverage,viewCount=coverage.Count,sourceCommit=Environment.GetEnvironmentVariable("GITHUB_SHA"),actualWindows=true,hardwareVerified=false});
+    }
+    private async Task CaptureDesktopThemesAsync(FrameworkElement root,string name)
+    {
+        string previous=selectedTheme;
+        try{ApplyTheme("dark");root.RequestedTheme=ElementTheme.Dark;await Task.Delay(100);await CaptureDesktopElementAsync(root,name);ApplyTheme("light");root.RequestedTheme=ElementTheme.Light;await Task.Delay(100);await CaptureDesktopElementAsync(root,name.Replace(".png","-light.png"));}
+        finally{ApplyTheme(previous);root.RequestedTheme=ShellRoot.RequestedTheme;}
     }
     private async Task CaptureDesktopElementAsync(FrameworkElement root,string name)
     {

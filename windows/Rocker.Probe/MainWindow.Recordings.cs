@@ -147,10 +147,7 @@ public sealed partial class MainWindow
         using var invocationScope=documentContext.Enter(documentContext.Current);
 
         if(exportOperation)return;
-        var options=Stack();options.Children.Add(Text(value.Capture is { } capture?new[]{"Suchá kytara","Kytara za aparátem","Výsledný mix"}[capture.Bus]:"Původní importovaná nahrávka"));
-        var format=new ComboBox{Header="Formát",ItemsSource=new[]{"Původní soubor beze změny","WAV · PCM 24 bit"},SelectedIndex=0};options.Children.Add(format);
-        var start=new NumberBox{Header="Od (sekundy)",Minimum=0,Maximum=value.DurationSec,Value=0,IsEnabled=false};var end=new NumberBox{Header="Do (sekundy)",Minimum=0,Maximum=value.DurationSec,Value=value.DurationSec,IsEnabled=false};options.Children.Add(start);options.Children.Add(end);format.SelectionChanged+=(_,_)=>start.IsEnabled=end.IsEnabled=format.SelectedIndex==1;
-        var dialog=new ContentDialog{XamlRoot=DialogRoot,Title="Export nahrávky",Content=options,PrimaryButtonText="Vybrat soubor…",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Primary};if(await ShowDialogAsync(dialog)!=ContentDialogResult.Primary)return;
+        var (dialog,format,start,end)=CreateRecordingExportDialog(value);if(await ShowDialogAsync(dialog)!=ContentDialogResult.Primary)return;
         if(format.SelectedIndex==1 && (!double.IsFinite(start.Value)||!double.IsFinite(end.Value)||end.Value<=start.Value))throw new InvalidDataException("Vyber platný rozsah exportu.");
         var picker=new FileSavePicker{SuggestedFileName=value.Name};picker.FileTypeChoices.Add(format.SelectedIndex==0?"Původní zvuk":"WAV PCM24",new[]{format.SelectedIndex==0?Path.GetExtension(value.RelativePath):".wav"});WinRT.Interop.InitializeWithWindow.Initialize(picker,DialogWindowHandle);var file=await picker.PickSaveFileAsync();if(file is null)return;
         var dataRoot=userFiles.Root.TrimEnd(Path.DirectorySeparatorChar)+Path.DirectorySeparatorChar;if(Path.GetFullPath(file.Path).StartsWith(dataRoot,StringComparison.OrdinalIgnoreCase))throw new InvalidDataException("Export zvol mimo datovou složku Rockeru.");
@@ -158,6 +155,14 @@ public sealed partial class MainWindow
         exportOperation=true;exportCancellation=CancellationTokenSource.CreateLinkedTokenSource(exportLease.Cancellation);var cancellation=exportCancellation.Token;
         try{if(format.SelectedIndex==0)await recordingLibrary!.ExportOriginalAsync(value,file.Path,cancellation);else{if(!await new OwnedMedia(userFiles).VerifyAsync(new(value.RelativePath,value.Sha256,value.Bytes),cancellation))throw new InvalidDataException("Nahrávka chybí nebo je změněná.");var progress=new Progress<double>(fraction=>{if(!closed){ShellNotice.IsOpen=true;ShellNotice.Severity=InfoBarSeverity.Informational;ShellNotice.Message=$"Export WAV · {fraction:P0}. Zrušení je dostupné v pohledu Export.";}});await MediaExport.WavAsync(OwnedPaths.Resolve(userFiles.Root,value.RelativePath),file.Path,start.Value,end.Value,progress,cancellation);}if(!closed){ShellNotice.IsOpen=true;ShellNotice.Severity=InfoBarSeverity.Success;ShellNotice.Message="Nahrávka byla exportována: "+file.Name;}}
         catch(OperationCanceledException){if(!closed)ShowPersistenceError("Export byl zrušen. Původní cílový soubor je zachovaný.");}finally{exportOperation=false;exportCancellation.Dispose();exportCancellation=null;}
+    }
+    private (ContentDialog Dialog,ComboBox Format,NumberBox Start,NumberBox End) CreateRecordingExportDialog(RecordingData value)
+    {
+        var options=Stack();options.Children.Add(Text(value.Capture is { } capture?new[]{"Suchá kytara","Kytara za aparátem","Výsledný mix"}[capture.Bus]:"Původní importovaná nahrávka"));
+        var format=new ComboBox{Header="Formát",ItemsSource=new[]{"Původní soubor beze změny","WAV · PCM 24 bit"},SelectedIndex=0};options.Children.Add(format);
+        var start=new NumberBox{Header="Od (sekundy)",Minimum=0,Maximum=value.DurationSec,Value=0,IsEnabled=false};var end=new NumberBox{Header="Do (sekundy)",Minimum=0,Maximum=value.DurationSec,Value=value.DurationSec,IsEnabled=false};options.Children.Add(start);options.Children.Add(end);format.SelectionChanged+=(_,_)=>start.IsEnabled=end.IsEnabled=format.SelectedIndex==1;
+        var dialog=new ContentDialog{XamlRoot=DialogRoot,Title="Export nahrávky",Content=options,PrimaryButtonText="Vybrat soubor…",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Primary};
+        return (dialog,format,start,end);
     }
     private FrameworkElement BuildRecordingExport()
     {

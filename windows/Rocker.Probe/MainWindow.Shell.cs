@@ -69,7 +69,7 @@ public sealed partial class MainWindow
         if (AppWindow.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Restored })
             normalBounds = new(AppWindow.Position.X,AppWindow.Position.Y,AppWindow.Size.Width,AppWindow.Size.Height);
     }
-    private void Navigate(NavigationTarget target) { if(desktopEnabled){var session=OpenDesktop(target);if(persistenceReady && PracticeViews.Contains(target.ViewId)){appSettings=appSettings with{ResumeTask=session.Target};SaveSettings();}return;}componentMode = false; navigation.Navigate(target);if(persistenceReady && PracticeViews.Contains(target.ViewId)){appSettings=appSettings with{ResumeTask=target};SaveSettings();}ShowWorkspace(); }
+    private void Navigate(NavigationTarget target) { if(desktopEnabled){try{var session=OpenDesktop(target);if(persistenceReady && PracticeViews.Contains(target.ViewId)){appSettings=appSettings with{ResumeTask=session.Target};SaveSettings();}}catch(Exception error){ShowPersistenceError(error.Message);}return;}componentMode = false; navigation.Navigate(target);if(persistenceReady && PracticeViews.Contains(target.ViewId)){appSettings=appSettings with{ResumeTask=target};SaveSettings();}ShowWorkspace(); }
     private void ShowWorkspace()
     {
         if (!shellReady || closed) return;

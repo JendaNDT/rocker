@@ -37,7 +37,7 @@ public sealed partial class MainWindow
         }
         foreach(var pair in desktopTools.Where(p=>p.Key!="settings").ToArray())
         {
-            RemoveDesktopTabParent(pair.Value.Tab);floatingHosts.Remove(pair.Value.Tab);desktopTools.Remove(pair.Key);
+            RemoveDesktopTabParent(pair.Value.Tab);floatingHosts.Remove(pair.Value.Tab);pair.Value.Session.Close();desktopTools.Remove(pair.Key);
         }
         foreach(var window in desktopWindows.Where(w=>!floatingHosts.ContainsValue(w)).ToArray())
         {dialogService?.Forget(window.Root.XamlRoot);window.ExitApproved=true;window.Close();desktopWindows.Remove(window);}

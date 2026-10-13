@@ -19,13 +19,14 @@ public sealed class WorkspaceLayoutStore(UserFiles files)
     private sealed record Window(string Id,DesktopWindowRole Role,DesktopPixelBounds Bounds,Key[] Documents,string? ToolViewId,bool Maximized,bool AlwaysOnTop,bool Visible,int SelectedDocumentIndex);
     private sealed record View(Key Key,double Zoom,int Track,int Bar,int LoopFirst,int LoopLast,bool AllTracks,bool Follow);
     private sealed record Layout(int SchemaVersion,Window[] Windows,double LibraryWidthDip,double InspectorWidthDip,bool LibraryVisible,bool InspectorVisible,string[]? AttachedTools,View[]? ViewPreferences);
-    public DesktopWorkspaceLayout? Load()
+    public DesktopWorkspaceLayout? Load()=>LoadFile(FilePath);
+    public static DesktopWorkspaceLayout? LoadFile(string path)
     {
-        if(!File.Exists(FilePath))return null;
-        if(new FileInfo(FilePath).Length>256*1024)throw new InvalidDataException("Soubor rozložení je příliš velký.");
+        if(!File.Exists(path))return null;
+        if(new FileInfo(path).Length>256*1024)throw new InvalidDataException("Soubor rozložení je příliš velký.");
         try
         {
-            var value=JsonSerializer.Deserialize<Layout>(File.ReadAllText(FilePath))??throw new InvalidDataException("Soubor rozložení je prázdný.");
+            var value=JsonSerializer.Deserialize<Layout>(File.ReadAllText(path))??throw new InvalidDataException("Soubor rozložení je prázdný.");
             if(value.Windows is null || value.Windows.Any(w=>w is null || w.Documents is null || w.Documents.Any(k=>k is null)))throw new InvalidDataException("Soubor rozložení není úplný.");
             if(value.ViewPreferences?.Any(v=>v is null || v.Key is null)==true)throw new InvalidDataException("Nastavení dokumentu není úplné.");
             return new DesktopWorkspaceLayout(value.SchemaVersion,value.Windows.Select(w=>new DesktopWindowLayout(w.Id,w.Role,w.Bounds,w.Documents.Select(k=>k.Read()).ToArray(),w.ToolViewId,w.Maximized,w.AlwaysOnTop,w.Visible,w.SelectedDocumentIndex)).ToArray(),value.LibraryWidthDip,value.InspectorWidthDip,value.LibraryVisible,value.InspectorVisible,value.AttachedTools,value.ViewPreferences?.Select(v=>new DesktopViewPreferences(v.Key.Read(),v.Zoom,v.Track,v.Bar,v.LoopFirst,v.LoopLast,v.AllTracks,v.Follow)).ToArray()).Validate();

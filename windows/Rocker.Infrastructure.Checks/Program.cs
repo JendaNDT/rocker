@@ -41,6 +41,7 @@ try
     string channel="rocker-check-"+Guid.NewGuid().ToString("N");using var channelCancel=new CancellationTokenSource(TimeSpan.FromSeconds(10));var requests=new List<string>();var listener=InstanceChannel.ListenAsync(channel,v=>{lock(requests)requests.Add(v);},channelCancel.Token);await InstanceChannel.SendAsync(channel,unicode,channelCancel.Token);lock(requests)Check(requests.SequenceEqual(new[]{unicode}),"current-user instance channel forwards a bounded UTF-8 path once");channelCancel.Cancel();await listener;Check(listener.IsCompletedSuccessfully,"instance listener cancels without a stranded wait");
     Console.WriteLine($"PASS: {checks} file ownership/replacement assertions.");
     int workspaceLayoutChecks=await Rocker.Infrastructure.Checks.WorkspaceLayoutChecks.RunAsync(files);
+    int canonicalFileChecks=await Rocker.Infrastructure.Checks.CanonicalFileChecks.RunAsync(files);
     int aiChecks=await AiChecks.RunAsync();
     int storageChecks = await StorageChecks.RunAsync(files);
     int secretChecks = await SecretChecks.RunAsync(files);
@@ -50,6 +51,6 @@ try
     int updateChecks = await UpdateChecks.RunAsync(directory);
     int recordingChecks = await RecordingChecks.RunAsync(directory);
     int releaseUpdateChecks = await ReleaseUpdateChecks.RunAsync(directory);
-    if (args.Length == 1) await File.WriteAllTextAsync(args[0], System.Text.Json.JsonSerializer.Serialize(new { result="passed", fileChecks=checks, workspaceLayoutChecks, aiChecks, storageChecks, secretChecks, backupChecks, migrationChecks, diagnosticChecks, recordingChecks, updateChecks, releaseUpdateChecks, dpapiVerified=OperatingSystem.IsWindows(), forcedTerminationVerified=true, manualHardwareVerified=false }));
+    if (args.Length == 1) await File.WriteAllTextAsync(args[0], System.Text.Json.JsonSerializer.Serialize(new { result="passed", fileChecks=checks, workspaceLayoutChecks, canonicalFileChecks, aiChecks, storageChecks, secretChecks, backupChecks, migrationChecks, diagnosticChecks, recordingChecks, updateChecks, releaseUpdateChecks, dpapiVerified=OperatingSystem.IsWindows(), forcedTerminationVerified=true, manualHardwareVerified=false }));
 }
 finally { if (Directory.Exists(directory)) Directory.Delete(directory, true); }

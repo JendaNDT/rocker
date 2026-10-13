@@ -21,7 +21,8 @@ public sealed partial class MainWindow
     private TextBlock? ampStatus;
     private AmpPreset[] AllAmpPresets()=>catalog is null?userAmpPresets.ToArray():catalog.Items("ampPresets").Select(UserData.Read<AmpPreset>).Concat(userAmpPresets).ToArray();
     private FrameworkElement BuildAmplifier()
-    {
+    {var capturedDocument=documentContext.Current;
+
         var panel=Stack();var sectionLabel=Text("ZVUKOVÝ ŘETĚZEC");sectionLabel.Style=(Style)Application.Current.Resources["VintageSectionTextStyle"];panel.Children.Add(sectionLabel);
         ampEnabledBox=new CheckBox{Content="Zapnout aparát",IsChecked=appSettings.AmpEnabled};ampEnabledBox.Checked+=AmplifierEnabled_Changed;ampEnabledBox.Unchecked+=AmplifierEnabled_Changed;panel.Children.Add(VintageHousing.PowerSwitch(ampEnabledBox));
         ampPresetsBox=PresetSelector();panel.Children.Add(ampPresetsBox);
@@ -30,21 +31,22 @@ public sealed partial class MainWindow
         foreach(var (id,label) in parameters)
         {
             var dial=new ValueDial{Label=label+" (%)",Minimum=id is "bass" or "mid" or "treble"?-100:0,Maximum=100,Value=AmpValue(id)*100};ampDials.Add(id,dial);
-            dial.ValueChanged+=(_,_)=>{if(ampUiUpdating)return;SetAmpValue(id,dial.Value/100);QueueAmplifier();};controls.Add(dial);
+            dial.ValueChanged+=(_,_)=>{using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;if(ampUiUpdating)return;SetAmpValue(id,dial.Value/100);QueueAmplifier();};controls.Add(dial);
         }
         panel.Children.Add(ResponsiveInstrumentColumns(controls.ToArray()));
         ampDistortionBox=new ComboBox{Header="Zkreslení",ItemsSource=new[]{"Overdrive","Distortion","Fuzz"},SelectedIndex=ampSettings.Distortion=="overdrive"?0:ampSettings.Distortion=="fuzz"?2:1};
-        ampDistortionBox.SelectionChanged+=(_,_)=>{if(!ampUiUpdating){ampSettings=ampSettings with{Distortion=ampDistortionBox.SelectedIndex==0?"overdrive":ampDistortionBox.SelectedIndex==2?"fuzz":"distortion",PresetId=null};QueueAmplifier();}};panel.Children.Add(ampDistortionBox);
+        ampDistortionBox.SelectionChanged+=(_,_)=>{using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;if(!ampUiUpdating){ampSettings=ampSettings with{Distortion=ampDistortionBox.SelectedIndex==0?"overdrive":ampDistortionBox.SelectedIndex==2?"fuzz":"distortion",PresetId=null};QueueAmplifier();}};panel.Children.Add(ampDistortionBox);
         ampCabinetBox=new ComboBox{Header="Kabinet",ItemsSource=new[]{"Moderní","Vintage","Otevřený"},SelectedIndex=ampSettings.Cabinet=="vintage"?1:ampSettings.Cabinet=="open"?2:0};
-        ampCabinetBox.SelectionChanged+=(_,_)=>{if(!ampUiUpdating){ampSettings=ampSettings with{Cabinet=ampCabinetBox.SelectedIndex==1?"vintage":ampCabinetBox.SelectedIndex==2?"open":"modern",PresetId=null};QueueAmplifier();}};panel.Children.Add(ampCabinetBox);
+        ampCabinetBox.SelectionChanged+=(_,_)=>{using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;if(!ampUiUpdating){ampSettings=ampSettings with{Cabinet=ampCabinetBox.SelectedIndex==1?"vintage":ampCabinetBox.SelectedIndex==2?"open":"modern",PresetId=null};QueueAmplifier();}};panel.Children.Add(ampCabinetBox);
         var save=new Button{Content="Uložit vlastní preset"};save.Click+=SaveAmpPreset_Click;var remove=new Button{Content="Odstranit vybraný vlastní preset"};remove.Click+=DeleteAmpPreset_Click;panel.Children.Add(save);panel.Children.Add(remove);
         ampStatus=Text("Presety a změny se průběžně ukládají. Monitoring zapínáš samostatně v Live.",true);panel.Children.Add(ampStatus);
         panel.Children.Add(Text("Vypnutý aparát vrací přesně suchý vstup. Komprese nepoužívá lookahead; 2× oversampling zkreslení přidá 15 vzorků FIR prodlevy. Odezvu celé karty tím neměříme. Nativní reverb a ostatní efekty mají vlastní zvuk; význam ovladačů odpovídá původním presetům.",true));return new VintageHousing(panel,"ROCKER / KYTAROVÝ APARÁT",speaker:true);
     }
     private FrameworkElement BuildCompactAmplifier()
-    {
+    {var capturedDocument=documentContext.Current;
+
         var panel=Stack();liveAmpEnabledBox=new CheckBox{Content="Aparát",IsChecked=appSettings.AmpEnabled};liveAmpEnabledBox.Checked+=AmplifierEnabled_Changed;liveAmpEnabledBox.Unchecked+=AmplifierEnabled_Changed;panel.Children.Add(VintageHousing.PowerSwitch(liveAmpEnabledBox));
-        liveAmpPresetsBox=PresetSelector();panel.Children.Add(liveAmpPresetsBox);var open=new Button{Content="Ovladače aparátu"};open.Click+=(_,_)=>Navigate(new("13"));panel.Children.Add(open);focusSecondary.Add(open);return new VintageHousing(panel,compact:true);
+        liveAmpPresetsBox=PresetSelector();panel.Children.Add(liveAmpPresetsBox);var open=new Button{Content="Ovladače aparátu"};open.Click+=(_,_)=>{using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;Navigate(new("13"));};panel.Children.Add(open);focusSecondary.Add(open);return new VintageHousing(panel,compact:true);
     }
     private ComboBox PresetSelector()
     {

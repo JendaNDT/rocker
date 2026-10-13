@@ -10,9 +10,10 @@ public sealed partial class MainWindow
 {
     private TextBlock? diagnosticStatus;
     private FrameworkElement BuildAudioDiagnostics()
-    {
+    {var capturedDocument=documentContext.Current;
+
         var panel=Stack();diagnosticStatus=Text("Čítače se naplní po spuštění zvuku. Diagnostika nepřehrává tón ani neotevírá nové zařízení.",true);panel.Children.Add(diagnosticStatus);
-        var refresh=new Button{Content="Načíst také čítač ovladače"};refresh.Click+=async(_,_)=>{try{if(audio is not null)await audio.RefreshDiagnosticsAsync();if(!closed)RefreshAudioDiagnostics();}catch(Exception error){if(!closed)ShowPersistenceError("Čítač ovladače nelze načíst. "+error.Message);}};
+        var refresh=new Button{Content="Načíst také čítač ovladače"};refresh.Click+=async(_,_)=>{using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;try{if(audio is not null)await audio.RefreshDiagnosticsAsync();if(!closed)RefreshAudioDiagnostics();}catch(Exception error){if(!closed)ShowPersistenceError("Čítač ovladače nelze načíst. "+error.Message);}};
         var export=new Button{Content="Prohlédnout a uložit diagnostiku"};export.Click+=ExportDiagnostics_Click;panel.Children.Add(refresh);panel.Children.Add(export);panel.Children.Add(Text("Čas grafu měří práci Rockeru v callbacku. Překročený rozpočet není potvrzený výpadek karty; její vlastní čítač může být nedostupný. Buffer ani FIR prodleva neměří celé zpoždění kytary. Export obsahuje verze, zařízení a čítače; soukromé nahrávky, cesty, AI klíče a zprávy se do něj nevkládají.",true));return new Expander{Header="Diagnostika zvuku",Content=panel,HorizontalAlignment=HorizontalAlignment.Stretch};
     }
     private void RefreshAudioDiagnostics()

@@ -17,12 +17,14 @@ public sealed partial class MainWindow
         InitializeDesktop();await Task.Delay(100);
         Check(desktopEnabled && Navigation.Visibility==Visibility.Collapsed && documentTabs.XamlRoot is not null,"native-workspace-host");
         Check(desktopRoot.ColumnDefinitions.Count==5 && documentTabs.ActualWidth>0,"library-document-inspector-layout");
-        var a=OpenDesktop(new("15","desktop-project-a"));using(documentContext.Enter(a)){studioZoom=31;studioUndo.Clear();}
-        var b=OpenDesktop(new("15","desktop-project-b"));using(documentContext.Enter(b)){studioZoom=79;}
+        var baselineProject=new ProjectManifest(1,Guid.NewGuid().ToString("D"),"Projekt · první dokument",DateTimeOffset.UtcNow,DateTimeOffset.UtcNow,48000,[]);var otherProject=baselineProject with{Id=Guid.NewGuid().ToString("D"),Name="Projekt · druhý dokument"};
+        await services.Storage!.Projects.SaveAsync(baselineProject);await services.Storage.Projects.SaveAsync(otherProject);
+        var a=OpenDesktop(new("15",baselineProject.Id));await LoadDesktopProjectAsync(a,baselineProject.Id);using(documentContext.Enter(a)){studioZoom=31;studioUndo.Clear();}
+        var b=OpenDesktop(new("15",otherProject.Id));await LoadDesktopProjectAsync(b,otherProject.Id);using(documentContext.Enter(b)){studioZoom=79;}
         Check(a!=b && desktopDocuments.ContainsKey(a) && desktopDocuments.ContainsKey(b),"two-project-documents");
         using(documentContext.Enter(a))Check(studioZoom==31,"first-project-zoom-preserved");
         using(documentContext.Enter(b))Check(studioZoom==79,"second-project-zoom-independent");
-        Check(OpenDesktop(new("15","desktop-project-a"))==a,"duplicate-project-activation");
+        Check(OpenDesktop(new("15",baselineProject.Id))==a,"duplicate-project-activation");
         var file=System.IO.Path.Combine(AppContext.BaseDirectory,"fixtures","notation-phrases.gp");
         var score=OpenDesktop(new("20"),DesktopDocumentKey.ForCanonicalFile("20",System.IO.Path.GetFullPath(file)));
         object image;UIElement view;double selectedBar;
@@ -48,6 +50,7 @@ public sealed partial class MainWindow
         OpenDesktop(new("01"));
         await CaptureDesktopRuntimeAsync();
         WriteShellDiagnostic("desktop-runtime.json",new{result="passed",checks=checks.Count,scenarios=checks,actualWindows=true,physicalPointerDragVerified=false,physicalAudioVerified=false,sourceCommit=Environment.GetEnvironmentVariable("GITHUB_SHA")});
+        await VerifyDesktopInteractionsAsync();
         await VerifyDesktopCoverageAsync();
     }
     private async Task CaptureDesktopRuntimeAsync()

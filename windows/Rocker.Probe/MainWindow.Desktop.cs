@@ -36,6 +36,7 @@ public sealed partial class MainWindow
     
     private readonly List<DesktopWindow> desktopWindows = [];
     private DocumentSession? draggingDocument;
+    private DocumentSession? desktopMainActive;
     private TabViewItem? draggingTab;
     private sealed record LibraryEntry(string Title,NavigationTarget Target) { public override string ToString()=>Title; }
     private DialogService? dialogService;
@@ -53,6 +54,7 @@ public sealed partial class MainWindow
     {
         if(desktopEnabled)return;
         desktopEnabled=true;Navigation.Visibility=Visibility.Collapsed;
+        Activated+=(_,_)=>{if(desktopEnabled && desktopMainActive is{IsAlive:true} session)documentContext.Select(session);};
         desktopRoot.ColumnDefinitions.Add(new(){Width=new(230)});
         desktopRoot.ColumnDefinitions.Add(new(){Width=new(5)});
         desktopRoot.ColumnDefinitions.Add(new(){Width=new(1,GridUnitType.Star)});
@@ -84,7 +86,7 @@ public sealed partial class MainWindow
         Grid.SetColumn(sourceRow,0);MediaTransportRow.Children.Add(sourceRow);
         services.Operations.Changed+=DesktopOperationsChanged;
         InitializeDesktopCommands();BindDesktopCommands(ShellRoot);RefreshDesktopLibrary();_=RefreshDesktopLibraryAssetsAsync();OpenDesktop(new("01"));
-        if(!appSettings.Onboarded)_=ShowDesktopDialogAsync(new("31"));
+        if(!appSettings.Onboarded && string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTICS_DIR")))_=ShowDesktopDialogAsync(new("31"));
     }
     private void AddDesktopSplitter(int column,int resized)
     {
@@ -118,7 +120,7 @@ public sealed partial class MainWindow
                 if(!floatingHosts.ContainsKey(existing.Tab) && !toolTabs.TabItems.Contains(existing.Tab))toolTabs.TabItems.Add(existing.Tab);
                 if(route.Destination==DesktopDestination.Settings && existing.Session.Target!=target){existing.Session.Target=target;using var settingsScope=documentContext.Enter(existing.Session);existing.Tab.Content=BuildDesktopSettingsContent(existing.Session,target);existing.Tab.Header=WorkspaceViews.Get(target.ViewId).Title;}
                 ActivateDesktopTab(existing.Tab);return existing.Session;}
-            var session=new DocumentSession(target);using var scope=documentContext.Enter(route.Destination==DesktopDestination.Tool || route.Destination==DesktopDestination.Live ? documentContext.Default : session);
+            var session=new DocumentSession(target);using var scope=documentContext.Enter(session);
             FrameworkElement page=route.Destination==DesktopDestination.Settings?BuildDesktopSettingsContent(session,target):BuildWorkspace(target);
             var tab=CreateDesktopTab(session,page,false);desktopTools.Add(identity,(session,tab));
             if(route.Destination==DesktopDestination.Tool){toolTabs.TabItems.Add(tab);toolTabs.SelectedItem=tab;}
@@ -158,12 +160,15 @@ public sealed partial class MainWindow
         var view=WorkspaceViews.Get(session.Target.ViewId);
         var scroll=DesktopDocumentContent(page);
         var item=new TabViewItem{Header=view.Title,Tag=session,Content=scroll,IsClosable=true};
-        var menu=new MenuFlyout();var detach=new MenuFlyoutItem{Text="Otevřít v samostatném okně"};detach.Click+=(_,_)=>DetachDesktopTab(item);menu.Items.Add(detach);var attach=new MenuFlyoutItem{Text="Připojit do pracovní plochy"};attach.Click+=(_,_)=>AttachDesktopTab(item);menu.Items.Add(attach);item.ContextFlyout=menu;
+        void FocusSession(){if(!session.IsAlive)return;documentContext.Select(session);if(HostWindow(session)==this)desktopMainActive=session;}
+        page.GotFocus+=(_,_)=>FocusSession();page.AddHandler(UIElement.PointerPressedEvent,new PointerEventHandler((_,_)=>FocusSession()),true);
+        var menu=new MenuFlyout();var detach=new MenuFlyoutItem{Text="Otevřít v samostatném okně"};detach.Click+=(_,_)=>DetachDesktopTab(item);menu.Items.Add(detach);var attach=new MenuFlyoutItem{Text="Připojit do pracovní plochy"};attach.Click+=(_,_)=>AttachDesktopTab(item);menu.Items.Add(attach);
+        var favorite=new MenuFlyoutItem{Text="Přidat / odebrat z oblíbených"};favorite.Click+=async(_,_)=>{using var scope=documentContext.Enter(session);try{if(session.IsAlive)await ToggleFavoriteAsync(CurrentSearchEntry().Key);}catch(Exception error){ShowPersistenceError(error.Message);}};menu.Items.Add(favorite);item.ContextFlyout=menu;
         LabelNativeControls(page);return item;
     }
     private void BindDesktopTabs(TabView tabs,DesktopWindow? targetHost=null)
     {
-        tabs.SelectionChanged+=(_,_)=>{if(tabs.SelectedItem is TabViewItem{Tag:DocumentSession session} tab){documentContext.Select(session);RefreshDesktopInspector(session);}};
+        tabs.SelectionChanged+=(_,_)=>{if(tabs.SelectedItem is TabViewItem{Tag:DocumentSession session} tab){documentContext.Select(session);if(targetHost is null)desktopMainActive=session;RefreshDesktopInspector(session);}};
         tabs.TabCloseRequested+=(sender,e)=>{_=CloseDesktopTabAsync(e.Tab);};
         tabs.TabDragStarting+=(_,e)=>{draggingTab=e.Tab;draggingDocument=e.Tab.Tag as DocumentSession;e.Data.SetText("rocker-desktop:"+draggingDocument?.Id);};
         tabs.TabDragCompleted+=(_,_)=>{draggingTab=null;draggingDocument=null;};
@@ -171,6 +176,7 @@ public sealed partial class MainWindow
         tabs.TabStripDrop+=(_,e)=>
         {
             if(draggingTab is not{Tag:DocumentSession session} tab)return;
+            if(tabs.TabItems.Contains(tab))return; // WinUI handles in-strip reordering.
             bool document=desktopDocuments.ContainsKey(session);
             if(tabs==toolTabs && document || tabs==documentTabs && !document)return;
             if(targetHost is not null && tabs.TabItems.OfType<TabViewItem>().FirstOrDefault()?.Tag is DocumentSession target && desktopDocuments.ContainsKey(target)!=document)return;
@@ -200,10 +206,10 @@ public sealed partial class MainWindow
     }
     private void DetachDesktopTab(TabViewItem? item)
     {
-        if(item is null)return;if(floatingHosts.TryGetValue(item,out var current)){current.AppWindow.Show();current.Activate();return;}
+        if(item is null)return;if(floatingHosts.TryGetValue(item,out var current)){current.AppWindow.Show();current.Activate();return;}if(desktopWindows.Count>=11){ShowPersistenceError("Je otevřeno příliš mnoho samostatných oken. Připoj některé záložky do pracovní plochy.");return;}
         RemoveDesktopTabParent(item);var window=new DesktopWindow("Rocker — "+item.Header);desktopWindows.Add(window);floatingHosts[item]=window;window.Tabs.TabItems.Add(item);window.Tabs.SelectedItem=item;BindDesktopTabs(window.Tabs,window);window.Root.RequestedTheme=ShellRoot.RequestedTheme;InitializeDesktopWindowMenu(window,item);BindDesktopCommands(window.Root);
         window.Activated+=(_,_)=>{if(window.Tabs.SelectedItem is TabViewItem{Tag:DocumentSession session})documentContext.Select(session);};
-        window.AppWindow.Closing+=(sender,e)=>{if(window.ExitApproved)return;e.Cancel=true;if(window.Tabs.TabItems.OfType<TabViewItem>().Any(t=>t.Tag is DocumentSession session && desktopDocuments.ContainsKey(session)))_=CloseDesktopHostAsync(window);else window.AppWindow.Hide();};
+        window.AppWindow.Closing+=(sender,e)=>{if(window.ExitApproved)return;e.Cancel=true;var owners=window.Tabs.TabItems.OfType<TabViewItem>().Select(t=>(t.Tag as DocumentSession)?.Id).ToHashSet();if(services.Operations.Snapshot().Any(o=>o.Kind=="dialog" && owners.Contains(o.Owner))){window.Activate();return;}if(window.Tabs.TabItems.OfType<TabViewItem>().Any(t=>t.Tag is DocumentSession session && desktopDocuments.ContainsKey(session)))_=CloseDesktopHostAsync(window);else window.AppWindow.Hide();};
         window.Closed+=(_,_)=>
         {
             dialogService?.Forget(window.Root.XamlRoot);
@@ -232,6 +238,7 @@ public sealed partial class MainWindow
         using var invocationScope=documentContext.Enter(documentContext.Current);
 
         var session=(DocumentSession)item.Tag;
+        if(services.Operations.Snapshot().Any(o=>o.Owner==session.Id && o.Kind=="dialog")){ShowPersistenceError("Dokonči nebo zruš otevřený dialog tohoto okna.");return;}
         if(!desktopDocuments.ContainsKey(session)){if(floatingHosts.TryGetValue(item,out var tool))tool.AppWindow.Hide();else toolTabs.TabItems.Remove(item);return;}
         if(services.Operations.Snapshot().Any(o=>o.Owner==session.Id && o.Kind!="ai-request")){ShowPersistenceError("Počkej na dokončení operace dokumentu nebo ji zruš.");return;}
         using var scope=documentContext.Enter(session);

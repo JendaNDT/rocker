@@ -8,14 +8,21 @@ public sealed partial class MainWindow
 {
     private bool backupOperationRunning;
     private FrameworkElement BuildBackups()
-    {
+    {var capturedDocument=documentContext.Current;
+
         var panel=Stack();panel.Children.Add(Text("Zálohy a soubory"));
+        if(desktopEnabled)
+        {
+            var exportLayout=new Button{Content="Uložit rozložení oken…"};exportLayout.Click+=async(_,_)=>{using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;await ExportDesktopLayoutAsync();};
+            var importLayout=new Button{Content="Načíst rozložení oken…"};importLayout.Click+=async(_,_)=>{using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;await ImportDesktopLayoutAsync();};
+            panel.Children.Add(exportLayout);panel.Children.Add(importLayout);panel.Children.Add(Text("Rozložení oken je samostatný soubor .rockerlayout. Obsahuje místní cesty a volby zobrazení; hudební data a nahrávky zálohuj níže.",true));
+        }
         panel.Children.Add(Text("Záloha obsahuje uložená data a podle volby také nahrávky a celé projekty. AI klíč, dočasné soubory a cache se nezahrnují.",true));
         var recordings=new CheckBox{Content="Zahrnout nahrávky",IsChecked=true};var projects=new CheckBox{Content="Zahrnout projekty a jejich stopy",IsChecked=true};
         var undo=new Button {Content="Vrátit poslední obnovu",IsEnabled=persistenceReady && database is not null && new BackupService(userFiles,database).LastRollback() is not null};
         var export=new Button{Content="Vytvořit zálohu…",IsEnabled=persistenceReady};var restore=new Button{Content="Otevřít zálohu a zobrazit náhled…",IsEnabled=persistenceReady};var status=Text("Vyber export nebo obnovu. Původní data se před obnovou odloží do vratné kopie.",true);
         export.Click+=async (_,_)=>
-        {
+        {using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;
             if(powerTransition || fileOperation || busy || deviceOperationRunning || database is null || profileOperation || backupOperationRunning || studioOperation || studioEditTask is{IsCompleted:false} || looperOperation || exportOperation)return;
             var picker=new FileSavePicker {SuggestedStartLocation=PickerLocationId.DocumentsLibrary,SuggestedFileName="Rocker-zaloha-"+DateTime.Now.ToString("yyyy-MM-dd")};picker.FileTypeChoices.Add("Záloha Rockeru",[".rockerbackup"]);
             WinRT.Interop.InitializeWithWindow.Initialize(picker,DialogWindowHandle);
@@ -32,7 +39,7 @@ public sealed partial class MainWindow
             finally{backupOperationRunning=false;SetDesktopInteraction(true);if(!closed)export.IsEnabled=restore.IsEnabled=true;}
         };
         restore.Click+=async (_,_)=>
-        {
+        {using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;
             if(powerTransition || fileOperation || busy || deviceOperationRunning || database is null || profileOperation || backupOperationRunning || studioOperation || studioEditTask is{IsCompleted:false} || looperOperation || exportOperation)return;
             var picker=new FileOpenPicker();picker.FileTypeFilter.Add(".rockerbackup");WinRT.Interop.InitializeWithWindow.Initialize(picker,DialogWindowHandle);
             var file=await picker.PickSingleFileAsync();if(file is null || closed)return;
@@ -56,7 +63,7 @@ public sealed partial class MainWindow
             finally{backupOperationRunning=false;SetDesktopInteraction(true);if(!closed){ShellInteractionRoot.IsEnabled=true;export.IsEnabled=restore.IsEnabled=true;}}
         };
         undo.Click+=async (_,_)=>
-        {
+        {using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;
             if(powerTransition || fileOperation || busy || deviceOperationRunning || database is null || profileOperation || backupOperationRunning || studioOperation || studioEditTask is{IsCompleted:false} || looperOperation || exportOperation)return;
             var dialog=new ContentDialog {XamlRoot=DialogRoot,Title="Vrátit poslední obnovu?",Content="Aktuální data se odloží a obnoví se stav před posledním importem zálohy.",PrimaryButtonText="Vrátit obnovu",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Close};
             if(await ShowDialogAsync(dialog)!=ContentDialogResult.Primary)return;

@@ -15,28 +15,29 @@ public sealed partial class MainWindow
     private double liveGain=0.15;
     private bool liveUpdating;
     private FrameworkElement BuildLive()
-    {
+    {var capturedDocument=documentContext.Current;
+
         focusSecondary.Clear();var panel=Stack();
         liveDevice=Text("Vyber kartu a jeden vstup pro kytaru.",true);
-        liveStart=PrimaryAction("Nastavit zvuk");liveStart.Click+=(_,_)=>{if(appSettings.AudioDevice is not{InputChannel:>=0} || deviceSelectionUnavailable)Navigate(new("29"));else LiveStart_Click(liveStart,new());};
+        liveStart=PrimaryAction("Nastavit zvuk");liveStart.Click+=(_,_)=>{using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;if(appSettings.AudioDevice is not{InputChannel:>=0} || deviceSelectionUnavailable)Navigate(new("29"));else LiveStart_Click(liveStart,new());};
         liveStop=new Button{Content="Zastavit zvuk",MinHeight=40,IsEnabled=false};liveStop.Click+=Stop_Click;
         var buttons=new StackPanel{Orientation=Orientation.Horizontal,Spacing=8};buttons.Children.Add(liveStart);buttons.Children.Add(liveStop);panel.Children.Add(buttons);panel.Children.Add(liveDevice);
         var left=Stack();var right=Stack();
         var monitoring=Stack();monitoring.Spacing=6;
         liveMonitor=new CheckBox{Content="Poslouchat kytaru ve sluchátkách",IsChecked=false,IsEnabled=false};liveMonitor.Checked+=LiveMonitoring_Changed;liveMonitor.Unchecked+=LiveMonitoring_Changed;monitoring.Children.Add(liveMonitor);
-        var level=new Slider{Header="Hlasitost monitoringu",Minimum=0,Maximum=100,Value=liveGain*100};Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(level,"Hlasitost monitoringu");level.ValueChanged+=(_,args)=>{liveGain=args.NewValue/100;ApplyLiveMonitoring();};monitoring.Children.Add(level);
+        var level=new Slider{Header="Hlasitost monitoringu",Minimum=0,Maximum=100,Value=liveGain*100};Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(level,"Hlasitost monitoringu");level.ValueChanged+=(_,args)=>{using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;liveGain=args.NewValue/100;ApplyLiveMonitoring();};monitoring.Children.Add(level);
         liveInputMeter=new(){Label="Vstup kytary"};monitoring.Children.Add(liveInputMeter);
         liveState=Text("Spusť Live a potom zapni poslech kytary.",true);monitoring.Children.Add(liveState);left.Children.Add(new VintageHousing(monitoring,compact:true));
         var tuner=Stack();
         TextBlock FaceText(string label){var text=Text(label);text.Style=(Style)Application.Current.Resources["VintageInstrumentTextStyle"];return text;}
         var tunerLabel=FaceText("LADIČKA");tunerLabel.FontSize=11;tunerLabel.CharacterSpacing=160;tuner.Children.Add(tunerLabel);liveTunerNote=FaceText("—");liveTunerNote.FontSize=40;liveTunerNote.FontWeight=Microsoft.UI.Text.FontWeights.SemiBold;liveTunerCents=FaceText("Žádný aktuálně měřený tón.");
         liveTunerNeedle=new PitchGauge{Value=50,Height=70};Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(liveTunerNeedle,"Live · odchylka v centech");var readout=new Grid{ColumnSpacing=12};readout.ColumnDefinitions.Add(new(){Width=new GridLength(88)});readout.ColumnDefinitions.Add(new(){Width=new GridLength(1,GridUnitType.Star)});liveTunerNote.VerticalAlignment=VerticalAlignment.Center;readout.Children.Add(liveTunerNote);Grid.SetColumn(liveTunerNeedle,1);readout.Children.Add(liveTunerNeedle);tuner.Children.Add(readout);tuner.Children.Add(liveTunerCents);
-        var tune=new Button{Content="Otevřít ladičku",RequestedTheme=ElementTheme.Light};tune.Click+=(_,_)=>Navigate(new("03"));tuner.Children.Add(tune);focusSecondary.Add(tune);left.Children.Add(new VintageHousing(tuner,compact:true,instrument:true));
+        var tune=new Button{Content="Otevřít ladičku",RequestedTheme=ElementTheme.Light};tune.Click+=(_,_)=>{using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;Navigate(new("03"));};tuner.Children.Add(tune);focusSecondary.Add(tune);left.Children.Add(new VintageHousing(tuner,compact:true,instrument:true));
         right.Children.Add(BuildCompactMetronome());right.Children.Add(BuildRecordingControls(compact:true));right.Children.Add(BuildCompactAmplifier());
         panel.Children.Add(ResponsiveColumns(left,right));
-        var details=Stack();liveProcessedMeter=new(){Label="Za aparátem",Analog=true};liveMixMeter=new(){Label="Výsledný mix",Analog=true};details.Children.Add(liveProcessedMeter);details.Children.Add(liveMixMeter);liveMixReason=Text("Poslech kytary je vypnutý.",true);details.Children.Add(liveMixReason);liveEnableMonitor=new Button{Content="Zapnout poslech kytary"};liveEnableMonitor.Click+=(_,_)=>{if(liveMonitor is{IsEnabled:true}){liveMonitor.IsChecked=true;ApplyLiveMonitoring();}};details.Children.Add(liveEnableMonitor);liveDiagnostic=Text("",true);details.Children.Add(liveDiagnostic);
+        var details=Stack();liveProcessedMeter=new(){Label="Za aparátem",Analog=true};liveMixMeter=new(){Label="Výsledný mix",Analog=true};details.Children.Add(liveProcessedMeter);details.Children.Add(liveMixMeter);liveMixReason=Text("Poslech kytary je vypnutý.",true);details.Children.Add(liveMixReason);liveEnableMonitor=new Button{Content="Zapnout poslech kytary"};liveEnableMonitor.Click+=(_,_)=>{using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;if(liveMonitor is{IsEnabled:true}){liveMonitor.IsChecked=true;ApplyLiveMonitoring();}};details.Children.Add(liveEnableMonitor);liveDiagnostic=Text("",true);details.Children.Add(liveDiagnostic);
         details.Children.Add(Text("Kytaru i sluchátka připoj ke stejné kartě. Pro poslech softwarových efektů nepřimíchávej současně Direct Monitor karty.",true));
-        var devices=new Button{Content="Změnit zvukovou kartu a vstup"};devices.Click+=(_,_)=>Navigate(new("29"));details.Children.Add(devices);
+        var devices=new Button{Content="Změnit zvukovou kartu a vstup"};devices.Click+=(_,_)=>{using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;Navigate(new("29"));};details.Children.Add(devices);
         var more=new Expander{Header="Zvuková karta, měřáky a podrobnosti",Content=details,HorizontalAlignment=HorizontalAlignment.Stretch};panel.Children.Add(more);focusSecondary.Add(more);return panel;
     }
     private async void LiveStart_Click(object sender,RoutedEventArgs args)

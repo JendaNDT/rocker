@@ -26,6 +26,6 @@ public static class CanonicalFiles
         string canonical=buffer.ToString();
         if(canonical.StartsWith(@"\\?\UNC\",StringComparison.Ordinal))canonical=@"\\"+canonical[8..];
         else if(canonical.StartsWith(@"\\?\",StringComparison.Ordinal))canonical=canonical[4..];
-        return new(canonical,$"{info.Volume:x8}:{info.IndexHigh:x8}{info.IndexLow:x8}");
+        return new(canonical,$"{info.Volume:x8}:{info.IndexHigh:x8}{info.IndexLow:x8}:{info.CreatedHigh:x8}{info.CreatedLow:x8}");
     }
 }
