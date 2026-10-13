@@ -264,6 +264,7 @@ public sealed partial class MainWindow
         await VerifyFileCommandsAsync();
         await VerifyPowerRecoveryAsync();
         await VerifyWorkspaceEnhancementsAsync();
+        await VerifyMetronomeVisualizationAsync();
         await VerifyWorkspaceUxAsync();
         await VerifyAllDesignViewsAsync();
         await CaptureVisualFinishAsync();

@@ -243,4 +243,6 @@
     <Style x:Key="VintageLampOffStyle" TargetType="Ellipse"><Setter Property="Fill" Value="{ThemeResource VintageLampOff}"/><Setter Property="Stroke" Value="{ThemeResource VintageMetalEdge}"/><Setter Property="StrokeThickness" Value="2"/></Style>
     <Style x:Key="VintageClipOnStyle" TargetType="Ellipse"><Setter Property="Fill" Value="{ThemeResource VintageMeterRed}"/><Setter Property="Stroke" Value="{ThemeResource VintageInstrumentInk}"/><Setter Property="StrokeThickness" Value="1"/></Style>
     <Style x:Key="VintageClipOffStyle" TargetType="Ellipse"><Setter Property="Fill" Value="{ThemeResource VintageLampOff}"/><Setter Property="Stroke" Value="{ThemeResource VintageInstrumentInk}"/><Setter Property="StrokeThickness" Value="1"/></Style>
+    <Style x:Key="VintageBeatActiveStyle" TargetType="Border"><Setter Property="Background" Value="{ThemeResource VintageAccent}"/><Setter Property="BorderBrush" Value="{ThemeResource VintageInstrumentInk}"/><Setter Property="BorderThickness" Value="2"/></Style>
+    <Style x:Key="VintageBeatIdleStyle" TargetType="Border"><Setter Property="Background" Value="{ThemeResource VintageInstrumentFace}"/><Setter Property="BorderBrush" Value="{ThemeResource VintageInstrumentInk}"/><Setter Property="BorderThickness" Value="1"/></Style>
 </ResourceDictionary>

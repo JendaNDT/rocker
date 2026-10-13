@@ -49,3 +49,11 @@ Při potížích napiš verzi, obrazovku, provedené kroky a chybovou hlášku. 
 - **Hledání a oblíbené:** Ctrl+K nebo lupa u nadpisu hledá obrazovky, jednotlivé lekce, akordy, stupnice, riffy, trenažéry, skladby, nahrávky a sestavy. Hledání rozumí českým názvům bez diakritiky. Hvězda u nadpisu uloží aktuální pohled či konkrétní úlohu; v hledání lze uložit i nahrávku nebo sestavu. Filtr Pouze oblíbené ukáže připnuté dostupné položky.
 - **Průběh nahrávky:** v Nahrávkách vyber položku a Zobrazit průběh bez přehrávání. Kliknutí do zvukové vlny změní pozici, přetažení vybere A/B úsek. Stejné hodnoty nastavíš přes číselná pole; opakování zapneš tlačítkem. Značka na aktuální pozici se uloží k nahrávce, její popis upravíš přes Značky a poznámky. Průběh vychází z dekódovaného souboru; nejde o hodnocení hry. Výběr a smyčka zvukový soubor neupravují.
 - **Aktualizace:** Nápověda → Aktualizace otevře kontrolu vydání v Nastavení. Instalace se nikdy nespustí sama; volitelně lze povolit nabídku při spuštění. Repozitář je soukromý: přímá kontrola/stažení potřebuje vlastní GitHub token s Contents: read pro JendaNDT/rocker, uložený přes chráněné pole v aplikaci. Token se chrání DPAPI a není v zálohách. Bez něj použij tlačítko pro přihlášený systémový prohlížeč a stáhni instalátor z vydání. Nativní stažení ověřuje SHA-256 a dokončený Windows balík. Tlačítko Nainstalovat a zavřít Rocker po potvrzení a případném uložení rozpracované práce zastaví zvuk a otevře instalátor.
+
+## Viditelná vizualizace metronomu
+
+Otevři **Live → Metronom**. Nahoře je přepínač **Vizualizace: Doby / Kyvadlo**, přímo u přístroje a nastavení tempa. Tlačítkem Spustit metronom zapneš zvuk i časování. Kyvadlo je skutečná pohybující se páčka; pod ní svítí aktuální očíslovaná doba. Připravený přístroj je vidět i před spuštěním, se zastavenou páčkou.
+
+Stejný přístroj najdeš nahoře v **Live** a v režimu **Jen hraju (F11)**. Tempo zadej v číselném poli; vedle něj přepni Doby nebo Kyvadlo. Volba platí ve všech pohledech a zůstane uložená. Podrobné rytmy, zvuky, akcenty, odpočet a tréninkové vrstvy jsou v sekci **Rytmus, zvuky a trénink** samostatného metronomu.
+
+Při odpočtu nebo tichém taktu se stále ukazují doby; text odlišuje, co právě probíhá. Vypnutí metronomu vrátí kyvadlo doprostřed. Pokud máš ve Windows vypnuté animace, páčka se nehýbe a aktuální doba se nadále mění.
