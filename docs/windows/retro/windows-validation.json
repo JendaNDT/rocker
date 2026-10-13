@@ -240,5 +240,43 @@
     "smartAppControlVerified": false,
     "projectAssociationRegistered": true,
     "versionTransitionPreservedDataAndPriorBinary": true
+  },
+  "publication": {
+    "result": "passed",
+    "runId": 38404568165,
+    "url": "https://github.com/JendaNDT/rocker/releases/tag/windows-0.2.0-rc5-20261013",
+    "assets": [
+      {
+        "name": "candidate-validation.json",
+        "size": 2329,
+        "digest": "sha256:419ba29484a20e007500a99053d8fe53a6bafa16b7d7ccbc3d57d677a84833c2",
+        "url": "https://github.com/JendaNDT/rocker/releases/download/windows-0.2.0-rc5-20261013/candidate-validation.json"
+      },
+      {
+        "name": "Rocker-Windows-Setup-0.2.0-x64.exe",
+        "size": 70321215,
+        "digest": "sha256:f9bfc61dfa4ca4f31f9536b095d01cee26e4d4499a1c0b1a97f3115c820695cf",
+        "url": "https://github.com/JendaNDT/rocker/releases/download/windows-0.2.0-rc5-20261013/Rocker-Windows-Setup-0.2.0-x64.exe"
+      },
+      {
+        "name": "Rocker-Windows-sources.zip",
+        "size": 136484424,
+        "digest": "sha256:d6794e8b620c65e8b576cb2c9f10942816fdfcb5db23a50bef286d0bf2e39fc8",
+        "url": "https://github.com/JendaNDT/rocker/releases/download/windows-0.2.0-rc5-20261013/Rocker-Windows-sources.zip"
+      },
+      {
+        "name": "Rocker-Windows-x64.zip",
+        "size": 103830398,
+        "digest": "sha256:61325d6b96b493a701d0772f01c064976bc53fb4f9f57d67113e77fdfd75433b",
+        "url": "https://github.com/JendaNDT/rocker/releases/download/windows-0.2.0-rc5-20261013/Rocker-Windows-x64.zip"
+      },
+      {
+        "name": "SHA256SUMS.txt",
+        "size": 286,
+        "digest": "sha256:bf9904015dcbb9af1c90901e17b288e9b6bba04dee13d27ab586595b52669c95",
+        "url": "https://github.com/JendaNDT/rocker/releases/download/windows-0.2.0-rc5-20261013/SHA256SUMS.txt"
+      }
+    ],
+    "allFiveAssetsMatchVerifiedLocalBytes": true
   }
 }
