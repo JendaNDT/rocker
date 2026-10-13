@@ -9,6 +9,7 @@ on:
       - 'scripts/export-windows-migration-fixture.mjs'
       - 'src/lib/migrationArchive.ts'
       - 'docs/windows/w12/**'
+      - 'docs/windows/w43/user-guide.md'
       - 'scripts/export-windows-domain-reference.mjs'
       - 'scripts/verify-windows-desktop-current.mjs'
       - 'scripts/export-windows-desktop-gallery.mjs'

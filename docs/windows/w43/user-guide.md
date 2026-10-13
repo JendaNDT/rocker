@@ -2,21 +2,21 @@
 
 ## Instalace
 
-Na stránce soukromého GitHub vydání stáhni `Rocker-Windows-Setup-0.3.0-x64.exe`. Musíš být přihlášený účtem s přístupem k repozitáři. Spusť instalátor a potom **Rocker** z nabídky Start. Nejsou potřeba vývojové nástroje ani zdrojové soubory. Vyžaduje Windows 11 x64 od 24H2.
+Na stránce soukromého GitHub vydání stáhni instalátor `Rocker-Windows-Setup-…-x64.exe` z daného vydání. Musíš být přihlášený účtem s přístupem k repozitáři. Spusť instalátor a potom **Rocker** z nabídky Start. Nejsou potřeba vývojové nástroje ani zdrojové soubory. Vyžaduje Windows 11 x64 od 24H2.
 
 Volitelný `Rocker-Windows-x64.zip` je přenosná alternativa: **Extrahovat vše**, potom `Rocker.Probe.exe`; soubory musí zůstat pohromadě. GitHub **Code → Download ZIP** obsahuje projekt, nikoli hotovou aplikaci. Odpovídající zdroje jsou samostatný `Rocker-Windows-sources.zip`.
 
 ## Pracovní plocha, dokumenty a okna
 
-Vlevo je knihovna, uprostřed otevřené dokumenty v záložkách a vpravo inspektor a připojené nástroje. Knihovna obsahuje konkrétní lekce, tréninky, skladby, projekty i nahrávky. Hledání a oblíbené jsou dostupné přes Ctrl+K. Panely mají posuvné děliče; nabídka Okno je umí skrýt a obnovit.
+Pod nabídkou je pracovní lišta pro soubory, Studio a hudební nástroje. Vlevo přepínáš průzkumník mezi pracovní plochou, výukou, vlastními soubory a hudebními referencemi. Hledání v průzkumníku prochází všechny oblasti. Uprostřed jsou dokumenty v záložkách; jejich vlastnosti jsou přímo u editoru. Pravý panel připojených nástrojů je volitelný. Hledání a oblíbené jsou dostupné přes Ctrl+K. Panely mají posuvné děliče; nabídka Okno je umí skrýt a obnovit.
 
 Záložku přes pravé tlačítko **Otevřít v samostatném okně** odpoj na další monitor. **Připojit do pracovní plochy** ji vrátí. Stejné ovládání je v nabídce Okno; záložky lze přetahovat mezi okny. Dokument si zachová výběr a rozpracovanou práci. Znovu otevřený stejný soubor či projekt aktivuje existující záložku. Ctrl+Tab přepíná záložky daného okna, Ctrl+W zavře aktivní dokument.
 
-Ladička, metronom, aparát a looper mají jedinou instanci. Jejich X pouze skryje nástroj; zvuk zůstává společný. Live je vlastní okno; F11 přepne celou obrazovku, Esc ji opustí. **Vždy navrchu** je výslovná volba v nabídce pomocného okna. Hlavní X ukončuje celou aplikaci po vyřešení rozpracované práce.
+Ladička, metronom, aparát a looper se z pracovní lišty otevírají v samostatných oknech a mají jedinou instanci. Jejich X pouze skryje nástroj; zvuk zůstává společný. Live je vlastní okno; F11 přepne celou obrazovku, Esc ji opustí. **Vždy navrchu** je výslovná volba v nabídce pomocného okna. Hlavní X ukončuje celou aplikaci po vyřešení rozpracované práce.
 
-Otevření skladby či nahrávky zobrazí obsah a průběh bez přepnutí přehrávání. Spodní transport uvádí jeho skutečný **Zdroj**. Tlačítko Přehrát v konkrétním editoru převezme společný zdroj; při nahrávání nebo aktivním looperu nejprve dokonči tento záznam. Vypnutý monitoring kytary neztlumí skladbu ani metronom. Když za aparátem vidíš signál a kytara v mixu chybí, zkontroluj **Poslech kytary** v Live.
+Otevření skladby či nahrávky zobrazí obsah a průběh bez přepnutí přehrávání. Kompaktní spodní přehrávač uvádí jeho skutečný **Zdroj**. Tlačítko s hodinami vpravo otevírá společné zahájení, pauzu a ukončení cvičení, jeho čas a ovládání denního plánu. Tlačítko Přehrát v konkrétním editoru převezme společný zdroj; při nahrávání nebo aktivním looperu nejprve dokonči tento záznam. Vypnutý monitoring kytary neztlumí skladbu ani metronom. Když za aparátem vidíš signál a kytara v mixu chybí, zkontroluj **Poslech kytary** v Live.
 
-Lekce mají kroky vlevo a úlohu uprostřed. Studio má stopy, časovou osu a vlastnosti; Ctrl+S, Ctrl+Z a Ctrl+Y pracují s aktivním projektem. V úzkém editoru jsou vlastnosti přes tlačítko Vlastnosti. Průběh nahrávky lze vybírat i při přehrávání jiného dokumentu; kliknutí na pozici nebo zapnutí smyčky zdroj výslovně převezme.
+Lekce mají kroky vlevo a úlohu uprostřed. Studio má stopy, časovou osu a vlastnosti; Ctrl+S, Ctrl+Z a Ctrl+Y pracují s aktivním projektem. V úzkém editoru jsou vlastnosti přes tlačítko Vlastnosti. Editor nahrávky má časové pravítko, velkou zvukovou vlnu a značky. Hranice A a B zadáváš vedle sebe pod časovou osou; značku v pravém seznamu lze otevřít kliknutím. Průběh nahrávky lze vybírat i při přehrávání jiného dokumentu; kliknutí na pozici nebo zapnutí smyčky zdroj výslovně převezme.
 
 Rozměry oken, skupiny a výběr záložek se vrátí při dalším spuštění. Zvuk se s nimi nespustí. **Nastavení → Zálohy a soubory → Uložit / Načíst rozložení oken** předává samostatný `.rockerlayout`. Hudbu a média zálohuj také do `.rockerbackup`.
 
