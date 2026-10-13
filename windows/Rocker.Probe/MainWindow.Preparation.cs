@@ -5,10 +5,12 @@ namespace Rocker.Probe;
 public sealed partial class MainWindow
 {
     private CancellationTokenSource? preparationCancellation;
+    private Rocker.AppCore.OperationLease? preparationOperation;
     private CancellationToken PreparationToken => preparationCancellation?.Token ?? CancellationToken.None;
     private void BeginPreparation(string message)
     {
-        preparationCancellation = new();
+        preparationOperation = services.Operations.Begin(documentContext.Current.Id, "prepare", message);
+        preparationCancellation = CancellationTokenSource.CreateLinkedTokenSource(preparationOperation.Cancellation);
         ShellInteractionRoot.IsEnabled = false;
         PreparationNotice.RequestedTheme=ShellRoot.RequestedTheme;PreparationNotice.Message = message;
         PreparationNotice.IsOpen = true;
@@ -29,6 +31,7 @@ public sealed partial class MainWindow
     private void EndPreparation()
     {
         preparationCancellation?.Dispose(); preparationCancellation = null;
+        preparationOperation?.Dispose(); preparationOperation = null;
         if (closed) return;
         PreparationNotice.IsOpen = false;
         ShellInteractionRoot.IsEnabled = true;

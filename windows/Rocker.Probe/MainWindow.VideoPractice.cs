@@ -7,7 +7,8 @@ using Rocker.Infrastructure;
 namespace Rocker.Probe;
 public sealed partial class MainWindow
 {
-    private bool videoSeeking,changingVideoLoop;
+    private bool videoSeeking { get => documentContext.Current.Get<bool>("videoSeeking", () => default); set => documentContext.Current.Set("videoSeeking",value); }
+    private bool changingVideoLoop { get => documentContext.Current.Get<bool>("changingVideoLoop", () => default); set => documentContext.Current.Set("changingVideoLoop",value); }
     private void InitializeVideoPractice(IReadOnlyList<DataDocument> documents)
     {
         savedVideoLoops.Clear();var record=documents.FirstOrDefault(d=>d.Kind=="yt-loops" && d.Id=="default");if(record is not null)savedVideoLoops.AddRange(UserData.Read<SavedVideoLoop[]>(record.Value));pendingVideoLoop=deletedVideoLoop=null;RefreshSavedVideoLoops();
@@ -27,7 +28,7 @@ public sealed partial class MainWindow
         if(VideoLoopEnabled.IsChecked==true){try{ApplyVideoLoop();}catch(Exception error){VideoLoopEnabled.IsChecked=false;VideoLoopStatus.Text=error.Message;}}else{videoPractice.ClearLoop();SendVideo(new{op="loop",enabled=false});}
     }
     private void TryRestoreVideoLoop()
-    {
+    {var capturedDocument = documentContext.Current;
         if(pendingVideoLoop is not { } loop || !videoReady || videoPractice.Rates.Count==0 || videoPractice.Duration<=0)return;pendingVideoLoop=null;
         try{ApplyVideoLoop();if(videoPractice.Rates.Contains(loop.Rate))SendVideo(new{op="rate",rate=loop.Rate});else VideoLoopStatus.Text+=" Uložená rychlost není dostupná; zůstává aktuální rychlost videa.";SendVideo(new{op="seek",seconds=loop.Start});}catch(Exception error){VideoLoopStatus.Text="Uložený úsek nelze použít. "+error.Message;}
     }

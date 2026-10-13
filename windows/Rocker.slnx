@@ -1,4 +1,6 @@
 <Solution>
+  <Project Path="Rocker.AppCore/Rocker.AppCore.csproj" />
+  <Project Path="Rocker.AppCore.Checks/Rocker.AppCore.Checks.csproj" />
   <Project Path="Rocker.Domain.Checks/Rocker.Domain.Checks.csproj" />
   <Project Path="Rocker.Domain/Rocker.Domain.csproj" />
   <Project Path="Rocker.Infrastructure.Checks/Rocker.Infrastructure.Checks.csproj" />

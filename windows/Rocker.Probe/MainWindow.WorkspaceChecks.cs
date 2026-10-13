@@ -21,7 +21,7 @@ public sealed partial class MainWindow
             ApplyTheme("dark");ShellNotice.IsOpen=PracticeRestNotice.IsOpen=false;
             await audio.StopAsync(); await audio.ClearMediaAsync(); song = null; mediaPath = null; mediaMidi = null;
             Navigate(new("02")); SetFocusMode(true); RefreshState(); await Task.Delay(350);
-            Check("focusUsesSharedLiveHost", navigation.Current.ViewId == "02" && audioHostsCreated == 1 && !Navigation.IsPaneVisible && FocusExitButton.Visibility == Visibility.Visible && liveTunerNote?.FontSize == 56 && !liveTunerNeedle!.HasReading && liveTunerNeedle.TransformToVisual(ShellRoot).TransformPoint(new Windows.Foundation.Point(0,liveTunerNeedle.ActualHeight)).Y<ShellRoot.ActualHeight-MediaPanel.ActualHeight);
+            Check("focusUsesSharedLiveHost", CurrentTarget.ViewId == "02" && audioHostsCreated == 1 && !Navigation.IsPaneVisible && FocusExitButton.Visibility == Visibility.Visible && liveTunerNote?.FontSize == 56 && !liveTunerNeedle!.HasReading && liveTunerNeedle.TransformToVisual(ShellRoot).TransformPoint(new Windows.Foundation.Point(0,liveTunerNeedle.ActualHeight)).Y<ShellRoot.ActualHeight-MediaPanel.ActualHeight);
             Check("focusRecorderActionsAreLarge", recordingStarts.Where(b => b.Tag as string == "compact-recording").All(b => b.MinHeight >= 48));
             await CaptureNativeViewAsync("screens/improved-focus-dark.png");
             ApplyTheme("light"); await Task.Delay(350); await CaptureNativeViewAsync("screens/improved-focus-light.png");

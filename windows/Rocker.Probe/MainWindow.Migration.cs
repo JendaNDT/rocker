@@ -15,7 +15,7 @@ public sealed partial class MainWindow
         import.Click+=async (_,_)=>
         {
             if(powerTransition || fileOperation || busy || deviceOperationRunning || database is null || catalog is null || profileOperation || backupOperationRunning)return;
-            var picker=new FileOpenPicker();picker.FileTypeFilter.Add(".rockermigration");picker.FileTypeFilter.Add(".json");WinRT.Interop.InitializeWithWindow.Initialize(picker,WinRT.Interop.WindowNative.GetWindowHandle(this));
+            var picker=new FileOpenPicker();picker.FileTypeFilter.Add(".rockermigration");picker.FileTypeFilter.Add(".json");WinRT.Interop.InitializeWithWindow.Initialize(picker,DialogWindowHandle);
             var file=await picker.PickSingleFileAsync();if(file is null || closed)return;
             backupOperationRunning=true;import.IsEnabled=false;
             try
@@ -27,7 +27,7 @@ public sealed partial class MainWindow
                 var key=new CheckBox{Content="Převzít starý AI klíč do chráněného úložiště Windows",IsChecked=false,Visibility=migration.HasSecret?Visibility.Visible:Visibility.Collapsed};details.Children.Add(key);
                 if(migration.Warnings.Count>0)details.Children.Add(Text(string.Join("\n",migration.Warnings.Take(10)),true));
                 var scroll=new ScrollViewer{Content=details,MaxHeight=420,VerticalScrollBarVisibility=ScrollBarVisibility.Auto};
-                var dialog=new ContentDialog{XamlRoot=ShellRoot.XamlRoot,Title="Převést webová data?",Content=scroll,PrimaryButtonText="Převést",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Close};
+                var dialog=new ContentDialog{XamlRoot=DialogRoot,Title="Převést webová data?",Content=scroll,PrimaryButtonText="Převést",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Close};
                 if(await dialog.ShowAsync()!=ContentDialogResult.Primary)return;
                 ShellInteractionRoot.IsEnabled=false;if(audio is not null)await audio.StopAsync();
                 var result=await service.CommitAsync(migration,choice.SelectedIndex==0?RestoreStrategy.MergeKeepCurrent:RestoreStrategy.ReplaceIncluded,key.IsChecked==true);

@@ -10,13 +10,16 @@ using System.Text.Json;
 namespace Rocker.Probe;
 public sealed partial class MainWindow
 {
-    private bool videoBridgeReady, videoReady, changingVideoRates;
-    private double videoPosition;private DateTimeOffset videoProgressObserved;
-    private readonly VideoPractice videoPractice=new();
+    private bool videoBridgeReady { get => documentContext.Current.Get<bool>("videoBridgeReady", () => default); set => documentContext.Current.Set("videoBridgeReady",value); }
+    private bool videoReady { get => documentContext.Current.Get<bool>("videoReady", () => default); set => documentContext.Current.Set("videoReady",value); }
+    private bool changingVideoRates { get => documentContext.Current.Get<bool>("changingVideoRates", () => default); set => documentContext.Current.Set("changingVideoRates",value); }
+    private double videoPosition { get => documentContext.Current.Get<double>("videoPosition", () => default); set => documentContext.Current.Set("videoPosition",value); }private DateTimeOffset videoProgressObserved { get => documentContext.Current.Get<DateTimeOffset>("videoProgressObserved", () => default); set => documentContext.Current.Set("videoProgressObserved",value); }
+    private VideoPractice videoPractice { get => documentContext.Current.Get<VideoPractice>("videoPractice", () => new()); }
     private readonly List<SavedVideoLoop> savedVideoLoops=[];
-    private SavedVideoLoop? pendingVideoLoop,deletedVideoLoop;
+    private SavedVideoLoop? pendingVideoLoop { get => documentContext.Current.Get<SavedVideoLoop?>("pendingVideoLoop", () => default); set => documentContext.Current.Set("pendingVideoLoop",value); }
+    private SavedVideoLoop? deletedVideoLoop { get => documentContext.Current.Get<SavedVideoLoop?>("deletedVideoLoop", () => default); set => documentContext.Current.Set("deletedVideoLoop",value); }
     private async Task InitializeVideoAsync()
-    {
+    {var capturedDocument = documentContext.Current;
         try
         {
             var profile = userFiles.DirectoryFor("WebView2");
@@ -32,24 +35,24 @@ public sealed partial class MainWindow
             core.SetVirtualHostNameToFolderMapping(new Uri(VideoProtocol.Origin).Host,
                 Path.Combine(AppContext.BaseDirectory, "Video"), CoreWebView2HostResourceAccessKind.DenyCors);
             core.AddWebResourceRequestedFilter("https://www.youtube.com/*", CoreWebView2WebResourceContext.All);
-            core.WebResourceRequested += (_, args) => args.Request.Headers.SetHeader("Referer", VideoProtocol.Origin + "/");
+            core.WebResourceRequested += (_, args) => {using var documentScope = documentContext.Enter(capturedDocument);args.Request.Headers.SetHeader("Referer", VideoProtocol.Origin + "/");};
             core.NavigationStarting += (_, args) =>
-            {
+            {using var documentScope = documentContext.Enter(capturedDocument);
                 if (args.Uri != VideoProtocol.Page && args.Uri != "about:blank") args.Cancel = true;
             };
             core.NewWindowRequested += (_, args) =>
-            {
+            {using var documentScope = documentContext.Enter(capturedDocument);
                 args.Handled = true;
                 if (!closed) VideoStatus.Text = "Odkazy z přehrávače lze otevřít tlačítkem V prohlížeči.";
             };
-            core.PermissionRequested += (_, args) => args.State = CoreWebView2PermissionState.Deny;
+            core.PermissionRequested += (_, args) => {using var documentScope = documentContext.Enter(capturedDocument);args.State = CoreWebView2PermissionState.Deny;};
             core.ProcessFailed += (_, _) =>
-            {
+            {using var documentScope = documentContext.Enter(capturedDocument);
                 videoBridgeReady = videoReady = false;
                 if (!closed) { SetVideoControls(false); VideoStatus.Text = "Přehrávač se ukončil. Aplikaci lze dál používat bez videa; zkus znovu otevřít okno."; }
             };
             core.WebMessageReceived += (_, args) =>
-            {
+            {using var documentScope = documentContext.Enter(capturedDocument);
                 if (closed) return;
                 var message = VideoProtocol.ReadEvent(args.Source, args.WebMessageAsJson);
                 if (message is null || (message.Kind!="bridge-ready" && !videoPractice.Observe(message))) return;
@@ -63,7 +66,7 @@ public sealed partial class MainWindow
                             appId = VideoProtocol.AppId, onlineVideoVerified = false, audioCoexistenceVerified = false });
                         break;
                     case "ready":
-                        videoReady = true; SetVideoControls(true);if(navigation.Current.ViewId!="08")SendVideo(new{op="pause"});
+                        videoReady = true; SetVideoControls(true);if(CurrentTarget.ViewId!="08")SendVideo(new{op="pause"});
                         VideoStatus.Text = "Video je připravené. Zvuk YouTube používá sdílený výstup Windows.";
                         break;
                     case "state":

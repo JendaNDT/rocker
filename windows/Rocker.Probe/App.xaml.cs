@@ -7,6 +7,7 @@ using Rocker.Infrastructure;
 namespace Rocker.Probe;
 public partial class App : Application
 {
+    internal Rocker.AppCore.ApplicationServices? Services { get; private set; }
     [DllImport("shell32.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
     private static extern int SetCurrentProcessExplicitAppUserModelID(string appId);
     private Mutex? setupGuard;private bool ownsSetupGuard;private Window? window;private Mutex? instanceMutex;private bool ownsInstance;private CancellationTokenSource? instanceCancellation;private Task? instanceListener;
@@ -29,8 +30,8 @@ public partial class App : Application
             if(request=="--prepare-update"){try{if(System.Diagnostics.Process.GetProcessesByName(System.Diagnostics.Process.GetCurrentProcess().ProcessName).Any(process=>{using(process)return process.Id!=Environment.ProcessId;}))throw new IOException("Před aktualizací zavři všechny běžící verze Rockeru.");await UpdatePreparation.CreateAsync(new UserFiles(root),typeof(App).Assembly.GetName().Version!.ToString());Environment.ExitCode=0;}catch(Exception error){LogStartupFailure(error,"Update backup failed; existing data retained.");Environment.ExitCode=1;}Exit();return;}
             setupGuard=new Mutex(true,"Local\\JendaNDT.Rocker.SetupGuard",out ownsSetupGuard);if(!ownsSetupGuard){try{ownsSetupGuard=setupGuard.WaitOne(0);}catch(AbandonedMutexException){ownsSetupGuard=true;}}
             Marshal.ThrowExceptionForHR(SetCurrentProcessExplicitAppUserModelID(VideoProtocol.AppId));
-            var main=new MainWindow();window=main;main.QueueFileActivation(request);main.Activate();instanceCancellation=new();instanceListener=ObserveInstanceListenerAsync(name,main,instanceCancellation.Token);
-            main.Closed+=(_,_)=>{instanceCancellation.Cancel();if(ownsSetupGuard){setupGuard!.ReleaseMutex();ownsSetupGuard=false;}setupGuard?.Dispose();if(ownsInstance){instanceMutex.ReleaseMutex();ownsInstance=false;}instanceMutex.Dispose();};
+            Services=new(new UserFiles(root));var main=new MainWindow();window=main;main.QueueFileActivation(request);main.Activate();instanceCancellation=new();instanceListener=ObserveInstanceListenerAsync(name,main,instanceCancellation.Token);
+            main.Closed+=async (_,_)=>{instanceCancellation.Cancel();try{await Services.DisposeAsync();}catch(Exception error){LogStartupFailure(error,"Application service shutdown failed.");}if(ownsSetupGuard){setupGuard!.ReleaseMutex();ownsSetupGuard=false;}setupGuard?.Dispose();if(ownsInstance){instanceMutex.ReleaseMutex();ownsInstance=false;}instanceMutex.Dispose();};
         }
         catch (Exception error) { LogStartupFailure(error); throw; }
     }

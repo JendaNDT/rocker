@@ -6,17 +6,18 @@ using Rocker.Infrastructure;
 namespace Rocker.Probe;
 public sealed partial class MainWindow
 {
-    private DataRepository? database;
-    private Autosave? autosave;
-    private AppSettings appSettings = new();
+    private DataRepository? database => services.Storage?.Database;
+    private Autosave? autosave => services.Storage?.Autosave;
+    private AppSettings appSettings { get => services.Settings; set => services.Settings=value; }
+    private bool autosaveObserverAttached;
     private readonly Dictionary<string,int> savedLessonPositions = [];
     private bool persistenceReady;
     private async Task InitializePersistenceAsync()
     {
+        using var initialization=services.Operations.Begin("application","profile-load","Načítání nastavení a pracovních relací",cancellable:false);
         try
         {
-            await BackupService.RecoverInterruptedAsync(userFiles);
-            database = await DataRepository.OpenAsync(userFiles);
+            await services.InitializeStorageAsync();
             await InitializeRecordingsAsync();
             ResetLooperWorkspace();
             ResetStudioWorkspace();
@@ -32,8 +33,7 @@ public sealed partial class MainWindow
                 completedLessons.UnionWith(value.CompletedIds.Where(id=>catalog?.Lessons.Any(l=>l.Id==id)==true));
                 foreach (var entry in value.Positions) savedLessonPositions[entry.Key]=entry.Value;
             }
-            autosave = new(database);
-            autosave.Failed += (_,_) => DispatcherQueue.TryEnqueue(()=>ShowPersistenceError("Automatické uložení se nezdařilo. Změny zůstávají v paměti; zkus aplikaci zavřít pro opakování zápisu."));
+            if(!autosaveObserverAttached){autosaveObserverAttached=true;autosave!.Failed += (_,_) => DispatcherQueue.TryEnqueue(()=>{if(!closed)ShowPersistenceError("Automatické uložení se nezdařilo. Změny zůstávají v paměti; zkus aplikaci zavřít pro opakování zápisu.");});}
             ApplyTheme(appSettings.Theme);
             persistenceReady = true;
             await InitializeAmplifierAsync(snapshot.Documents);

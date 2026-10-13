@@ -14,63 +14,67 @@ namespace Rocker.Probe;
 public sealed partial class MainWindow
 {
     private readonly Dictionary<string,SongSession> songs=[];
-    private SongSession? song;
-    private string? appliedSongLoopId; private double appliedSongLoopStart, appliedSongLoopEnd;
-    private ComboBox? songSelector;
-    private ListView? songSections;
-    private NumberBox? songA,songB,songSpeed;
-    private Canvas? songWaveform;
-    private TextBlock? songReading;
-    private Button? songCancel;
-    private float[] songPeaks=[];
-    private bool songUpdating,songLoadCancelled;
-    private Task? songRampTask;private double? songRampQueuedSpeed;
-    private DateTime songLastSave=DateTime.MinValue;
+    private SongSession? song { get => documentContext.Current.Get<SongSession?>("song", () => default); set => documentContext.Current.Set("song",value); }
+    private string? appliedSongLoopId { get => documentContext.Current.Get<string?>("appliedSongLoopId", () => default); set => documentContext.Current.Set("appliedSongLoopId",value); } private double appliedSongLoopStart { get => documentContext.Current.Get<double>("appliedSongLoopStart", () => default); set => documentContext.Current.Set("appliedSongLoopStart",value); }
+    private double appliedSongLoopEnd { get => documentContext.Current.Get<double>("appliedSongLoopEnd", () => default); set => documentContext.Current.Set("appliedSongLoopEnd",value); }
+    private ComboBox? songSelector { get => documentContext.Current.Get<ComboBox?>("songSelector", () => default); set => documentContext.Current.Set("songSelector",value); }
+    private ListView? songSections { get => documentContext.Current.Get<ListView?>("songSections", () => default); set => documentContext.Current.Set("songSections",value); }
+    private NumberBox? songA { get => documentContext.Current.Get<NumberBox?>("songA", () => default); set => documentContext.Current.Set("songA",value); }
+    private NumberBox? songB { get => documentContext.Current.Get<NumberBox?>("songB", () => default); set => documentContext.Current.Set("songB",value); }
+    private NumberBox? songSpeed { get => documentContext.Current.Get<NumberBox?>("songSpeed", () => default); set => documentContext.Current.Set("songSpeed",value); }
+    private Canvas? songWaveform { get => documentContext.Current.Get<Canvas?>("songWaveform", () => default); set => documentContext.Current.Set("songWaveform",value); }
+    private TextBlock? songReading { get => documentContext.Current.Get<TextBlock?>("songReading", () => default); set => documentContext.Current.Set("songReading",value); }
+    private Button? songCancel { get => documentContext.Current.Get<Button?>("songCancel", () => default); set => documentContext.Current.Set("songCancel",value); }
+    private float[] songPeaks { get => documentContext.Current.Get<float[]>("songPeaks", () => []); set => documentContext.Current.Set("songPeaks",value); }
+    private bool songUpdating { get => documentContext.Current.Get<bool>("songUpdating", () => default); set => documentContext.Current.Set("songUpdating",value); }
+    private bool songLoadCancelled { get => documentContext.Current.Get<bool>("songLoadCancelled", () => default); set => documentContext.Current.Set("songLoadCancelled",value); }
+    private Task? songRampTask { get => documentContext.Current.Get<Task?>("songRampTask", () => default); set => documentContext.Current.Set("songRampTask",value); }private double? songRampQueuedSpeed { get => documentContext.Current.Get<double?>("songRampQueuedSpeed", () => default); set => documentContext.Current.Set("songRampQueuedSpeed",value); }
+    private DateTime songLastSave { get => documentContext.Current.Get<DateTime>("songLastSave", () => DateTime.MinValue); set => documentContext.Current.Set("songLastSave",value); }
     private void InitializeSongs(IReadOnlyList<DataDocument> documents)
     {
         songs.Clear();foreach(var item in documents.Where(d=>d.Kind=="song")){var entry=UserData.Read<SongSession>(item.Value);songs[entry.Id]=entry;}
         song=null;songPeaks=[];songSelector=null;songSections=null;songReading=null;songWaveform=null;
     }
     private FrameworkElement BuildSong()
-    {
+    {var capturedDocument = documentContext.Current;
         songUpdating=true;
         var panel=Stack();panel.AllowDrop=true;
-        panel.DragOver+=(_,e)=>{if(e.DataView.Contains(StandardDataFormats.StorageItems))e.AcceptedOperation=DataPackageOperation.Copy;};
-        panel.Drop+=async(_,e)=>{e.Handled=true;try{if(e.DataView.Contains(StandardDataFormats.StorageItems) && (await e.DataView.GetStorageItemsAsync()).OfType<StorageFile>().FirstOrDefault() is { } file)await OpenSongFileAsync(file.Path,file.Name);}catch(Exception error){ShowError(error);}};
-        var open=new Button{Content="Otevřít skladbu…"};open.Click+=OpenMedia_Click;panel.Children.Add(open);
-        songCancel=new Button{Content="Zrušit načítání",IsEnabled=busy};songCancel.Click+=(_,_)=>{songLoadCancelled=true;audio?.CancelMediaPreparation();MediaStatus.Text="Ruším načítání a obnovuji předchozí zdroj…";};panel.Children.Add(songCancel);
+        panel.DragOver+=(_,e)=>{using var documentScope = documentContext.Enter(capturedDocument);if(e.DataView.Contains(StandardDataFormats.StorageItems))e.AcceptedOperation=DataPackageOperation.Copy;};
+        panel.Drop+=async(_,e)=>{using var documentScope = documentContext.Enter(capturedDocument);e.Handled=true;try{if(e.DataView.Contains(StandardDataFormats.StorageItems) && (await e.DataView.GetStorageItemsAsync()).OfType<StorageFile>().FirstOrDefault() is { } file)await OpenSongFileAsync(file.Path,file.Name);}catch(Exception error){ShowError(error);}};
+        var open=new Button{Content="Otevřít skladbu…"};open.Click+=(__sender,__args)=>{using var documentScope=documentContext.Enter(capturedDocument);OpenMedia_Click(__sender,__args);};panel.Children.Add(open);
+        songCancel=new Button{Content="Zrušit načítání",IsEnabled=busy};songCancel.Click+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);songLoadCancelled=true;audio?.CancelMediaPreparation();MediaStatus.Text="Ruším načítání a obnovuji předchozí zdroj…";};panel.Children.Add(songCancel);
         songSelector=new ComboBox{Header="Naposledy otevřené skladby",DisplayMemberPath="Name",ItemsSource=songs.Values.OrderBy(s=>s.Name).ToArray(),HorizontalAlignment=HorizontalAlignment.Stretch};
-        songSelector.SelectionChanged+=async(_,_)=>{if(!songUpdating && !busy && songSelector.SelectedItem is SongSession selected){try{if(File.Exists(selected.SourcePath))await OpenSongFileAsync(selected.SourcePath,selected.Name);else await RelocateSongAsync(selected);}catch(Exception error){ShowError(error);}}};panel.Children.Add(songSelector);
+        songSelector.SelectionChanged+=async(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(!songUpdating && !busy && songSelector.SelectedItem is SongSession selected){try{if(File.Exists(selected.SourcePath))await OpenSongFileAsync(selected.SourcePath,selected.Name);else await RelocateSongAsync(selected);}catch(Exception error){ShowError(error);}}};panel.Children.Add(songSelector);
         songReading=Text(song is null?"Vyber skladbu nebo sem přetáhni zvukový soubor.":song.Name,true);panel.Children.Add(songReading);
         songWaveform=new Canvas{Height=140,HorizontalAlignment=HorizontalAlignment.Stretch};Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(songWaveform,"Zvuková časová osa; pozici lze měnit také posuvníkem přehrávače.");
-        songWaveform.SizeChanged+=(_,_)=>DrawSongWaveform();songWaveform.PointerPressed+=async(_,e)=>{if(song is null || busy || audio is null || songWaveform.ActualWidth<=0)return;try{var seconds=Math.Clamp(e.GetCurrentPoint(songWaveform).Position.X/songWaveform.ActualWidth,0,1)*song.Duration;await audio.SeekAsync(seconds/currentSpeed);}catch(Exception error){ShowError(error);}};panel.Children.Add(Card(songWaveform));
+        songWaveform.SizeChanged+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);DrawSongWaveform();};songWaveform.PointerPressed+=async(_,e)=>{using var documentScope = documentContext.Enter(capturedDocument);if(song is null || busy || audio is null || songWaveform.ActualWidth<=0)return;try{var seconds=Math.Clamp(e.GetCurrentPoint(songWaveform).Position.X/songWaveform.ActualWidth,0,1)*song.Duration;await audio.SeekAsync(seconds/currentSpeed);}catch(Exception error){ShowError(error);}};panel.Children.Add(Card(songWaveform));
         var range=Stack();songA=SongNumber("Začátek A (sekundy ve skladbě)",0,0,song?.Duration??86400,.1);songB=SongNumber("Konec B (sekundy ve skladbě)",song?.Duration??1,0,song?.Duration??86400,.1);range.Children.Add(songA);range.Children.Add(songB);
-        songA.ValueChanged+=(_,_)=>DrawSongWaveform();songB.ValueChanged+=(_,_)=>DrawSongWaveform();
-        var markA=new Button{Content="Nastavit A na aktuální pozici"};markA.Click+=(_,_)=>{if(audio is not null)songA.Value=audio.GetTransport().PositionSeconds*currentSpeed;};range.Children.Add(markA);
-        var markB=new Button{Content="Nastavit B na aktuální pozici"};markB.Click+=(_,_)=>{if(audio is not null)songB.Value=audio.GetTransport().PositionSeconds*currentSpeed;};range.Children.Add(markB);
-        var loop=new Button{Content="Opakovat úsek A–B"};loop.Click+=async(_,_)=>{try{await ApplySongLoopAsync();}catch(Exception error){ShowError(error);}};range.Children.Add(loop);
-        var whole=new Button{Content="Vypnout opakování"};whole.Click+=async(_,_)=>{try{if(audio is not null)await audio.SetLoopAsync(0,0,false);}catch(Exception error){ShowError(error);}};range.Children.Add(whole);
-        var save=new Button{Content="Uložit pojmenovaný úsek…"};save.Click+=async(_,_)=>{try{await SaveSongSectionAsync();}catch(Exception error){ShowError(error);}};range.Children.Add(save);panel.Children.Add(Card(range));
+        songA.ValueChanged+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);DrawSongWaveform();};songB.ValueChanged+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);DrawSongWaveform();};
+        var markA=new Button{Content="Nastavit A na aktuální pozici"};markA.Click+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(audio is not null)songA.Value=audio.GetTransport().PositionSeconds*currentSpeed;};range.Children.Add(markA);
+        var markB=new Button{Content="Nastavit B na aktuální pozici"};markB.Click+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(audio is not null)songB.Value=audio.GetTransport().PositionSeconds*currentSpeed;};range.Children.Add(markB);
+        var loop=new Button{Content="Opakovat úsek A–B"};loop.Click+=async(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);try{await ApplySongLoopAsync();}catch(Exception error){ShowError(error);}};range.Children.Add(loop);
+        var whole=new Button{Content="Vypnout opakování"};whole.Click+=async(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);try{if(audio is not null)await audio.SetLoopAsync(0,0,false);}catch(Exception error){ShowError(error);}};range.Children.Add(whole);
+        var save=new Button{Content="Uložit pojmenovaný úsek…"};save.Click+=async(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);try{await SaveSongSectionAsync();}catch(Exception error){ShowError(error);}};range.Children.Add(save);panel.Children.Add(Card(range));
         songSections=new ListView{Header="Uložené úseky",DisplayMemberPath="Label",IsItemClickEnabled=true,SelectionMode=ListViewSelectionMode.Single,ItemsSource=song?.Sections??[]};
-        songSections.ItemClick+=async(_,e)=>{if(e.ClickedItem is SongSection section){songA.Value=section.Start;songB.Value=section.End;try{await ApplySongLoopAsync();}catch(Exception error){ShowError(error);}}};panel.Children.Add(songSections);
-        var remove=new Button{Content="Odstranit vybraný úsek"};remove.Click+=async(_,_)=>{if(song is null || songSections.SelectedItem is not SongSection selected)return;var dialog=new ContentDialog{XamlRoot=ShellRoot.XamlRoot,Title="Odstranit úsek?",Content=selected.Label,PrimaryButtonText="Odstranit",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Close};if(await dialog.ShowAsync()==ContentDialogResult.Primary){song=song with{Sections=song.Sections!.Where(s=>s.Id!=selected.Id).ToArray()};SaveSong();songSections.ItemsSource=song.Sections;}};panel.Children.Add(remove);
-        songSpeed=SongNumber("Rychlost bez změny výšky",currentSpeed,.25,2,.05);songSpeed.ValueChanged+=async(_,e)=>{if(songUpdating || busy || !double.IsFinite(e.NewValue))return;try{await ChangeSongSpeedAsync(e.NewValue);}catch(Exception error){ShowError(error);}};panel.Children.Add(songSpeed);
+        songSections.ItemClick+=async(_,e)=>{using var documentScope = documentContext.Enter(capturedDocument);if(e.ClickedItem is SongSection section){songA.Value=section.Start;songB.Value=section.End;try{await ApplySongLoopAsync();}catch(Exception error){ShowError(error);}}};panel.Children.Add(songSections);
+        var remove=new Button{Content="Odstranit vybraný úsek"};remove.Click+=async(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(song is null || songSections.SelectedItem is not SongSection selected)return;var dialog=new ContentDialog{XamlRoot=DialogRoot,Title="Odstranit úsek?",Content=selected.Label,PrimaryButtonText="Odstranit",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Close};if(await dialog.ShowAsync()==ContentDialogResult.Primary){song=song with{Sections=song.Sections!.Where(s=>s.Id!=selected.Id).ToArray()};SaveSong();songSections.ItemsSource=song.Sections;}};panel.Children.Add(remove);
+        songSpeed=SongNumber("Rychlost bez změny výšky",currentSpeed,.25,2,.05);songSpeed.ValueChanged+=async(_,e)=>{using var documentScope = documentContext.Enter(capturedDocument);if(songUpdating || busy || !double.IsFinite(e.NewValue))return;try{await ChangeSongSpeedAsync(e.NewValue);}catch(Exception error){ShowError(error);}};panel.Children.Add(songSpeed);
         var countIn=SongNumber("Předtakt (takty)",song?.CountInBars??0,0,2,1);var bpm=SongNumber("Tempo předtaktu (BPM)",song?.Bpm??100,40,240,1);var beats=SongNumber("Doby v taktu",song?.Beats??4,1,16,1);
         void SavePractice(){if(song is null || songUpdating || !double.IsFinite(countIn.Value) || !double.IsFinite(bpm.Value) || !double.IsFinite(beats.Value))return;song=song with{CountInBars=(uint)countIn.Value,Bpm=Math.Round(bpm.Value),Beats=(uint)beats.Value};SaveSong();}
-        countIn.ValueChanged+=(_,_)=>SavePractice();bpm.ValueChanged+=(_,_)=>SavePractice();beats.ValueChanged+=(_,_)=>SavePractice();panel.Children.Add(countIn);panel.Children.Add(bpm);panel.Children.Add(beats);
+        countIn.ValueChanged+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);SavePractice();};bpm.ValueChanged+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);SavePractice();};beats.ValueChanged+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);SavePractice();};panel.Children.Add(countIn);panel.Children.Add(bpm);panel.Children.Add(beats);
         var ramp=new ToggleSwitch{Header="Postupné zrychlování A–B",IsOn=song?.Ramp??false};var rampStep=SongNumber("Přírůstek rychlosti",song?.RampStep??.05,.01,.25,.01);var rampEvery=SongNumber("Zrychlit po opakováních",song?.RampEvery??4,1,32,1);var rampTarget=SongNumber("Cílová rychlost",song?.RampTarget??1,.25,2,.05);
         void SaveRamp(){if(song is null || songUpdating || !double.IsFinite(rampStep.Value) || !double.IsFinite(rampEvery.Value) || !double.IsFinite(rampTarget.Value))return;song=song with{Ramp=ramp.IsOn,RampStep=rampStep.Value,RampEvery=(uint)rampEvery.Value,RampTarget=rampTarget.Value};SaveSong();}
-        ramp.Toggled+=async(_,_)=>{SaveRamp();if(!ramp.IsOn){try{await CancelSongRampAsync();}catch(Exception error){ShowError(error);}}};rampStep.ValueChanged+=(_,_)=>SaveRamp();rampEvery.ValueChanged+=(_,_)=>SaveRamp();rampTarget.ValueChanged+=(_,_)=>SaveRamp();panel.Children.Add(ramp);panel.Children.Add(rampStep);panel.Children.Add(rampEvery);panel.Children.Add(rampTarget);
-        var play=new Button{Content="Přehrát s předtaktem"};play.Click+=async(_,_)=>{if(song is null || audio is null || busy)return;try{SavePractice();var config=audio.GetMetronome() with{Enabled=false,Ramp=false};await audio.SetMetronomeAsync(config);await audio.SetMetronomeAsync(config with{Enabled=true,Bpm=(uint)song.Bpm,Beats=song.Beats,CountIn=song.CountInBars});await audio.PlayWithCountInAsync(song.CountInBars,song.Beats,song.Bpm);}catch(Exception error){ShowError(error);}};panel.Children.Add(play);
-        var pause=new Button{Content="Pozastavit skladbu"};pause.Click+=async(_,_)=>{try{if(audio is not null)await audio.PauseAsync();}catch(Exception error){ShowError(error);}};panel.Children.Add(pause);
+        ramp.Toggled+=async(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);SaveRamp();if(!ramp.IsOn){try{await CancelSongRampAsync();}catch(Exception error){ShowError(error);}}};rampStep.ValueChanged+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);SaveRamp();};rampEvery.ValueChanged+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);SaveRamp();};rampTarget.ValueChanged+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);SaveRamp();};panel.Children.Add(ramp);panel.Children.Add(rampStep);panel.Children.Add(rampEvery);panel.Children.Add(rampTarget);
+        var play=new Button{Content="Přehrát s předtaktem"};play.Click+=async(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(song is null || audio is null || busy)return;try{SavePractice();var config=audio.GetMetronome() with{Enabled=false,Ramp=false};await audio.SetMetronomeAsync(config);await audio.SetMetronomeAsync(config with{Enabled=true,Bpm=(uint)song.Bpm,Beats=song.Beats,CountIn=song.CountInBars});await audio.PlayWithCountInAsync(song.CountInBars,song.Beats,song.Bpm);}catch(Exception error){ShowError(error);}};panel.Children.Add(play);
+        var pause=new Button{Content="Pozastavit skladbu"};pause.Click+=async(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);try{if(audio is not null)await audio.PauseAsync();}catch(Exception error){ShowError(error);}};panel.Children.Add(pause);
         panel.Children.Add(Text("Skladba a monitoring kytary mají samostatné ovládání. Tlačítko Zastavit ve spodním panelu zastaví všechny zdroje. Soubory zůstávají na původním místě; záloha uchová jejich pozice a úseky, původní zvuk připojené skladby zálohuj zvlášť.",true));
         songUpdating=false;DrawSongWaveform();return panel;
     }
     private static NumberBox SongNumber(string label,double value,double minimum,double maximum,double step)=>new(){Header=label,Minimum=minimum,Maximum=maximum,Value=value,SmallChange=step,LargeChange=step*10,SpinButtonPlacementMode=NumberBoxSpinButtonPlacementMode.Compact};
     private async Task RelocateSongAsync(SongSession missing)
     {
-        var dialog=new ContentDialog{XamlRoot=ShellRoot.XamlRoot,Title="Soubor skladby chybí",Content=missing.Name,PrimaryButtonText="Najít soubor…",CloseButtonText="Zrušit"};if(await dialog.ShowAsync()!=ContentDialogResult.Primary)return;
-        var picker=new FileOpenPicker();WinRT.Interop.InitializeWithWindow.Initialize(picker,WinRT.Interop.WindowNative.GetWindowHandle(this));foreach(var ext in new[]{".wav",".mp3",".ogg",".opus",".webm",".m4a",".mp4"})picker.FileTypeFilter.Add(ext);var file=await picker.PickSingleFileAsync();if(file is not null)await OpenSongFileAsync(file.Path,missing.Name,missing);
+        var dialog=new ContentDialog{XamlRoot=DialogRoot,Title="Soubor skladby chybí",Content=missing.Name,PrimaryButtonText="Najít soubor…",CloseButtonText="Zrušit"};if(await dialog.ShowAsync()!=ContentDialogResult.Primary)return;
+        var picker=new FileOpenPicker();WinRT.Interop.InitializeWithWindow.Initialize(picker,DialogWindowHandle);foreach(var ext in new[]{".wav",".mp3",".ogg",".opus",".webm",".m4a",".mp4"})picker.FileTypeFilter.Add(ext);var file=await picker.PickSingleFileAsync();if(file is not null)await OpenSongFileAsync(file.Path,missing.Name,missing);
     }
     private async Task WaitForSongAsync(double speed)
     {
@@ -94,6 +98,7 @@ public sealed partial class MainWindow
     }
     private async Task OpenSongFileAsync(string path,string name,SongSession? relocated=null)
     {
+        if(desktopEnabled){await OpenDesktopSongAsync(path,name,relocated);return;}
         if(busy || powerTransition || audio is null)return;var previous=song;var oldTitle=MediaTitle.Text;var oldPath=mediaPath;var oldMidi=mediaMidi;var oldSpeed=currentSpeed;var oldState=audio.GetTransport();bool oldStudio=studioOwnsPlayback;
         try{
             SetBusy(true);await CancelSongRampAsync();songLoadCancelled=false;if(songCancel is not null)songCancel.IsEnabled=true;MediaStatus.Text="Připravuji skladbu a zvukovou časovou osu…";
@@ -110,6 +115,7 @@ public sealed partial class MainWindow
     }
     private async Task ChangeSongSpeedAsync(double speed)
     {
+        if(desktopEnabled && services.Transport.Owner!=documentContext.Current){currentSpeed=speed;if(song is not null){song=song with{Speed=speed};SaveSong();}return;}
         if(audio is null || powerTransition || busy || (mediaPath is null && mediaMidi is null) || speed==currentSpeed)return;
         var previous=currentSpeed;var transport=audio.GetTransport();var sourcePosition=transport.PositionSeconds*previous;
         try{
@@ -126,13 +132,14 @@ public sealed partial class MainWindow
     private async Task ApplySongLoopAsync()
     {
         if(song is null || audio is null || songA is null || songB is null)return;
+        if(desktopEnabled)await ClaimDesktopSourceAsync(documentContext.Current);
         if(!double.IsFinite(songA.Value) || !double.IsFinite(songB.Value) || songA.Value<0 || songB.Value<=songA.Value || songB.Value>song.Duration)throw new InvalidOperationException("Konec B musí následovat po začátku A a ležet ve skladbě.");
         await audio.SetLoopAsync(songA.Value/currentSpeed,songB.Value/currentSpeed,true);appliedSongLoopId=song.Id;appliedSongLoopStart=songA.Value;appliedSongLoopEnd=songB.Value;DrawSongWaveform();
     }
     private async Task SaveSongSectionAsync()
     {
         if(song is null || songA is null || songB is null)return;await ApplySongLoopAsync();
-        var name=new TextBox{Header="Název úseku",MaxLength=128};var dialog=new ContentDialog{XamlRoot=ShellRoot.XamlRoot,Title="Uložit úsek",Content=name,PrimaryButtonText="Uložit",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Primary};
+        var name=new TextBox{Header="Název úseku",MaxLength=128};var dialog=new ContentDialog{XamlRoot=DialogRoot,Title="Uložit úsek",Content=name,PrimaryButtonText="Uložit",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Primary};
         if(await dialog.ShowAsync()!=ContentDialogResult.Primary || string.IsNullOrWhiteSpace(name.Text))return;
         song=SongRules.Validate(song with{Sections=[..song.Sections??[],new SongSection(Guid.NewGuid().ToString("N"),name.Text.Trim(),songA.Value,songB.Value)]});SaveSong();if(songSections is not null)songSections.ItemsSource=song.Sections;
     }

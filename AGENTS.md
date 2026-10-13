@@ -19,7 +19,9 @@ certifikátů/licencí ani veřejného vydávání mimo dohodnuté soukromé př
 
 **Navazující schválení desktopové přestavby (13. 10. 2026):** Jenda po
 předání úplného `WINDOWS_DESKTOP_REBUILD_PLAN.md` výslovně schválil
-zahájení práce („Ok. Tak se můžeš pustit do práce.“). Postupovat podle
+zahájení práce („Ok. Tak se můžeš pustit do práce.“), následně výslovně
+požádal pokračovat, dokud nebude vše hotové. Nezastavovat práci po milníku
+s nabídkou dalšího pokračování. Postupovat podle
 D01–D36 po malých navazujících krocích, včetně návrhů, oddělení služeb,
 více oken, všech funkcí a Vintage grafiky. Zachovat průběžné automatické
 kontroly a skutečné Windows buildy; znovu nežádat schválení každého kroku

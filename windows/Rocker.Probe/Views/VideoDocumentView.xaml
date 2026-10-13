@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" x:Class="Rocker.Probe.Views.VideoDocumentView"><Border x:Name="VideoPanel" Style="{StaticResource VintageCardStyle}" Visibility="Visible">
+                    <StackPanel Spacing="12">
+                        <TextBlock Text="Oficiální YouTube přehrávač. Video a jeho zvuk zůstávají součástí YouTube; žádný zvuk se nestahuje ani nepřevádí." TextWrapping="Wrap" />
+                        <TextBox x:Name="VideoUrl" Header="Odkaz na video" PlaceholderText="https://www.youtube.com/watch?v=…" MaxLength="2048" />
+                        <StackPanel x:Name="VideoButtons" Orientation="Horizontal" Spacing="12">
+                            <Button x:Name="VideoLoadButton" Content="Načíst video" IsEnabled="False" />
+                            <Button x:Name="VideoPlayButton" Content="Přehrát video" IsEnabled="False" />
+                            <Button x:Name="VideoPauseButton" Content="Pozastavit" IsEnabled="False" />
+                            <Button x:Name="VideoStopButton" Content="Zastavit video" IsEnabled="False" />
+                            <Button Content="V prohlížeči" x:Name="Action4" />
+                        </StackPanel>
+                        <ComboBox x:Name="VideoRates" Header="Dostupné rychlosti videa" Width="200" IsEnabled="False" />
+                        <Slider x:Name="VideoSeek" Header="Pozice ve videu" Minimum="0" Maximum="1" IsEnabled="False" />
+                        <NumberBox x:Name="VideoLoopA" Header="A · začátek v sekundách" Minimum="0" Maximum="864000" Value="0" SpinButtonPlacementMode="Inline" />
+                        <NumberBox x:Name="VideoLoopB" Header="B · konec v sekundách" Minimum="0" Maximum="864000" Value="0" SpinButtonPlacementMode="Inline" />
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Button x:Name="VideoMarkA" Content="A = nyní" Tag="a" IsEnabled="False" />
+                            <Button x:Name="VideoMarkB" Content="B = nyní" Tag="b" IsEnabled="False" />
+                            <Button x:Name="VideoApplyLoop" Content="Použít A/B" IsEnabled="False" />
+                        </StackPanel>
+                        <CheckBox x:Name="VideoLoopEnabled" Content="Opakovat úsek A/B" />
+                        <TextBox x:Name="VideoLoopLabel" Header="Název úseku" MaxLength="256" />
+                        <Button Content="Uložit pojmenovaný úsek" x:Name="Action13" />
+                        <ListView x:Name="VideoSavedLoops" Header="Uložené úseky všech videí" DisplayMemberPath="Title" />
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Button Content="Otevřít vybraný úsek" x:Name="Action14" />
+                            <Button Content="Přejmenovat" x:Name="Action15" />
+                            <Button Content="Smazat" x:Name="Action16" />
+                            <Button Content="Vrátit smazání" x:Name="Action17" />
+                        </StackPanel>
+                        <TextBlock x:Name="VideoLoopStatus" Text="YouTube smyčka má přibližné časování; neslouží k přesnému sladění nahrávky." TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />
+                        <Button Content="Nastavit sdílený zvuk Windows pro video" x:Name="Action18" />
+                        <TextBlock Text="YouTube používá sdílený výstup Windows. Pokud s ASIO nebo výhradním WASAPI neslyšíš video, zvol sdílené Windows Audio a stejný interfejs i ve Windows. Nahrávání zachycuje pouze zvolenou nativní sběrnici; zvuk videa se nenahrává." TextWrapping="Wrap" />
+                        <TextBlock x:Name="VideoPosition" Text="0:00 / 0:00" />
+                        <WebView2 x:Name="VideoView" MaxWidth="640" Height="360" HorizontalAlignment="Stretch" AutomationProperties.Name="Oficiální YouTube přehrávač" />
+                        <TextBlock x:Name="VideoStatus" Text="Připravuji přehrávač…" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />
+                    </StackPanel>
+                </Border>
+                </UserControl>

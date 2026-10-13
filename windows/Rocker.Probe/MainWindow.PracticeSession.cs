@@ -18,22 +18,22 @@ public sealed partial class MainWindow
     }
     private void TrackPracticeInteraction(DependencyObject? element)
     {
-        if(!PracticeViews.Contains(navigation.Current.ViewId))return;for(var current=element;current is not null;current=VisualTreeHelper.GetParent(current))if(ReferenceEquals(current,WorkspaceContent) || ReferenceEquals(current,NotationPanel) || ReferenceEquals(current,VideoPanel)){practiceLastUiInteraction=MonotonicMs;return;}
+        if(!PracticeViews.Contains(CurrentTarget.ViewId))return;if(desktopEnabled){practiceLastUiInteraction=MonotonicMs;return;}for(var current=element;current is not null;current=VisualTreeHelper.GetParent(current))if(ReferenceEquals(current,WorkspaceContent) || ReferenceEquals(current,NotationPanel) || ReferenceEquals(current,VideoPanel)){practiceLastUiInteraction=MonotonicMs;return;}
     }
     private void RefreshPractice(ClockSnapshot clock,TransportSnapshot transport,AnalysisSnapshot analysis)
     {
         double now=MonotonicMs;bool frame=clock.Running && clock.Epoch==practiceAudioEpoch && clock.Frame>practiceAudioFrame;practiceAudioEpoch=clock.Epoch;practiceAudioFrame=clock.Frame;
         bool input=frame && analysis.Epoch==clock.Epoch && analysis.ActiveInput && !analysis.Stale && double.IsFinite(analysis.AgeSeconds) && analysis.AgeSeconds<=.25 && analysis.Rms>appSettings.NoiseGate;
-        bool listening=frame && (transport.Playing!=0 || now<practicePreviewUntil || analysis.ReferencePlaying || analysis.ConfirmationPlaying || navigation.Current.ViewId=="16" && audio?.GetLoop().State is 3 or 4 or 5);
-        bool interaction=PracticeViews.Contains(navigation.Current.ViewId) && (now-practiceLastUiInteraction<=15000 || recentExerciseInteraction is { } recent && (DateTimeOffset.UtcNow-recent).TotalSeconds is >=0 and <=15);
-        bool video=navigation.Current.ViewId=="08" && videoPractice.Ready && videoPractice.State==1 && (DateTimeOffset.UtcNow-videoProgressObserved).TotalSeconds<=1;
+        bool listening=frame && (transport.Playing!=0 || now<practicePreviewUntil || analysis.ReferencePlaying || analysis.ConfirmationPlaying || CurrentTarget.ViewId=="16" && audio?.GetLoop().State is 3 or 4 or 5);
+        bool interaction=PracticeViews.Contains(CurrentTarget.ViewId) && (now-practiceLastUiInteraction<=15000 || recentExerciseInteraction is { } recent && (DateTimeOffset.UtcNow-recent).TotalSeconds is >=0 and <=15);
+        bool video=CurrentTarget.ViewId=="08" && videoPractice.Ready && videoPractice.State==1 && (DateTimeOffset.UtcNow-videoProgressObserved).TotalSeconds<=1;
         ObservePractice(now,DateTimeOffset.UtcNow,input || listening || interaction || video);
         FinishPracticeObservation(now);
     }
     private void RefreshPracticeWithoutAudio()
     {
-        double now=MonotonicMs;bool interaction=PracticeViews.Contains(navigation.Current.ViewId) && (now-practiceLastUiInteraction<=15000 || recentExerciseInteraction is { } recent && (DateTimeOffset.UtcNow-recent).TotalSeconds is >=0 and <=15);
-        bool video=navigation.Current.ViewId=="08" && videoPractice.Ready && videoPractice.State==1 && (DateTimeOffset.UtcNow-videoProgressObserved).TotalSeconds is >=0 and <=1;
+        double now=MonotonicMs;bool interaction=PracticeViews.Contains(CurrentTarget.ViewId) && (now-practiceLastUiInteraction<=15000 || recentExerciseInteraction is { } recent && (DateTimeOffset.UtcNow-recent).TotalSeconds is >=0 and <=15);
+        bool video=CurrentTarget.ViewId=="08" && videoPractice.Ready && videoPractice.State==1 && (DateTimeOffset.UtcNow-videoProgressObserved).TotalSeconds is >=0 and <=1;
         ObservePractice(now,DateTimeOffset.UtcNow,interaction || video);FinishPracticeObservation(now);
     }
     private void FinishPracticeObservation(double now){if(now-practiceLastFlush>=1000){practiceLastFlush=now;FlushPractice();}RefreshPracticeControls();}

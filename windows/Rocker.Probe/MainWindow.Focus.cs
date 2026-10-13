@@ -45,7 +45,7 @@ public sealed partial class MainWindow
         Navigation.IsBackButtonVisible = focusMode ? NavigationViewBackButtonVisible.Collapsed : NavigationViewBackButtonVisible.Visible;
         if (focusMode) Navigation.IsPaneOpen = false;
         else if (Navigation.DisplayMode == NavigationViewDisplayMode.Expanded) Navigation.IsPaneOpen = focusPaneWasOpen || Navigation.IsPaneOpen;
-        WorkspaceTitle.Text = focusMode ? "Jen hraju" : Rocker.Domain.WorkspaceViews.Get(navigation.Current.ViewId).Title;
+        WorkspaceTitle.Text = focusMode ? "Jen hraju" : Rocker.Domain.WorkspaceViews.Get(CurrentTarget.ViewId).Title;
         WorkspaceTrail.Visibility = focusMode ? Visibility.Collapsed : Visibility.Visible;
         FavoriteViewButton.Visibility = SearchButton.Visibility = focusMode ? Visibility.Collapsed : Visibility.Visible;
         FocusExitButton.Visibility = focusMode ? Visibility.Visible : Visibility.Collapsed;

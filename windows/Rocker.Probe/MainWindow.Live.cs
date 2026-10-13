@@ -8,7 +8,8 @@ public sealed partial class MainWindow
 {
     private TextBlock? liveTunerNote,liveTunerCents;private PitchGauge? liveTunerNeedle;
     private LevelMeter? liveInputMeter,liveProcessedMeter,liveMixMeter;
-    private TextBlock? liveState,liveDiagnostic;
+    private TextBlock? liveState,liveDiagnostic,liveMixReason;
+    private Button? liveEnableMonitor;
     private CheckBox? liveMonitor;
     private Button? liveStart,liveStop;private TextBlock? liveDevice;
     private double liveGain=0.15;
@@ -33,7 +34,7 @@ public sealed partial class MainWindow
         var tune=new Button{Content="Otevřít ladičku",RequestedTheme=ElementTheme.Light};tune.Click+=(_,_)=>Navigate(new("03"));tuner.Children.Add(tune);focusSecondary.Add(tune);left.Children.Add(new VintageHousing(tuner,compact:true,instrument:true));
         right.Children.Add(BuildCompactMetronome());right.Children.Add(BuildRecordingControls(compact:true));right.Children.Add(BuildCompactAmplifier());
         panel.Children.Add(ResponsiveColumns(left,right));
-        var details=Stack();liveProcessedMeter=new(){Label="Za aparátem",Analog=true};liveMixMeter=new(){Label="Výsledný mix",Analog=true};details.Children.Add(liveProcessedMeter);details.Children.Add(liveMixMeter);liveDiagnostic=Text("",true);details.Children.Add(liveDiagnostic);
+        var details=Stack();liveProcessedMeter=new(){Label="Za aparátem",Analog=true};liveMixMeter=new(){Label="Výsledný mix",Analog=true};details.Children.Add(liveProcessedMeter);details.Children.Add(liveMixMeter);liveMixReason=Text("Poslech kytary je vypnutý.",true);details.Children.Add(liveMixReason);liveEnableMonitor=new Button{Content="Zapnout poslech kytary"};liveEnableMonitor.Click+=(_,_)=>{if(liveMonitor is{IsEnabled:true}){liveMonitor.IsChecked=true;ApplyLiveMonitoring();}};details.Children.Add(liveEnableMonitor);liveDiagnostic=Text("",true);details.Children.Add(liveDiagnostic);
         details.Children.Add(Text("Kytaru i sluchátka připoj ke stejné kartě. Pro poslech softwarových efektů nepřimíchávej současně Direct Monitor karty.",true));
         var devices=new Button{Content="Změnit zvukovou kartu a vstup"};devices.Click+=(_,_)=>Navigate(new("29"));details.Children.Add(devices);
         var more=new Expander{Header="Zvuková karta, měřáky a podrobnosti",Content=details,HorizontalAlignment=HorizontalAlignment.Stretch};panel.Children.Add(more);focusSecondary.Add(more);return panel;
@@ -42,7 +43,7 @@ public sealed partial class MainWindow
     {
         if(audio is null || busy || powerTransition || deviceOperationRunning || closingWindow)return;
         if(deviceSelectionUnavailable || appSettings.AudioDevice is not {InputChannel:>=0}){ShowPersistenceError("Nejdřív vyber zvukovou kartu a konkrétní vstup kytary.");Navigate(new("29"));return;}
-        try{++playbackIntent;SetBusy(true);await audio.StartLiveAsync();if(!closed && !closingWindow)RefreshState();}
+        try{if(desktopEnabled && CurrentTarget.ViewId is "06" or "09" or "12")await ClaimDesktopGraderAsync();++playbackIntent;SetBusy(true);await audio.StartLiveAsync();if(!closed && !closingWindow)RefreshState();}
         catch(Exception error){if(!closed)ShowError(error);}
         finally{if(!closed)SetBusy(false);}
     }
@@ -67,6 +68,7 @@ public sealed partial class MainWindow
         liveProcessedMeter!.Label=appSettings.AmpEnabled?"Za aparátem":"Za aparátem · bypass";
         liveProcessedMeter!.SetLevel(meters.ProcessedPeak,running && meters.HasInput);
         liveMixMeter!.SetLevel(meters.MixPeak,running);
+        if(liveMixReason is not null){liveMixReason.Text=!running?"Zvukové zařízení je zastavené.":!meters.HasInput?"Zvuk běží bez vstupu kytary.":!meters.Monitoring?"Poslech kytary je vypnutý. Vstup a aparát mohou měřit signál; do výsledného mixu se kytara přidá až po zapnutí poslechu.":liveGain==0?"Poslech je zapnutý, ale jeho hlasitost je nula.":"Poslech kytary je zapnutý; ostatní zdroje se přimíchávají samostatně.";liveEnableMonitor!.Visibility=running && meters.HasInput && !meters.Monitoring?Visibility.Visible:Visibility.Collapsed;liveEnableMonitor.IsEnabled=liveMonitor!.IsEnabled;}
         liveUpdating=true;liveMonitor!.IsChecked=meters.Monitoring;liveUpdating=false;
         liveState!.Text=running?(meters.HasInput?(meters.Monitoring?"Vstup běží a monitoring je zapnutý.":"Vstup běží. Monitoring je ztlumený."):"Zvuk běží bez vstupu kytary."):"Živý vstup je zastavený. Zařízení je uvolněné.";
         var reading=audio.GetAnalysis();var note=reading.ActiveInput && !reading.Stale && reading.PitchDetected?Rocker.Domain.Music.FrequencyToNote(reading.Frequency*440/(appSettings.ReferenceA??440)):null;liveTunerNote!.Text=note is null?"—":NoteLabel(note.Midi);if(note is null){liveTunerCents!.Text="Žádný aktuálně měřený tón.";liveTunerNeedle!.HasReading=false;liveTunerNeedle.Value=50;}else{int cents=Rocker.Domain.Music.CentsBetween(reading.Frequency,TunerFrequency(note.Midi));liveTunerCents!.Text=$"{cents:+0;-0;0} centů · {CurrentTuning().Label}";liveTunerNeedle!.HasReading=true;liveTunerNeedle.Value=Math.Clamp(50+cents,0,100);}

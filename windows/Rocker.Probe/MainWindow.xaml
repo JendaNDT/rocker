@@ -91,81 +91,81 @@
                     <ContentControl x:Name="WorkspaceContent" HorizontalContentAlignment="Stretch">
                         <ContentControl.ContentTransitions><TransitionCollection><EntranceThemeTransition IsStaggeringEnabled="False"/></TransitionCollection></ContentControl.ContentTransitions>
                     </ContentControl>
-                    <StackPanel x:Name="NotationPanel" Visibility="Collapsed" Spacing="12">
+                    <StackPanel x:Name="LegacyNotationPanel" Visibility="Collapsed" Spacing="12">
                 <TextBlock Text="Noty a tabulatury" Style="{ThemeResource SubtitleTextBlockStyle}" />
                 <TextBlock Text="Nativní zobrazení a společný přehrávač. Poslech používá syntetický strunný zvuk a bicí; nejde o skutečný kytarový aparát ani zvuk původních nástrojů."
                            TextWrapping="Wrap" />
-                <StackPanel x:Name="ScoreButtons" Orientation="Horizontal" Spacing="12">
-                    <Button x:Name="XmlButton" Content="Ukázka MusicXML" Click="Xml_Click" />
-                    <Button x:Name="GpButton" Content="Ukázka Guitar Pro" Click="Gp_Click" />
-                    <Button x:Name="OpenScoreButton" Content="Otevřít noty…" Click="OpenScore_Click" />
-                    <Button x:Name="PlayScoreButton" Content="Přehrát noty" Click="PlayScore_Click" IsEnabled="False" />
+                <StackPanel x:Name="LegacyScoreButtons" Orientation="Horizontal" Spacing="12">
+                    <Button x:Name="LegacyXmlButton" Content="Ukázka MusicXML" Click="Xml_Click" />
+                    <Button x:Name="LegacyGpButton" Content="Ukázka Guitar Pro" Click="Gp_Click" />
+                    <Button x:Name="LegacyOpenScoreButton" Content="Otevřít noty…" Click="OpenScore_Click" />
+                    <Button x:Name="LegacyPlayScoreButton" Content="Přehrát noty" Click="PlayScore_Click" IsEnabled="False" />
                 </StackPanel>
-                <StackPanel x:Name="NotationControls" Spacing="8">
-                    <ComboBox x:Name="NotationTrackBox" Header="Zobrazená a hraná stopa" DisplayMemberPath="Name" SelectionChanged="NotationTrack_Changed" />
-                    <CheckBox x:Name="NotationAllTracks" Content="Přehrávat všechny stopy partitury" Checked="NotationAudio_Changed" Unchecked="NotationAudio_Changed" />
-                    <ComboBox x:Name="NotationZoom" Header="Zvětšení not" SelectedIndex="2" SelectionChanged="NotationZoom_Changed">
+                <StackPanel x:Name="LegacyNotationControls" Spacing="8">
+                    <ComboBox x:Name="LegacyNotationTrackBox" Header="Zobrazená a hraná stopa" DisplayMemberPath="Name" SelectionChanged="NotationTrack_Changed" />
+                    <CheckBox x:Name="LegacyNotationAllTracks" Content="Přehrávat všechny stopy partitury" Checked="NotationAudio_Changed" Unchecked="NotationAudio_Changed" />
+                    <ComboBox x:Name="LegacyNotationZoom" Header="Zvětšení not" SelectedIndex="2" SelectionChanged="NotationZoom_Changed">
                         <ComboBoxItem Content="50 %" Tag="0.5" /><ComboBoxItem Content="75 %" Tag="0.75" /><ComboBoxItem Content="100 %" Tag="1" /><ComboBoxItem Content="125 %" Tag="1.25" /><ComboBoxItem Content="150 %" Tag="1.5" /><ComboBoxItem Content="200 %" Tag="2" />
                     </ComboBox>
-                    <NumberBox x:Name="NotationBar" Header="Vybraný takt" Minimum="1" Maximum="128" Value="1" SpinButtonPlacementMode="Inline" ValueChanged="NotationBar_Changed" />
-                    <CheckBox x:Name="NotationFollow" Content="Sledovat právě hraný takt" IsChecked="True" />
-                    <NumberBox x:Name="NotationLoopFirst" Header="Smyčka od taktu" Minimum="1" Maximum="128" Value="1" SpinButtonPlacementMode="Inline" ValueChanged="NotationLoopFirst_Changed" />
-                    <NumberBox x:Name="NotationLoopLast" Header="Smyčka do taktu včetně" Minimum="1" Maximum="128" Value="1" SpinButtonPlacementMode="Inline" />
-                    <ComboBox x:Name="NotationOccurrence" Header="Průchod opakovaným taktem" />
+                    <NumberBox x:Name="LegacyNotationBar" Header="Vybraný takt" Minimum="1" Maximum="128" Value="1" SpinButtonPlacementMode="Inline" ValueChanged="NotationBar_Changed" />
+                    <CheckBox x:Name="LegacyNotationFollow" Content="Sledovat právě hraný takt" IsChecked="True" />
+                    <NumberBox x:Name="LegacyNotationLoopFirst" Header="Smyčka od taktu" Minimum="1" Maximum="128" Value="1" SpinButtonPlacementMode="Inline" ValueChanged="NotationLoopFirst_Changed" />
+                    <NumberBox x:Name="LegacyNotationLoopLast" Header="Smyčka do taktu včetně" Minimum="1" Maximum="128" Value="1" SpinButtonPlacementMode="Inline" />
+                    <ComboBox x:Name="LegacyNotationOccurrence" Header="Průchod opakovaným taktem" />
                     <Button Content="Použít smyčku taktů" Click="NotationLoop_Click" />
                     <Button Content="Vypnout smyčku taktů" Click="NotationLoopOff_Click" />
                     <Button Content="Přejít na vybraný takt" Click="NotationSeek_Click" />
                 </StackPanel>
                 <TextBlock Text="Rychlost přehrávání měň dole; výška tónů zůstává zachovaná. Zvuk je syntetická pomůcka." TextWrapping="Wrap" />
-                <TextBlock x:Name="NotationAccessible" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />
-                <TextBlock x:Name="NotationStatus" Text="Připravuji notový náhled…" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />
+                <TextBlock x:Name="LegacyNotationAccessible" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />
+                <TextBlock x:Name="LegacyNotationStatus" Text="Připravuji notový náhled…" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />
                 <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
-                    <Canvas x:Name="ScoreCanvas" Width="700" Height="1" Background="White" PointerPressed="Score_PointerPressed"
+                    <Canvas x:Name="LegacyScoreCanvas" Width="700" Height="1" Background="White" PointerPressed="Score_PointerPressed"
                             AutomationProperties.Name="Notový náhled; výběr taktu kliknutím">
-                        <Image x:Name="ScoreImage" Width="700" Stretch="Fill" />
-                        <Border x:Name="NotationPlayhead" BorderBrush="{ThemeResource AccentFillColorDefaultBrush}" BorderThickness="3" Visibility="Collapsed" IsHitTestVisible="False" />
-                        <Border x:Name="SelectionBox" BorderBrush="{ThemeResource VintageAccent}" BorderThickness="2" Visibility="Collapsed" IsHitTestVisible="False" />
+                        <Image x:Name="LegacyScoreImage" Width="700" Stretch="Fill" />
+                        <Border x:Name="LegacyNotationPlayhead" BorderBrush="{ThemeResource AccentFillColorDefaultBrush}" BorderThickness="3" Visibility="Collapsed" IsHitTestVisible="False" />
+                        <Border x:Name="LegacySelectionBox" BorderBrush="{ThemeResource VintageAccent}" BorderThickness="2" Visibility="Collapsed" IsHitTestVisible="False" />
                     </Canvas>
                 </ScrollViewer>
-                <TextBlock x:Name="SelectionStatus" Text="Takt zatím není vybraný." TextWrapping="Wrap" />
-                <Button x:Name="ExportMidiButton" Content="Uložit MIDI…" Click="ExportMidi_Click" IsEnabled="False" />
+                <TextBlock x:Name="LegacySelectionStatus" Text="Takt zatím není vybraný." TextWrapping="Wrap" />
+                <Button x:Name="LegacyExportMidiButton" Content="Uložit MIDI…" Click="ExportMidi_Click" IsEnabled="False" />
                     </StackPanel>
-                <Border x:Name="VideoPanel" Style="{StaticResource VintageCardStyle}" Visibility="Collapsed">
+                <Border x:Name="LegacyVideoPanel" Style="{StaticResource VintageCardStyle}" Visibility="Collapsed">
                     <StackPanel Spacing="12">
                         <TextBlock Text="Oficiální YouTube přehrávač. Video a jeho zvuk zůstávají součástí YouTube; žádný zvuk se nestahuje ani nepřevádí." TextWrapping="Wrap" />
-                        <TextBox x:Name="VideoUrl" Header="Odkaz na video" PlaceholderText="https://www.youtube.com/watch?v=…" MaxLength="2048" />
-                        <StackPanel x:Name="VideoButtons" Orientation="Horizontal" Spacing="12">
-                            <Button x:Name="VideoLoadButton" Content="Načíst video" Click="VideoLoad_Click" IsEnabled="False" />
-                            <Button x:Name="VideoPlayButton" Content="Přehrát video" Click="VideoPlay_Click" IsEnabled="False" />
-                            <Button x:Name="VideoPauseButton" Content="Pozastavit" Click="VideoPause_Click" IsEnabled="False" />
-                            <Button x:Name="VideoStopButton" Content="Zastavit video" Click="VideoStop_Click" IsEnabled="False" />
+                        <TextBox x:Name="LegacyVideoUrl" Header="Odkaz na video" PlaceholderText="https://www.youtube.com/watch?v=…" MaxLength="2048" />
+                        <StackPanel x:Name="LegacyVideoButtons" Orientation="Horizontal" Spacing="12">
+                            <Button x:Name="LegacyVideoLoadButton" Content="Načíst video" Click="VideoLoad_Click" IsEnabled="False" />
+                            <Button x:Name="LegacyVideoPlayButton" Content="Přehrát video" Click="VideoPlay_Click" IsEnabled="False" />
+                            <Button x:Name="LegacyVideoPauseButton" Content="Pozastavit" Click="VideoPause_Click" IsEnabled="False" />
+                            <Button x:Name="LegacyVideoStopButton" Content="Zastavit video" Click="VideoStop_Click" IsEnabled="False" />
                             <Button Content="V prohlížeči" Click="VideoExternal_Click" />
                         </StackPanel>
-                        <ComboBox x:Name="VideoRates" Header="Dostupné rychlosti videa" Width="200" SelectionChanged="VideoRate_Changed" IsEnabled="False" />
-                        <Slider x:Name="VideoSeek" Header="Pozice ve videu" Minimum="0" Maximum="1" IsEnabled="False" PointerReleased="VideoSeek_Released" KeyUp="VideoSeek_KeyUp" />
-                        <NumberBox x:Name="VideoLoopA" Header="A · začátek v sekundách" Minimum="0" Maximum="864000" Value="0" SpinButtonPlacementMode="Inline" />
-                        <NumberBox x:Name="VideoLoopB" Header="B · konec v sekundách" Minimum="0" Maximum="864000" Value="0" SpinButtonPlacementMode="Inline" />
+                        <ComboBox x:Name="LegacyVideoRates" Header="Dostupné rychlosti videa" Width="200" SelectionChanged="VideoRate_Changed" IsEnabled="False" />
+                        <Slider x:Name="LegacyVideoSeek" Header="Pozice ve videu" Minimum="0" Maximum="1" IsEnabled="False" PointerReleased="VideoSeek_Released" KeyUp="VideoSeek_KeyUp" />
+                        <NumberBox x:Name="LegacyVideoLoopA" Header="A · začátek v sekundách" Minimum="0" Maximum="864000" Value="0" SpinButtonPlacementMode="Inline" />
+                        <NumberBox x:Name="LegacyVideoLoopB" Header="B · konec v sekundách" Minimum="0" Maximum="864000" Value="0" SpinButtonPlacementMode="Inline" />
                         <StackPanel Orientation="Horizontal" Spacing="8">
-                            <Button x:Name="VideoMarkA" Content="A = nyní" Click="VideoMark_Click" Tag="a" IsEnabled="False" />
-                            <Button x:Name="VideoMarkB" Content="B = nyní" Click="VideoMark_Click" Tag="b" IsEnabled="False" />
-                            <Button x:Name="VideoApplyLoop" Content="Použít A/B" Click="VideoApplyLoop_Click" IsEnabled="False" />
+                            <Button x:Name="LegacyVideoMarkA" Content="A = nyní" Click="VideoMark_Click" Tag="a" IsEnabled="False" />
+                            <Button x:Name="LegacyVideoMarkB" Content="B = nyní" Click="VideoMark_Click" Tag="b" IsEnabled="False" />
+                            <Button x:Name="LegacyVideoApplyLoop" Content="Použít A/B" Click="VideoApplyLoop_Click" IsEnabled="False" />
                         </StackPanel>
-                        <CheckBox x:Name="VideoLoopEnabled" Content="Opakovat úsek A/B" Checked="VideoLoop_Changed" Unchecked="VideoLoop_Changed" />
-                        <TextBox x:Name="VideoLoopLabel" Header="Název úseku" MaxLength="256" />
+                        <CheckBox x:Name="LegacyVideoLoopEnabled" Content="Opakovat úsek A/B" Checked="VideoLoop_Changed" Unchecked="VideoLoop_Changed" />
+                        <TextBox x:Name="LegacyVideoLoopLabel" Header="Název úseku" MaxLength="256" />
                         <Button Content="Uložit pojmenovaný úsek" Click="VideoSaveLoop_Click" />
-                        <ListView x:Name="VideoSavedLoops" Header="Uložené úseky všech videí" DisplayMemberPath="Title" />
+                        <ListView x:Name="LegacyVideoSavedLoops" Header="Uložené úseky všech videí" DisplayMemberPath="Title" />
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <Button Content="Otevřít vybraný úsek" Click="VideoOpenLoop_Click" />
                             <Button Content="Přejmenovat" Click="VideoRenameLoop_Click" />
                             <Button Content="Smazat" Click="VideoDeleteLoop_Click" />
                             <Button Content="Vrátit smazání" Click="VideoUndoLoop_Click" />
                         </StackPanel>
-                        <TextBlock x:Name="VideoLoopStatus" Text="YouTube smyčka má přibližné časování; neslouží k přesnému sladění nahrávky." TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />
+                        <TextBlock x:Name="LegacyVideoLoopStatus" Text="YouTube smyčka má přibližné časování; neslouží k přesnému sladění nahrávky." TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />
                         <Button Content="Nastavit sdílený zvuk Windows pro video" Click="VideoSharedAudio_Click" />
                         <TextBlock Text="YouTube používá sdílený výstup Windows. Pokud s ASIO nebo výhradním WASAPI neslyšíš video, zvol sdílené Windows Audio a stejný interfejs i ve Windows. Nahrávání zachycuje pouze zvolenou nativní sběrnici; zvuk videa se nenahrává." TextWrapping="Wrap" />
-                        <TextBlock x:Name="VideoPosition" Text="0:00 / 0:00" />
-                        <WebView2 x:Name="VideoView" MaxWidth="640" Height="360" HorizontalAlignment="Stretch" AutomationProperties.Name="Oficiální YouTube přehrávač" />
-                        <TextBlock x:Name="VideoStatus" Text="Připravuji přehrávač…" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />
+                        <TextBlock x:Name="LegacyVideoPosition" Text="0:00 / 0:00" />
+                        <WebView2 x:Name="LegacyVideoView" MaxWidth="640" Height="360" HorizontalAlignment="Stretch" AutomationProperties.Name="Oficiální YouTube přehrávač" />
+                        <TextBlock x:Name="LegacyVideoStatus" Text="Připravuji přehrávač…" TextWrapping="Wrap" AutomationProperties.LiveSetting="Polite" />
                     </StackPanel>
                 </Border>
                 <Border x:Name="DevicePanel" Style="{StaticResource VintageCardStyle}" Visibility="Collapsed">

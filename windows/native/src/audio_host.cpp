@@ -554,6 +554,24 @@ rocker_audio_result ROCKER_CALL rocker_audio_copy_last_error(rocker_audio_handle
 void ROCKER_CALL rocker_audio_destroy(rocker_audio_handle host) {
     try { delete host; } catch (...) { /* Never unwind through the C ABI. */ }
 }
+rocker_audio_result ROCKER_CALL rocker_audio_inspect_file(const char* source,float* peaks,uint32_t capacity,double* duration,rocker_export_cancel cancel,void* context){
+#if ROCKER_WITH_MEDIA
+    if(!source || !peaks || !duration || capacity!=1024 || std::strlen(source)>32768)return ROCKER_INVALID_ARGUMENT;
+    try{
+        std::atomic<uint64_t> generation{1};
+        std::jthread cancellation([&](std::stop_token stop){while(!stop.stop_requested()){if(cancel && cancel(context)){generation.store(2);return;}std::this_thread::sleep_for(std::chrono::milliseconds(5));}});
+        if(cancel && cancel(context))return ROCKER_NOT_READY;
+        auto path=std::filesystem::path(std::u8string(reinterpret_cast<const char8_t*>(source)));
+        auto clip=rocker::media::prepareFile(path,1,generation,1);
+        if(cancel && cancel(context))return ROCKER_NOT_READY;
+        auto result=rocker::media::waveform(clip,1024);
+        if(result.size()!=capacity || clip.sampleRate<=0)return ROCKER_MEDIA_ERROR;
+        std::copy(result.begin(),result.end(),peaks);*duration=clip.frames()/clip.sampleRate;return ROCKER_OK;
+    }catch(...){return cancel && cancel(context)?ROCKER_NOT_READY:ROCKER_MEDIA_ERROR;}
+#else
+    (void)source;(void)peaks;(void)capacity;(void)duration;(void)cancel;(void)context;return ROCKER_NOT_READY;
+#endif
+}
 rocker_audio_result ROCKER_CALL rocker_audio_export_wav(const char* source,const char* destination,double start,double end,rocker_export_cancel cancel,rocker_export_progress progress,void* context){
 #if ROCKER_WITH_MEDIA
     if(!source || !destination || std::strlen(source)>32768 || std::strlen(destination)>32768 || !std::isfinite(start) || !std::isfinite(end) || start<0 || (end!=0 && end<=start))return ROCKER_INVALID_ARGUMENT;

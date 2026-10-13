@@ -10,15 +10,17 @@ using Windows.Graphics;
 namespace Rocker.Probe;
 public sealed partial class MainWindow
 {
-    private readonly UserFiles userFiles = new(Environment.GetEnvironmentVariable("ROCKER_USER_DATA_DIR"));
+    private UserFiles userFiles => services.Files;
     private readonly NavigationSession navigation = new();
+    private bool desktopEnabled;
+    private NavigationTarget CurrentTarget => desktopEnabled ? documentContext.Current.Target : navigation.Current;
     private readonly Dictionary<string, NavigationViewItem> navigationItems = [];
     private readonly Dictionary<string, NavigationViewItem> navigationParents = [];
     private readonly Dictionary<NavigationTarget, FrameworkElement> workspaceCache = [];
     private readonly Dictionary<string, LessonSession> lessonSessions = [];
     private readonly HashSet<string> completedLessons = [], visitedViews = [];
     private readonly Dictionary<string, CloseGuard> closeGuards = [];
-    private ContentCatalog? catalog;
+    private ContentCatalog? catalog => services.Catalog;
     private WindowPreferencesStore? windowStore;
     private WindowRectangle normalBounds = new(40,40,1280,940);
     private bool selectingNavigation, shellReady, closingWindow, closeApproved, videoInitializationStarted;
@@ -41,7 +43,7 @@ public sealed partial class MainWindow
             }
             Navigation.MenuItems.Add(parent);
         }
-        try { catalog = ContentCatalog.Load(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "content", "catalog.json"))); }
+        try { services.LoadCatalog(Path.Combine(AppContext.BaseDirectory, "content", "catalog.json")); }
         catch (Exception error) { ShellNotice.IsOpen=true;ShellNotice.Severity = InfoBarSeverity.Error; ShellNotice.Message = "Výukový obsah nelze načíst. " + error.Message; }
         windowStore = new(userFiles);
         try
@@ -66,11 +68,12 @@ public sealed partial class MainWindow
         if (AppWindow.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Restored })
             normalBounds = new(AppWindow.Position.X,AppWindow.Position.Y,AppWindow.Size.Width,AppWindow.Size.Height);
     }
-    private void Navigate(NavigationTarget target) { componentMode = false; navigation.Navigate(target);if(persistenceReady && PracticeViews.Contains(target.ViewId)){appSettings=appSettings with{ResumeTask=target};SaveSettings();}ShowWorkspace(); }
+    private void Navigate(NavigationTarget target) { if(desktopEnabled){OpenDesktop(target);return;}componentMode = false; navigation.Navigate(target);if(persistenceReady && PracticeViews.Contains(target.ViewId)){appSettings=appSettings with{ResumeTask=target};SaveSettings();}ShowWorkspace(); }
     private void ShowWorkspace()
     {
         if (!shellReady || closed) return;
-        var target = navigation.Current;
+        if(desktopEnabled){RefreshDesktopInspector(documentContext.Current);return;}
+        var target = CurrentTarget;
         if (focusMode && target.ViewId != "02") SetFocusMode(false);
         ApplyNavigationTask(target);var view = WorkspaceViews.Get(target.ViewId);
         foreach(var old in workspaceCache.Keys.Where(k=>k.ViewId==target.ViewId && k!=target).ToArray())workspaceCache.Remove(old);
@@ -179,18 +182,23 @@ public sealed partial class MainWindow
         try{if(File.Exists(path))text=await File.ReadAllTextAsync(path);}catch(IOException){text="Návod nelze načíst. Zkus opravit instalaci; nastavení je dostupné v průvodci První spuštění.";}
         if(closed)return;
         var content=new ScrollViewer{MaxHeight=480,Content=new TextBlock{Text=text,TextWrapping=TextWrapping.Wrap,IsTextSelectionEnabled=true}};
-        var dialog=new ContentDialog{XamlRoot=ShellRoot.XamlRoot,Title="Návod k používání",Content=content,CloseButtonText="Zavřít"};
+        var dialog=new ContentDialog{XamlRoot=DialogRoot,Title="Návod k používání",Content=content,CloseButtonText="Zavřít"};
         try{await dialog.ShowAsync();}catch(InvalidOperationException){}
     }
     private async void About_Click(object sender, RoutedEventArgs args)
     {
         if (closingWindow) return;
-        var dialog = new ContentDialog { XamlRoot = ShellRoot.XamlRoot, Title = "Rocker", Content = $"Nativní kytarový pomocník pro Windows · verze {typeof(App).Assembly.GetName().Version!.ToString(3)}.\nLekce, aparát, metronom, nahrávky, Looper, Studio a knihovna.\nLicence najdeš u aplikace; odpovídající zdroje lze stáhnout zvlášť u stejného vydání.", CloseButtonText = "Zavřít" };
+        if(services.Operations.Snapshot().Any(op=>op.Kind=="profile-load")){ShowPersistenceError("Počkej na dokončení načítání místního profilu.");return;}
+        var dialog = new ContentDialog { XamlRoot = DialogRoot, Title = "Rocker", Content = $"Nativní kytarový pomocník pro Windows · verze {typeof(App).Assembly.GetName().Version!.ToString(3)}.\nLekce, aparát, metronom, nahrávky, Looper, Studio a knihovna.\nLicence najdeš u aplikace; odpovídající zdroje lze stáhnout zvlášť u stejného vydání.", CloseButtonText = "Zavřít" };
         try { await dialog.ShowAsync(); } catch (InvalidOperationException) { }
     }
     // Each recording/project feature registers its actual state and actions.
     // No simulated recording or unsaved document is installed by the shell.
-    private void RegisterCloseGuard(string id, WorkState state, Func<Task<bool>> save, Action discard) => closeGuards[id] = new(state,save,discard);
+    private void RegisterCloseGuard(string id, WorkState state, Func<Task<bool>> save, Action discard)
+    {
+        var session=documentContext.Current;string key=desktopEnabled && id=="studio"?session.Id+"/"+id:id;
+        closeGuards[key]=new(state,async()=>{using var scope=documentContext.Enter(session);return await save();},()=>{using var scope=documentContext.Enter(session);discard();});
+    }
     private void RemoveCloseGuard(string id) => closeGuards.Remove(id);
     private async void Shell_Closing(AppWindow sender, AppWindowClosingEventArgs args)
     {
@@ -212,7 +220,7 @@ public sealed partial class MainWindow
             await powerStopTask;
             foreach (var guard in closeGuards.Values.Where(guard => guard.State.RequiresConfirmation).ToArray())
             {
-                var dialog = new ContentDialog { XamlRoot = ShellRoot.XamlRoot, Title = "Zavřít Rocker?", Content = guard.State.Prompt, PrimaryButtonText = "Uložit a zavřít", SecondaryButtonText = guard.State.Recording ? "" : "Zahodit", CloseButtonText = "Zrušit", DefaultButton = ContentDialogButton.Primary };
+                var dialog = new ContentDialog { XamlRoot = DialogRoot, Title = "Zavřít Rocker?", Content = guard.State.Prompt, PrimaryButtonText = "Uložit a zavřít", SecondaryButtonText = guard.State.Recording ? "" : "Zahodit", CloseButtonText = "Zrušit", DefaultButton = ContentDialogButton.Primary };
                 var choice = await dialog.ShowAsync();
                 if (choice == ContentDialogResult.None) return;
                 if (choice == ContentDialogResult.Primary && !await guard.Save()) return;
@@ -227,8 +235,8 @@ public sealed partial class MainWindow
             try { await windowStore!.SaveAsync(new(1,normalBounds,AppWindow.Presenter is OverlappedPresenter { State: OverlappedPresenterState.Maximized },selectedTheme)); }
             catch (Exception error) { WriteShellDiagnostic("window-state-error.json",new { error = error.Message }); }
             ampApplyTimer.Stop();metroApplyTimer.Stop();timer.Stop();
-            if(audio is not null) { await audio.DisposeAsync();audio=null; }
-            LaunchPendingInstaller();closeApproved = true; Close();
+            await services.DisposeAsync();
+            LaunchPendingInstaller();closeApproved = true; foreach(var host in desktopWindows.ToArray()){host.ExitApproved=true;host.Close();} Close();
         }
         catch (Exception error) { ShellNotice.IsOpen = true; ShellNotice.Severity = InfoBarSeverity.Error; ShellNotice.Message = "Okno nelze zavřít. " + error.Message; }
         finally { closingWindow = false;if(!closeApproved)pendingUpdateInstaller=null; }
@@ -239,10 +247,11 @@ public sealed partial class MainWindow
         if (closed) return;
         var task = new NavigationTarget("06",catalog!.Lessons[0].Id);
         Navigate(task); Navigate(new("20")); navigation.Back(); ShowWorkspace();
-        bool restoredTask = navigation.Current == task;
+        bool restoredTask = CurrentTarget == task;
         Navigate(new("08")); await EnsureVideoAsync();
         Navigate(new("01"));
         await VerifyPersistenceAsync();
+        WriteShellDiagnostic("application-host.json",new {result=ReferenceEquals(services.Audio.Native,audio) && services.Audio.HostsCreated==1 && ReferenceEquals(services.Storage!.Database,database) ? "passed":"failed", audioHostsCreated=services.Audio.HostsCreated, windowOwnsAudio=false, storageShared=true});
         await VerifyAmplifierAsync();
         await VerifyMetronomeAsync();
         await VerifyTunerAsync();
@@ -274,6 +283,7 @@ public sealed partial class MainWindow
         VerifyComponents();
         if (Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTIC_VIEW") == "components") ShowComponents();
         await CaptureNativeViewAsync();
+        await VerifyDesktopRuntimeAsync();
         WriteShellDiagnostic("shell-navigation.json",new { result = visitedViews.Count == 32 && restoredTask && audioHostsCreated == 1 ? "passed" : "failed", viewsVisited = visitedViews.Count, views = visitedViews.Order().ToArray(), backRestoredTask = restoredTask, audioHostsCreated, cachedNativePages = workspaceCache.Count, allNativeWorkspacesImplemented = true, manualInteractionsVerified = false, completeFeaturesVerified = false });
     }
     private static void WriteShellDiagnostic(string name, object value)

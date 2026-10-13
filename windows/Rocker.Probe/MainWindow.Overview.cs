@@ -65,7 +65,7 @@ public sealed partial class MainWindow
         return WorkspaceViews.Get(target.ViewId).Title;
     }
     private void OpenPlanTask(string key,PlanTask task){openedPlanTask=(key,task);appliedNavigationTask=null;workspaceCache.Remove(task.Target);Navigate(task.Target);}
-    private void RefreshPlanControls(){PlanButtons.Visibility=openedPlanTask is not null && navigation.Current.ViewId!="01"?Visibility.Visible:Visibility.Collapsed;PlanTaskLabel.Text=openedPlanTask is { } p?"Plán · "+p.Task.Title:"";CompletePlan.IsEnabled=openedPlanTask is { } o && o.Key==CurrentPlanKey && navigation.Current==o.Task.Target && !PlanDone(o.Key,o.Task.Id);}
+    private void RefreshPlanControls(){PlanButtons.Visibility=openedPlanTask is not null && CurrentTarget.ViewId!="01"?Visibility.Visible:Visibility.Collapsed;PlanTaskLabel.Text=openedPlanTask is { } p?"Plán · "+p.Task.Title:"";CompletePlan.IsEnabled=openedPlanTask is { } o && o.Key==CurrentPlanKey && CurrentTarget==o.Task.Target && !PlanDone(o.Key,o.Task.Id);}
     private void ReturnPlan_Click(object sender,RoutedEventArgs args)=>Navigate(new("01"));
     private void CompletePlan_Click(object sender,RoutedEventArgs args)
     {
@@ -73,7 +73,7 @@ public sealed partial class MainWindow
     }
     private async Task VerifyOverviewLiveAsync()
     {
-        var previous=appSettings;planKind="daily";Navigate(new("01"));var tasks=CurrentPlanTasks();bool concrete=tasks.All(t=>!(t.Target.ViewId is "19" or "09") || t.Target.ItemId is not null);var task=tasks[0];string key=CurrentPlanKey;OpenPlanTask(key,task);bool reached=navigation.Current==task.Target && CompletePlan.IsEnabled;CompletePlan_Click(this,new());CompletePlan_Click(this,new());await autosave!.FlushAsync();var snapshot=await (await DataRepository.OpenAsync(userFiles)).SnapshotAsync();var saved=UserData.Read<AppSettings>(snapshot.Documents.Single(d=>d.Kind=="settings").Value);bool once=saved.PracticePlan is { } state && state.Key==key && state.Completed.Count(i=>i==task.Id)==1 && saved.ResumeTask==task.Target;
+        var previous=appSettings;planKind="daily";Navigate(new("01"));var tasks=CurrentPlanTasks();bool concrete=tasks.All(t=>!(t.Target.ViewId is "19" or "09") || t.Target.ItemId is not null);var task=tasks[0];string key=CurrentPlanKey;OpenPlanTask(key,task);bool reached=CurrentTarget==task.Target && CompletePlan.IsEnabled;CompletePlan_Click(this,new());CompletePlan_Click(this,new());await autosave!.FlushAsync();var snapshot=await (await DataRepository.OpenAsync(userFiles)).SnapshotAsync();var saved=UserData.Read<AppSettings>(snapshot.Documents.Single(d=>d.Kind=="settings").Value);bool once=saved.PracticePlan is { } state && state.Key==key && state.Completed.Count(i=>i==task.Id)==1 && saved.ResumeTask==task.Target;
         Navigate(new("02"));bool live=liveTunerNote is not null && liveTunerNeedle is not null && recordingStarts.Count>0 && audioHostsCreated==1;appSettings=previous;SaveSettings();await autosave.FlushAsync();openedPlanTask=null;Navigate(new("01"));bool pass=concrete && reached && once && live;WriteShellDiagnostic("overview-live.json",new{result=pass?"passed":"failed",exactDailyTargets=concrete,planRouteAndReturn=reached,completionSavedOnce=once,liveTunerAndSharedRecorder=live,hardwareVerified=false});if(!pass)throw new InvalidOperationException("Overview/Live integration failed.");
     }
 }

@@ -12,14 +12,16 @@ namespace Rocker.Probe;
 public sealed partial class MainWindow : Window
 {
     private readonly DispatcherTimer timer = new() { Interval = TimeSpan.FromMilliseconds(50) };
-    private NativeAudio? audio;
-    private ScorePreview? preview;
+    private Rocker.AppCore.ApplicationServices services => ((App)Application.Current).Services ?? throw new InvalidOperationException("Aplikační služby nejsou připravené.");
+    private NativeAudio? audio => services.Audio.Native;
+    private readonly Rocker.AppCore.DocumentContext documentContext = new();
+    private ScorePreview? preview { get => documentContext.Current.Get<ScorePreview?>("preview",()=>null); set => documentContext.Current.Set("preview",value); }
     private bool closed;
     private bool busy, updatingPosition, positionDragging;
     private int playbackIntent;
-    private string? mediaPath;
-    private byte[]? mediaMidi;
-    private double currentSpeed = 1;
+    private string? mediaPath { get => documentContext.Current.Get<string?>("mediaPath",()=>null); set => documentContext.Current.Set("mediaPath",value); }
+    private byte[]? mediaMidi { get => documentContext.Current.Get<byte[]?>("mediaMidi",()=>null); set => documentContext.Current.Set("mediaMidi",value); }
+    private double currentSpeed { get => documentContext.Current.Get<double>("currentSpeed",()=>1); set => documentContext.Current.Set("currentSpeed",value); }
     private bool initialNotationStarted;
     public MainWindow()
     {
@@ -32,7 +34,7 @@ public sealed partial class MainWindow : Window
         PositionSlider.AddHandler(UIElement.PointerCaptureLostEvent, new PointerEventHandler(Position_Released), true);
         VideoSeek.AddHandler(UIElement.PointerPressedEvent,new PointerEventHandler((_,args)=>{if(args.GetCurrentPoint(VideoSeek).Properties.IsLeftButtonPressed)videoSeeking=true;}),true);
         VideoSeek.AddHandler(UIElement.PointerCaptureLostEvent,new PointerEventHandler(VideoSeek_Released),true);
-        Closed += (_, _) => { closed = true;updateCancellation?.Cancel();updateHttp.Dispose();DetachNativeEvents(); timer.Stop(); audio?.Dispose(); audio = null; VideoView.Close(); };
+        Closed += (_, _) => { closed = true;updateCancellation?.Cancel();updateHttp.Dispose();DetachNativeEvents(); timer.Stop(); VideoView.Close(); };
         Activated += async (_, _) =>
         {
             if (initialNotationStarted) return;
@@ -40,13 +42,13 @@ public sealed partial class MainWindow : Window
             await InitializePersistenceAsync();
             if (closed) return;
             if (!closed && !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTICS_DIR"))) { await LoadScoreAsync(Path.Combine(AppContext.BaseDirectory, "fixtures", "notation-phrases.gp"));await VerifyShellAsync(); }
-            else { NotationStatus.Text="Otevři Guitar Pro nebo MusicXML. Noty fungují bez internetu."; if(appSettings.CheckUpdatesOnStartup)_ = CheckUpdatesAsync(true); }
+            else { NotationStatus.Text="Otevři Guitar Pro nebo MusicXML. Noty fungují bez internetu."; InitializeDesktop(); if(appSettings.CheckUpdatesOnStartup)_ = CheckUpdatesAsync(true); }
         };
         timer.Tick += (_, _) => RefreshState();
         try
         {
-            audio = new NativeAudio();
-            ++audioHostsCreated;
+            services.Audio.EnsureCreated();
+            audioHostsCreated=services.Audio.HostsCreated;
             StatusText.Text = "Připraveno. Testovací tón je vypnutý.";
             timer.Start();
         }
@@ -101,10 +103,10 @@ public sealed partial class MainWindow : Window
             if (StatusText.Text != status) { StatusText.Text = status; ToolTipService.SetToolTip(StatusText, status); if (state.State == AudioState.Faulted) { ShellNotice.IsOpen = true; ShellNotice.Severity = InfoBarSeverity.Error; ShellNotice.Message = status; } }
             RefreshLive(state);
             RefreshMetronome(state);
-            var analysis=audio.GetAnalysis();RefreshTuner(analysis);RefreshLesson(analysis);RefreshSurgical(analysis);RefreshPalmMute(analysis);RefreshRhythm();RefreshNotation(transport);
+            var analysis=audio.GetAnalysis();RefreshTuner(analysis);if(desktopEnabled)RefreshDesktopSessions(transport,analysis);else{RefreshLesson(analysis);RefreshSurgical(analysis);RefreshPalmMute(analysis);RefreshRhythm();RefreshNotation(transport);}
             RefreshPractice(audio.GetClock(),transport,analysis);
             RefreshAudioDiagnostics();
-            RefreshSong(transport);
+            if(!desktopEnabled)RefreshSong(transport);
             RefreshRecording();
             RefreshLooper();
             RefreshWorkspaceChrome();
@@ -131,7 +133,7 @@ public sealed partial class MainWindow : Window
         try
         {
             var picker = new FileOpenPicker();
-            WinRT.Interop.InitializeWithWindow.Initialize(picker, WinRT.Interop.WindowNative.GetWindowHandle(this));
+            WinRT.Interop.InitializeWithWindow.Initialize(picker, DialogWindowHandle);
             foreach (var extension in new[] { ".gp", ".gp3", ".gp4", ".gp5", ".gpx", ".musicxml", ".xml", ".mxl" })
                 picker.FileTypeFilter.Add(extension);
             var file = await picker.PickSingleFileAsync();
@@ -147,7 +149,7 @@ public sealed partial class MainWindow : Window
         {
             var result=await Task.Run(()=>{using var file=File.OpenRead(path);if(file.Length>ScorePreview.MaximumFileBytes)throw new InvalidDataException("Soubor přesahuje limit 4 MB.");var bytes=new byte[(int)file.Length];file.ReadExactly(bytes);return ScoreDocument.Load(bytes).Render();});if(closed)return;
             await SetNotationImageAsync(result);notationSourcePath=path;RememberFile(path);SetNotationDocument(result.Document,Path.GetFileName(path));SelectionStatus.Text="Vyber takt kliknutím nebo jeho číslem.";NotationStatus.Text=$"{notationName} · stopy {result.TrackCount} · takty {result.BarCount} · zobrazená stopa {result.Options.Track+1}";ExportMidiButton.IsEnabled=ExportMidiMenu.IsEnabled=true;bool prepared=false;
-            if(audio is not null)try{if(await StopCaptureAsync()){await audio.PauseAsync();await PrepareNotationAsync(result);MediaStatus.Text="Noty jsou připravené. Přehrávání spustíš tlačítkem.";prepared=audio.GetTransport().Ready!=0;}}catch(Exception error){if(!closed)MediaStatus.Text="Noty se zobrazily; zvuk nelze připravit. "+error.Message;}
+            if(!desktopEnabled && audio is not null)try{if(await StopCaptureAsync()){await audio.PauseAsync();await PrepareNotationAsync(result);MediaStatus.Text="Noty jsou připravené. Přehrávání spustíš tlačítkem.";prepared=audio.GetTransport().Ready!=0;}}catch(Exception error){if(!closed)MediaStatus.Text="Noty se zobrazily; zvuk nelze připravit. "+error.Message;}
             if(!closed)WriteNotationReport(new{result="passed",bitmapDecoded=true,result.Width,result.Height,result.BarCount,result.NoteOnCount,midiPreparedInCommonEngine=prepared,audioPlaybackVerified=false});
         }
         catch(Exception error){if(closed)return;preview=previous;NotationStatus.Text="Noty nelze načíst; předchozí partitura je zachovaná. "+error.Message;}
@@ -166,7 +168,7 @@ public sealed partial class MainWindow : Window
         {
             var picker = new FileSavePicker { SuggestedFileName = "rocker-noty" };
             picker.FileTypeChoices.Add("MIDI", new[] { ".mid" });
-            WinRT.Interop.InitializeWithWindow.Initialize(picker, WinRT.Interop.WindowNative.GetWindowHandle(this));
+            WinRT.Interop.InitializeWithWindow.Initialize(picker, DialogWindowHandle);
             var file = await picker.PickSaveFileAsync();
             if (file is not null && !closed)
             {
@@ -196,7 +198,7 @@ public sealed partial class MainWindow : Window
         try
         {
             var picker = new FileOpenPicker();
-            WinRT.Interop.InitializeWithWindow.Initialize(picker, WinRT.Interop.WindowNative.GetWindowHandle(this));
+            WinRT.Interop.InitializeWithWindow.Initialize(picker, DialogWindowHandle);
             foreach (var extension in new[] { ".wav", ".mp3", ".ogg", ".opus", ".webm", ".m4a", ".mp4" }) picker.FileTypeFilter.Add(extension);
             var file = await picker.PickSingleFileAsync();
             if (file is null || closed || busy) return;
@@ -209,7 +211,7 @@ public sealed partial class MainWindow : Window
     private async void PlayMedia_Click(object sender, RoutedEventArgs e)
     {
         if (busy || audio is null) return;
-        try { ++playbackIntent; SetBusy(true); await audio.PlayAsync(); if(!closingWindow && !closed)RefreshState(); }
+        try { if(desktopEnabled)await ClaimDesktopSourceAsync(documentContext.Current); ++playbackIntent; SetBusy(true); await audio.PlayAsync(); if(!closingWindow && !closed)RefreshState(); }
         catch (Exception error) { ShowError(error); }
         finally { if(!closed)SetBusy(false); }
     }
@@ -269,6 +271,7 @@ public sealed partial class MainWindow : Window
     }
     private async void SeekPosition()
     {
+        using var sourceScope=desktopEnabled && services.Transport.Owner is{ } owner?documentContext.Enter(owner):null;
         if (updatingPosition || busy || audio is null || !PositionSlider.IsEnabled) return;
         try { ++playbackIntent; await audio.SeekAsync(PositionSlider.Value); RefreshState(); }
         catch (Exception error) { ShowError(error); }

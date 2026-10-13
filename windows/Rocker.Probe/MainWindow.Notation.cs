@@ -8,9 +8,9 @@ using Windows.Storage.Streams;
 namespace Rocker.Probe;
 public sealed partial class MainWindow
 {
-    private ScoreDocument? notationDocument;private NotationOptions notationOptions=new();
-    private string? notationSourcePath;private string notationName="";private byte[]? notationPlayingMidi;private bool notationUpdating;private int notationFollowBar;
-    private (double Start,double End)? notationLoop;private DateTime nextNotationFollowRender;
+    private ScoreDocument? notationDocument { get => documentContext.Current.Get<ScoreDocument?>("notationDocument", () => default); set => documentContext.Current.Set("notationDocument",value); }private NotationOptions notationOptions { get => documentContext.Current.Get<NotationOptions>("notationOptions", () => new()); set => documentContext.Current.Set("notationOptions",value); }
+    private string? notationSourcePath { get => documentContext.Current.Get<string?>("notationSourcePath", () => default); set => documentContext.Current.Set("notationSourcePath",value); }private string notationName { get => documentContext.Current.Get<string>("notationName", () => ""); set => documentContext.Current.Set("notationName",value); }private byte[]? notationPlayingMidi { get => documentContext.Current.Get<byte[]?>("notationPlayingMidi", () => default); set => documentContext.Current.Set("notationPlayingMidi",value); }private bool notationUpdating { get => documentContext.Current.Get<bool>("notationUpdating", () => default); set => documentContext.Current.Set("notationUpdating",value); }private int notationFollowBar { get => documentContext.Current.Get<int>("notationFollowBar", () => default); set => documentContext.Current.Set("notationFollowBar",value); }
+    private (double Start,double End)? notationLoop { get => documentContext.Current.Get<(double Start,double End)?>("notationLoop", () => default); set => documentContext.Current.Set("notationLoop",value); }private DateTime nextNotationFollowRender { get => documentContext.Current.Get<DateTime>("nextNotationFollowRender", () => default); set => documentContext.Current.Set("nextNotationFollowRender",value); }
     private async Task SetNotationImageAsync(ScorePreview result)
     {
         using var stream=new InMemoryRandomAccessStream();using(var writer=new DataWriter(stream.GetOutputStreamAt(0))){writer.WriteBytes(result.Png);await writer.StoreAsync();await writer.FlushAsync();writer.DetachStream();}stream.Seek(0);var bitmap=new BitmapImage();await bitmap.SetSourceAsync(stream);if(closed)return;
@@ -34,11 +34,16 @@ public sealed partial class MainWindow
     {
         if(busy || notationDocument is null || closed)return;SetBusy(true);var document=notationDocument;var previousOptions=notationOptions;
         try{var result=await Task.Run(()=>document.Render(options));if(closed)return;await SetNotationImageAsync(result);notationOptions=options;MarkNotationBar(double.IsFinite(NotationBar.Value)?(int)NotationBar.Value:options.FirstBar);NotationStatus.Text=$"{notationName} · {document.Tracks[options.Track].Name} · takty {options.FirstBar}–{Math.Min(document.BarCount,options.FirstBar+options.PageBars-1)} · {options.Scale:P0}";
-            if(prepareAudio && audio is not null){if(!await StopCaptureAsync())return;var old=audio.GetTransport();bool wasNotation=ReferenceEquals(mediaMidi,notationPlayingMidi) && mediaMidi is not null;double position=wasNotation?old.PositionSeconds*currentSpeed:0;await PrepareNotationAsync(result);await audio.SeekAsync(Math.Min(position/currentSpeed,audio.GetTransport().DurationSeconds));if(wasNotation && old.Playing!=0)await audio.PlayAsync();}
+            if(prepareAudio && audio is not null && (!desktopEnabled || services.Transport.Owner==documentContext.Current)){if(!await StopCaptureAsync())return;var old=audio.GetTransport();bool wasNotation=ReferenceEquals(mediaMidi,notationPlayingMidi) && mediaMidi is not null;double position=wasNotation?old.PositionSeconds*currentSpeed:0;await PrepareNotationAsync(result);await audio.SeekAsync(Math.Min(position/currentSpeed,audio.GetTransport().DurationSeconds));if(wasNotation && old.Playing!=0)await audio.PlayAsync();}
         }catch(Exception error){if(preview?.Options!=options)notationOptions=previousOptions;NotationStatus.Text="Notový pohled nelze změnit. "+error.Message;}
         finally{if(!closed){notationUpdating=true;try{NotationTrackBox.SelectedItem=notationDocument.Tracks[notationOptions.Track];NotationAllTracks.IsChecked=notationOptions.AllTracksAudio;NotationZoom.SelectedIndex=Array.IndexOf(new[]{.5,.75,1.0,1.25,1.5,2.0},notationOptions.Scale);}finally{notationUpdating=false;}SetBusy(false);}}
     }
-    private async Task PrepareNotationAsync(ScorePreview score)
+    private async Task PrepareNotationAsync(ScorePreview result)
+    {
+        if(desktopEnabled && services.Transport.Owner!=documentContext.Current)await ClaimDesktopSourceAsync(documentContext.Current);
+        else await PrepareNotationCoreAsync(result);
+    }
+    private async Task PrepareNotationCoreAsync(ScorePreview score)
     {
         if(audio is null)return;songLoadCancelled=false;await StopRhythmUiAsync();await audio.PrepareMidiAsync(score.Midi,currentSpeed);await WaitForSongAsync(currentSpeed);if(closed)return;
         studioOwnsPlayback=false;studioTicket=0;mediaMidi=score.Midi;notationPlayingMidi=score.Midi;mediaPath=null;song=null;songPeaks=[];workspaceCache.Remove(new("07"));MediaTitle.Text="Noty · "+notationName;await audio.SetLoopAsync(0,0,false);if(notationLoop is { } loop)await audio.SetLoopAsync(loop.Start/currentSpeed,loop.End/currentSpeed,true);
@@ -78,6 +83,6 @@ public sealed partial class MainWindow
     }
     private void RefreshNotation(TransportSnapshot transport)
     {
-        if(navigation.Current.ViewId!="20" || notationDocument is null || mediaMidi is null || !ReferenceEquals(mediaMidi,notationPlayingMidi))return;var bar=notationDocument.AtSeconds(transport.PositionSeconds*currentSpeed);if(bar is null){NotationPlayhead.Visibility=Visibility.Collapsed;return;}MarkNotationBar(bar.Number,true);if(bar.Number==notationFollowBar || NotationFollow.IsChecked!=true || busy)return;notationFollowBar=bar.Number;int first=(bar.Number-1)/12*12+1;if(first!=notationOptions.FirstBar && DateTime.UtcNow>=nextNotationFollowRender){notationFollowBar=0;nextNotationFollowRender=DateTime.UtcNow.AddSeconds(1);_=ChangeNotationViewAsync(notationOptions with{FirstBar=first},false);}
+        if(CurrentTarget.ViewId!="20" || notationDocument is null || mediaMidi is null || !ReferenceEquals(mediaMidi,notationPlayingMidi))return;var bar=notationDocument.AtSeconds(transport.PositionSeconds*currentSpeed);if(bar is null){NotationPlayhead.Visibility=Visibility.Collapsed;return;}MarkNotationBar(bar.Number,true);if(bar.Number==notationFollowBar || NotationFollow.IsChecked!=true || busy)return;notationFollowBar=bar.Number;int first=(bar.Number-1)/12*12+1;if(first!=notationOptions.FirstBar && DateTime.UtcNow>=nextNotationFollowRender){notationFollowBar=0;nextNotationFollowRender=DateTime.UtcNow.AddSeconds(1);_=ChangeNotationViewAsync(notationOptions with{FirstBar=first},false);}
     }
 }

@@ -8,9 +8,10 @@ public sealed partial class MainWindow
 {
     private AiSettings aiSettings=new("gpt-4.1-mini",Provider:"openai");
     private readonly List<SavedChatMessage> aiHistory=[];
-    private readonly Dictionary<string,AiPage> aiPages=[];
+    private Dictionary<string,AiPage> aiPages { get => documentContext.Current.Get<Dictionary<string,AiPage>>("aiPages", () => []); }
     private static readonly HttpClient aiHttp=new(new SocketsHttpHandler{AllowAutoRedirect=false}){Timeout=Timeout.InfiniteTimeSpan};
-    private CancellationTokenSource? aiCancellation;private Task? aiTask;private AiPage? aiActive;private bool aiBusy,aiRefreshing;
+    private CancellationTokenSource? aiCancellation { get => documentContext.Current.Get<CancellationTokenSource?>("aiCancellation", () => default); set => documentContext.Current.Set("aiCancellation",value); }private Task? aiTask { get => documentContext.Current.Get<Task?>("aiTask", () => default); set => documentContext.Current.Set("aiTask",value); }private AiPage? aiActive { get => documentContext.Current.Get<AiPage?>("aiActive", () => default); set => documentContext.Current.Set("aiActive",value); }private bool aiBusy { get => documentContext.Current.Get<bool>("aiBusy", () => default); set => documentContext.Current.Set("aiBusy",value); }
+    private bool aiRefreshing { get => documentContext.Current.Get<bool>("aiRefreshing", () => default); set => documentContext.Current.Set("aiRefreshing",value); }
     private sealed class AiPage(string view)
     {
         public string View{get;}=view;
@@ -40,17 +41,17 @@ public sealed partial class MainWindow
         return string.Join("\n",lines);
     }
     private (StackPanel Panel,AiPage Page) BuildAiCommon(string view,string title)
-    {
+    {var capturedDocument = documentContext.Current;
         var page=new AiPage(view);aiPages[view]=page;var panel=Stack();panel.Children.Add(Text(title));panel.Children.Add(Text("AI je volitelná. Odesílá se tvé zadání a níže zvolený kontext do poskytovatele. Zvuk a nahrávky se neposílají. Kvóty a ceny určuje tvůj účet; běžné cvičení funguje offline.",true));
         var provider=page.Provider;provider.SelectedIndex=aiSettings.Provider=="openai"?0:1;panel.Children.Add(provider);page.Editors.Add(provider);
-        provider.SelectionChanged+=(_,_)=>{if(aiRefreshing)return;string value=provider.SelectedIndex==0?"openai":"gemini";aiSettings=aiSettings with{Provider=value,Model=value=="openai"?"gpt-4.1-mini":"gemini-2.5-flash"};page.Model.Text=aiSettings.Model;PersistAiSettings();page.Status.Text=value=="openai"?"V Nastavení ulož samostatný OpenAI klíč. Starý Gemini klíč se sem nepřenáší.":"Aktuální podmínky Gemini nepodporují tuto osobní aplikaci. Starý klíč a historie zůstávají; dotazy na Gemini se zde neposílají.";};
+        provider.SelectionChanged+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(aiRefreshing)return;string value=provider.SelectedIndex==0?"openai":"gemini";aiSettings=aiSettings with{Provider=value,Model=value=="openai"?"gpt-4.1-mini":"gemini-2.5-flash"};page.Model.Text=aiSettings.Model;PersistAiSettings();page.Status.Text=value=="openai"?"V Nastavení ulož samostatný OpenAI klíč. Starý Gemini klíč se sem nepřenáší.":"Aktuální podmínky Gemini nepodporují tuto osobní aplikaci. Starý klíč a historie zůstávají; dotazy na Gemini se zde neposílají.";};
         panel.Children.Add(page.Model);panel.Children.Add(page.Models);panel.Children.Add(page.Progress);panel.Children.Add(page.Instrument);page.Editors.AddRange([page.Model,page.Progress,page.Instrument]);page.Context.IsTextSelectionEnabled=true;panel.Children.Add(new Expander{Header="Přesný kontext přiložený k dotazu",Content=page.Context,HorizontalAlignment=HorizontalAlignment.Stretch});
         void ContextChanged(){if(aiRefreshing)return;aiSettings=aiSettings with{IncludeProgress=page.Progress.IsChecked==true,IncludeInstrument=page.Instrument.IsChecked==true};PersistAiSettings();page.Context.Text=AiContext(aiSettings.IncludeProgress,aiSettings.IncludeInstrument);}
-        page.Progress.Checked+=(_,_)=>ContextChanged();page.Progress.Unchecked+=(_,_)=>ContextChanged();page.Instrument.Checked+=(_,_)=>ContextChanged();page.Instrument.Unchecked+=(_,_)=>ContextChanged();
-        page.Models.Click+=(_,_)=>BeginAi(page,async(key,token)=>{var models=await new AiHttpClient(aiHttp).ModelsAsync(key,token);page.Model.ItemsSource=models.Models.Select(m=>m.Id).ToArray();page.Status.Text=models.Models.Count==0?"Účet neposkytl textové GPT modely. Ověř oprávnění klíče.":$"Modely dostupné účtu: {models.Models.Count}. Dostupnost konkrétní funkce ověří až dotaz; kvóta se může měnit.";},false);
-        page.Cancel.Click+=(_,_)=>aiCancellation?.Cancel();panel.Children.Add(page.Cancel);panel.Children.Add(page.Status);Microsoft.UI.Xaml.Automation.AutomationProperties.SetLiveSetting(page.Status,Microsoft.UI.Xaml.Automation.Peers.AutomationLiveSetting.Polite);
-        var keySettings=new Button{Content="Nastavení chráněného API klíče"};keySettings.Click+=(_,_)=>Navigate(new("28"));panel.Children.Add(keySettings);
-        var terms=new Button{Content="Podmínky a nakládání s daty poskytovatele"};terms.Click+=async(_,_)=>{try{await Windows.System.Launcher.LaunchUriAsync(new Uri(aiSettings.Provider=="openai"?"https://openai.com/policies/services-agreement/":"https://ai.google.dev/gemini-api/terms"));}catch(Exception){page.Status.Text="Stránku podmínek nelze otevřít.";}};panel.Children.Add(terms);
+        page.Progress.Checked+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);ContextChanged();};page.Progress.Unchecked+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);ContextChanged();};page.Instrument.Checked+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);ContextChanged();};page.Instrument.Unchecked+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);ContextChanged();};
+        page.Models.Click+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);BeginAi(page,async(key,token)=>{var models=await new AiHttpClient(aiHttp).ModelsAsync(key,token);page.Model.ItemsSource=models.Models.Select(m=>m.Id).ToArray();page.Status.Text=models.Models.Count==0?"Účet neposkytl textové GPT modely. Ověř oprávnění klíče.":$"Modely dostupné účtu: {models.Models.Count}. Dostupnost konkrétní funkce ověří až dotaz; kvóta se může měnit.";},false);};
+        page.Cancel.Click+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);aiCancellation?.Cancel();};panel.Children.Add(page.Cancel);panel.Children.Add(page.Status);Microsoft.UI.Xaml.Automation.AutomationProperties.SetLiveSetting(page.Status,Microsoft.UI.Xaml.Automation.Peers.AutomationLiveSetting.Polite);
+        var keySettings=new Button{Content="Nastavení chráněného API klíče"};keySettings.Click+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);Navigate(new("28"));};panel.Children.Add(keySettings);
+        var terms=new Button{Content="Podmínky a nakládání s daty poskytovatele"};terms.Click+=async(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);try{await Windows.System.Launcher.LaunchUriAsync(new Uri(aiSettings.Provider=="openai"?"https://openai.com/policies/services-agreement/":"https://ai.google.dev/gemini-api/terms"));}catch(Exception){page.Status.Text="Stránku podmínek nelze otevřít.";}};panel.Children.Add(terms);
         RefreshAiPage(page);return(panel,page);
     }
     private void RefreshAiPage(AiPage page)
@@ -67,6 +68,7 @@ public sealed partial class MainWindow
     }
     private async Task RunAiAsync(AiPage page,Func<string,CancellationToken,Task> operation,CancellationTokenSource cancellation)
     {
+        using var request = services.Operations.Begin("ai-"+page.View,"ai-request","Dotaz AI tutora");using var link=request.Cancellation.Register(()=>cancellation.Cancel());
         try{page.Status.Text="Připojuji AI…";var access=await new SecretStore(userFiles,"openai").ReadAsync(cancellation.Token);if(access.State!=SecretState.Ready)throw new AiRequestException("OpenAI klíč není dostupný. Ulož jej v Nastavení; starý Gemini klíč se jinému poskytovateli neposílá.");cancellation.Token.ThrowIfCancellationRequested();await operation(access.Value!,cancellation.Token);}
         catch(OperationCanceledException){if(!closed)page.Status.Text="Dotaz byl zrušen. Neúplná odpověď nebyla přijata.";}
         catch(AiRequestException error){if(!closed)page.Status.Text=error.Message;}

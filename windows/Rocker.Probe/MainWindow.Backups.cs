@@ -18,7 +18,7 @@ public sealed partial class MainWindow
         {
             if(powerTransition || fileOperation || busy || deviceOperationRunning || database is null || profileOperation || backupOperationRunning || studioOperation || studioEditTask is{IsCompleted:false} || looperOperation || exportOperation)return;
             var picker=new FileSavePicker {SuggestedStartLocation=PickerLocationId.DocumentsLibrary,SuggestedFileName="Rocker-zaloha-"+DateTime.Now.ToString("yyyy-MM-dd")};picker.FileTypeChoices.Add("Záloha Rockeru",[".rockerbackup"]);
-            WinRT.Interop.InitializeWithWindow.Initialize(picker,WinRT.Interop.WindowNative.GetWindowHandle(this));
+            WinRT.Interop.InitializeWithWindow.Initialize(picker,DialogWindowHandle);
             var file=await picker.PickSaveFileAsync();if(file is null || closed)return;
             backupOperationRunning=true;export.IsEnabled=restore.IsEnabled=false;
             try
@@ -33,7 +33,7 @@ public sealed partial class MainWindow
         restore.Click+=async (_,_)=>
         {
             if(powerTransition || fileOperation || busy || deviceOperationRunning || database is null || profileOperation || backupOperationRunning || studioOperation || studioEditTask is{IsCompleted:false} || looperOperation || exportOperation)return;
-            var picker=new FileOpenPicker();picker.FileTypeFilter.Add(".rockerbackup");WinRT.Interop.InitializeWithWindow.Initialize(picker,WinRT.Interop.WindowNative.GetWindowHandle(this));
+            var picker=new FileOpenPicker();picker.FileTypeFilter.Add(".rockerbackup");WinRT.Interop.InitializeWithWindow.Initialize(picker,DialogWindowHandle);
             var file=await picker.PickSingleFileAsync();if(file is null || closed)return;
             backupOperationRunning=true;export.IsEnabled=restore.IsEnabled=false;
             try
@@ -42,7 +42,7 @@ public sealed partial class MainWindow
                 var choice=new ComboBox {Header="Řešení konfliktů",ItemsSource=new[]{"Sloučit · existující položky zachovat","Nahradit zahrnutá data ze zálohy"},SelectedIndex=0,HorizontalAlignment=HorizontalAlignment.Stretch};
                 var details=Stack();details.Children.Add(Text($"{preview.Documents} záznamů · {preview.Recordings} nahrávek · {preview.Projects} projektů\n{preview.Bytes/1024d/1024:F1} MB · {preview.Conflicts} konfliktů"));
                 details.Children.Add(Text("Nahradí se jen typy zahrnuté v této záloze. Vratná kopie zachová původní databázi a soubory. AI klíč zůstává ve Windows.",true));details.Children.Add(choice);
-                var dialog=new ContentDialog {XamlRoot=ShellRoot.XamlRoot,Title="Obnovit zálohu?",Content=details,PrimaryButtonText="Obnovit",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Close};
+                var dialog=new ContentDialog {XamlRoot=DialogRoot,Title="Obnovit zálohu?",Content=details,PrimaryButtonText="Obnovit",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Close};
                 if(await dialog.ShowAsync()!=ContentDialogResult.Primary)return;
                 ShellInteractionRoot.IsEnabled=false;if(audio is not null)await audio.StopAsync();
                 var result=await service.RestoreAsync(file.Path,preview,choice.SelectedIndex==0 ? RestoreStrategy.MergeKeepCurrent:RestoreStrategy.ReplaceIncluded);
@@ -56,7 +56,7 @@ public sealed partial class MainWindow
         undo.Click+=async (_,_)=>
         {
             if(powerTransition || fileOperation || busy || deviceOperationRunning || database is null || profileOperation || backupOperationRunning || studioOperation || studioEditTask is{IsCompleted:false} || looperOperation || exportOperation)return;
-            var dialog=new ContentDialog {XamlRoot=ShellRoot.XamlRoot,Title="Vrátit poslední obnovu?",Content="Aktuální data se odloží a obnoví se stav před posledním importem zálohy.",PrimaryButtonText="Vrátit obnovu",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Close};
+            var dialog=new ContentDialog {XamlRoot=DialogRoot,Title="Vrátit poslední obnovu?",Content="Aktuální data se odloží a obnoví se stav před posledním importem zálohy.",PrimaryButtonText="Vrátit obnovu",CloseButtonText="Zrušit",DefaultButton=ContentDialogButton.Close};
             if(await dialog.ShowAsync()!=ContentDialogResult.Primary)return;
             backupOperationRunning=true;ShellInteractionRoot.IsEnabled=false;
             try

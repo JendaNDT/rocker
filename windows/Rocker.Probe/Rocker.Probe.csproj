@@ -25,6 +25,7 @@
     <ProjectReference Include="../Rocker.Video/Rocker.Video.csproj" />
     <ProjectReference Include="../Rocker.Domain/Rocker.Domain.csproj" />
     <ProjectReference Include="../Rocker.Infrastructure/Rocker.Infrastructure.csproj" />
+    <ProjectReference Include="../Rocker.AppCore/Rocker.AppCore.csproj" />
     <Content Include="../content/runtime-catalog.json" Link="content/catalog.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <Content Include="../PwaMigration/helper.html" Link="PwaMigration/helper.html" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <Content Update="Assets/Rocker.ico" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />

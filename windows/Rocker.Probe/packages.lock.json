@@ -221,6 +221,14 @@
         "resolved": "10.0.12",
         "contentHash": "wO0W8VDMeRJZakRySOmemAnrBZMwEFRlbfBtATxUiLf2I3IhSRnCp1Vt157NWptdE4IJ7eftd5n8q9LtaKHFTQ=="
       },
+      "rocker.appcore": {
+        "type": "Project",
+        "dependencies": {
+          "Rocker.Domain": "[0.2.0, )",
+          "Rocker.Infrastructure": "[0.2.0, )",
+          "Rocker.Interop": "[0.2.0, )"
+        }
+      },
       "rocker.domain": {
         "type": "Project"
       },
@@ -228,7 +236,7 @@
         "type": "Project",
         "dependencies": {
           "Microsoft.Data.Sqlite": "[10.0.12, )",
-          "Rocker.Domain": "[0.1.0, )",
+          "Rocker.Domain": "[0.2.0, )",
           "System.Security.Cryptography.ProtectedData": "[10.0.12, )"
         }
       },

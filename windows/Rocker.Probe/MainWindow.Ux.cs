@@ -35,14 +35,14 @@ public sealed partial class MainWindow
         ShellNotice.Visibility=focusMode && ShellNotice.Severity is InfoBarSeverity.Informational or InfoBarSeverity.Success?Visibility.Collapsed:Visibility.Visible;
         bool running = practiceSession.Phase == PracticePhase.Running;
         bool paused = practiceSession.Phase == PracticePhase.Paused;
-        bool practice = PracticeViews.Contains(navigation.Current.ViewId) || running || paused;
+        bool practice = PracticeViews.Contains(CurrentTarget.ViewId) || running || paused;
         PracticeRow.Visibility = practice ? Visibility.Visible : Visibility.Collapsed;
         PracticeStart.Visibility = running ? Visibility.Collapsed : Visibility.Visible;
         PracticePause.Visibility = running ? Visibility.Visible : Visibility.Collapsed;
         PracticeEnd.Visibility = running || paused ? Visibility.Visible : Visibility.Collapsed;
         bool ready = audio is not null && audio.GetTransport().Ready != 0;
         bool active = audio is not null && audio.GetSnapshot().State != Rocker.Interop.AudioState.Stopped;
-        bool mediaView = navigation.Current.ViewId is "07" or "14" or "15" or "19" or "20";
+        bool mediaView = CurrentTarget.ViewId is "07" or "14" or "15" or "19" or "20";
         MediaTransportRow.Visibility = ready || mediaView ? Visibility.Visible : Visibility.Collapsed;
         MediaSeekRow.Visibility = ready ? Visibility.Visible : Visibility.Collapsed;
         GlobalMuteButton.Visibility = active ? Visibility.Visible : Visibility.Collapsed;
@@ -63,7 +63,7 @@ public sealed partial class MainWindow
     private async Task VerifyWorkspaceUxAsync()
     {
         if (audio is null) throw new InvalidOperationException("UX check requires the native host.");
-        var previous = navigation.Current;
+        var previous = CurrentTarget;
         // Use the same desktop size as design captures before checking the scale.
         // Startup restores the window to the runner work area, which can be smaller.
         AppWindow.Resize(new Windows.Graphics.SizeInt32(1280,940));await Task.Delay(100);

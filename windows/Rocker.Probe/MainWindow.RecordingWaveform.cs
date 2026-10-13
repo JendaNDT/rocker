@@ -9,37 +9,38 @@ namespace Rocker.Probe;
 
 public sealed partial class MainWindow
 {
-    private Canvas? recordingWaveform;
-    private NumberBox? recordingRangeA, recordingRangeB;
-    private TextBlock? recordingWaveformStatus;
-    private readonly List<Button> recordingWaveformActions = [];
-    private float[] recordingPeaks = [];
-    private bool recordingRangeUpdating;
-    private double? recordingDragStart;
-    private Line? recordingPlayhead;private TextBlock? recordingWaveformCaption;
+    private Canvas? recordingWaveform { get => documentContext.Current.Get<Canvas?>("recordingWaveform", () => default); set => documentContext.Current.Set("recordingWaveform",value); }
+    private NumberBox? recordingRangeA { get => documentContext.Current.Get<NumberBox?>("recordingRangeA", () => default); set => documentContext.Current.Set("recordingRangeA",value); }
+    private NumberBox? recordingRangeB { get => documentContext.Current.Get<NumberBox?>("recordingRangeB", () => default); set => documentContext.Current.Set("recordingRangeB",value); }
+    private TextBlock? recordingWaveformStatus { get => documentContext.Current.Get<TextBlock?>("recordingWaveformStatus", () => default); set => documentContext.Current.Set("recordingWaveformStatus",value); }
+    private List<Button> recordingWaveformActions { get => documentContext.Current.Get<List<Button>>("recordingWaveformActions", () => []); }
+    private float[] recordingPeaks { get => documentContext.Current.Get<float[]>("recordingPeaks", () => []); set => documentContext.Current.Set("recordingPeaks",value); }
+    private bool recordingRangeUpdating { get => documentContext.Current.Get<bool>("recordingRangeUpdating", () => default); set => documentContext.Current.Set("recordingRangeUpdating",value); }
+    private double? recordingDragStart { get => documentContext.Current.Get<double?>("recordingDragStart", () => default); set => documentContext.Current.Set("recordingDragStart",value); }
+    private Line? recordingPlayhead { get => documentContext.Current.Get<Line?>("recordingPlayhead", () => default); set => documentContext.Current.Set("recordingPlayhead",value); }private TextBlock? recordingWaveformCaption { get => documentContext.Current.Get<TextBlock?>("recordingWaveformCaption", () => default); set => documentContext.Current.Set("recordingWaveformCaption",value); }
     private FrameworkElement BuildRecordingWaveform()
-    {
+    {var capturedDocument = documentContext.Current;
         var panel = Stack();recordingWaveformCaption=Text("PRŮBĚH NAHRÁVKY");recordingWaveformCaption.Style=(Style)Application.Current.Resources["VintageSectionTextStyle"];panel.Children.Add(recordingWaveformCaption);
         recordingWaveformStatus = Text("Vyber nahrávku a použij Zobrazit průběh nebo Přehrát. Přetažením ve zvukové vlně vybereš úsek; kliknutím změníš pozici.", true); panel.Children.Add(recordingWaveformStatus);
         recordingWaveform = new Canvas { Height = 160, HorizontalAlignment = HorizontalAlignment.Stretch, Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent) };
         Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(recordingWaveform, "Průběh nahrávky; úsek lze vybrat také políčky A a B a pozici posuvníkem přehrávače.");
-        recordingWaveform.SizeChanged += (_, _) => DrawRecordingWaveform();
-        recordingWaveform.ActualThemeChanged += (_, _) => DrawRecordingWaveform();
+        recordingWaveform.SizeChanged += (_, _) => {using var documentScope = documentContext.Enter(capturedDocument);DrawRecordingWaveform();};
+        recordingWaveform.ActualThemeChanged += (_, _) => {using var documentScope = documentContext.Enter(capturedDocument);DrawRecordingWaveform();};
         recordingWaveform.PointerPressed += (_, args) =>
-        {
+        {using var documentScope = documentContext.Enter(capturedDocument);
             if (!RecordingWaveformReady() || !args.GetCurrentPoint(recordingWaveform).Properties.IsLeftButtonPressed) return;
             recordingDragStart = args.GetCurrentPoint(recordingWaveform).Position.X;
             recordingWaveform.CapturePointer(args.Pointer); args.Handled = true;
         };
         recordingWaveform.PointerMoved += (_, args) =>
-        {
+        {using var documentScope = documentContext.Enter(capturedDocument);
             if (recordingDragStart is not double start || !RecordingWaveformReady()) return;
             var finish = args.GetCurrentPoint(recordingWaveform).Position.X;
             if (Math.Abs(start - finish) < 4) return;
             SetRecordingRange(WaveformSeconds(Math.Min(start, finish)), WaveformSeconds(Math.Max(start, finish)));
         };
         recordingWaveform.PointerReleased += async (_, args) =>
-        {
+        {using var documentScope = documentContext.Enter(capturedDocument);
             if (recordingDragStart is not double start) return;
             recordingDragStart = null; recordingWaveform.ReleasePointerCapture(args.Pointer); args.Handled = true;
             if (!RecordingWaveformReady()) return;
@@ -51,18 +52,18 @@ public sealed partial class MainWindow
             }
             catch (Exception) { ShowPersistenceError("Pozici nahrávky se nepodařilo změnit."); }
         };
-        recordingWaveform.PointerCaptureLost += (_, _) => recordingDragStart = null;
+        recordingWaveform.PointerCaptureLost += (_, _) => {using var documentScope = documentContext.Enter(capturedDocument);recordingDragStart = null;};
         panel.Children.Add(recordingWaveform);
         recordingRangeA = new NumberBox { Header = "A · od (sekundy)", Minimum = 0, Maximum = 86400, Value = 0, SmallChange = .1, SpinButtonPlacementMode = NumberBoxSpinButtonPlacementMode.Inline, IsEnabled = false };
         recordingRangeB = new NumberBox { Header = "B · do (sekundy)", Minimum = 0, Maximum = 86400, Value = 0, SmallChange = .1, SpinButtonPlacementMode = NumberBoxSpinButtonPlacementMode.Inline, IsEnabled = false };
-        recordingRangeA.ValueChanged += (_, _) => { if (!recordingRangeUpdating) DrawRecordingWaveform(); };
-        recordingRangeB.ValueChanged += (_, _) => { if (!recordingRangeUpdating) DrawRecordingWaveform(); };
+        recordingRangeA.ValueChanged += (_, _) => {using var documentScope = documentContext.Enter(capturedDocument); if (!recordingRangeUpdating) DrawRecordingWaveform(); };
+        recordingRangeB.ValueChanged += (_, _) => {using var documentScope = documentContext.Enter(capturedDocument); if (!recordingRangeUpdating) DrawRecordingWaveform(); };
         panel.Children.Add(ResponsiveColumns(recordingRangeA, recordingRangeB));
         recordingWaveformActions.Clear();
         void Action(string label, Func<Task> action)
         {
             var button = new Button { Content = label, MinHeight = 40, IsEnabled = false };
-            button.Click += async (_, _) => { try { if (RecordingWaveformReady()) await action(); } catch (Exception error) { ShowPersistenceError(error.Message); } };
+            button.Click += async (_, _) => {using var documentScope = documentContext.Enter(capturedDocument); try { if (RecordingWaveformReady()) await action(); } catch (Exception error) { ShowPersistenceError(error.Message); } };
             recordingWaveformActions.Add(button); panel.Children.Add(button);
         }
         Action("Opakovat vybraný úsek A–B", async () =>
@@ -99,6 +100,7 @@ public sealed partial class MainWindow
     }
     private async Task<bool> PreviewRecordingAsync(RecordingData value)
     {
+        if(desktopEnabled)return await OpenDesktopRecordingAsync(value);
         if (audio is null || busy || workspaceOperation || captureDraft is not null || recordingOperation || fileOperation || closingWindow || backupOperationRunning || profileOperation || studioOperation || studioEditTask is{IsCompleted:false} || looperOperation || powerTransition || deviceOperationRunning)
             throw new InvalidOperationException("Nejdřív dokonči práci nebo zastav nahrávání.");
         if(audio.GetLoop().State is 1 or 2 or 4 or 5)throw new InvalidOperationException("Nejdřív dokonči nahrávání vrstvy v Looperu.");

@@ -86,6 +86,8 @@ try {
         (Join-Path $PSScriptRoot 'fixtures'), $reportDirectory)
     Invoke-Checked 'dotnet' @('run', '--project', 'Rocker.Interop.Checks', '-c', 'Release', '--no-build', '--',
         (Join-Path $nativeBuild 'rocker_audio_test.dll'), '--media', (Split-Path $PSScriptRoot -Parent))
+    Invoke-Checked 'dotnet' @('run', '--project', 'Rocker.AppCore.Checks', '-c', 'Release', '--no-restore', '--',
+        (Join-Path $reportDirectory 'application-services.json'), (Join-Path $nativeBuild 'rocker_audio_test.dll'))
     Invoke-Checked 'dotnet' @('publish', 'Rocker.Probe', '-c', 'Release', '-r', 'win-x64', '--no-restore',
         '-o', $probeOutput, "-p:RockerNativeDll=$(Join-Path $nativeBuild 'rocker_audio.dll')")
     $sourceCommit = (& git -C (Split-Path $PSScriptRoot -Parent) rev-parse HEAD).Trim()
