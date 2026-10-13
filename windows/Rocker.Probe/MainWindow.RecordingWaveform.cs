@@ -96,18 +96,23 @@ public sealed partial class MainWindow
         finally { recordingRangeUpdating = false; }
         DrawRecordingWaveform();
     }
-    private async Task PreviewRecordingAsync(RecordingData value)
+    private async Task<bool> PreviewRecordingAsync(RecordingData value)
     {
-        if (audio is null || busy || workspaceOperation || captureDraft is not null || recordingOperation || fileOperation || closingWindow)
+        if (audio is null || busy || workspaceOperation || captureDraft is not null || recordingOperation || fileOperation || closingWindow || backupOperationRunning || profileOperation || studioOperation || studioEditTask is{IsCompleted:false} || looperOperation || powerTransition || deviceOperationRunning)
             throw new InvalidOperationException("Nejdřív dokonči práci nebo zastav nahrávání.");
+        if(audio.GetLoop().State is 1 or 2 or 4 or 5)throw new InvalidOperationException("Nejdřív dokonči nahrávání vrstvy v Looperu.");
+        fileOperation=true;ShellInteractionRoot.IsEnabled=false;
+        try
+        {
         if (!await new OwnedMedia(userFiles).VerifyAsync(new(value.RelativePath, value.Sha256, value.Bytes))) throw new InvalidDataException("Zvukový soubor chybí nebo je změněný.");
         string path = OwnedPaths.Resolve(userFiles.Root, value.RelativePath);
         await OpenSongFileAsync(path, value.Name);
-        if (songLoadCancelled || mediaPath != path) return;
+        if (songLoadCancelled || mediaPath != path) return false;
         playingRecording = value; recordingPeaks = songPeaks.ToArray();
         if (recordingRangeA is not null && recordingRangeB is not null)
         { recordingRangeA.Maximum = recordingRangeB.Maximum = value.DurationSec; SetRecordingRange(0, value.DurationSec); }
-        DrawRecordingWaveform(); RefreshRecordingWaveform();
+        DrawRecordingWaveform(); RefreshRecordingWaveform();return true;
+        }finally{fileOperation=false;if(!closed)ShellInteractionRoot.IsEnabled=true;}
     }
     private void DrawRecordingWaveform()
     {

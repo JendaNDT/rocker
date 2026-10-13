@@ -100,7 +100,7 @@ public sealed partial class MainWindow
             }
         }
         catch (OperationCanceledException) { updateMessage = "Kontrola byla zrušená nebo vypršel čas spojení. Současná aplikace zůstává beze změny."; }
-        catch (UnauthorizedAccessException error) { updateMessage = error.Message; }
+        catch (UnauthorizedAccessException error) { updateMessage = error.Message;if(startup && !closed){ShellNotice.IsOpen=true;ShellNotice.Severity=InfoBarSeverity.Informational;ShellNotice.Message="Kontrola soukromých aktualizací potřebuje přístup ke GitHubu. Otevři Nápověda → Aktualizace.";} }
         catch (Exception) { updateMessage = "Nové vydání nelze ověřit. Zkus to později nebo otevři vydání v prohlížeči."; }
         finally { updateOperation = false; updateCancellation.Dispose(); updateCancellation = null; if (!closed) RefreshUpdateControls(); }
     }

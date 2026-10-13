@@ -26,6 +26,12 @@ public sealed class ReleaseUpdates(HttpClient client)
             throw new InvalidDataException("Vydání nemá ověřitelný kontrolní součet souboru.");
         return new(id, name, size, digest[7..]);
     }
+    public static bool IsInstallerName(string? name)
+    {
+        const string prefix="Rocker-Windows-Setup-",suffix="-x64.exe";
+        return name is {Length:<100} && name.StartsWith(prefix,StringComparison.Ordinal) && name.EndsWith(suffix,StringComparison.Ordinal)
+            && name[prefix.Length..^suffix.Length].Count(c=>c=='.')==2 && Version.TryParse(name[prefix.Length..^suffix.Length],out _);
+    }
     public static WindowsRelease? SelectRelease(JsonElement list)
     {
         if (list.ValueKind != JsonValueKind.Array || list.GetArrayLength() > 100) throw new InvalidDataException("Neplatný seznam vydání.");
@@ -35,7 +41,7 @@ public sealed class ReleaseUpdates(HttpClient client)
             string tag = release.GetProperty("tag_name").GetString() ?? "";
             if (release.GetProperty("draft").GetBoolean() || !tag.StartsWith("windows-", StringComparison.Ordinal) || tag.Length > 128 || tag.Any(c => !char.IsAsciiLetterOrDigit(c) && c is not '-' and not '.')) continue;
             var assets = release.GetProperty("assets").EnumerateArray().ToArray();
-            var installers = assets.Where(a => a.GetProperty("name").GetString() == "Rocker-Windows-Setup-0.2.0-x64.exe").ToArray();
+            var installers = assets.Where(a => IsInstallerName(a.GetProperty("name").GetString())).ToArray();
             var validations = assets.Where(a => a.GetProperty("name").GetString() == "candidate-validation.json").ToArray();
             if (installers.Length != 1 || validations.Length != 1) continue;
             var installer = ReadAsset(installers[0]); var validation = ReadAsset(validations[0]);
@@ -53,7 +59,8 @@ public sealed class ReleaseUpdates(HttpClient client)
         const string prefix = "https://github.com/JendaNDT/rocker/actions/runs/";
         if (value.GetProperty("result").GetString() != "passed" || commit.Length != 40 || commit.Any(c => !char.IsAsciiHexDigit(c))
             || !url.StartsWith(prefix, StringComparison.Ordinal) || !long.TryParse(url[prefix.Length..], out long run) || run <= 0
-            || value.GetProperty("installer").GetString() != release.Installer.Name)
+            || value.GetProperty("installer").GetString() != release.Installer.Name
+            || value.GetProperty("nativeWorkspaces").GetInt32()<32 || value.GetProperty("nativeSuites").GetInt32()<22)
             throw new InvalidDataException("Vydání neobsahuje úspěšné ověření Windows instalátoru.");
         return new(release, commit, run);
     }

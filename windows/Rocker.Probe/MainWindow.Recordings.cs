@@ -109,7 +109,7 @@ public sealed partial class MainWindow
     }
     private async Task PlayRecordingAsync(RecordingData value)
     {
-        await PreviewRecordingAsync(value);if(audio is not null && playingRecording?.Id==value.Id && RecordingWaveformReady())await audio.PlayAsync();
+        if(await PreviewRecordingAsync(value) && audio is not null && playingRecording?.Id==value.Id && RecordingWaveformReady())await audio.PlayAsync();
     }
     private async Task EditRecordingMarkersAsync(RecordingData value)
     {

@@ -6,7 +6,7 @@ namespace Rocker.Domain;
 
 public sealed record PracticeSetup(string Id, string Name, NavigationTarget Target, AmpSettings Amp,
     bool AmpEnabled, MetronomeConfig Metronome, string TuningId, string? SongId = null,
-    double Speed = 1, double Position = 0, double LoopStart = 0, double LoopEnd = 0, bool LoopEnabled = false);
+    double Speed = 1, double Position = 0, double LoopStart = 0, double LoopEnd = 0, bool LoopEnabled = false, string? RecordingId = null);
 public sealed record PracticeWorkspace(IReadOnlyList<PracticeSetup> Setups, IReadOnlyList<string> Favorites);
 public sealed record SearchEntry(string Key, string Title, string Category, NavigationTarget Target, string? ResourceId = null)
 {
@@ -20,7 +20,7 @@ public static class PracticeWorkspaceRules
         static bool Range(double n, double min, double max) => double.IsFinite(n) && n >= min && n <= max;
         if (value is null || !Guid.TryParse(value.Id, out _) || string.IsNullOrWhiteSpace(value.Name) || value.Name.Length > 120 || value.Name.Any(char.IsControl)
             || value.Target is null || value.Amp is null || value.Metronome is null || !UserData.ValidId(value.TuningId)
-            || value.SongId is not null && !Guid.TryParse(value.SongId, out _) || !Range(value.Speed, .25, 2)
+            || value.SongId is not null && !Guid.TryParse(value.SongId, out _) || value.RecordingId is not null && (!Guid.TryParse(value.RecordingId, out _) || value.SongId is null) || !Range(value.Speed, .25, 2)
             || !Range(value.Position, 0, 86400) || !Range(value.LoopStart, 0, 86400) || !Range(value.LoopEnd, 0, 86400)
             || value.LoopEnabled && (value.SongId is null || value.LoopEnd <= value.LoopStart))
             throw new InvalidDataException("Sestava cvičení není platná.");

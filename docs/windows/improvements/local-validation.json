@@ -5,7 +5,7 @@
   "domain": {
     "result": "passed",
     "referenceCases": 69,
-    "boundaryChecks": 182,
+    "boundaryChecks": 183,
     "contentGroups": 15,
     "surgicalStatesCompared": 37,
     "extendedReferenceCases": 372,
@@ -22,7 +22,7 @@
     "diagnosticChecks": 10,
     "recordingChecks": 25,
     "updateChecks": 16,
-    "releaseUpdateChecks": 14,
+    "releaseUpdateChecks": 15,
     "dpapiVerified": false,
     "forcedTerminationVerified": true,
     "manualHardwareVerified": false

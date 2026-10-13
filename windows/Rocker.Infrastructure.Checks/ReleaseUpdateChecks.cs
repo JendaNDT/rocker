@@ -18,12 +18,13 @@ internal static class ReleaseUpdateChecks
         int checks = 0; void Check(bool condition, string name) { ++checks; if (!condition) throw new Exception(name); }
         byte[] installer = new byte[128]; installer[0] = (byte)'M'; installer[1] = (byte)'Z'; BinaryPrimitives.WriteInt32LittleEndian(installer.AsSpan(0x3c), 64); "PE\0\0"u8.CopyTo(installer.AsSpan(64)); BinaryPrimitives.WriteUInt16LittleEndian(installer.AsSpan(68), 0x014c);
         string name = "Rocker-Windows-Setup-0.2.0-x64.exe", digest = Convert.ToHexStringLower(SHA256.HashData(installer));
-        byte[] proof = JsonSerializer.SerializeToUtf8Bytes(new { result = "passed", sourceCommit = new string('a', 40), windowsRun = "https://github.com/JendaNDT/rocker/actions/runs/12345", installer = name });
+        byte[] proof = JsonSerializer.SerializeToUtf8Bytes(new { result = "passed", sourceCommit = new string('a', 40), windowsRun = "https://github.com/JendaNDT/rocker/actions/runs/12345", installer = name, nativeWorkspaces=32, nativeSuites=22 });
         object Asset(long id, string assetName, byte[] bytes) => new { id, name = assetName, size = bytes.Length, digest = "sha256:" + Convert.ToHexStringLower(SHA256.HashData(bytes)) };
         object Release(string tag, bool draft, string date) => new { tag_name = tag, name = "Test candidate", draft, prerelease = true, published_at = date, assets = new[] { Asset(1, name, installer), Asset(2, "candidate-validation.json", proof) } };
         byte[] list = JsonSerializer.SerializeToUtf8Bytes(new[] { Release("windows-0.2.0-rc5", true, "2026-10-14T00:00:00Z"), Release("windows-0.2.0-rc4", false, "2026-10-13T00:00:00Z"), Release("windows-0.2.0-rc3", false, "2026-10-12T00:00:00Z") });
         using var parsed = JsonDocument.Parse(list); var release = ReleaseUpdates.SelectRelease(parsed.RootElement)!;
         Check(release.Tag == "windows-0.2.0-rc4" && release.Installer.Sha256 == digest, "private prerelease selection excludes drafts and chooses the most recently published Windows package");
+        Check(ReleaseUpdates.IsInstallerName("Rocker-Windows-Setup-0.3.0-x64.exe") && !ReleaseUpdates.IsInstallerName("evil.exe") && !ReleaseUpdates.IsInstallerName("Rocker-Windows-Setup-0.3.0-x86.exe"),"later versions use the same constrained x64 installer discovery");
         var verified = ReleaseUpdates.ValidateCandidate(release, proof);
         Check(verified.RunId == 12345 && verified.Commit == new string('a', 40), "release proof is hashed and tied to a successful Windows run");
         byte[] tampered = proof.ToArray(); tampered[0] = (byte)'x'; bool rejected = false;
