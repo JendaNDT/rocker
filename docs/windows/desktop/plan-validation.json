@@ -1,6 +1,6 @@
 {
   "result": "passed",
-  "validatedAtUtc": "2026-10-13T16:53:35.711421+00:00",
+  "validatedAtUtc": "2026-10-13T17:10:30.596822+00:00",
   "kind": "implementation-plan-document-validation",
   "applicationChanged": false,
   "runtimeVerified": false,
@@ -13,7 +13,7 @@
     "title": "Rocker 0.2.0 RC6 — viditelné retro kyvadlo a doby metronomu"
   },
   "planFile": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
-  "planSha256": "5e196db53e17fd7d243d562b2747dd8715f40d9ef03aa6c35254df4b43c3d75f",
+  "planSha256": "c768104e759a968d4383b0cb466079c13eaeb64143381626316720cb47b5e897",
   "steps": [
     {
       "id": "D01",
@@ -27,7 +27,7 @@
       "dependsOn": [
         "D01"
       ],
-      "status": "planned"
+      "status": "design-completed"
     },
     {
       "id": "D03",

@@ -1,6 +1,6 @@
 # Rocker — implementační plán přestavby desktopového prostředí
 
-Datum: 13. 10. 2026. Stav: **realizace D01–D36 schválená; D01 dokončený, navazuje D02**.
+Datum: 13. 10. 2026. Stav: **realizace D01–D36 schválená; D01 a D02 dokončené, navazuje D03**.
 
 Jenda chce změnit způsob práce s Rockerem na profesionální Windows nástroj:
 pracovní plochu s dokumenty, panely a více skutečnými okny. Vintage zůstává
@@ -420,6 +420,7 @@ se předá až po D35/D36.
 
 #### D02 — Navrhnout celý desktopový UX a grafiku
 
+- Stav: dokončen návrh. [Galerie všech 32 pohledů](docs/windows/desktop/design-gallery.html), [specifikace](docs/windows/desktop/design-spec.md), [kontrola galerie](docs/windows/desktop/design-validation.json). Pracovní plocha, Live a plovoucí nástroje, oba vzhledy, stavy poslechu, 64 modal/theme scénářů a mobilní prohlížení ověřené v Chromium. Jde o návrhovou galerii s ukázkovými údaji; skutečné HWND a WinUI chování ověří D03.
 - Závislosti: D01.
 - Změna: rozpracovat pracovní plochu, Live, nástroje, dokumenty, knihovnu, Studio, inspektory a systémová okna včetně prázdných/chybových stavů.
 - Soubory: docs/windows/desktop/design-spec.md, design-gallery.html a podklady; následné úpravy Themes/Vintage.xaml a Controls se teprve plánují.

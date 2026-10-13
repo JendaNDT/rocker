@@ -5,11 +5,15 @@ Obsahuje 36 navazujících kroků, 7 milníků, převod všech 32 současných f
 a 22 povinných desktopových přejímacích scénářů.
 
 Stav k 13. 10. 2026: realizace D01–D36 schválená; [D01 dokončený](baseline.md),
-včetně [výchozích automatických kontrol](baseline-validation.json). Navazuje D02.
+včetně [výchozích automatických kontrol](baseline-validation.json).
+[D02 — galerie všech 32 návrhů](design-gallery.html) a
+[specifikace](design-spec.md) jsou připravené; [prohlížečová kontrola](design-validation.json)
+ověřila 64 kombinací pohledů a vzhledů, filtry, poslechové stavy a mobilní prohlížení.
+Navazuje D03 — skutečný Windows experiment.
 Poslední sestavený kandidát zůstává RC6. Nové samostatné Live, plovoucí
-nástroje, dokumentová okna a galerie jejich návrhů mají vzniknout podle
-plánu. Tato složka zatím neobsahuje hotový víceokenní program ani nové
-vizuální návrhy.
+nástroje a dokumentová okna mají vzniknout podle plánu.
+Galerie obsahuje návrhy s ukázkovými daty, tato složka zatím neobsahuje
+hotový víceokenní program.
 
 Při implementaci sem ukládat desktopovou inventuru, rozhodnutí o hostování,
 specifikaci vzhledu, společnou galerii návrhů, migrační postup a čerstvé

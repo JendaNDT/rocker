@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rocker — návrhy desktopového prostředí</title>
+  <link rel="stylesheet" href="design-gallery.css">
+  <script src="design-gallery.js" defer></script>
+</head>
+<body>
+  <header class="page-header">
+    <div class="brand"><span class="brand-mark">R</span><div><p class="eyebrow">ROCKER / DESKTOP</p><h1>Nový způsob práce</h1></div></div>
+    <p class="intro">Pracovní plocha, dokumenty a samostatné nástroje. Kompletní sada 32 návrhů ve společném Vintage stylu.</p>
+    <p class="notice">Návrhy UI · ukázková data · zvuk se nepřehrává. Skutečná Windows okna se ověří v kroku D03.</p>
+    <nav class="document-links"><a href="design-spec.md">Specifikace ovládání</a><a href="../../../WINDOWS_DESKTOP_REBUILD_PLAN.md">Implementační plán</a><a href="baseline.md">Výchozí inventura</a></nav>
+  </header>
+  <main>
+    <section class="overview">
+      <div class="section-heading"><div><p class="eyebrow">PRACOVNÍ PROSTŘEDÍ</p><h2>Každý nástroj má své místo</h2></div><p>Dokumenty v hlavním okně. Live a nástroje na ploše nebo vedlejším monitoru.</p></div>
+      <div class="desktop-scene" role="img" aria-label="Návrh pracovní plochy s hlavním oknem Studia, samostatným Live a plovoucím metronomem"><div class="desktop-inner" id="desktop"></div></div>
+      <div class="workflow-notes"><p><strong>Otevřít</strong> · Knihovna otevře konkrétní dokument.</p><p><strong>Přesunout</strong> · Záložku lze odpojit do okna.</p><p><strong>Pokračovat</strong> · Zvuk a data vlastní aplikace.</p></div>
+    </section>
+    <section aria-label="Galerie všech návrhů">
+      <div class="gallery-toolbar">
+        <div class="filters" role="group" aria-label="Filtrovat návrhy">
+          <button type="button" data-filter="all" aria-pressed="true">Všechny</button>
+          <button type="button" data-filter="document" aria-pressed="false">Dokumenty</button>
+          <button type="button" data-filter="live" aria-pressed="false">Live</button>
+          <button type="button" data-filter="tool" aria-pressed="false">Nástroje</button>
+          <button type="button" data-filter="system" aria-pressed="false">Systémová okna</button>
+        </div>
+        <div class="preview-options">
+          <label>Vzhled <select id="theme"><option value="dark">Tmavý</option><option value="light">Světlý</option></select></label>
+          <label>Ukázka poslechu <select id="monitor"><option value="off">Vypnutý</option><option value="on">Zapnutý</option><option value="unavailable">Bez zařízení</option></select></label>
+        </div>
+      </div>
+      <p id="count" class="result-count" role="status"></p>
+      <div class="gallery-grid" id="gallery"></div>
+    </section>
+  </main>
+  <footer><p>Rocker · D02 · 13. 10. 2026. Hodnoty a waveformy jsou ilustrativní; tato galerie neovládá aplikaci ani zvukovku.</p></footer>
+  <dialog id="detail" aria-labelledby="detail-title">
+    <div class="detail-header"><div><p class="eyebrow">NÁVRH UI · UKÁZKOVÁ DATA</p><h2 id="detail-title"></h2></div><button type="button" id="close" aria-label="Zavřít zvětšený návrh">Zavřít · Esc</button></div>
+    <div class="detail-preview"><div id="detail-window"></div></div>
+    <p id="detail-description"></p><p id="detail-behavior"></p>
+  </dialog>
+</body>
+</html>

@@ -1,0 +1,373 @@
+{
+  "result": "passed",
+  "kind": "D02-design-gallery-browser-check",
+  "source": "HTML design sketches, not Windows runtime",
+  "designCount": 32,
+  "themeCases": 64,
+  "allModalAndEscapeCases": [
+    {
+      "id": "01",
+      "theme": "dark",
+      "modal": "passed"
+    },
+    {
+      "id": "02",
+      "theme": "dark",
+      "modal": "passed"
+    },
+    {
+      "id": "03",
+      "theme": "dark",
+      "modal": "passed"
+    },
+    {
+      "id": "04",
+      "theme": "dark",
+      "modal": "passed"
+    },
+    {
+      "id": "05",
+      "theme": "dark",
+      "modal": "passed"
+    },
+    {
+      "id": "06",
+      "theme": "dark",
+      "modal": "passed"
+    },
+    {
+      "id": "07",
+      "theme": "dark",
+      "modal": "passed"
+    },
+    {
+      "id": "08",
+      "theme": "dark",
+      "modal": "passed"
+    },
+    {
+      "id": "09",
+      "theme": "dark",
+      "modal": "passed"
+    },
+    {
+      "id": "10",
+      "theme": "dark",
+      "modal": "passed"
+    },
+    {
+      "id": "11",
+      "theme": "dark",
+      "modal": "passed"
+    },
+    {
+      "id": "12",
+      "theme": "dark",
+      "modal": "passed"
+    },
+    {
+      "id": "13",
+      "theme": "dark",
+      "modal": "passed"
+    },
+    {
+      "id": "14",
+      "theme": "dark",
+      "modal": "passed"
+    },
+    {
+      "id": "15",
+      "theme": "dark",
+      "modal": "passed"
+    },
+    {
+      "id": "16",
+      "theme": "dark",
+      "modal": "passed"
+    },
+    {
+      "id": "17",
+      "theme": "dark",
+      "modal": "passed"
+    },
+    {
+      "id": "18",
+      "theme": "dark",
+      "modal": "passed"
+    },
+    {
+      "id": "19",
+      "theme": "dark",
+      "modal": "passed"
+    },
+    {
+      "id": "20",
+      "theme": "dark",
+      "modal": "passed"
+    },
+    {
+      "id": "21",
+      "theme": "dark",
+      "modal": "passed"
+    },
+    {
+      "id": "22",
+      "theme": "dark",
+      "modal": "passed"
+    },
+    {
+      "id": "23",
+      "theme": "dark",
+      "modal": "passed"
+    },
+    {
+      "id": "24",
+      "theme": "dark",
+      "modal": "passed"
+    },
+    {
+      "id": "25",
+      "theme": "dark",
+      "modal": "passed"
+    },
+    {
+      "id": "26",
+      "theme": "dark",
+      "modal": "passed"
+    },
+    {
+      "id": "27",
+      "theme": "dark",
+      "modal": "passed"
+    },
+    {
+      "id": "28",
+      "theme": "dark",
+      "modal": "passed"
+    },
+    {
+      "id": "29",
+      "theme": "dark",
+      "modal": "passed"
+    },
+    {
+      "id": "30",
+      "theme": "dark",
+      "modal": "passed"
+    },
+    {
+      "id": "31",
+      "theme": "dark",
+      "modal": "passed"
+    },
+    {
+      "id": "32",
+      "theme": "dark",
+      "modal": "passed"
+    },
+    {
+      "id": "01",
+      "theme": "light",
+      "modal": "passed"
+    },
+    {
+      "id": "02",
+      "theme": "light",
+      "modal": "passed"
+    },
+    {
+      "id": "03",
+      "theme": "light",
+      "modal": "passed"
+    },
+    {
+      "id": "04",
+      "theme": "light",
+      "modal": "passed"
+    },
+    {
+      "id": "05",
+      "theme": "light",
+      "modal": "passed"
+    },
+    {
+      "id": "06",
+      "theme": "light",
+      "modal": "passed"
+    },
+    {
+      "id": "07",
+      "theme": "light",
+      "modal": "passed"
+    },
+    {
+      "id": "08",
+      "theme": "light",
+      "modal": "passed"
+    },
+    {
+      "id": "09",
+      "theme": "light",
+      "modal": "passed"
+    },
+    {
+      "id": "10",
+      "theme": "light",
+      "modal": "passed"
+    },
+    {
+      "id": "11",
+      "theme": "light",
+      "modal": "passed"
+    },
+    {
+      "id": "12",
+      "theme": "light",
+      "modal": "passed"
+    },
+    {
+      "id": "13",
+      "theme": "light",
+      "modal": "passed"
+    },
+    {
+      "id": "14",
+      "theme": "light",
+      "modal": "passed"
+    },
+    {
+      "id": "15",
+      "theme": "light",
+      "modal": "passed"
+    },
+    {
+      "id": "16",
+      "theme": "light",
+      "modal": "passed"
+    },
+    {
+      "id": "17",
+      "theme": "light",
+      "modal": "passed"
+    },
+    {
+      "id": "18",
+      "theme": "light",
+      "modal": "passed"
+    },
+    {
+      "id": "19",
+      "theme": "light",
+      "modal": "passed"
+    },
+    {
+      "id": "20",
+      "theme": "light",
+      "modal": "passed"
+    },
+    {
+      "id": "21",
+      "theme": "light",
+      "modal": "passed"
+    },
+    {
+      "id": "22",
+      "theme": "light",
+      "modal": "passed"
+    },
+    {
+      "id": "23",
+      "theme": "light",
+      "modal": "passed"
+    },
+    {
+      "id": "24",
+      "theme": "light",
+      "modal": "passed"
+    },
+    {
+      "id": "25",
+      "theme": "light",
+      "modal": "passed"
+    },
+    {
+      "id": "26",
+      "theme": "light",
+      "modal": "passed"
+    },
+    {
+      "id": "27",
+      "theme": "light",
+      "modal": "passed"
+    },
+    {
+      "id": "28",
+      "theme": "light",
+      "modal": "passed"
+    },
+    {
+      "id": "29",
+      "theme": "light",
+      "modal": "passed"
+    },
+    {
+      "id": "30",
+      "theme": "light",
+      "modal": "passed"
+    },
+    {
+      "id": "31",
+      "theme": "light",
+      "modal": "passed"
+    },
+    {
+      "id": "32",
+      "theme": "light",
+      "modal": "passed"
+    }
+  ],
+  "filtersVerified": true,
+  "monitorDesignStates": [
+    "off",
+    "on",
+    "unavailable"
+  ],
+  "mobilePageOverflow": false,
+  "pageErrors": [],
+  "liveGeometry": {
+    "scrollHeight": 588,
+    "clientHeight": 588
+  },
+  "actualAudioPlayed": false,
+  "windowsRuntimeVerified": false,
+  "validatedAtUtc": "2026-10-13T17:10:27.803891+00:00",
+  "screenshots": [
+    {
+      "file": "design-screens/live.png",
+      "sha256": "efe6384f21a90df15df2c2c338cc3f0a39e456ee952b58c5428290f41120ef89",
+      "kind": "HTML design sketch screenshot, not WinUI runtime"
+    },
+    {
+      "file": "design-screens/mobile.png",
+      "sha256": "4d21e4f56e4389c771c090bd6a6345e83de3e3aa075bf7a09ce1790cccd7c9da",
+      "kind": "HTML design sketch screenshot, not WinUI runtime"
+    },
+    {
+      "file": "design-screens/overview.png",
+      "sha256": "412ad40ac79d03614de07389acfdabcd6e1684339dbb6907cf7c3ba0dc6df8da",
+      "kind": "HTML design sketch screenshot, not WinUI runtime"
+    },
+    {
+      "file": "design-screens/studio.png",
+      "sha256": "06239f2cb1a5a0cc1afbeaf29a87a21cb51bd9af6659b77aaed11bdee3f7caec",
+      "kind": "HTML design sketch screenshot, not WinUI runtime"
+    }
+  ],
+  "sourceHashes": {
+    "design-gallery.html": "cc5217e8cb521a70bb4fc751f31bd6e1543a329968fe8baee577a61b557d9c39",
+    "design-gallery.css": "b429391271b53bc44d2a6f0e75defa1056fb5a2d97bd1edadd2c1f046cdac89d",
+    "design-gallery.js": "3d14d81b4e41a9c85360bead9776b7f2131ee9c64e846f1530b30e0a30235705",
+    "design-spec.md": "f52d41a9de9c02acab4ebbc3fb4147107a3d594132b1a200e39608d37e87510f"
+  },
+  "harnessCorrection": "Expected filter counts corrected to actual classification: 21 documents, 6 system views, 4 tools, 1 Live; all 64 theme/modal cases and state checks rerun."
+}
