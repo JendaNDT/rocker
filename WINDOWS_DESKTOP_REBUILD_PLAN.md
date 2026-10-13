@@ -1,6 +1,6 @@
 # Rocker — implementační plán přestavby desktopového prostředí
 
-Datum: 13. 10. 2026. Stav: **realizace D01–D36 schválená; D01–D35 dokončené a automaticky ověřené; D36 uzavírá soukromé předání kandidáta**.
+Datum: 13. 10. 2026. Stav: **realizace D01–D36 schválená; D01–D35 dokončené a automaticky ověřené; D36 dokončené jako soukromé předání testovacího kandidáta**.
 
 Jenda chce změnit způsob práce s Rockerem na profesionální Windows nástroj:
 pracovní plochu s dokumenty, panely a více skutečnými okny. Vintage zůstává
@@ -806,6 +806,8 @@ Aktuální realizační poznámky: [implementace](docs/windows/desktop/implement
 ### Fáze H — Sestavený kandidát a závěrečná přejímka
 
 #### D36 — Sestavit, předat a uzavřít desktopového kandidáta
+
+- Stav: automaticky dokončeno. [Neveřejný koncept vydání](https://github.com/JendaNDT/rocker/releases/tag/untagged-2c740c526ba4bfde626b), [ověření všech nahraných souborů](docs/windows/releases/delivery-validation.json), Windows běh 38477297083, publisher 38479952180. Veřejný repozitář nevedl k veřejnému vydání. Ruční hardware/stabilní přejímka W44–W48 zůstává neprovedená.
 
 - Závislosti: D01–D35.
 - Změna: dokončit Windows build, nativní/datové/UI kontroly a instalační cyklus, vybrat přesnou revizi/tag; publikovat soukromý instalátor a zdroje zvlášť.
