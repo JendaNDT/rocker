@@ -2,6 +2,10 @@
 
 Aktualizováno 13. 10. 2026. W04–W43 jsou implementované a automaticky ověřené: 32 nativních WinUI pohledů, Vintage, C++/JUCE, pracovní funkce, data a instalátor.
 
+**Další směr:** připravený [úplný plán přestavby desktopového prostředí D01–D36](WINDOWS_DESKTOP_REBUILD_PLAN.md). Navrhuje pracovní plochu s knihovnou a inspektorem, dokumenty v záložkách i samostatných oknech, plovoucí nástroje, samostatné Live a sdílené aplikační služby. Převádí všech 32 funkcí a řeší grafiku, data, životní cyklus, automatické kontroly a sestavené předání. Implementace D zatím nezahájená; první krok při zahájení bude D01 — desktopová inventura. Uložený plán není nový sestavený kandidát.
+
+Bratr nyní potvrdil funkční zvuk po zaškrtnutí monitoringu v Live. Původní hlášení „signál za aparátem, výsledný mix ticho“ způsoboval vypnutý poslech. Přestavba přidá viditelné vysvětlení tohoto stavu; potvrzení jednoho případu není dokončením celé hardwarové přejímky ani měřením latence.
+
 Dokončeno i [pět rozšíření pohodlí při hraní](docs/windows/improvements/README.md): Jen hraju (F11 / Esc), společné sestavy cvičení, vyhledávání a oblíbené (Ctrl+K), zvuková vlna nahrávek s A/B a značkami, kontrola/stažení aktualizací s výslovným potvrzením instalace. Nativní ovládání a společné zvukové jádro zůstávají. [Galerie](docs/windows/improvements/gallery.html).
 
 Dále dokončené [retro přístroje](docs/windows/retro/README.md): ořechové bočnice, textura koženky a mřížka komba, měděné štítky a šroubky, bakelitové knoflíky, skutečný stav páčky/kontrolky aparátu a podsvícené ručkové peak dBFS měřáky. [Skutečné snímky](docs/windows/retro/gallery.html).

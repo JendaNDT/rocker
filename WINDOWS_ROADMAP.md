@@ -4,6 +4,8 @@ Stav k 13. 10. 2026: implementovaný je rozsah W01–W43, včetně 32 skutečný
 
 Doplněno podle zadání z 13. 10. 2026: [režim hraní, sestavy, společné hledání a oblíbené, průběh nahrávek a aktualizace](docs/windows/improvements/README.md). Původních 32 pohledů zůstává zachovaných.
 
+**Navazující změna UX/UI:** [samostatný plán desktopové přestavby D01–D36](WINDOWS_DESKTOP_REBUILD_PLAN.md) nahrazuje stránkové rozložení pracovní plochou, dokumenty a více okny. Zachovává všechny funkce, Vintage a jedno zvukové jádro. Tento nový plán zatím není implementovaný; stav původních W kroků a neprovedených přejímek se tím nemění.
+
 **Výsledek:** instalovatelný kytarový pomocník pro Windows se skutečným nativním ovládáním, vzhledem Vintage a samostatným zvukovým jádrem. Zachová všechny již implementované pracovní postupy Rockeru, převede uživatelská data a doplní práci se soubory a projekty. Bratr dostane až funkčně kompletní testovací verzi; na svém počítači s M-Audio M-Track Solo ověří zvuk, stabilitu a pocit ze hry.
 
 **Změna pracovního postupu potvrzená Jendou 11. 10. 2026:** nejprve postupně

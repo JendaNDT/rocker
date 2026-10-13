@@ -1,0 +1,830 @@
+{
+  "result": "passed",
+  "validatedAtUtc": "2026-10-13T16:29:02.835326+00:00",
+  "kind": "implementation-plan-document-validation",
+  "applicationChanged": false,
+  "runtimeVerified": false,
+  "hardwareVerified": false,
+  "baselineRepositoryCommit": "175edf5f3e0fec50c9c48895aa5daf7a5888752e",
+  "selectedCandidate": {
+    "runId": 38416440273,
+    "commit": "5eb2eb97b2ce4f2340aa8b143714a93840c45fc0",
+    "tag": "windows-0.2.0-rc6-20261013",
+    "title": "Rocker 0.2.0 RC6 — viditelné retro kyvadlo a doby metronomu"
+  },
+  "planFile": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
+  "planSha256": "96b3933b0b33e3373c048ff6e53f08492dfb0775d28085b70e600d18c71f97e2",
+  "steps": [
+    {
+      "id": "D01",
+      "title": "Zafixovat desktopový výchozí stav",
+      "dependsOn": [],
+      "status": "planned"
+    },
+    {
+      "id": "D02",
+      "title": "Navrhnout celý desktopový UX a grafiku",
+      "dependsOn": [
+        "D01"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D03",
+      "title": "Ověřit více oken, docking a systémové chování",
+      "dependsOn": [
+        "D02"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D04",
+      "title": "Definovat dokumentové a workspace modely",
+      "dependsOn": [
+        "D01",
+        "D03"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D05",
+      "title": "Zavést aplikační služby a koordinaci operací",
+      "dependsOn": [
+        "D04"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D06",
+      "title": "Převést audio a transport na jednu aplikační relaci",
+      "dependsOn": [
+        "D05"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D07",
+      "title": "Centralizovat trénink, napájení a shutdown",
+      "dependsOn": [
+        "D05",
+        "D06"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D08",
+      "title": "Zavést příkazy a dialogy s vlastníkem",
+      "dependsOn": [
+        "D04",
+        "D05",
+        "D07"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D09",
+      "title": "Postavit nový hlavní shell",
+      "dependsOn": [
+        "D02",
+        "D08"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D10",
+      "title": "Implementovat hostitele a přesuny nástrojů",
+      "dependsOn": [
+        "D03",
+        "D09"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D11",
+      "title": "Přestavět ladičku",
+      "dependsOn": [
+        "D06",
+        "D10"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D12",
+      "title": "Přestavět metronom",
+      "dependsOn": [
+        "D06",
+        "D10"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D13",
+      "title": "Přestavět aparát",
+      "dependsOn": [
+        "D06",
+        "D10"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D14",
+      "title": "Postavit samostatné Live a vysvětlit monitoring",
+      "dependsOn": [
+        "D07",
+        "D11",
+        "D12",
+        "D13"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D15",
+      "title": "Ukládat a obnovovat víceokenní rozložení",
+      "dependsOn": [
+        "D04",
+        "D10",
+        "D14"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D16",
+      "title": "Implementovat dokumentový host a registry",
+      "dependsOn": [
+        "D04",
+        "D08",
+        "D09",
+        "D15"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D17",
+      "title": "Převést skladby a společný mediální transport",
+      "dependsOn": [
+        "D06",
+        "D16"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D18",
+      "title": "Převést nahrávky, značky a export nahrávky",
+      "dependsOn": [
+        "D07",
+        "D16",
+        "D17"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D19",
+      "title": "Převést looper na sdílený nástroj",
+      "dependsOn": [
+        "D06",
+        "D10",
+        "D18"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D20",
+      "title": "Přestavět Studio jako projektový editor",
+      "dependsOn": [
+        "D16",
+        "D18",
+        "D19"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D21",
+      "title": "Přestavět notový dokument",
+      "dependsOn": [
+        "D03",
+        "D16",
+        "D17"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D22",
+      "title": "Převést video cvičení a WebView2",
+      "dependsOn": [
+        "D03",
+        "D07",
+        "D16",
+        "D17"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D23",
+      "title": "Převést lekce a jejich výběr",
+      "dependsOn": [
+        "D07",
+        "D16"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D24",
+      "title": "Převést přesný, rytmický a palm mute trénink",
+      "dependsOn": [
+        "D07",
+        "D12",
+        "D23"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D25",
+      "title": "Převést hudební knihovnu a hry",
+      "dependsOn": [
+        "D07",
+        "D16",
+        "D23"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D26",
+      "title": "Převést tři AI pohledy",
+      "dependsOn": [
+        "D05",
+        "D16",
+        "D23"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D27",
+      "title": "Převést přehled, pokrok a profil kytary",
+      "dependsOn": [
+        "D07",
+        "D23",
+        "D24",
+        "D25"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D28",
+      "title": "Převést nastavení, zařízení a první spuštění",
+      "dependsOn": [
+        "D08",
+        "D14",
+        "D15",
+        "D27"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D29",
+      "title": "Propojit sestavy, hledání, oblíbené a soubory",
+      "dependsOn": [
+        "D15",
+        "D16",
+        "D17",
+        "D18",
+        "D19",
+        "D20",
+        "D21",
+        "D22",
+        "D23",
+        "D24",
+        "D25",
+        "D26",
+        "D27",
+        "D28"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D30",
+      "title": "Dokončit operace, zálohy, recovery a aktualizace",
+      "dependsOn": [
+        "D05",
+        "D07",
+        "D18",
+        "D20",
+        "D26",
+        "D28",
+        "D29"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D31",
+      "title": "Ošetřit chyby, závody a odběry",
+      "dependsOn": [
+        "D10",
+        "D11",
+        "D12",
+        "D13",
+        "D14",
+        "D15",
+        "D16",
+        "D17",
+        "D18",
+        "D19",
+        "D20",
+        "D21",
+        "D22",
+        "D23",
+        "D24",
+        "D25",
+        "D26",
+        "D27",
+        "D28",
+        "D29",
+        "D30"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D32",
+      "title": "Dokončit Vintage kompozici a přístupnost",
+      "dependsOn": [
+        "D02",
+        "D09",
+        "D10",
+        "D11",
+        "D12",
+        "D13",
+        "D14",
+        "D15",
+        "D16",
+        "D17",
+        "D18",
+        "D19",
+        "D20",
+        "D21",
+        "D22",
+        "D23",
+        "D24",
+        "D25",
+        "D26",
+        "D27",
+        "D28",
+        "D29",
+        "D30",
+        "D31"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D33",
+      "title": "Přestavět automatizaci na okna a relace",
+      "dependsOn": [
+        "D03",
+        "D16",
+        "D17",
+        "D18",
+        "D19",
+        "D20",
+        "D21",
+        "D22",
+        "D23",
+        "D24",
+        "D25",
+        "D26",
+        "D27",
+        "D28",
+        "D29",
+        "D30",
+        "D31",
+        "D32"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D34",
+      "title": "Ověřit migraci a bezpečný návrat",
+      "dependsOn": [
+        "D15",
+        "D29",
+        "D30",
+        "D33"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D35",
+      "title": "Dokončit galerii a uživatelský návod",
+      "dependsOn": [
+        "D32",
+        "D33",
+        "D34"
+      ],
+      "status": "planned"
+    },
+    {
+      "id": "D36",
+      "title": "Sestavit, předat a uzavřít desktopového kandidáta",
+      "dependsOn": [
+        "D01",
+        "D02",
+        "D03",
+        "D04",
+        "D05",
+        "D06",
+        "D07",
+        "D08",
+        "D09",
+        "D10",
+        "D11",
+        "D12",
+        "D13",
+        "D14",
+        "D15",
+        "D16",
+        "D17",
+        "D18",
+        "D19",
+        "D20",
+        "D21",
+        "D22",
+        "D23",
+        "D24",
+        "D25",
+        "D26",
+        "D27",
+        "D28",
+        "D29",
+        "D30",
+        "D31",
+        "D32",
+        "D33",
+        "D34",
+        "D35"
+      ],
+      "status": "planned"
+    }
+  ],
+  "coverage": [
+    {
+      "viewId": "01",
+      "title": "Přehled",
+      "target": "Úvodní dokument s pokračováním v přesné relaci, denní plán; z knihovny rovnou otevřít úlohu",
+      "steps": [
+        "D27",
+        "D29"
+      ]
+    },
+    {
+      "viewId": "02",
+      "title": "Live",
+      "target": "Samostatné LiveWindow, kompaktní nástroje, viditelný poslech a záznam, F11",
+      "steps": [
+        "D14"
+      ]
+    },
+    {
+      "viewId": "03",
+      "title": "Ladička",
+      "target": "Připojitelný/plovoucí nástroj; detail ladění, kalibrace a referenčních tónů v nástroji",
+      "steps": [
+        "D11"
+      ]
+    },
+    {
+      "viewId": "04",
+      "title": "Metronom",
+      "target": "Nástroj s kyvadlem nahoře, BPM/transportem a rozbalitelnými pokročilými volbami",
+      "steps": [
+        "D12"
+      ]
+    },
+    {
+      "viewId": "05",
+      "title": "Výběr lekce",
+      "target": "Knihovna s kategoriemi, hledáním a detailem; otevře lekci jako dokument",
+      "steps": [
+        "D23"
+      ]
+    },
+    {
+      "viewId": "06",
+      "title": "Průběh lekce",
+      "target": "Dokument: kroky vlevo, úloha uprostřed, kontext v inspektoru; relace uchová postup",
+      "steps": [
+        "D23"
+      ]
+    },
+    {
+      "viewId": "07",
+      "title": "Vlastní skladba",
+      "target": "Dokument: waveform, smyčka a transport; vlastnosti zdroje v inspektoru",
+      "steps": [
+        "D17"
+      ]
+    },
+    {
+      "viewId": "08",
+      "title": "YouTube cvičení",
+      "target": "Video dokument, A/B a rychlost u videa; existující oficiální embed, online stavy",
+      "steps": [
+        "D22"
+      ]
+    },
+    {
+      "viewId": "09",
+      "title": "Přesný trénink",
+      "target": "Dokument hodnoticí relace, cílové tóny a skutečné výsledky; nastavení v inspektoru",
+      "steps": [
+        "D24"
+      ]
+    },
+    {
+      "viewId": "10",
+      "title": "Power chordy",
+      "target": "Tréninkový dokument; rytmus, vizualizace a výsledky pohromadě",
+      "steps": [
+        "D24"
+      ]
+    },
+    {
+      "viewId": "11",
+      "title": "Gallop",
+      "target": "Tréninkový dokument sdílí časování, samostatný druh úlohy a nastavení",
+      "steps": [
+        "D24"
+      ]
+    },
+    {
+      "viewId": "12",
+      "title": "Palm mute",
+      "target": "Tréninkový dokument s kalibrací; nezaměnit proxy měření za nové rozpoznávání hry",
+      "steps": [
+        "D24"
+      ]
+    },
+    {
+      "viewId": "13",
+      "title": "Aparát",
+      "target": "Nástroj: viditelný řetězec, preset, bypass a základní knoflíky; detaily efektu v nástroji",
+      "steps": [
+        "D13"
+      ]
+    },
+    {
+      "viewId": "14",
+      "title": "Nahrávky",
+      "target": "Seznam v knihovně; vybraná nahrávka otevře editor waveform/A/B/značek",
+      "steps": [
+        "D18"
+      ]
+    },
+    {
+      "viewId": "15",
+      "title": "Studio",
+      "target": "Projektový dokument: časová osa a stopy, mixer a inspektor; historie patří projektu",
+      "steps": [
+        "D20"
+      ]
+    },
+    {
+      "viewId": "16",
+      "title": "Looper",
+      "target": "Připojitelný/plovoucí nástroj se skutečnou jednou looper relací, vrstvami a uložením",
+      "steps": [
+        "D19"
+      ]
+    },
+    {
+      "viewId": "17",
+      "title": "Akordy",
+      "target": "Knihovna a referenční dokument s diagramem, prstoklady a cvičením",
+      "steps": [
+        "D25"
+      ]
+    },
+    {
+      "viewId": "18",
+      "title": "Stupnice",
+      "target": "Knihovna a referenční dokument; diagram a nastavení podle výběru",
+      "steps": [
+        "D25"
+      ]
+    },
+    {
+      "viewId": "19",
+      "title": "Riffy",
+      "target": "Knihovna; konkrétní riff otevírá dokument nebo navázaný trénink",
+      "steps": [
+        "D25"
+      ]
+    },
+    {
+      "viewId": "20",
+      "title": "Noty a tabulatury",
+      "target": "Dokument: noty využijí plochu, lišta stop/zoomu/taktů, inspektor a společný transport",
+      "steps": [
+        "D21"
+      ]
+    },
+    {
+      "viewId": "21",
+      "title": "Hmatník",
+      "target": "Herní/cvičební dokument; zacílená klávesnice a oddělená relace hry",
+      "steps": [
+        "D25"
+      ]
+    },
+    {
+      "viewId": "22",
+      "title": "Sluch",
+      "target": "Herní/cvičební dokument; jasně označené ukázky a pravidla vlastnictví přehrávání",
+      "steps": [
+        "D25"
+      ]
+    },
+    {
+      "viewId": "23",
+      "title": "AI — rozhovor",
+      "target": "AI dokument; historie, psaní, průběh a zrušení požadavku ve správné relaci",
+      "steps": [
+        "D26"
+      ]
+    },
+    {
+      "viewId": "24",
+      "title": "AI — plán",
+      "target": "AI dokument; návrh plánu s výslovným použitím a vazbou na skutečné úlohy",
+      "steps": [
+        "D26"
+      ]
+    },
+    {
+      "viewId": "25",
+      "title": "AI — zpětná vazba",
+      "target": "AI dokument se zdrojovými statistikami; nevydávat rady za měření audio hry",
+      "steps": [
+        "D26"
+      ]
+    },
+    {
+      "viewId": "26",
+      "title": "Moje kytara",
+      "target": "Kategorie samostatného nastavení/profilu; související nástroje otevře příkazem",
+      "steps": [
+        "D27",
+        "D28"
+      ]
+    },
+    {
+      "viewId": "27",
+      "title": "Pokrok",
+      "target": "Dokument statistik; skutečný čas, výsledky a režim bez odměn",
+      "steps": [
+        "D27"
+      ]
+    },
+    {
+      "viewId": "28",
+      "title": "Nastavení",
+      "target": "Jedno SettingsWindow s kategoriemi, hledáním a vlastním správným HWND",
+      "steps": [
+        "D28"
+      ]
+    },
+    {
+      "viewId": "29",
+      "title": "Zvuková zařízení",
+      "target": "Kategorie nastavení; ověření karty a mono vstupu, ASIO/WASAPI, buffer a latence ovladače",
+      "steps": [
+        "D28"
+      ]
+    },
+    {
+      "viewId": "30",
+      "title": "Zálohy a soubory",
+      "target": "Kategorie správy dat; stav globálních operací v centru operací",
+      "steps": [
+        "D28",
+        "D30"
+      ]
+    },
+    {
+      "viewId": "31",
+      "title": "První spuštění",
+      "target": "Průvodce ukotvený k pracovnímu oknu; krok poslechu výslovně vysvětlí monitoring",
+      "steps": [
+        "D28"
+      ]
+    },
+    {
+      "viewId": "32",
+      "title": "Export nahrávky",
+      "target": "Vlastněný exportní dialog nad konkrétní nahrávkou; dlouhá operace v centru operací",
+      "steps": [
+        "D18",
+        "D30"
+      ]
+    }
+  ],
+  "stepCount": 36,
+  "coverageCount": 32,
+  "milestoneCount": 7,
+  "desktopScenarioCount": 22,
+  "checkedLocalLinks": [
+    {
+      "from": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
+      "target": "#scope"
+    },
+    {
+      "from": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
+      "target": "#experience"
+    },
+    {
+      "from": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
+      "target": "#behavior"
+    },
+    {
+      "from": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
+      "target": "#architecture"
+    },
+    {
+      "from": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
+      "target": "#coverage"
+    },
+    {
+      "from": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
+      "target": "#implementation"
+    },
+    {
+      "from": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
+      "target": "#milestones"
+    },
+    {
+      "from": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
+      "target": "#validation"
+    },
+    {
+      "from": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
+      "target": "#risks"
+    },
+    {
+      "from": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
+      "target": "windows/Rocker.Probe/MainWindow.xaml"
+    },
+    {
+      "from": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
+      "target": "windows/Rocker.Probe/MainWindow.Shell.cs"
+    },
+    {
+      "from": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
+      "target": "windows/Rocker.Probe/MainWindow.xaml.cs"
+    },
+    {
+      "from": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
+      "target": "windows/Rocker.Probe/App.xaml.cs"
+    },
+    {
+      "from": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
+      "target": "windows/Rocker.Probe/MainWindow.Shell.cs"
+    },
+    {
+      "from": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
+      "target": "windows/Rocker.Probe/MainWindow.Files.cs"
+    },
+    {
+      "from": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
+      "target": "windows/Rocker.Infrastructure/WindowPreferences.cs"
+    },
+    {
+      "from": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
+      "target": "windows/Rocker.Probe/MainWindow.Live.cs"
+    },
+    {
+      "from": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
+      "target": "WINDOWS_ROADMAP.md"
+    },
+    {
+      "from": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
+      "target": "docs/windows/design/vsechny-navrhy.md"
+    },
+    {
+      "from": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
+      "target": "AGENTS.md"
+    },
+    {
+      "from": "README.md",
+      "target": "WINDOWS_DESKTOP_REBUILD_PLAN.md"
+    },
+    {
+      "from": "WINDOWS_ROADMAP.md",
+      "target": "WINDOWS_DESKTOP_REBUILD_PLAN.md"
+    },
+    {
+      "from": "PROJECT_STATUS.md",
+      "target": "WINDOWS_DESKTOP_REBUILD_PLAN.md"
+    },
+    {
+      "from": "docs/windows/desktop/README.md",
+      "target": "../../../WINDOWS_DESKTOP_REBUILD_PLAN.md"
+    }
+  ],
+  "errors": []
+}

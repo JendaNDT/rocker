@@ -9,6 +9,8 @@
 
 [Propracování Vintage grafiky](docs/windows/graphics/README.md) a [detailní galerie](docs/windows/graphics/gallery.html) navazují na přehlednější UI/UX.
 
+**Plán další přestavby:** [profesionální desktopové prostředí D01–D36](WINDOWS_DESKTOP_REBUILD_PLAN.md) — pracovní plocha, dokumenty, samostatné Live, plovoucí nástroje a sdílené služby. Zahrnuje převod všech 32 funkcí, Vintage grafiku, data, testování a sestavené předání. Jde o nový implementační plán; víceokenní přestavba zatím není implementovaná.
+
 Bratr dostane sestavený instalátor; zdroje jsou samostatně a nic nemusí kompilovat. Skutečné hraní na M-Track Solo a měření celkové odezvy následují ve W44. [Původní návrhy](docs/windows/design/vsechny-navrhy.md) zůstávají referencí. Main a živá PWA se nemění; následující části popisují původní webovou aplikaci.
 
 ## Co to je
