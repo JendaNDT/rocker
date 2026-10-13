@@ -14,5 +14,12 @@
   },
   "validatedAtUtc": "2026-10-13T17:42:12.062636+00:00",
   "kind": "D04 portable domain contracts; no windows or devices opened",
-  "windowsRuntimeOfModelsVerified": false
+  "windowsRuntimeOfModelsVerified": false,
+  "sourceCommit": "48b4a722a5154af18512af0cd06cd5a77acb675b",
+  "additionalWindowsBuild": {
+    "runId": 38441263933,
+    "runUrl": "https://github.com/JendaNDT/rocker/actions/runs/38441263933",
+    "statusAtHandoff": "in_progress",
+    "resultNotClaimed": true
+  }
 }
