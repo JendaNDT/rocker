@@ -81,8 +81,10 @@ public sealed partial class MainWindow
         meter.SetLevel(double.PositiveInfinity,true); Check(!meter.NeedleVisible && !meter.HasSignal);
         meter.SetLevel(-1,true); Check(!meter.NeedleVisible && meter.Level == 0);
         var power = new CheckBox { Content = "Aparát" }; var hardware = VintageHousing.PowerSwitch(power);
-        power.IsChecked = true; Check(power.IsChecked == true && hardware is Grid);
-        power.IsChecked = false; Check(power.IsChecked == false);
+        var peer=Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer.CreatePeerForElement(power);
+        var toggle=(Microsoft.UI.Xaml.Automation.Provider.IToggleProvider?)peer?.GetPattern(Microsoft.UI.Xaml.Automation.Peers.PatternInterface.Toggle);
+        toggle?.Toggle(); Check(toggle is not null && power.IsChecked == true && hardware is Grid);
+        toggle!.Toggle(); Check(power.IsChecked == false);
         var housing = new VintageHousing(dial,"ROCKER",speaker:true); Check(housing.HasSpeakerGrille);
         WriteShellDiagnostic("retro-instruments.json",new { result="passed",meterBoundaryChecks=6,nativePowerStateChecks=2,cabinetCheck=true,needleUsesPeakDbfs=true,invalidOrAbsentInputHasNoNeedle=true,decorationsOwnNoInput=true,sharedAudioHostCount=audioHostsCreated,realInputVerified=false,highContrastManualVerified=false });
         if (catalog is not null)

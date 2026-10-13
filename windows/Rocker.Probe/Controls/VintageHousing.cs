@@ -13,7 +13,7 @@ public sealed class VintageHousing : Grid
 {
     public bool HasSpeakerGrille { get; }
     internal static Style Material(string name) => (Style)Application.Current.Resources[name];
-    public VintageHousing(UIElement content, string? plaque = null, bool speaker = false, bool compact = false)
+    public VintageHousing(UIElement content, string? plaque = null, bool speaker = false, bool compact = false, bool instrument = false)
     {
         HasSpeakerGrille = speaker;
         double cheek = compact ? 8 : 14;
@@ -44,7 +44,7 @@ public sealed class VintageHousing : Grid
                     texture.Children.Add(new Line { X1 = x, Y1 = y, X2 = x + 3, Y2 = Math.Min(height, y + 2), Style = Material("VintageGrainStyle"), Opacity = .55 });
         };
         lining.Children.Add(texture); lining.Children.Add(panel);
-        var face = new Border { Child = lining, Style = Material("VintageCardStyle") };
+        var face = new Border { Child = lining, Style = Material(instrument ? "VintageInstrumentCardStyle" : "VintageCardStyle") };
         Grid.SetColumn(face, 1); Children.Add(face);
         // Screws float inside the existing padding and never consume content space.
         foreach (var (horizontal, vertical) in new[] { (HorizontalAlignment.Left, VerticalAlignment.Top), (HorizontalAlignment.Right, VerticalAlignment.Top), (HorizontalAlignment.Left, VerticalAlignment.Bottom), (HorizontalAlignment.Right, VerticalAlignment.Bottom) })
@@ -98,6 +98,8 @@ public sealed class VintageHousing : Grid
     }
     public static FrameworkElement PowerSwitch(CheckBox control)
     {
+        string label = control.Content as string ?? "Aparát";
+        AutomationProperties.SetName(control, label);
         var lamp = new Ellipse { Width = 12, Height = 12, VerticalAlignment = VerticalAlignment.Center };
         var lever = new Line { X1 = 13, Y1 = 20, X2 = 13, Y2 = 7, Style = Material("VintageDialPointerStyle") };
         var socket = new Canvas { Width = 26, Height = 32, VerticalAlignment = VerticalAlignment.Center };
@@ -107,8 +109,12 @@ public sealed class VintageHousing : Grid
         decoration.Children.Add(socket); decoration.Children.Add(lamp); Decorative(decoration);
         void Refresh() { bool enabled = control.IsChecked == true; lamp.Style = Material(enabled ? "VintageLampOnStyle" : "VintageLampOffStyle"); lever.Y2 = enabled ? 7 : 30; }
         control.Checked += (_, _) => Refresh(); control.Unchecked += (_, _) => Refresh(); control.Indeterminate += (_, _) => Refresh(); Refresh();
-        var row = new Grid { ColumnSpacing = 10 };
-        row.ColumnDefinitions.Add(new() { Width = GridLength.Auto }); row.ColumnDefinitions.Add(new() { Width = new(1, GridUnitType.Star) });
-        row.Children.Add(decoration); Grid.SetColumn(control, 1); row.Children.Add(control); return row;
+        // The whole ornament is checkbox content: clicking the lever or lamp
+        // reaches the same native checkbox, rather than creating a dead control.
+        var content = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 10, Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent) };
+        content.Children.Add(decoration);
+        content.Children.Add(new TextBlock { Text = label, Style = Material("VintageBodyTextStyle"), VerticalAlignment = VerticalAlignment.Center });
+        control.Content = content;
+        var row = new Grid(); row.Children.Add(control); return row;
     }
 }
