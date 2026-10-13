@@ -84,7 +84,7 @@ public sealed partial class MainWindow
         Menu("Skrýt / zobrazit knihovnu",()=>{desktopLibraryVisible=!desktopLibraryVisible;RefreshDesktopPaneWidths();});
         Menu("Skrýt / zobrazit inspektor a nástroje",()=>{desktopInspectorVisible=!desktopInspectorVisible;RefreshDesktopPaneWidths();});
         Menu("Obnovit výchozí rozložení",()=>{desktopLibraryWidth=210;desktopInspectorWidth=250;desktopLibraryVisible=true;desktopInspectorVisible=false;RefreshDesktopPaneWidths();foreach(var tab in floatingHosts.Keys.Where(t=>t.Tag is DocumentSession session && desktopDocuments.ContainsKey(session)).ToArray())AttachDesktopTab(tab);foreach(var tool in desktopTools.Values.Where(t=>DesktopRoutes.ToolViews.Contains(t.Session.Target.ViewId)))DetachDesktopTab(tool.Tab);});
-        MainMenu.Items.Add(windowsMenu);
+        MainMenu.Items.Insert(MainMenu.Items.Count-1,windowsMenu);
         MediaTitle.Visibility=Visibility.Collapsed;InitializeDesktopWorkbench();
         services.Operations.Changed+=DesktopOperationsChanged;
         InitializeDesktopCommands();BindDesktopCommands(ShellRoot);RefreshDesktopLibrary();_=RefreshDesktopLibraryAssetsAsync();OpenDesktop(new("01"));

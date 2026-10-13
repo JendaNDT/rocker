@@ -84,7 +84,7 @@ public sealed partial class MainWindow
         PracticeRow.ColumnDefinitions[0].Width = new(1, GridUnitType.Star);
         PracticeRow.ColumnDefinitions[1].Width = new(0);
         PracticeRow.Children.Remove(PracticeStatus); practice.Children.Add(PracticeStatus);
-        var practiceButton = new Button { Content = new SymbolIcon(Symbol.Clock), MinHeight = 32, Flyout = new Flyout { Content = practice } };
+        var practiceButton = new Button { Content = "Cvičení…", MinHeight = 32, Flyout = new Flyout { Content = practice } };
         Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(practiceButton, "Cvičení, čas a denní plán");
         ToolTipService.SetToolTip(practiceButton, "Cvičení, čas a denní plán");
         Grid.SetColumn(practiceButton, 3); transport.Children.Add(practiceButton);
