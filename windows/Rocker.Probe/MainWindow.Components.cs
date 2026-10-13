@@ -58,7 +58,7 @@ public sealed partial class MainWindow
         using (var reader = DataReader.FromBuffer(buffer)) reader.ReadBytes(pixels);
         using var stream = new InMemoryRandomAccessStream();
         var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId,stream);
-        double dpi = 96 * ShellRoot.XamlRoot.RasterizationScale;
+        double dpi = 96 * (element ?? ShellRoot).XamlRoot.RasterizationScale;
         encoder.SetPixelData(BitmapPixelFormat.Bgra8,BitmapAlphaMode.Premultiplied,(uint)bitmap.PixelWidth,(uint)bitmap.PixelHeight,dpi,dpi,pixels);
         await encoder.FlushAsync();
         stream.Seek(0); var png = new byte[checked((int)stream.Size)];

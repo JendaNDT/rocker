@@ -268,6 +268,7 @@ public sealed partial class MainWindow
         await VerifyWorkspaceUxAsync();
         await VerifyAllDesignViewsAsync();
         await CaptureVisualFinishAsync();
+        await VerifyDesktopHostExperimentAsync();
         await VerifyAccessibilityAsync();
         await VerifyDevicesAsync();
         VerifyComponents();
