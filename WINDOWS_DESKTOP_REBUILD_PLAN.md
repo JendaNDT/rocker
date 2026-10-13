@@ -1,5 +1,7 @@
 # Rocker — implementační plán přestavby desktopového prostředí
 
+**Znovuotevřená vizuální přejímka:** verze 0.3.0 byla funkčně sestavená, ale Jenda její rozložení oprávněně vyhodnotil jako příliš podobné původní aplikaci. [Revize pracovní plochy 2](docs/windows/desktop/workbench-revision-2.md) opravuje výchozí okna, ovládání a vlastní editory. Historická označení dokončení níže nejsou schválením finálního UI.
+
 Datum: 13. 10. 2026. Stav: **realizace D01–D36 schválená; D01–D35 dokončené a automaticky ověřené; D36 dokončené jako soukromé předání testovacího kandidáta**.
 
 Jenda chce změnit způsob práce s Rockerem na profesionální Windows nástroj:

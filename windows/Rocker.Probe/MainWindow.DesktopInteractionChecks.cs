@@ -22,6 +22,13 @@ public sealed partial class MainWindow
         using(documentContext.Enter(first)){await ClaimDesktopSourceAsync(first);Check(audio.GetTransport().Ready!=0 && audio.GetTransport().Playing==0,"explicit-source-preparation-remains-paused");}
         ulong ticket=await audio.GetMediaSourceTicketAsync();
         await OpenDesktopRecordingAsync(fixture);var second=OpenDesktop(new("14",fixture.Id));
+        await Task.Delay(100);ShellRoot.UpdateLayout();
+        using(documentContext.Enter(second))
+        {
+            Check(desktopDocuments[second].Content is Desktop.DocumentSurface && recordingWaveform!.ActualHeight>=180,"recording-editor-uses-a-bounded-resizable-waveform");
+            var bottom=recordingRangeB!.TransformToVisual(ShellRoot).TransformPoint(new Windows.Foundation.Point(0,recordingRangeB.ActualHeight));
+            Check(recordingRangeA!.ActualWidth>0 && recordingRangeB.ActualWidth>0 && bottom.Y<=ShellRoot.ActualHeight,"recording-selection-a-and-b-remain-in-the-visible-editor");
+        }
         using(documentContext.Enter(second)){Check(recordingPeaks.Length==1024 && RecordingWaveformAvailable(),"recording-inspection-works-without-source-takeover");SetRecordingRange(.25,1);Check(recordingRangeA!.Value==.25 && recordingRangeB!.Value==1,"offline-recording-selection-retains-source-seconds");}
         Check(services.Transport.Owner==first && await audio.GetMediaSourceTicketAsync()==ticket,"opening-another-document-preserves-adopted-native-source");
         services.Transport.Capturing=true;
