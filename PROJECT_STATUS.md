@@ -6,7 +6,9 @@ Dokončeno i [pět rozšíření pohodlí při hraní](docs/windows/improvements
 
 Dále dokončené [retro přístroje](docs/windows/retro/README.md): ořechové bočnice, textura koženky a mřížka komba, měděné štítky a šroubky, bakelitové knoflíky, skutečný stav páčky/kontrolky aparátu a podsvícené ručkové peak dBFS měřáky. [Skutečné snímky](docs/windows/retro/gallery.html).
 
-Ověřený RC5: Windows běh [38401845598](https://github.com/JendaNDT/rocker/actions/runs/38401845598), revize `91a1957`. Všech 18 nových kontrol skutečného okna, původní nativní/doménové/datové kontroly, 32 pohledů i instalační cyklus prošly. [Soukromý instalátor](https://github.com/JendaNDT/rocker/releases/tag/windows-0.2.0-rc5-20261013); zdroje jsou zvlášť. Main/PWA beze změny.
+Dokončená [viditelná vizualizace metronomu](docs/windows/metronome/README.md): skutečné kyvadlo a očíslované doby nahoře v samostatném metronomu, Live i F11. Volba se ukládá, přepnutí neovlivňuje zvuk; fáze vychází ze společných nativních hodin, včetně odpočtu a tichých taktů. [Galerie a ukázka pohybu](docs/windows/metronome/gallery.html).
+
+Ověřený RC6: Windows běh [38416440273](https://github.com/JendaNDT/rocker/actions/runs/38416440273), revize `5eb2eb9`. Všech 18 nových kontrol skutečného okna, původní nativní/doménové/datové kontroly, 32 pohledů i instalační cyklus prošly. [Soukromý instalátor](https://github.com/JendaNDT/rocker/releases/tag/windows-0.2.0-rc6-20261013); zdroje jsou zvlášť. Main/PWA beze změny.
 
 Aktualizace soukromého repozitáře přímo z aplikace potřebují vlastní GitHub přístup chráněný DPAPI; bez něj je dostupný přihlášený systémový prohlížeč. Živý cloudový modul skutečně stáhl a ověřil předchozí instalátor; přihlášení uživatele a spuštění aktualizace z aplikace na jeho Windows zůstávají ručními scénáři. Sestavy a oblíbené patří do úplné zálohy, klíče a cache instalátorů nikoli.
 

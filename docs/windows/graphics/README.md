@@ -9,7 +9,7 @@ Zadání Jendy: propracovaný vzhled celého nativního programu. Navazuje na ro
 - Měřáky: segmenty na stupnici −60 až 0 dBFS, barevná pásma, číselný údaj a nativní přístupný ukazatel. Segmenty zobrazují skutečný signál; žádná ozdobná simulace.
 - Metronom: velký skutečný údaj BPM na Vintage přístrojové ploše. Akordy: čitelná čísla prstů a strun, nultý pražec; hmatník: struny, pražce a zaoblená tlačítka s ponechanou orientací pro leváky.
 
-Ověření: C# s reálnými WinUI referencemi, doménové reference, Windows kompilace a běžné kontroly celé aplikace. Vedle všech 32 standardních snímků pořizuje runner devět detailních snímků při zavřeném souborovém přehrávači, v tmavé i světlé variantě (`visual-finish.json`). [Skutečné snímky](gallery.html) a [ověřená revize](windows-validation.json): Windows běh 38401845598, commit `91a1957`, prošel.
+Ověření: C# s reálnými WinUI referencemi, doménové reference, Windows kompilace a běžné kontroly celé aplikace. Vedle všech 32 standardních snímků pořizuje runner devět detailních snímků při zavřeném souborovém přehrávači, v tmavé i světlé variantě (`visual-finish.json`). [Skutečné snímky](gallery.html) a [ověřená revize](windows-validation.json): Windows běh 38416440273, commit `5eb2eb9`, prošel.
 
 Přijetí vzhledu Jendou, fyzické DPI, Narrator a systémový vysoký kontrast zůstávají ručními kontrolami; automatická konstrukce není jejich náhradou. Zvuková cesta, formáty uživatelských dat a funkce nejsou touto grafickou úpravou změněné.
 

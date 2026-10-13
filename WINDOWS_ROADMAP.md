@@ -1,6 +1,6 @@
 # Rocker pro Windows — úplný implementační plán
 
-Stav k 13. 10. 2026: implementovaný je rozsah W01–W43, včetně 32 skutečných WinUI pohledů, Vintage designu, C++/JUCE zvukového jádra, všech pracovních funkcí, převodu dat a instalačního balíku. W40–W43 prošly závěrečnou automatickou Windows kontrolou v běhu 38401845598, revize `91a1957`; [uložené důkazy](docs/windows/w43/windows-validation.json) a [sestavený soukromý kandidát](https://github.com/JendaNDT/rocker/releases/tag/windows-0.2.0-rc5-20261013) jsou k dispozici. [Matice úplnosti a návod](docs/windows/w43/README.md) oddělují automatické kontroly od odloženého skutečného hraní. W44–W48 zůstávají jako bratrův test, případné opravy a stabilní předání. Main/produkční PWA se nemění; [původní roadmapa](ROADMAP.md) popisuje webovou historii.
+Stav k 13. 10. 2026: implementovaný je rozsah W01–W43, včetně 32 skutečných WinUI pohledů, Vintage designu, C++/JUCE zvukového jádra, všech pracovních funkcí, převodu dat a instalačního balíku. W40–W43 prošly závěrečnou automatickou Windows kontrolou v běhu 38416440273, revize `5eb2eb9`; [uložené důkazy](docs/windows/w43/windows-validation.json) a [sestavený soukromý kandidát](https://github.com/JendaNDT/rocker/releases/tag/windows-0.2.0-rc6-20261013) jsou k dispozici. [Matice úplnosti a návod](docs/windows/w43/README.md) oddělují automatické kontroly od odloženého skutečného hraní. W44–W48 zůstávají jako bratrův test, případné opravy a stabilní předání. Main/produkční PWA se nemění; [původní roadmapa](ROADMAP.md) popisuje webovou historii.
 
 Doplněno podle zadání z 13. 10. 2026: [režim hraní, sestavy, společné hledání a oblíbené, průběh nahrávek a aktualizace](docs/windows/improvements/README.md). Původních 32 pohledů zůstává zachovaných.
 
@@ -575,7 +575,7 @@ Kroky jsou seřazené tak, aby se daly provádět postupně. Závislosti uvádě
 <a id="w43"></a>
 #### W43 — Uzavřít funkčně kompletního kandidáta
 
-- [x] Dokončený funkčně kompletní kandidát: [matice, návod a výsledky](docs/windows/w43/README.md). Windows běh 38401845598, revize `91a1957`, prošel společnou přejímkou; [sestavené soukromé vydání](https://github.com/JendaNDT/rocker/releases/tag/windows-0.2.0-rc5-20261013) obsahuje instalátor a samostatné zdroje. Ruční hraní/online/přístupnost zůstávají ve W44. Závislosti: W01–W42.
+- [x] Dokončený funkčně kompletní kandidát: [matice, návod a výsledky](docs/windows/w43/README.md). Windows běh 38416440273, revize `5eb2eb9`, prošel společnou přejímkou; [sestavené soukromé vydání](https://github.com/JendaNDT/rocker/releases/tag/windows-0.2.0-rc6-20261013) obsahuje instalátor a samostatné zdroje. Ruční hraní/online/přístupnost zůstávají ve W44. Závislosti: W01–W42.
 - Uzavřít úplnost všech 32 pohledů a všech funkcí v inventáři. Dokončit offline/syntetické testy, Windows integrace, design, migraci, instalaci a dokumentaci známých omezení.
 - Připravit instalační balík, poznámky k verzi, krátký návod pro bratra a formulář výsledků testu. Vedle instalátoru zpřístupnit zdarma odpovídající zdroje a build skripty podle W02, samostatným odkazem bez povinného stažení. Přiložit vyžadovaná licenční oznámení výsledných komponent. Kandidát nesmí mít známé blokující chyby ukládání, ztráty dat, licence nebo základního pracovního postupu.
 - Oddělit „ověřeno na testovacím Windows“ a „čeká na M-Track Solo“. Pokud schází skutečný AI integrační klíč nebo konkrétní kodek, popsat to jako nesplněnou kontrolu, ne zelený test.
@@ -753,3 +753,5 @@ W04–W43 jsou implementované a automaticky ověřené. Navazuje skutečná př
 Požadavek na tuto roadmapu znamená vytvoření plánovacího podkladu a uložení návrhů. Neoznačuje nativní jádro za hotové, nepřepíná živou PWA a sám o sobě nepublikuje instalátor. Implementace W01–W43 je uložená; sestavený kandidát vyžaduje úspěšné závěrečné protokoly. Bratrův test následuje ve W44.
 
 13. 10. 2026 — dokončeno další [propracování retro přístrojů](docs/windows/retro/README.md), s ověřenými nativními snímky a soukromým kandidátem RC5. W44–W48 zůstávají závěrečnou ruční přejímkou.
+
+13. 10. 2026 — dokončená [vizualizace metronomu ve všech režimech](docs/windows/metronome/README.md); 20 nativních scénářů ověřuje umístění, fázi, stavy a uložení. Soukromý kandidát RC6, ruční přejímka W44–W48 zůstává otevřená.

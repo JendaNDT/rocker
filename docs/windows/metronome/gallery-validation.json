@@ -1,0 +1,11 @@
+{
+  "result": "passed",
+  "nativeCaptures": 6,
+  "imagesDecoded": 7,
+  "motionStartAndStop": true,
+  "filters": true,
+  "enlarge": true,
+  "escape": true,
+  "narrowViewportFits": true,
+  "pageErrors": 0
+}

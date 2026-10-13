@@ -1,0 +1,230 @@
+{
+  "result": "passed",
+  "runId": 38416440273,
+  "runUrl": "https://github.com/JendaNDT/rocker/actions/runs/38416440273",
+  "commit": "5eb2eb97b2ce4f2340aa8b143714a93840c45fc0",
+  "visualization": {
+    "result": "passed",
+    "checks": {
+      "standaloneInstrumentVisibleAtTop": true,
+      "modeChangeDoesNotReconfigureOrStartSound": true,
+      "displayChoiceSurvivesDatabaseReopen": true,
+      "liveInstrumentVisibleAtTop": true,
+      "focusKeepsInstrumentVisible": true,
+      "narrowInstrumentComesBeforeEditors": true,
+      "nativeBeatAndPhaseDriveArm": true,
+      "sameClockSnapshotDoesNotDrift": true,
+      "oddMeterBoundaryIsContinuous": true,
+      "countInIsLabelledAndKeepsClockParity": true,
+      "silentBarsStillShowTiming": true,
+      "mutedBeatIsExplicit": true,
+      "reducedMotionKeepsBeatWithoutSwing": true,
+      "invalidPhaseHasNoActiveBeat": true,
+      "invalidBeatHasNoActiveBeat": true,
+      "disabledMetronomeRestsWhileOtherSoundRuns": true,
+      "waitingDoesNotInventFirstBeat": true,
+      "sixteenBeatsAndDotsModeAreSupported": true,
+      "legacyUnsetModeDefaultsToPendulum": true,
+      "visualizationNeverStartsAudio": true
+    },
+    "sharedAudioHostCount": 1,
+    "clockSource": "native sample clock",
+    "noIndependentAnimationTimer": true,
+    "demonstrationUsesLabelledSnapshots": true,
+    "actualAudioOutputVerified": false,
+    "physicalHighContrastVerified": false
+  },
+  "layout": {
+    "result": "passed",
+    "idleSettingsHasNoPlayerOrPracticeBar": true,
+    "desktopNavigationShowsLabels": true,
+    "liveHasPrimarySetupAndRelevantActions": true,
+    "liveFooterHeightDip": 45,
+    "liveTuningScaleVisible": true,
+    "liveTuningScaleBottomDip": 622,
+    "clientHeightDip": 749,
+    "liveScaleHeightDip": 70,
+    "liveScaleWidthDip": 0,
+    "emptyMediaDoesNotOccupyLive": true,
+    "narrowWorkspaceFits": true,
+    "loadedMediaHasAccessibleTransport": true,
+    "manualUsabilityVerified": false
+  },
+  "enhancements": {
+    "result": "passed",
+    "checks": {
+      "focusUsesSharedLiveHost": true,
+      "focusRecorderActionsAreLarge": true,
+      "focusNarrowFits": true,
+      "focusCanReturnWithoutStartingSound": true,
+      "preparationCanCancelWhileWorkspaceIsDisabled": true,
+      "setupAppliesNativeSoundAndTempo": true,
+      "setupDoesNotStartPlaybackOrMonitoring": true,
+      "workspaceSurvivesDatabaseReopen": true,
+      "globalIndexContainsLessonsChordsSongsRecordingsAndSetups": true,
+      "searchIsNativeDialog": true,
+      "nativeSearchIgnoresDiacritics": true,
+      "setupManagerIsNativeDialog": true,
+      "recordingPreviewHasDecodedWaveform": true,
+      "waveformSelectionRetainsSourceTimes": true,
+      "setupRestoresSongLoopAndSpeedPaused": true,
+      "setupKeepsOwnedReferenceAfterReopen": true,
+      "updatesRequireExplicitActions": true,
+      "singleAudioHostRemains": true
+    },
+    "newViews": 0,
+    "nativeWorkspaces": 32,
+    "sharedAudioHostCount": 1,
+    "liveInputNotSimulated": true,
+    "onlinePrivateUpdateVerified": false,
+    "installerExecutedByAppVerified": false,
+    "manualInteractionsVerified": false
+  },
+  "accessibility": {
+    "result": "passed",
+    "authoredControlsChecked": 643,
+    "unnamed": [],
+    "standardInvokeAndRangePatterns": true,
+    "narratorManualVerified": false,
+    "keyboardManualVerified": false,
+    "physicalDpiVerified": false,
+    "systemHighContrastManualVerified": false
+  },
+  "candidate": {
+    "manualHardwareVerified": false,
+    "sourceCommit": "5eb2eb97b2ce4f2340aa8b143714a93840c45fc0",
+    "installer": "Rocker-Windows-Setup-0.2.0-x64.exe",
+    "result": "passed",
+    "correspondingSourcesSeparate": true,
+    "nativeSuites": 22,
+    "actualLatencyVerified": false,
+    "smartAppControlVerified": false,
+    "onlineYouTubeVerified": false,
+    "onlineAiVerified": false,
+    "wallClockHourOnHardwareVerified": false,
+    "nativeWorkspaces": 32,
+    "windowsRun": "https://github.com/JendaNDT/rocker/actions/runs/38416440273",
+    "narratorAndHighContrastManualVerified": false,
+    "reports": [
+      {
+        "result": "passed",
+        "report": "domain-checks.json"
+      },
+      {
+        "result": "passed",
+        "report": "storage-checks.json"
+      },
+      {
+        "result": "passed",
+        "report": "notation-checks.json"
+      },
+      {
+        "result": "passed",
+        "report": "media-checks.json"
+      },
+      {
+        "result": "passed",
+        "report": "transport-checks.json"
+      },
+      {
+        "result": "passed",
+        "report": "browser-ui-import.json"
+      },
+      {
+        "result": "passed",
+        "report": "browser-bookmark-import.json"
+      },
+      {
+        "result": "passed",
+        "report": "power-recovery.json"
+      },
+      {
+        "result": "passed",
+        "report": "performance-checks.json"
+      },
+      {
+        "result": "passed",
+        "report": "accessibility.json"
+      },
+      {
+        "result": "passed",
+        "report": "design-views.json"
+      },
+      {
+        "result": "passed",
+        "report": "ux-layout.json"
+      },
+      {
+        "result": "passed",
+        "report": "workspace-enhancements.json"
+      },
+      {
+        "result": "passed",
+        "report": "retro-instruments.json"
+      },
+      {
+        "result": "passed",
+        "report": "metronome-visualization.json"
+      },
+      {
+        "result": "passed",
+        "report": "visual-finish.json"
+      },
+      {
+        "result": "passed",
+        "report": "practice-profile.json"
+      },
+      {
+        "result": "passed",
+        "report": "overview-live.json"
+      },
+      {
+        "result": "passed",
+        "report": "first-run.json"
+      },
+      {
+        "result": "passed",
+        "report": "file-commands.json"
+      },
+      {
+        "result": "passed",
+        "report": "window-smoke.json"
+      },
+      {
+        "result": "passed",
+        "report": "installer/installer-smoke.json"
+      }
+    ]
+  },
+  "installed": {
+    "historicBinaryDowngradeVerified": false,
+    "installedNativeWindow": true,
+    "offlineSelfContainedStart": true,
+    "hardwareVerified": false,
+    "preUpdateFullBackupAndRawDatabase": true,
+    "uninstallPreservedDatabaseAndSentinel": true,
+    "exactDllRepair": true,
+    "smartAppControlVerified": false,
+    "transitionUsesSameCandidateBinariesWithSyntheticVersionLabels": true,
+    "unicodeProjectActivation": true,
+    "adminRequired": false,
+    "projectAssociationRegistered": true,
+    "failedUpdatePreservedShortcutAndAssociation": true,
+    "perUserInstall": true,
+    "versionTransitionPreservedDataAndPriorBinary": true,
+    "installedInventoryMatchesPortableArchive": true,
+    "result": "passed"
+  },
+  "narrowLayout": {
+    "instrumentBottom": 543,
+    "footerTop": 596,
+    "instrumentWidth": 508,
+    "workspaceWidth": 576
+  },
+  "motionSequence": {
+    "frames": 16,
+    "durationPerFrameMs": 75,
+    "labelledSyntheticClockSnapshots": true,
+    "liveAudioPlayback": false
+  }
+}

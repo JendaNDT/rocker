@@ -11,4 +11,6 @@ Náprava zadání Jendy z 13. 10. 2026: vizualizace musí být viditelná u hlav
 
 Kontroly zahrnují skutečnou geometrii plného, kompaktního, F11 a úzkého okna, nativní přepínač, opětovné otevření databáze, hranice dob, odpočet/ticho, návaznost lichého taktu a determinismus stejného snímku hodin. Galerie použije skutečné Windows snímky; animovaná ukázka bude z výslovně označených kontrolních snímků hodin a nikdy se nepřipojí k živému zvuku. Skutečný poslech a fyzická odezva M-Track Solo zůstávají závěrečnou přejímkou.
 
-Stav: implementováno; čeká na aktuální Windows build a ověření instalátoru.
+Stav: implementováno a ověřeno, [Windows běh 38416440273](https://github.com/JendaNDT/rocker/actions/runs/38416440273), revize `5eb2eb9`. Všech 20 scénářů, původní kontroly a celý instalační cyklus prošly. [Galerie a označená ukázka pohybu](gallery.html), [důkazy](windows-validation.json).
+
+První běh `38413312571` odhalil nedostatečné úzké rozložení. Opravený běh zachoval původní kontrolu a měří přímo horní hranu spodního panelu: přístroj končí v 543 DIP, panel začíná v 596 DIP. Desktop používá dva sloupce od 600 DIP vnitřní šířky; úzká varianta zmenší přístroj a ponechá jasná čísla dob.

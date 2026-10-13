@@ -1,142 +1,146 @@
 {
-  "runId": 38401845598,
-  "runUrl": "https://github.com/JendaNDT/rocker/actions/runs/38401845598",
-  "commit": "91a1957f7dd48ea58ab211533cba08f6be7403d2",
+  "runId": 38416440273,
+  "runUrl": "https://github.com/JendaNDT/rocker/actions/runs/38416440273",
+  "commit": "5eb2eb97b2ce4f2340aa8b143714a93840c45fc0",
   "result": "passed",
   "candidate": {
+    "manualHardwareVerified": false,
+    "sourceCommit": "5eb2eb97b2ce4f2340aa8b143714a93840c45fc0",
+    "installer": "Rocker-Windows-Setup-0.2.0-x64.exe",
+    "result": "passed",
+    "correspondingSourcesSeparate": true,
+    "nativeSuites": 22,
+    "actualLatencyVerified": false,
+    "smartAppControlVerified": false,
     "onlineYouTubeVerified": false,
     "onlineAiVerified": false,
     "wallClockHourOnHardwareVerified": false,
-    "sourceCommit": "91a1957f7dd48ea58ab211533cba08f6be7403d2",
+    "nativeWorkspaces": 32,
+    "windowsRun": "https://github.com/JendaNDT/rocker/actions/runs/38416440273",
+    "narratorAndHighContrastManualVerified": false,
     "reports": [
       {
-        "report": "domain-checks.json",
-        "result": "passed"
+        "result": "passed",
+        "report": "domain-checks.json"
       },
       {
-        "report": "storage-checks.json",
-        "result": "passed"
+        "result": "passed",
+        "report": "storage-checks.json"
       },
       {
-        "report": "notation-checks.json",
-        "result": "passed"
+        "result": "passed",
+        "report": "notation-checks.json"
       },
       {
-        "report": "media-checks.json",
-        "result": "passed"
+        "result": "passed",
+        "report": "media-checks.json"
       },
       {
-        "report": "transport-checks.json",
-        "result": "passed"
+        "result": "passed",
+        "report": "transport-checks.json"
       },
       {
-        "report": "browser-ui-import.json",
-        "result": "passed"
+        "result": "passed",
+        "report": "browser-ui-import.json"
       },
       {
-        "report": "browser-bookmark-import.json",
-        "result": "passed"
+        "result": "passed",
+        "report": "browser-bookmark-import.json"
       },
       {
-        "report": "power-recovery.json",
-        "result": "passed"
+        "result": "passed",
+        "report": "power-recovery.json"
       },
       {
-        "report": "performance-checks.json",
-        "result": "passed"
+        "result": "passed",
+        "report": "performance-checks.json"
       },
       {
-        "report": "accessibility.json",
-        "result": "passed"
+        "result": "passed",
+        "report": "accessibility.json"
       },
       {
-        "report": "design-views.json",
-        "result": "passed"
+        "result": "passed",
+        "report": "design-views.json"
       },
       {
-        "report": "ux-layout.json",
-        "result": "passed"
+        "result": "passed",
+        "report": "ux-layout.json"
       },
       {
-        "report": "workspace-enhancements.json",
-        "result": "passed"
+        "result": "passed",
+        "report": "workspace-enhancements.json"
       },
       {
-        "report": "retro-instruments.json",
-        "result": "passed"
+        "result": "passed",
+        "report": "retro-instruments.json"
       },
       {
-        "report": "visual-finish.json",
-        "result": "passed"
+        "result": "passed",
+        "report": "metronome-visualization.json"
       },
       {
-        "report": "practice-profile.json",
-        "result": "passed"
+        "result": "passed",
+        "report": "visual-finish.json"
       },
       {
-        "report": "overview-live.json",
-        "result": "passed"
+        "result": "passed",
+        "report": "practice-profile.json"
       },
       {
-        "report": "first-run.json",
-        "result": "passed"
+        "result": "passed",
+        "report": "overview-live.json"
       },
       {
-        "report": "file-commands.json",
-        "result": "passed"
+        "result": "passed",
+        "report": "first-run.json"
       },
       {
-        "report": "window-smoke.json",
-        "result": "passed"
+        "result": "passed",
+        "report": "file-commands.json"
       },
       {
-        "report": "installer/installer-smoke.json",
-        "result": "passed"
+        "result": "passed",
+        "report": "window-smoke.json"
+      },
+      {
+        "result": "passed",
+        "report": "installer/installer-smoke.json"
       }
-    ],
-    "narratorAndHighContrastManualVerified": false,
-    "actualLatencyVerified": false,
-    "manualHardwareVerified": false,
-    "smartAppControlVerified": false,
-    "nativeWorkspaces": 32,
-    "result": "passed",
-    "installer": "Rocker-Windows-Setup-0.2.0-x64.exe",
-    "nativeSuites": 22,
-    "correspondingSourcesSeparate": true,
-    "windowsRun": "https://github.com/JendaNDT/rocker/actions/runs/38401845598"
+    ]
   },
   "installed": {
-    "perUserInstall": true,
-    "result": "passed",
-    "adminRequired": false,
     "historicBinaryDowngradeVerified": false,
-    "transitionUsesSameCandidateBinariesWithSyntheticVersionLabels": true,
+    "installedNativeWindow": true,
+    "offlineSelfContainedStart": true,
+    "hardwareVerified": false,
     "preUpdateFullBackupAndRawDatabase": true,
     "uninstallPreservedDatabaseAndSentinel": true,
-    "unicodeProjectActivation": true,
-    "failedUpdatePreservedShortcutAndAssociation": true,
-    "installedInventoryMatchesPortableArchive": true,
-    "installedNativeWindow": true,
-    "hardwareVerified": false,
     "exactDllRepair": true,
-    "offlineSelfContainedStart": true,
     "smartAppControlVerified": false,
+    "transitionUsesSameCandidateBinariesWithSyntheticVersionLabels": true,
+    "unicodeProjectActivation": true,
+    "adminRequired": false,
     "projectAssociationRegistered": true,
-    "versionTransitionPreservedDataAndPriorBinary": true
+    "failedUpdatePreservedShortcutAndAssociation": true,
+    "perUserInstall": true,
+    "versionTransitionPreservedDataAndPriorBinary": true,
+    "installedInventoryMatchesPortableArchive": true,
+    "result": "passed"
   },
   "window": {
+    "windowTitle": "Rocker — Přehled",
     "nativeNotationVerified": true,
-    "audioCoexistenceVerified": false,
+    "nativeShellViewsVisited": 32,
     "audioHostsCreated": 1,
-    "midiPreparedInCommonEngine": true,
+    "audioCoexistenceVerified": false,
     "webViewRuntime": "153.0.4234.48",
+    "result": "passed",
+    "localVideoBridgeVerified": true,
+    "midiPreparedInCommonEngine": true,
+    "checkedAtUtc": "2026-10-13T15:01:58.4639163Z",
     "exitCode": 0,
     "audioPlaybackVerified": false,
-    "onlineVideoVerified": false,
-    "result": "passed",
-    "windowTitle": "Rocker — Přehled",
-    "checkedAtUtc": "2026-10-13T13:13:18.5642041Z",
-    "localVideoBridgeVerified": true,
-    "nativeShellViewsVisited": 32
+    "onlineVideoVerified": false
   }
 }

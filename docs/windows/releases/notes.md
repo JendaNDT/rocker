@@ -1,5 +1,7 @@
-Rocker 0.2.0 RC5 doplňuje nativní Vintage přístroje: ořechové bočnice, jemnou koženku, tkanou mřížku aparátu, měděné štítky a šroubky, vroubkované bakelitové knoflíky a podsvícené ručkové měřáky. Páčka a kontrolka aparátu sledují jeho skutečný stav; měřáky používají špičku signálu v dBFS a bez platného vstupu se ručička skryje.
+Rocker 0.2.0 RC6 dokončuje vizualizaci metronomu: skutečné retro kyvadlo a očíslované doby jsou přímo u tempa v samostatném metronomu, nahoře v Live i ve F11 / Jen hraju. Nativní volba Doby / Kyvadlo se ukládá a synchronizuje mezi pohledy; přepnutí nespouští ani nepřenastavuje zvuk. Rytmy, zvuky a trénink jsou v rozbalovací sekci.
 
-Původních 32 pohledů i všech pět pracovních vylepšení z RC4 zůstává zachováno. Automatické kontroly Windows, nativní ovladače, rozložení Live a instalační cyklus prošly. Zdrojové kódy jsou samostatně a nejsou potřeba pro spuštění.
+Kyvadlo sleduje společné nativní zvukové hodiny, odpočet i tiché takty. Zastavení vrací páčku do středu. Při omezených animacích Windows zůstávají aktuální čísla dob bez pohybu kyvadla. Původní explicitní Doby se zachovají; neuložená volba používá Kyvadlo.
 
-Stáhni **Rocker-Windows-Setup-0.2.0-x64.exe**, zavři předchozí Rocker a spusť instalátor. Jde o soukromého testovacího kandidáta. Skutečný poslech a odezvu M-Track Solo, fyzickou přístupnost a kompatibilitu s ochranou konkrétního počítače musí potvrdit závěrečná přejímka.
+Windows build, všech 20 nových scénářů, původních 32 pohledů a celý instalační cyklus prošly. Galerie používá skutečné snímky; ukázka pohybu používá označené kontrolní snímky hodin. Skutečný poslech a odezvu M-Track Solo musí potvrdit závěrečná ruční přejímka.
+
+Stáhni **Rocker-Windows-Setup-0.2.0-x64.exe**, zavři původní Rocker a spusť instalátor. Zdrojové kódy jsou samostatně a nejsou nutné ke spuštění.
