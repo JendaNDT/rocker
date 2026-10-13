@@ -19,6 +19,13 @@ public sealed partial class ValueDial : UserControl
     public ValueDial() { InitializeComponent(); initialized = true; BuildScale(); Update(); }
     private void BuildScale()
     {
+        // Raised bakelite ridges remain decorative; Slider and NumberBox own input.
+        for (int i = 0; i < 32; ++i)
+        {
+            double angle = i * Math.PI / 16;
+            var ridge = new Microsoft.UI.Xaml.Shapes.Line { X1 = 52 + Math.Sin(angle) * 32, Y1 = 52 - Math.Cos(angle) * 32, X2 = 52 + Math.Sin(angle) * 35, Y2 = 52 - Math.Cos(angle) * 35, Style = (Style)Application.Current.Resources["VintageDialTickStyle"], Opacity = .65 };
+            DialFace.Children.Add(ridge);
+        }
         for (int i=0;i<=10;++i)
         {
             double angle=(-135+i*27)*Math.PI/180;

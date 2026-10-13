@@ -3,8 +3,18 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <StackPanel Spacing="6">
         <TextBlock x:Name="MeterLabel" Text="Úroveň vstupu" Style="{StaticResource VintageBodyTextStyle}" />
-        <Border Background="{ThemeResource VintageMeterWell}" CornerRadius="4" Padding="6"><Grid x:Name="Segments" ColumnSpacing="3" Height="12" IsHitTestVisible="False"/></Border>
-        <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><TextBlock Text="−60" FontSize="10" Style="{StaticResource VintageSecondaryTextStyle}"/><TextBlock Grid.Column="1" Text="−30" FontSize="10" HorizontalAlignment="Center" Style="{StaticResource VintageSecondaryTextStyle}"/><TextBlock Grid.Column="2" Text="0 dBFS" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource VintageSecondaryTextStyle}"/></Grid>
+        <Border x:Name="SegmentFace" Background="{ThemeResource VintageMeterWell}" CornerRadius="4" Padding="6"><Grid x:Name="Segments" ColumnSpacing="3" Height="12" IsHitTestVisible="False"/></Border>
+        <Grid x:Name="DbScale"><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions><TextBlock Text="−60" FontSize="10" Style="{StaticResource VintageSecondaryTextStyle}"/><TextBlock Grid.Column="1" Text="−30" FontSize="10" HorizontalAlignment="Center" Style="{StaticResource VintageSecondaryTextStyle}"/><TextBlock Grid.Column="2" Text="0 dBFS" FontSize="10" HorizontalAlignment="Right" Style="{StaticResource VintageSecondaryTextStyle}"/></Grid>
+        <Border x:Name="AnalogFace" Visibility="Collapsed" Background="{ThemeResource VintageFaceMaterial}" BorderBrush="{ThemeResource VintageMetalEdge}" BorderThickness="1" CornerRadius="6" Padding="4">
+            <Viewbox x:Name="AnalogView" Height="68" Stretch="Uniform">
+                <Canvas x:Name="AnalogCanvas" Width="280" Height="88" IsHitTestVisible="False">
+                    <TextBlock Text="PEAK / dBFS" Canvas.Left="102" Canvas.Top="64" FontSize="10" CharacterSpacing="140" Style="{StaticResource VintageInstrumentTextStyle}"/>
+                    <Line x:Name="AnalogNeedle" X1="140" Y1="84" X2="140" Y2="24" Style="{StaticResource VintageNeedleStyle}"/>
+                    <Ellipse Width="10" Height="10" Canvas.Left="135" Canvas.Top="79" Fill="{ThemeResource VintageInstrumentInk}"/>
+                    <Ellipse x:Name="ClipLamp" Width="9" Height="9" Canvas.Left="259" Canvas.Top="68" Style="{StaticResource VintageClipOffStyle}"/>
+                </Canvas>
+            </Viewbox>
+        </Border>
         <ProgressBar x:Name="Meter" Height="2" Minimum="0" Maximum="1" Value="0" Foreground="{ThemeResource VintageAccent}" />
         <TextBlock x:Name="Reading" Text="Bez signálu" Style="{StaticResource VintageSecondaryTextStyle}" />
     </StackPanel>

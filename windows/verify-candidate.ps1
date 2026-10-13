@@ -3,7 +3,7 @@
 param([string]$Reports=(Join-Path $PSScriptRoot 'out/reports'),[string]$Packages=(Join-Path $PSScriptRoot 'out/packages'))
 $ErrorActionPreference='Stop'
 Set-StrictMode -Version Latest
-$checks=@('domain-checks.json','storage-checks.json','notation-checks.json','media-checks.json','transport-checks.json','browser-ui-import.json','browser-bookmark-import.json','power-recovery.json','performance-checks.json','accessibility.json','design-views.json','ux-layout.json','workspace-enhancements.json','visual-finish.json','practice-profile.json','overview-live.json','first-run.json','file-commands.json','window-smoke.json','installer/installer-smoke.json')
+$checks=@('domain-checks.json','storage-checks.json','notation-checks.json','media-checks.json','transport-checks.json','browser-ui-import.json','browser-bookmark-import.json','power-recovery.json','performance-checks.json','accessibility.json','design-views.json','ux-layout.json','workspace-enhancements.json','retro-instruments.json','visual-finish.json','practice-profile.json','overview-live.json','first-run.json','file-commands.json','window-smoke.json','installer/installer-smoke.json')
 $results=@()
 foreach($name in $checks){$value=Get-Content (Join-Path $Reports $name) -Raw | ConvertFrom-Json;if($value.result -ne 'passed'){throw "Candidate check failed: $name"};$results+=@{report=$name;result=$value.result}}
 $design=Get-Content (Join-Path $Reports 'design-views.json') -Raw | ConvertFrom-Json

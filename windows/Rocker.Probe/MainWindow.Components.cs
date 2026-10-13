@@ -29,9 +29,9 @@ public sealed partial class MainWindow
         var tempo = new ValueDial { Label = "Tempo BPM", Minimum = 40, Maximum = 240, Value = 100 };
         row.Children.Add(gain); row.Children.Add(bass); row.Children.Add(tempo);
         row.SizeChanged += (_,args) => row.Orientation = args.NewSize.Width < 600 ? Orientation.Vertical : Orientation.Horizontal;
-        panel.Children.Add(Card(row));
-        var meter = new LevelMeter(); meter.SetLevel(0.35,true,true); panel.Children.Add(Card(meter));
-        var noSignal = new LevelMeter(); noSignal.SetLevel(0,false); panel.Children.Add(Card(noSignal));
+        panel.Children.Add(new VintageHousing(row,"ROCKER / INSTRUMENT SERIES",speaker:true));
+        var meter = new LevelMeter{Analog=true}; meter.SetLevel(0.35,true,true); panel.Children.Add(Card(meter));
+        var noSignal = new LevelMeter{Analog=true}; noSignal.SetLevel(0,false); panel.Children.Add(Card(noSignal));
         if (catalog is not null)
         {
             var chord = new ChordDiagram(); chord.ShowChord(catalog.Find("chords","Em")!.Value);
@@ -72,8 +72,19 @@ public sealed partial class MainWindow
         var dial = new ValueDial { Minimum = -100,Maximum = 100,Value = 250 };
         Check(dial.Value == 100); dial.Value = double.NaN; Check(dial.Value == -100);
         var gauge=new PitchGauge();Check(!gauge.HasReading);gauge.Value=200;Check(gauge.Value==100);gauge.Value=double.NaN;Check(gauge.Value==50);gauge.HasReading=true;gauge.HasReading=false;Check(!gauge.HasReading);
-        var meter = new LevelMeter(); meter.SetLevel(double.NaN,true,true); Check(!meter.HasSignal && meter.Level == 0);
+        var meter = new LevelMeter{Analog=true}; meter.SetLevel(double.NaN,true,true); Check(!meter.HasSignal && meter.Level == 0);
         meter.SetLevel(2,true,true); Check(meter.HasSignal && meter.Level == 1);
+        Check(meter.NeedleVisible && meter.Clipping && meter.NeedleAngle == 60);
+        meter.SetLevel(.001,true,true); Check(meter.NeedleVisible && !meter.Clipping && Math.Abs(meter.NeedleAngle + 60) < .001);
+        meter.SetLevel(.1,true,true); Check(Math.Abs(meter.NeedleAngle - 20) < .001);
+        meter.SetLevel(.5,false); Check(!meter.NeedleVisible && !meter.Clipping);
+        meter.SetLevel(double.PositiveInfinity,true); Check(!meter.NeedleVisible && !meter.HasSignal);
+        meter.SetLevel(-1,true); Check(!meter.NeedleVisible && meter.Level == 0);
+        var power = new CheckBox { Content = "Aparát" }; var hardware = VintageHousing.PowerSwitch(power);
+        power.IsChecked = true; Check(power.IsChecked == true && hardware is Grid);
+        power.IsChecked = false; Check(power.IsChecked == false);
+        var housing = new VintageHousing(dial,"ROCKER",speaker:true); Check(housing.HasSpeakerGrille);
+        WriteShellDiagnostic("retro-instruments.json",new { result="passed",meterBoundaryChecks=6,nativePowerStateChecks=2,cabinetCheck=true,needleUsesPeakDbfs=true,invalidOrAbsentInputHasNoNeedle=true,decorationsOwnNoInput=true,sharedAudioHostCount=audioHostsCreated,realInputVerified=false,highContrastManualVerified=false });
         if (catalog is not null)
         {
             var chord = new ChordDiagram(); foreach (var item in catalog.Items("chords")) { chord.ShowChord(item); chord.ShowChord(item,true); ++checks; }

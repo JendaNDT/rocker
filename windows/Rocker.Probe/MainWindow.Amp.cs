@@ -23,7 +23,7 @@ public sealed partial class MainWindow
     private FrameworkElement BuildAmplifier()
     {
         var panel=Stack();var sectionLabel=Text("ZVUKOVÝ ŘETĚZEC");sectionLabel.Style=(Style)Application.Current.Resources["VintageSectionTextStyle"];panel.Children.Add(sectionLabel);
-        ampEnabledBox=new CheckBox{Content="Zapnout aparát",IsChecked=appSettings.AmpEnabled};ampEnabledBox.Checked+=AmplifierEnabled_Changed;ampEnabledBox.Unchecked+=AmplifierEnabled_Changed;panel.Children.Add(ampEnabledBox);
+        ampEnabledBox=new CheckBox{Content="Zapnout aparát",IsChecked=appSettings.AmpEnabled};ampEnabledBox.Checked+=AmplifierEnabled_Changed;ampEnabledBox.Unchecked+=AmplifierEnabled_Changed;panel.Children.Add(VintageHousing.PowerSwitch(ampEnabledBox));
         ampPresetsBox=PresetSelector();panel.Children.Add(ampPresetsBox);
         var parameters=new[]{("compression","Komprese"),("drive","Drive"),("bass","Basy"),("mid","Středy"),("treble","Výšky"),("delay","Delay"),("reverb","Reverb"),("chorus","Chorus"),("level","Výstup")};
         var controls=new List<FrameworkElement>();ampDials.Clear();
@@ -39,12 +39,12 @@ public sealed partial class MainWindow
         ampCabinetBox.SelectionChanged+=(_,_)=>{if(!ampUiUpdating){ampSettings=ampSettings with{Cabinet=ampCabinetBox.SelectedIndex==1?"vintage":ampCabinetBox.SelectedIndex==2?"open":"modern",PresetId=null};QueueAmplifier();}};panel.Children.Add(ampCabinetBox);
         var save=new Button{Content="Uložit vlastní preset"};save.Click+=SaveAmpPreset_Click;var remove=new Button{Content="Odstranit vybraný vlastní preset"};remove.Click+=DeleteAmpPreset_Click;panel.Children.Add(save);panel.Children.Add(remove);
         ampStatus=Text("Presety a změny se průběžně ukládají. Monitoring zapínáš samostatně v Live.",true);panel.Children.Add(ampStatus);
-        panel.Children.Add(Text("Vypnutý aparát vrací přesně suchý vstup. Komprese nepoužívá lookahead; 2× oversampling zkreslení přidá 15 vzorků FIR prodlevy. Odezvu celé karty tím neměříme. Nativní reverb a ostatní efekty mají vlastní zvuk; význam ovladačů odpovídá původním presetům.",true));return Card(panel);
+        panel.Children.Add(Text("Vypnutý aparát vrací přesně suchý vstup. Komprese nepoužívá lookahead; 2× oversampling zkreslení přidá 15 vzorků FIR prodlevy. Odezvu celé karty tím neměříme. Nativní reverb a ostatní efekty mají vlastní zvuk; význam ovladačů odpovídá původním presetům.",true));return new VintageHousing(panel,"ROCKER / KYTAROVÝ APARÁT",speaker:true);
     }
     private FrameworkElement BuildCompactAmplifier()
     {
-        var panel=Stack();liveAmpEnabledBox=new CheckBox{Content="Aparát",IsChecked=appSettings.AmpEnabled};liveAmpEnabledBox.Checked+=AmplifierEnabled_Changed;liveAmpEnabledBox.Unchecked+=AmplifierEnabled_Changed;panel.Children.Add(liveAmpEnabledBox);
-        liveAmpPresetsBox=PresetSelector();panel.Children.Add(liveAmpPresetsBox);var open=new Button{Content="Ovladače aparátu"};open.Click+=(_,_)=>Navigate(new("13"));panel.Children.Add(open);focusSecondary.Add(open);return Card(panel);
+        var panel=Stack();liveAmpEnabledBox=new CheckBox{Content="Aparát",IsChecked=appSettings.AmpEnabled};liveAmpEnabledBox.Checked+=AmplifierEnabled_Changed;liveAmpEnabledBox.Unchecked+=AmplifierEnabled_Changed;panel.Children.Add(VintageHousing.PowerSwitch(liveAmpEnabledBox));
+        liveAmpPresetsBox=PresetSelector();panel.Children.Add(liveAmpPresetsBox);var open=new Button{Content="Ovladače aparátu"};open.Click+=(_,_)=>Navigate(new("13"));panel.Children.Add(open);focusSecondary.Add(open);return new VintageHousing(panel,compact:true);
     }
     private ComboBox PresetSelector()
     {

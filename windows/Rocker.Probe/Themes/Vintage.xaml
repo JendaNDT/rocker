@@ -3,6 +3,13 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Default">
+            <LinearGradientBrush x:Key="VintageWoodMaterial" StartPoint="0,0" EndPoint="1,0"><GradientStop Color="#29190F" Offset="0"/><GradientStop Color="#71472B" Offset="0.3"/><GradientStop Color="#492A19" Offset="0.65"/><GradientStop Color="#21150E" Offset="1"/></LinearGradientBrush>
+            <LinearGradientBrush x:Key="VintageGrilleMaterial" StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#3D3327" Offset="0"/><GradientStop Color="#241F19" Offset="1"/></LinearGradientBrush>
+            <SolidColorBrush x:Key="VintageGrain" Color="#D3A16D" Opacity="0.19"/>
+            <SolidColorBrush x:Key="VintageWeave" Color="#D8BF8D" Opacity="0.38"/>
+            <LinearGradientBrush x:Key="VintagePlaqueMaterial" StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#E4C79C" Offset="0"/><GradientStop Color="#B88349" Offset="0.48"/><GradientStop Color="#D4A66D" Offset="1"/></LinearGradientBrush>
+            <SolidColorBrush x:Key="VintagePlaqueInk" Color="#302315"/>
+            <SolidColorBrush x:Key="VintageLampOff" Color="#493A27"/>
             <SolidColorBrush x:Key="NavigationViewSelectionIndicatorForeground" Color="#D6A66C"/>
             <SolidColorBrush x:Key="SliderThumbBackground" Color="#D6A66C"/>
             <SolidColorBrush x:Key="SliderThumbBackgroundPointerOver" Color="#C99A60"/>
@@ -54,6 +61,13 @@
             <SolidColorBrush x:Key="VintageInstrumentInk" Color="#1D1D1B" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="Light">
+            <LinearGradientBrush x:Key="VintageWoodMaterial" StartPoint="0,0" EndPoint="1,0"><GradientStop Color="#29190F" Offset="0"/><GradientStop Color="#71472B" Offset="0.3"/><GradientStop Color="#492A19" Offset="0.65"/><GradientStop Color="#21150E" Offset="1"/></LinearGradientBrush>
+            <LinearGradientBrush x:Key="VintageGrilleMaterial" StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#3D3327" Offset="0"/><GradientStop Color="#241F19" Offset="1"/></LinearGradientBrush>
+            <SolidColorBrush x:Key="VintageGrain" Color="#D3A16D" Opacity="0.19"/>
+            <SolidColorBrush x:Key="VintageWeave" Color="#D8BF8D" Opacity="0.38"/>
+            <LinearGradientBrush x:Key="VintagePlaqueMaterial" StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#E4C79C" Offset="0"/><GradientStop Color="#B88349" Offset="0.48"/><GradientStop Color="#D4A66D" Offset="1"/></LinearGradientBrush>
+            <SolidColorBrush x:Key="VintagePlaqueInk" Color="#302315"/>
+            <SolidColorBrush x:Key="VintageLampOff" Color="#493A27"/>
             <SolidColorBrush x:Key="NavigationViewSelectionIndicatorForeground" Color="#905622"/>
             <SolidColorBrush x:Key="SliderThumbBackground" Color="#905622"/>
             <SolidColorBrush x:Key="SliderThumbBackgroundPointerOver" Color="#7F4B1D"/>
@@ -85,9 +99,9 @@
 
             <LinearGradientBrush x:Key="VintagePanelMaterial" StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#FFFFFF" Offset="0"/><GradientStop Color="#F4EEE5" Offset="1"/></LinearGradientBrush>
             <LinearGradientBrush x:Key="VintageFaceMaterial" StartPoint="0,0" EndPoint="0,1"><GradientStop Color="#FFF7E8" Offset="0"/><GradientStop Color="#E5D0AE" Offset="1"/></LinearGradientBrush>
-            <LinearGradientBrush x:Key="VintageKnobMaterial" StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#FFFFFF" Offset="0"/><GradientStop Color="#EEECE6" Offset="0.48"/><GradientStop Color="#B1ADA4" Offset="1"/></LinearGradientBrush>
+            <LinearGradientBrush x:Key="VintageKnobMaterial" StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#59574F" Offset="0"/><GradientStop Color="#282622" Offset="0.48"/><GradientStop Color="#161612" Offset="1"/></LinearGradientBrush>
             <SolidColorBrush x:Key="VintageMetalEdge" Color="#B1ADA4"/>
-            <SolidColorBrush x:Key="VintagePointer" Color="#302D26"/>
+            <SolidColorBrush x:Key="VintagePointer" Color="#F5E6C4"/>
             <SolidColorBrush x:Key="VintageTick" Color="#9F927B"/>
             <SolidColorBrush x:Key="VintagePanelStroke" Color="#BEB19A" Opacity="0.22"/>
             <SolidColorBrush x:Key="VintageMeterWell" Color="#ECEDE4"/>
@@ -105,6 +119,13 @@
             <SolidColorBrush x:Key="VintageInstrumentInk" Color="#1D1D1B" />
         </ResourceDictionary>
         <ResourceDictionary x:Key="HighContrast">
+            <SolidColorBrush x:Key="VintageWoodMaterial" Color="{ThemeResource SystemColorWindowColor}"/>
+            <SolidColorBrush x:Key="VintageGrilleMaterial" Color="{ThemeResource SystemColorWindowColor}"/>
+            <SolidColorBrush x:Key="VintageGrain" Color="Transparent"/>
+            <SolidColorBrush x:Key="VintageWeave" Color="Transparent"/>
+            <SolidColorBrush x:Key="VintagePlaqueMaterial" Color="{ThemeResource SystemColorWindowColor}"/>
+            <SolidColorBrush x:Key="VintagePlaqueInk" Color="{ThemeResource SystemColorWindowTextColor}"/>
+            <SolidColorBrush x:Key="VintageLampOff" Color="{ThemeResource SystemColorWindowColor}"/>
             <SolidColorBrush x:Key="NavigationViewSelectionIndicatorForeground" Color="{ThemeResource SystemColorHighlightColor}"/>
             <SolidColorBrush x:Key="SliderThumbBackground" Color="{ThemeResource SystemColorHighlightColor}"/>
             <SolidColorBrush x:Key="SliderThumbBackgroundPointerOver" Color="{ThemeResource SystemColorHighlightColor}"/>
@@ -212,4 +233,14 @@
     <Style x:Key="VintageMeterRedStyle" TargetType="Rectangle"><Setter Property="Fill" Value="{ThemeResource VintageMeterRed}"/></Style>
     <Style x:Key="VintageFretRootButtonStyle" TargetType="Button" BasedOn="{StaticResource VintageRootButtonStyle}"><Setter Property="CornerRadius" Value="18"/><Setter Property="FontSize" Value="12"/><Setter Property="MinWidth" Value="36"/><Setter Property="Padding" Value="4"/></Style>
     <Style x:Key="VintageFretWireStyle" TargetType="Border"><Setter Property="BorderBrush" Value="{ThemeResource VintageMetalEdge}"/></Style>
+    <Style x:Key="VintageWoodStyle" TargetType="Border"><Setter Property="Background" Value="{ThemeResource VintageWoodMaterial}"/><Setter Property="CornerRadius" Value="5"/></Style>
+    <Style x:Key="VintageGrainStyle" TargetType="Line"><Setter Property="Stroke" Value="{ThemeResource VintageGrain}"/><Setter Property="StrokeThickness" Value="1"/></Style>
+    <Style x:Key="VintageWeaveStyle" TargetType="Line"><Setter Property="Stroke" Value="{ThemeResource VintageWeave}"/><Setter Property="StrokeThickness" Value="1"/></Style>
+    <Style x:Key="VintageGrilleStyle" TargetType="Border"><Setter Property="Background" Value="{ThemeResource VintageGrilleMaterial}"/><Setter Property="BorderBrush" Value="{ThemeResource VintageMetalEdge}"/><Setter Property="BorderThickness" Value="1"/><Setter Property="CornerRadius" Value="5"/></Style>
+    <Style x:Key="VintagePlaqueStyle" TargetType="Border"><Setter Property="Background" Value="{ThemeResource VintagePlaqueMaterial}"/><Setter Property="CornerRadius" Value="3"/><Setter Property="BorderThickness" Value="1"/><Setter Property="BorderBrush" Value="{ThemeResource VintageMetalEdge}"/><Setter Property="Padding" Value="12,4"/></Style>
+    <Style x:Key="VintagePlaqueTextStyle" TargetType="TextBlock"><Setter Property="Foreground" Value="{ThemeResource VintagePlaqueInk}"/><Setter Property="FontSize" Value="11"/><Setter Property="CharacterSpacing" Value="180"/><Setter Property="FontWeight" Value="SemiBold"/></Style>
+    <Style x:Key="VintageLampOnStyle" TargetType="Ellipse"><Setter Property="Fill" Value="{ThemeResource VintageMeterAmber}"/><Setter Property="Stroke" Value="{ThemeResource VintageMetalEdge}"/><Setter Property="StrokeThickness" Value="2"/></Style>
+    <Style x:Key="VintageLampOffStyle" TargetType="Ellipse"><Setter Property="Fill" Value="{ThemeResource VintageLampOff}"/><Setter Property="Stroke" Value="{ThemeResource VintageMetalEdge}"/><Setter Property="StrokeThickness" Value="2"/></Style>
+    <Style x:Key="VintageClipOnStyle" TargetType="Ellipse"><Setter Property="Fill" Value="{ThemeResource VintageMeterRed}"/><Setter Property="Stroke" Value="{ThemeResource VintageInstrumentInk}"/><Setter Property="StrokeThickness" Value="1"/></Style>
+    <Style x:Key="VintageClipOffStyle" TargetType="Ellipse"><Setter Property="Fill" Value="{ThemeResource VintageLampOff}"/><Setter Property="Stroke" Value="{ThemeResource VintageInstrumentInk}"/><Setter Property="StrokeThickness" Value="1"/></Style>
 </ResourceDictionary>
