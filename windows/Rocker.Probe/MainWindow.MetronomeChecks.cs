@@ -16,7 +16,7 @@ public sealed partial class MainWindow
         var checks = new Dictionary<string,bool>();
         void Check(string name,bool value) { checks[name]=value; if(!value)throw new InvalidOperationException("Metronome visualization: "+name); }
         MetronomeVisual Current()=>AuthoredElements(WorkspaceContent).OfType<MetronomeVisual>().Single();
-        bool AboveFooter(FrameworkElement element)=>element.ActualHeight>0 && element.TransformToVisual(ShellRoot).TransformPoint(new Windows.Foundation.Point(0,element.ActualHeight)).Y<=ShellRoot.ActualHeight-MediaPanel.ActualHeight;
+        bool AboveFooter(FrameworkElement element)=>element.ActualHeight>0 && element.TransformToVisual(ShellRoot).TransformPoint(new Windows.Foundation.Point(0,element.ActualHeight)).Y<=MediaPanel.TransformToVisual(ShellRoot).TransformPoint(new Windows.Foundation.Point()).Y;
         try
         {
             await audio.StopAsync();await audio.ClearMediaAsync();metroEnabled=false;
@@ -39,8 +39,9 @@ public sealed partial class MainWindow
             Check("focusKeepsInstrumentVisible",Current().PendulumVisible && AboveFooter(Current()) && liveTunerNeedle is not null && AboveFooter(liveTunerNeedle));
             await CaptureNativeViewAsync("screens/metronome-focus.png");
             SetFocusMode(false);ApplyTheme("dark");AppWindow.Resize(new Windows.Graphics.SizeInt32(640,720));Navigate(new("04"));RefreshState();WorkspaceScroll.ChangeView(null,0,null,true);await Task.Delay(200);
-            Check("narrowInstrumentComesBeforeEditors",AboveFooter(Current()) && Current().ActualWidth<=WorkspaceContent.ActualWidth);
             await CaptureNativeViewAsync("screens/metronome-narrow.png");
+            WriteShellDiagnostic("metronome-narrow-layout.json",new{instrumentBottom=Current().TransformToVisual(ShellRoot).TransformPoint(new Windows.Foundation.Point(0,Current().ActualHeight)).Y,footerTop=MediaPanel.TransformToVisual(ShellRoot).TransformPoint(new Windows.Foundation.Point()).Y,instrumentWidth=Current().ActualWidth,workspaceWidth=WorkspaceContent.ActualWidth});
+            Check("narrowInstrumentComesBeforeEditors",AboveFooter(Current()) && Current().ActualWidth<=WorkspaceContent.ActualWidth);
             AppWindow.Resize(new Windows.Graphics.SizeInt32(1280,940));
             var visual=new MetronomeVisual();var config=previous with{BeatsPerBar=3,AccentPattern=new[]{"accent","muted","normal"},VisualMode="pendulum"};
             var state=new MetronomeSnapshot{Flags=9,Beat=2,Bpm=100,Bar=0,Phase=.99};

@@ -36,9 +36,9 @@ public sealed partial class MainWindow
         presets.SelectionChanged+=(_,_)=>{if(!metroUpdating && presets.SelectedItem is MetroPreset preset){metroConfig=preset.Config;metroPresetId=preset.Id;RebuildMetroBeats();QueueMetronome(false);}};tempoControls.Children.Add(presets);
         var tempo=new ValueDial{Label="Tempo (BPM)",Minimum=40,Maximum=240,Value=metroConfig.Bpm};metroRefresh.Add(()=>tempo.Value=metroConfig.Bpm);tempo.ValueChanged+=(_,_)=>ChangeMetro(c=>c with{Bpm=Music.ClampBpm(tempo.Value)});
         tempoControls.Children.Insert(0,tempo);
-        var visualPane=Stack();visualPane.Children.Add(MetroVisualSelector());visualPane.Children.Add(CreateMetroVisual());
+        var visual=CreateMetroVisual();var visualPane=Stack();visualPane.Children.Add(MetroVisualSelector());visualPane.Children.Add(visual);
         // At narrow widths the instrument stays first, rather than falling below its editors.
-        panel.Children.Add(ResponsiveColumns(visualPane,tempoControls));
+        panel.Children.Add(MetroColumns(visualPane,tempoControls,visual));
         var details=Stack();
 
         details.Children.Add(MetroNumber("Doby v taktu",1,16,()=>metroConfig.BeatsPerBar,v=>{ChangeMetro(c=>c with{BeatsPerBar=(int)v,AccentPattern=Enumerable.Range(0,(int)v).Select(i=>i<c.AccentPattern.Count?c.AccentPattern[i]:i==0?"accent":"normal").ToArray(),SoundPattern=Enumerable.Range(0,(int)v).Select(i=>c.SoundPattern is not null && i<c.SoundPattern.Count?c.SoundPattern[i]:null).ToArray()});RebuildMetroBeats();}));
@@ -84,6 +84,12 @@ public sealed partial class MainWindow
         selector.SelectedIndex=metroConfig.VisualMode=="dots"?0:1;
         selector.SelectionChanged+=(_,_)=>{if(metroUpdating || selector.SelectedIndex<0)return;metroConfig=metroConfig with{VisualMode=selector.SelectedIndex==0?"dots":"pendulum"};if(persistenceReady)autosave!.Queue(UserData.Document("metronome","default",metroConfig));RefreshMetronomeControls();};
         return selector;
+    }
+    private static FrameworkElement MetroColumns(FrameworkElement instrument,FrameworkElement editors,MetronomeVisual visual)
+    {
+        var grid=new Grid{ColumnSpacing=20,RowSpacing=16};grid.Children.Add(instrument);grid.Children.Add(editors);int previousColumns=0;
+        void Layout(double width){int columns=width>=600?2:1;visual.SetCondensed(columns==1);if(columns==previousColumns)return;previousColumns=columns;grid.ColumnDefinitions.Clear();grid.RowDefinitions.Clear();for(int i=0;i<columns;++i)grid.ColumnDefinitions.Add(new(){Width=new(1,GridUnitType.Star)});for(int i=0;i<(2+columns-1)/columns;++i)grid.RowDefinitions.Add(new(){Height=GridLength.Auto});Grid.SetColumn(editors,columns==2?1:0);Grid.SetRow(editors,columns==2?0:1);}
+        Layout(0);grid.SizeChanged+=(_,args)=>Layout(args.NewSize.Width);return grid;
     }
     private MetronomeVisual CreateMetroVisual(bool compact=false)
     {

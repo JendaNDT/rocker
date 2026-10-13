@@ -24,6 +24,8 @@ public sealed class MetronomeVisual : UserControl
     private readonly RotateTransform rotation = new() { CenterX = 150, CenterY = 133 };
     private string mode = "dots";
     private readonly bool compact;
+    private readonly Border housing;
+    private bool condensed;
     public int ActiveBeat { get; private set; } = -1;
     public int BeatCount => beatFaces.Count;
     public double Angle => rotation.Angle;
@@ -35,7 +37,7 @@ public sealed class MetronomeVisual : UserControl
     {
         this.compact = compact;
         VerticalAlignment = VerticalAlignment.Top;
-        var housing = new Border { Style = VintageHousing.Material("VintageInstrumentCardStyle"), Padding = new(compact ? 8 : 16) };
+        housing = new Border { Style = VintageHousing.Material("VintageInstrumentCardStyle"), Padding = new(compact ? 8 : 16) };
         tempo.Style = status.Style = VintageHousing.Material("VintageInstrumentTextStyle");
         if (!compact) layout.Children.Add(tempo);
         var face = new Canvas { Width = 300, Height = 152 };
@@ -59,7 +61,7 @@ public sealed class MetronomeVisual : UserControl
         Canvas.SetLeft(weight, 135); Canvas.SetTop(weight, 61); stem.Children.Add(weight); face.Children.Add(stem);
         var pivot = new Ellipse { Width = 16, Height = 16, Style = VintageHousing.Material("VintageDialFaceStyle") };
         Canvas.SetLeft(pivot, 142); Canvas.SetTop(pivot, 125); face.Children.Add(pivot);
-        pendulum = new Viewbox { Child = face, Height = compact ? 58 : 152, Stretch = Stretch.Uniform, HorizontalAlignment = HorizontalAlignment.Stretch };
+        pendulum = new Viewbox { Child = face, MaxHeight = compact ? 82 : 152, Stretch = Stretch.Uniform, HorizontalAlignment = HorizontalAlignment.Stretch };
         layout.Children.Add(pendulum); layout.Children.Add(lamps); layout.Children.Add(status); housing.Child = layout; Content = housing;
         AutomationProperties.SetName(this, "Vizualizace metronomu");
     }
@@ -67,7 +69,7 @@ public sealed class MetronomeVisual : UserControl
     {
         mode = config.VisualMode == "dots" ? "dots" : "pendulum";
         pendulum.Visibility = mode == "pendulum" ? Visibility.Visible : Visibility.Collapsed;
-        pendulum.Height = compact ? 58 : config.BeatsPerBar > 8 ? 114 : 152;
+        pendulum.MaxHeight = compact ? 82 : condensed ? config.BeatsPerBar > 8 ? 64 : 98 : config.BeatsPerBar > 8 ? 114 : 152;
         if (beatFaces.Count != config.BeatsPerBar)
         {
             lamps.Children.Clear(); lamps.ColumnDefinitions.Clear(); lamps.RowDefinitions.Clear(); beatFaces.Clear();
@@ -76,8 +78,8 @@ public sealed class MetronomeVisual : UserControl
             for (int i = 0; i < (config.BeatsPerBar + columns - 1) / columns; ++i) lamps.RowDefinitions.Add(new() { Height = GridLength.Auto });
             for (int i = 0; i < config.BeatsPerBar; ++i)
             {
-                var label = new TextBlock { Text = (i + 1).ToString(), FontSize = compact ? 13 : 20, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
-                var lamp = new Border { Child = label, Height = compact ? 24 : 38, CornerRadius = new(6) };
+                var label = new TextBlock { Text = (i + 1).ToString(), FontSize = compact ? 13 : condensed ? 16 : 20, FontWeight = Microsoft.UI.Text.FontWeights.SemiBold, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
+                var lamp = new Border { Child = label, Height = compact ? 24 : condensed ? 30 : 38, CornerRadius = new(6) };
                 Grid.SetColumn(lamp, i % columns); Grid.SetRow(lamp, i / columns); lamps.Children.Add(lamp); beatFaces.Add(lamp);
             }
         }
@@ -85,6 +87,13 @@ public sealed class MetronomeVisual : UserControl
         // Position expresses the selected tempo; it is not a physical oscillator model.
         Canvas.SetTop(weight, 29 + 80 * (config.Bpm - 40) / 200.0);
         RefreshLamps(config);
+    }
+    public void SetCondensed(bool value)
+    {
+        if(compact || condensed==value)return;
+        condensed=value;tempo.FontSize=value?26:32;housing.Padding=new(value?10:16);
+        pendulum.MaxHeight=value?(BeatCount>8?64:98):(BeatCount>8?114:152);
+        foreach(var lamp in beatFaces){lamp.Height=value?30:38;((TextBlock)lamp.Child).FontSize=value?16:20;}
     }
     public void Render(MetronomeSnapshot snapshot, ClockSnapshot clock, MetronomeConfig config, bool? allowMotion = null, bool awaitingStart = false)
     {
@@ -102,7 +111,8 @@ public sealed class MetronomeVisual : UserControl
             snapshot.CountIn ? $"Odpočet · {Math.Max(1, -snapshot.Bar)} taktů · doba {ActiveBeat + 1}" :
             snapshot.SilentBar ? $"Tichý takt · doba {ActiveBeat + 1} / {BeatCount}" :
             $"Doba {ActiveBeat + 1} / {BeatCount}" + (config.AccentPattern[ActiveBeat] == "muted" ? " · bez kliku" : config.AccentPattern[ActiveBeat] == "accent" ? " · důraz" : "");
-        if (!motion && PendulumVisible) status.Text += " · bez animace";
+        if(compact && running && valid)status.Text+=$" · {currentBpm} BPM";
+        if (!motion && PendulumVisible && running) status.Text += " · bez animace";
         RefreshLamps(config);
         AutomationProperties.SetHelpText(this, status.Text);
     }
