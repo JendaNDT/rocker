@@ -58,19 +58,20 @@ potvrzení nezahodí dřívější dokument; neúspěšné uložení zablokuje v
 navržená zahození. Shutdown flushne data, zastaví zvuk a jednou uvolní
 aplikační služby. Sleep zpráva se zpracuje jednou a monitoring se neobnoví.
 
-## Dosavadní skutečná Windows evidence
+## Finální automatická Windows evidence
 
-Revize `7f5868a704e13f72fc5b5664bd5320372f4641c7`, běh
-[38468858783](https://github.com/JendaNDT/rocker/actions/runs/38468858783):
+Revize `69f6c8896593c48b6c43d011bf442f4c1d737a6b`, úspěšný běh
+[38477297083](https://github.com/JendaNDT/rocker/actions/runs/38477297083):
 
-- 20 produkčních window/session kontrol;
-- 21 dalších kontrol zdrojů, dvou projektů, dialogu, skupin záložek,
-  obnovy, historie a opakovaných open/move/close cyklů;
+- 20 produkčních window/session kontrol a 23 dalších interakcí;
 - všech 32 funkcí vykreslených ve tmavém i světlém Vintage;
-- stejná přejímka proběhla také v nainstalované aplikaci.
+- stejné kontroly v obou diagnostických profilech i po instalaci;
+- 22 native sad, 39 aplikačních service kontraktů, datová a původní funkční přejímka;
+- úplný instalační cyklus, přesná oprava DLL, Unicode aktivace projektu,
+  zachování asociace při selhání aktualizace a ponechání dat po odinstalaci.
 
-Celý běh **neuspěl**: následná aktivace projektu z Průzkumníka narazila
-na start/restore koordinaci. Oprava a další kontrola jsou v navazující
-revizi. Tato starší evidence není důkazem finálního instalačního cyklu.
-Automatické snímky používají izolovaný profil a syntetické soubory;
-nepotvrzují fyzický poslech, M-Track Solo ani celkovou odezvu.
+[Galerie](gallery.html), [její revize](gallery-data.json),
+[přejímka](candidate-validation.json), [matice scénářů](acceptance.md).
+Starší neúspěšné běhy nejsou použité pro předání. Galerie používá izolovaný
+profil a syntetické soubory; nepotvrzuje fyzický poslech, M-Track Solo ani
+celkovou odezvu. Ruční část pokračuje v přejímce s bratrem.

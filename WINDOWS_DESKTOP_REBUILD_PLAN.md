@@ -1,6 +1,6 @@
 # Rocker — implementační plán přestavby desktopového prostředí
 
-Datum: 13. 10. 2026. Stav: **realizace D01–D36 schválená; D01–D30 implementované, dokončuje se D31–D36 a finální Windows přejímka**.
+Datum: 13. 10. 2026. Stav: **realizace D01–D36 schválená; D01–D35 dokončené a automaticky ověřené; D36 uzavírá soukromé předání kandidáta**.
 
 Jenda chce změnit způsob práce s Rockerem na profesionální Windows nástroj:
 pracovní plochu s dokumenty, panely a více skutečnými okny. Vintage zůstává
@@ -450,9 +450,11 @@ se předá až po D35/D36.
 - Hotovo, když: duplicate open aktivuje stávající relaci, přesun nemění její ID a neznámé/poškozené vstupy se odmítnou.
 - Ověření: doménové scénáře open/move/close/cancel, limitů rozložení a převodu všech starých ID.
 
-Aktuální realizační poznámky: [implementace](docs/windows/desktop/implementation.md), [migrace a návrat](docs/windows/desktop/migration.md). Poslední Windows přejímka 7f5868a doložila všech 32 pohledů, 41 desktopových kontrol a jejich opakování po instalaci; následná aktivace projektu ještě vyžadovala opravu. D36 zatím není uzavřené.
+Aktuální realizační poznámky: [implementace](docs/windows/desktop/implementation.md), [migrace a návrat](docs/windows/desktop/migration.md). Finální Windows přejímka `69f6c88` v běhu 38477297083 uspěla: 43 desktopových kontrol, všech 32 funkcí ve dvou vzhledech, 22 native sad a celý instalační cyklus. [Skutečná galerie](docs/windows/desktop/gallery.html), [přejímací důkaz](docs/windows/desktop/candidate-validation.json). D36 rozlišuje automaticky dokončeného kandidáta od ruční hardwarové přejímky.
 
 #### D05 — Zavést aplikační služby a koordinaci operací
+
+- Stav: implementováno; automatická Windows evidence a hranice ruční přejímky jsou v [matici](docs/windows/desktop/acceptance.md) a [finálním reportu](docs/windows/desktop/candidate-validation.json).
 
 - Závislosti: D04.
 - Změna: přesunout UserFiles, DataRepository, autosave, nastavení, sdílená média, klíče a registry operací mimo MainWindow; zachovat jednoho databázového zapisovatele.
@@ -463,6 +465,8 @@ Aktuální realizační poznámky: [implementace](docs/windows/desktop/implement
 
 #### D06 — Převést audio a transport na jednu aplikační relaci
 
+- Stav: implementováno; automatická Windows evidence a hranice ruční přejímky jsou v [matici](docs/windows/desktop/acceptance.md) a [finálním reportu](docs/windows/desktop/candidate-validation.json).
+
 - Závislosti: D05.
 - Změna: AudioSession a TransportCoordinator převezmou NativeAudio, snapshoty, nastavení aparátu/metronomu a native intent/tickets.
 - Soubory: MainWindow.xaml.cs, MainWindow.Amp.cs, MainWindow.Metronome.cs, Application/AudioSession.cs, TransportCoordinator.cs; Interop se mění jen při prokázané nutnosti.
@@ -472,6 +476,8 @@ Aktuální realizační poznámky: [implementace](docs/windows/desktop/implement
 
 #### D07 — Centralizovat trénink, napájení a shutdown
 
+- Stav: implementováno; automatická Windows evidence a hranice ruční přejímky jsou v [matici](docs/windows/desktop/acceptance.md) a [finálním reportu](docs/windows/desktop/candidate-validation.json).
+
 - Závislosti: D05, D06.
 - Změna: PracticeCoordinator a ExitCoordinator převezmou hodnocení, čas cvičení, wake lock, sleep/hotplug, close guards a životnost instance listeneru/mutexů.
 - Soubory: App.xaml.cs, MainWindow.NativeEvents.cs, MainWindow.PracticeSession.cs, MainWindow.Shell.cs; Application/PracticeCoordinator.cs, ExitCoordinator.cs.
@@ -480,6 +486,8 @@ Aktuální realizační poznámky: [implementace](docs/windows/desktop/implement
 - Ověření: nahrávání během zavření Live, odmítnuté uložení, sleep při exportu, jedna power reakce, instance aktivace dokud běží aplikace.
 
 #### D08 — Zavést příkazy a dialogy s vlastníkem
+
+- Stav: implementováno; automatická Windows evidence a hranice ruční přejímky jsou v [matici](docs/windows/desktop/acceptance.md) a [finálním reportu](docs/windows/desktop/candidate-validation.json).
 
 - Závislosti: D04, D05, D07.
 - Změna: CommandRouter, registr příkazů, WindowContext a DialogService; globální versus dokumentové akce, pickery a serializace potvrzení.
@@ -492,6 +500,8 @@ Aktuální realizační poznámky: [implementace](docs/windows/desktop/implement
 
 #### D09 — Postavit nový hlavní shell
 
+- Stav: implementováno; automatická Windows evidence a hranice ruční přejímky jsou v [matici](docs/windows/desktop/acceptance.md) a [finálním reportu](docs/windows/desktop/candidate-validation.json).
+
 - Závislosti: D02, D08.
 - Změna: nahradit stránkovou navigaci knihovnou, TabView hostem, inspektorem, nástroji, společným transportem a stavem operací; přidat děliče a skrývání oblastí.
 - Soubory: MainWindow.xaml, MainWindow.Shell.cs, Views/Shell/WorkspaceView.xaml, LibraryPane.xaml, InspectorPane.xaml, TransportBar.xaml.
@@ -500,6 +510,8 @@ Aktuální realizační poznámky: [implementace](docs/windows/desktop/implement
 - Ověření: geometrie v 1280×720 a 1440×900, úzké okno podle monitoru, klávesnicové oblasti a přístupné děliče.
 
 #### D10 — Implementovat hostitele a přesuny nástrojů
+
+- Stav: implementováno; automatická Windows evidence a hranice ruční přejímky jsou v [matici](docs/windows/desktop/acceptance.md) a [finálním reportu](docs/windows/desktop/candidate-validation.json).
 
 - Závislosti: D03, D09.
 - Změna: registr WindowManager, jedna identita každého nástroje, attach/detach, fokus, systémové rámy a explicitní Vždy navrchu.
@@ -510,6 +522,8 @@ Aktuální realizační poznámky: [implementace](docs/windows/desktop/implement
 
 #### D11 — Přestavět ladičku
 
+- Stav: implementováno; automatická Windows evidence a hranice ruční přejímky jsou v [matici](docs/windows/desktop/acceptance.md) a [finálním reportu](docs/windows/desktop/candidate-validation.json).
+
 - Závislosti: D06, D10.
 - Změna: samostatný nástroj s dominantní notou a odchylkou; ladění, referenční tóny a kalibrace dostupné uvnitř něj.
 - Soubory: MainWindow.Tuner.cs → Views/Tools/TunerView.xaml a ViewModels/TunerViewModel.cs; Controls/PitchGauge.
@@ -518,6 +532,8 @@ Aktuální realizační poznámky: [implementace](docs/windows/desktop/implement
 - Ověření: stale/nejistý signál, změna ladění, reference, chybějící zařízení a synchronní zobrazení v Live.
 
 #### D12 — Přestavět metronom
+
+- Stav: implementováno; automatická Windows evidence a hranice ruční přejímky jsou v [matici](docs/windows/desktop/acceptance.md) a [finálním reportu](docs/windows/desktop/candidate-validation.json).
 
 - Závislosti: D06, D10.
 - Změna: kyvadlo/doby, BPM/tap a transport nahoře; rozšířený editor rytmu v nástroji, jasné stavy odpočtu/tichých taktů.
@@ -528,6 +544,8 @@ Aktuální realizační poznámky: [implementace](docs/windows/desktop/implement
 
 #### D13 — Přestavět aparát
 
+- Stav: implementováno; automatická Windows evidence a hranice ruční přejímky jsou v [matici](docs/windows/desktop/acceptance.md) a [finálním reportu](docs/windows/desktop/candidate-validation.json).
+
 - Závislosti: D06, D10.
 - Změna: viditelný efektový řetězec, preset/bypass a základní parametry; detaily vybraného efektu v nástroji, žádné dlouhé seznamy velkých karet.
 - Soubory: MainWindow.Amp.cs → Views/Tools/AmpView.xaml a ViewModels/AmpViewModel.cs; Controls/ValueDial a VintageHousing.
@@ -537,6 +555,8 @@ Aktuální realizační poznámky: [implementace](docs/windows/desktop/implement
 
 #### D14 — Postavit samostatné Live a vysvětlit monitoring
 
+- Stav: implementováno; automatická Windows evidence a hranice ruční přejímky jsou v [matici](docs/windows/desktop/acceptance.md) a [finálním reportu](docs/windows/desktop/candidate-validation.json).
+
 - Závislosti: D07, D11, D12, D13.
 - Změna: LiveWindow s poslechem, ladičkou, metronomem, kompaktním aparátem a nahráváním; připojitelný detail měřáků a F11.
 - Soubory: MainWindow.Live.cs, MainWindow.Focus.cs → Windows/LiveWindow.xaml, Views/LiveView.xaml, ViewModels/LiveViewModel.cs; společný monitoring status model.
@@ -545,6 +565,8 @@ Aktuální realizační poznámky: [implementace](docs/windows/desktop/implement
 - Ověření: vypnutý monitoring, gain 0, bypass, metronom v mixu při vypnuté kytaře, silent input, zařízení unavailable, jeden audio host.
 
 #### D15 — Ukládat a obnovovat víceokenní rozložení
+
+- Stav: implementováno; automatická Windows evidence a hranice ruční přejímky jsou v [matici](docs/windows/desktop/acceptance.md) a [finálním reportu](docs/windows/desktop/candidate-validation.json).
 
 - Závislosti: D04, D10, D14.
 - Změna: versioned WorkspaceLayoutStore, okna/panely/záložky, monitor/DPI fitting a výchozí Cvičení/Hraní/Studio.
@@ -557,6 +579,8 @@ Aktuální realizační poznámky: [implementace](docs/windows/desktop/implement
 
 #### D16 — Implementovat dokumentový host a registry
 
+- Stav: implementováno; automatická Windows evidence a hranice ruční přejímky jsou v [matici](docs/windows/desktop/acceptance.md) a [finálním reportu](docs/windows/desktop/candidate-validation.json).
+
 - Závislosti: D04, D08, D09, D15.
 - Změna: DocumentManager, tab order, dirty indicator, duplicate activation, detach/reattach a stav aktivního dokumentu nezávislý na transportu.
 - Soubory: Desktop/DocumentManager.cs, DocumentHost.cs, Windows/DocumentWindow.xaml, ViewModels/DocumentViewModel.cs.
@@ -565,6 +589,8 @@ Aktuální realizační poznámky: [implementace](docs/windows/desktop/implement
 - Ověření: dva různé dokumenty, otevření stejného souboru jinou cestou, změna aktivního okna, drag/drop zrušení a zavření vlastníka zvuku.
 
 #### D17 — Převést skladby a společný mediální transport
+
+- Stav: implementováno; automatická Windows evidence a hranice ruční přejímky jsou v [matici](docs/windows/desktop/acceptance.md) a [finálním reportu](docs/windows/desktop/candidate-validation.json).
 
 - Závislosti: D06, D16.
 - Změna: každá skladba dostane relaci; waveform, A/B, rychlost a pozice v dokumentu, zdrojové údaje v inspektoru.
@@ -575,6 +601,8 @@ Aktuální realizační poznámky: [implementace](docs/windows/desktop/implement
 
 #### D18 — Převést nahrávky, značky a export nahrávky
 
+- Stav: implementováno; automatická Windows evidence a hranice ruční přejímky jsou v [matici](docs/windows/desktop/acceptance.md) a [finálním reportu](docs/windows/desktop/candidate-validation.json).
+
 - Závislosti: D07, D16, D17.
 - Změna: nahrávky v knihovně, dokument waveform se značkami a A/B; záznam společný v Live/transportu; export nad konkrétním RecordingId.
 - Soubory: MainWindow.Recordings.cs, MainWindow.RecordingWaveform.cs → RecordingView, RecordingViewModel, ExportRecordingDialog.
@@ -583,6 +611,8 @@ Aktuální realizační poznámky: [implementace](docs/windows/desktop/implement
 - Ověření: záznam během přesunu, zero monitor versus processed bus, stereo mix, chyba disku, přepsání/export cancel a uchování zdroje.
 
 #### D19 — Převést looper na sdílený nástroj
+
+- Stav: implementováno; automatická Windows evidence a hranice ruční přejímky jsou v [matici](docs/windows/desktop/acceptance.md) a [finálním reportu](docs/windows/desktop/candidate-validation.json).
 
 - Závislosti: D06, D10, D18.
 - Změna: LooperSession, panel vrstev a jasný transport/stav pending/record/play; zachovat vrstvy a uložené výsledky.
@@ -593,6 +623,8 @@ Aktuální realizační poznámky: [implementace](docs/windows/desktop/implement
 
 #### D20 — Přestavět Studio jako projektový editor
 
+- Stav: implementováno; automatická Windows evidence a hranice ruční přejímky jsou v [matici](docs/windows/desktop/acceptance.md) a [finálním reportu](docs/windows/desktop/candidate-validation.json).
+
 - Závislosti: D16, D18, D19.
 - Změna: samostatná relace každého projektu, časová osa a seznam stop, výběrový inspektor, mixer a dostupné import/export/save; historie v projektu.
 - Soubory: MainWindow.Studio.cs → Views/Documents/StudioView.xaml, ViewModels/StudioViewModel.cs, Application/StudioSession.cs; ProjectRepository zachovat.
@@ -602,6 +634,8 @@ Aktuální realizační poznámky: [implementace](docs/windows/desktop/implement
 
 #### D21 — Přestavět notový dokument
 
+- Stav: implementováno; automatická Windows evidence a hranice ruční přejímky jsou v [matici](docs/windows/desktop/acceptance.md) a [finálním reportu](docs/windows/desktop/candidate-validation.json).
+
 - Závislosti: D03, D16, D17.
 - Změna: celoplošný notový host, lišta stop a zoomu, inspektor taktů/smyčky; oddělit ScorePreview/model od jediného okna.
 - Soubory: MainWindow.Notation.cs, notová část MainWindow.xaml → ScoreView, ScoreViewModel; Rocker.Notation jen při nutné změně hostování.
@@ -610,6 +644,8 @@ Aktuální realizační poznámky: [implementace](docs/windows/desktop/implement
 - Ověření: GP/MusicXML fixtures, resize/DPI, hit testing, renderer lifetime, přechod na jiný score při hraní a chybné soubory.
 
 #### D22 — Převést video cvičení a WebView2
+
+- Stav: implementováno; automatická Windows evidence a hranice ruční přejímky jsou v [matici](docs/windows/desktop/acceptance.md) a [finálním reportu](docs/windows/desktop/candidate-validation.json).
 
 - Závislosti: D03, D07, D16, D17.
 - Změna: VideoDocumentSession a vlastní host; oddělit bridge/profile a uložené smyčky od MainWindow; explicitní vlastnictví video výstupu.
@@ -622,6 +658,8 @@ Aktuální realizační poznámky: [implementace](docs/windows/desktop/implement
 
 #### D23 — Převést lekce a jejich výběr
 
+- Stav: implementováno; automatická Windows evidence a hranice ruční přejímky jsou v [matici](docs/windows/desktop/acceptance.md) a [finálním reportu](docs/windows/desktop/candidate-validation.json).
+
 - Závislosti: D07, D16.
 - Změna: knihovna lekcí a LessonDocumentSession; kroky/instrukce/úloha v dokumentu, konkrétní nastavení v inspektoru.
 - Soubory: MainWindow.Lessons.cs → LessonLibraryView, LessonView, LessonViewModel; stávající Rocker.Domain/LessonSession.
@@ -630,6 +668,8 @@ Aktuální realizační poznámky: [implementace](docs/windows/desktop/implement
 - Ověření: stejná note-by-note pravidla a referenční drill případy, dirty/session close, odkazy na konkrétní trenažér a chybějící obsah.
 
 #### D24 — Převést přesný, rytmický a palm mute trénink
+
+- Stav: implementováno; automatická Windows evidence a hranice ruční přejímky jsou v [matici](docs/windows/desktop/acceptance.md) a [finálním reportu](docs/windows/desktop/candidate-validation.json).
 
 - Závislosti: D07, D12, D23.
 - Změna: dokumenty přesného tréninku, power chordů, gallopu a palm mute; společný koordinátor aktivní hodnoticí relace.
@@ -640,6 +680,8 @@ Aktuální realizační poznámky: [implementace](docs/windows/desktop/implement
 
 #### D25 — Převést hudební knihovnu a hry
 
+- Stav: implementováno; automatická Windows evidence a hranice ruční přejímky jsou v [matici](docs/windows/desktop/acceptance.md) a [finálním reportu](docs/windows/desktop/candidate-validation.json).
+
 - Závislosti: D07, D16, D23.
 - Změna: kategorie akordů/stupnic/riffů v knihovně, referenční dokumenty a relace Hmatník/Sluch; hledání podle obsahu.
 - Soubory: MainWindow.Library.cs, MainWindow.Riffs.cs, MainWindow.Games.cs → knihovní/dokumentové views a view models; existující diagramy.
@@ -648,6 +690,8 @@ Aktuální realizační poznámky: [implementace](docs/windows/desktop/implement
 - Ověření: klávesnice nad hmatníkem, preview cancel, ochrana pracovního média, licenční metadata obsahu a baseline pravidla.
 
 #### D26 — Převést tři AI pohledy
+
+- Stav: implementováno; automatická Windows evidence a hranice ruční přejímky jsou v [matici](docs/windows/desktop/acceptance.md) a [finálním reportu](docs/windows/desktop/candidate-validation.json).
 
 - Závislosti: D05, D16, D23.
 - Změna: AI dokumenty a request relace; průběh/cancel, výsledky a použití plánu se řídí vlastníkem, nikoli aktuální navigací.
@@ -658,6 +702,8 @@ Aktuální realizační poznámky: [implementace](docs/windows/desktop/implement
 
 #### D27 — Převést přehled, pokrok a profil kytary
 
+- Stav: implementováno; automatická Windows evidence a hranice ruční přejímky jsou v [matici](docs/windows/desktop/acceptance.md) a [finálním reportu](docs/windows/desktop/candidate-validation.json).
+
 - Závislosti: D07, D23, D24, D25.
 - Změna: přehledový a statistický dokument, pokračování v konkrétní úloze, profil ve správě nastavení; agregace událostí z více oken.
 - Soubory: MainWindow.Overview.cs, Progress.cs, Instrument.cs → přehledové views/view models; PracticeSession a ProgressRules zachovat.
@@ -667,6 +713,8 @@ Aktuální realizační poznámky: [implementace](docs/windows/desktop/implement
 
 #### D28 — Převést nastavení, zařízení a první spuštění
 
+- Stav: implementováno; automatická Windows evidence a hranice ruční přejímky jsou v [matici](docs/windows/desktop/acceptance.md) a [finálním reportu](docs/windows/desktop/candidate-validation.json).
+
 - Závislosti: D08, D14, D15, D27.
 - Změna: jedno SettingsWindow s kategoriemi včetně zařízení, profilu a souborů; vlastněný průvodce, rozlišení zvuk/poslech/efekty.
 - Soubory: MainWindow.Settings.cs, Devices.cs, Secrets.cs, FirstRun.cs, Backups.cs → Windows/SettingsWindow.xaml a kategoriové views.
@@ -675,6 +723,8 @@ Aktuální realizační poznámky: [implementace](docs/windows/desktop/implement
 - Ověření: dostupnost zařízení, odmítnutý formát, DPAPI, změna theme ve všech oknech, opětovné vyvolání nastavení a zachování poslední funkční konfigurace.
 
 #### D29 — Propojit sestavy, hledání, oblíbené a soubory
+
+- Stav: implementováno; automatická Windows evidence a hranice ruční přejímky jsou v [matici](docs/windows/desktop/acceptance.md) a [finálním reportu](docs/windows/desktop/candidate-validation.json).
 
 - Závislosti: D15–D28.
 - Změna: staré NavigationTarget přeložit do dokumentu/nástroje; Ctrl+K, favorites, ResumeTask, recent files, asociace a drop používají jednotný registr.
@@ -687,6 +737,8 @@ Aktuální realizační poznámky: [implementace](docs/windows/desktop/implement
 
 #### D30 — Dokončit operace, zálohy, recovery a aktualizace
 
+- Stav: implementováno; automatická Windows evidence a hranice ruční přejímky jsou v [matici](docs/windows/desktop/acceptance.md) a [finálním reportu](docs/windows/desktop/candidate-validation.json).
+
 - Závislosti: D05, D07, D18, D20, D26, D28, D29.
 - Změna: centrum operací, globální bariéry pro obnovu a update, cancellable import/export; zálohování rozložení jako explicitní volba.
 - Soubory: MainWindow.Backups.cs, Migration.cs, Recovery.cs, Updates.cs; OperationRegistry, BackupService, ColdProfileRecovery a UpdatePreparation.
@@ -696,6 +748,8 @@ Aktuální realizační poznámky: [implementace](docs/windows/desktop/implement
 
 #### D31 — Ošetřit chyby, závody a odběry
 
+- Stav: implementováno; automatická Windows evidence a hranice ruční přejímky jsou v [matici](docs/windows/desktop/acceptance.md) a [finálním reportu](docs/windows/desktop/candidate-validation.json).
+
 - Závislosti: D10–D30.
 - Změna: sjednotit chyby a cleanup, omezit obnovené registry, odpojit event subscriptions, ošetřit stale callbacks a závody přemístění/close/stop.
 - Soubory: Application, Desktop, view models; postupně odstranit dočasné MainWindow adaptéry, které už nemají uživatele.
@@ -704,6 +758,8 @@ Aktuální realizační poznámky: [implementace](docs/windows/desktop/implement
 - Ověření: opakované open/move/close cykly, pozdní AI/media výsledek, fronty příkazů, hardware fault a úniky UI/renderer/WebView2 objektů.
 
 #### D32 — Dokončit Vintage kompozici a přístupnost
+
+- Stav: implementováno; automatická Windows evidence a hranice ruční přejímky jsou v [matici](docs/windows/desktop/acceptance.md) a [finálním reportu](docs/windows/desktop/candidate-validation.json).
 
 - Závislosti: D02, D09–D31.
 - Změna: sjednotit mezery, typografii, tituly, toolbar ikony, výběr, minimum nástrojů a inspektor; dokončit theme/DPI/fokus všech oken.
@@ -716,6 +772,8 @@ Aktuální realizační poznámky: [implementace](docs/windows/desktop/implement
 
 #### D33 — Přestavět automatizaci na okna a relace
 
+- Stav: implementováno; automatická Windows evidence a hranice ruční přejímky jsou v [matici](docs/windows/desktop/acceptance.md) a [finálním reportu](docs/windows/desktop/candidate-validation.json).
+
 - Závislosti: D16–D32; scénáře zakládat průběžně už od D03.
 - Změna: nahradit kontroly pouze navigovaných stránek registrem funkčních scénářů nad okny/dokumenty; zachovat baseline doménových/native/datových kontraktů.
 - Soubory: Rocker.Domain.Checks, Rocker.Infrastructure.Checks, Rocker.Probe/Diagnostics; windows/smoke.ps1, verify-candidate.ps1 a Windows workflow.
@@ -725,6 +783,8 @@ Aktuální realizační poznámky: [implementace](docs/windows/desktop/implement
 
 #### D34 — Ověřit migraci a bezpečný návrat
 
+- Stav: implementováno; automatická Windows evidence a hranice ruční přejímky jsou v [matici](docs/windows/desktop/acceptance.md) a [finálním reportu](docs/windows/desktop/candidate-validation.json).
+
 - Závislosti: D15, D29, D30, D33.
 - Změna: přechod RC6 → desktopový kandidát se zálohou profilu; oddělit nový versioned layout od hudebních dokumentů a předem popsat rollback.
 - Soubory: WorkspaceLayoutStore, Infrastructure compatibility checks, windows/installer/smoke.ps1; docs/windows/desktop/migration.md.
@@ -733,6 +793,8 @@ Aktuální realizační poznámky: [implementace](docs/windows/desktop/implement
 - Ověření: staré zálohy, window.json v1, chybný/budoucí layout, dirty projekty před update, úplnost médií/hashů a návrat k záloze bez tiché ztráty nových změn.
 
 #### D35 — Dokončit galerii a uživatelský návod
+
+- Stav: implementováno; automatická Windows evidence a hranice ruční přejímky jsou v [matici](docs/windows/desktop/acceptance.md) a [finálním reportu](docs/windows/desktop/candidate-validation.json).
 
 - Závislosti: D32, D33, D34.
 - Změna: skutečné Windows screenshoty všech cílových funkcí a významných společných oken; video/GIF přesunů jen z opravdového runtime, oddělit syntetický signál.

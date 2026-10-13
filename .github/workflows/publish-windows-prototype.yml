@@ -52,7 +52,7 @@ jobs:
           assert report['windowsRun'].endswith('/' + str(selection['runId']))
           assert report['nativeWorkspaces'] == 32 and report['nativeSuites'] == 22
           setup = root / report['installer']
-          assert setup.name == 'Rocker-Windows-Setup-0.2.0-x64.exe' and setup.read_bytes()[:2] == b'MZ'
+          assert setup.read_bytes()[:2] == b'MZ'
           installer = json.loads(Path('/tmp/rocker-reports/installer/installer-smoke.json').read_text(encoding='utf-8-sig'))
           assert installer['result'] == 'passed'
           for field in ['versionTransitionPreservedDataAndPriorBinary','failedUpdatePreservedShortcutAndAssociation',
@@ -63,6 +63,7 @@ jobs:
               assert package.testzip() is None
               info = json.loads(package.read('build-info.json'))
               assert info['commit'] == selection['commit']
+              assert setup.name == 'Rocker-Windows-Setup-' + info['toolchain']['productVersion'] + '-x64.exe'
               assert info['runUrl'].endswith('/' + str(selection['runId']))
               assert info['checkedWindow']['result'] == 'passed'
               assert info['checkedWindow']['exitCode'] == 0
@@ -99,7 +100,14 @@ jobs:
                   with zipfile.ZipFile(io.BytesIO(sources.read(name))) as archive:
                       assert archive.testzip() is None
                       assert archive.comment.decode() == revision
-          print('PASS: complete Windows candidate, installer checks, binary hashes, ZIP integrity and seven corresponding source revisions.')
+          with zipfile.ZipFile(root / 'Rocker-Windows-desktop-gallery.zip') as gallery:
+              assert gallery.testzip() is None
+              data = json.loads(gallery.read('gallery-data.json'))
+              assert data['sourceCommit'] == selection['commit'] and str(data['runId']) == str(selection['runId'])
+              assert len(data['views']) == 32
+              assert len([n for n in gallery.namelist() if n.endswith('.png')]) == 64
+              assert 'gallery.html' in gallery.namelist() and 'gallery.js' in gallery.namelist() and 'gallery.css' in gallery.namelist()
+          print('PASS: complete Windows candidate, 64 desktop captures, installer checks, binary hashes, ZIP integrity and seven corresponding source revisions.')
           PY
       - name: Publish private repository prerelease
         env:
@@ -108,13 +116,14 @@ jobs:
           set -euo pipefail
           tag=$(jq -r '.tag' docs/windows/releases/current.json)
           commit=$(jq -r '.commit' docs/windows/releases/current.json)
+          installer=$(jq -r ' .installer' /tmp/rocker-reports/candidate-validation.json)
           title=$(jq -r '.title' docs/windows/releases/current.json)
           if gh release view "$tag" --repo "$GITHUB_REPOSITORY" --json isDraft > /tmp/existing-release.json; then
             jq -e '.isDraft == true' /tmp/existing-release.json
-            gh release upload "$tag" /tmp/rocker-downloads/Rocker-Windows-Setup-0.2.0-x64.exe /tmp/rocker-downloads/Rocker-Windows-x64.zip /tmp/rocker-downloads/Rocker-Windows-sources.zip /tmp/rocker-downloads/SHA256SUMS.txt /tmp/rocker-reports/candidate-validation.json \
+            gh release upload "$tag" "/tmp/rocker-downloads/$installer" /tmp/rocker-downloads/Rocker-Windows-x64.zip /tmp/rocker-downloads/Rocker-Windows-sources.zip /tmp/rocker-downloads/Rocker-Windows-desktop-gallery.zip /tmp/rocker-downloads/SHA256SUMS.txt /tmp/rocker-reports/candidate-validation.json \
               --repo "$GITHUB_REPOSITORY"
             gh release edit "$tag" --repo "$GITHUB_REPOSITORY" --draft=false
           else
-            gh release create "$tag" /tmp/rocker-downloads/Rocker-Windows-Setup-0.2.0-x64.exe /tmp/rocker-downloads/Rocker-Windows-x64.zip /tmp/rocker-downloads/Rocker-Windows-sources.zip /tmp/rocker-downloads/SHA256SUMS.txt /tmp/rocker-reports/candidate-validation.json \
+            gh release create "$tag" "/tmp/rocker-downloads/$installer" /tmp/rocker-downloads/Rocker-Windows-x64.zip /tmp/rocker-downloads/Rocker-Windows-sources.zip /tmp/rocker-downloads/Rocker-Windows-desktop-gallery.zip /tmp/rocker-downloads/SHA256SUMS.txt /tmp/rocker-reports/candidate-validation.json \
               --repo "$GITHUB_REPOSITORY" --verify-tag --title "$title" --notes-file docs/windows/releases/notes.md --prerelease
           fi

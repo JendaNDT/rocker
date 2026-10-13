@@ -1,0 +1,166 @@
+{
+  "sourceCommit": "69f6c8896593c48b6c43d011bf442f4c1d737a6b",
+  "runId": "38477297083",
+  "views": [
+    {
+      "id": "01",
+      "title": "Přehled",
+      "destination": "Document"
+    },
+    {
+      "id": "02",
+      "title": "Live",
+      "destination": "Live"
+    },
+    {
+      "id": "03",
+      "title": "Ladička",
+      "destination": "Tool"
+    },
+    {
+      "id": "04",
+      "title": "Metronom",
+      "destination": "Tool"
+    },
+    {
+      "id": "05",
+      "title": "Výběr lekce",
+      "destination": "Library"
+    },
+    {
+      "id": "06",
+      "title": "Průběh lekce",
+      "destination": "Document"
+    },
+    {
+      "id": "07",
+      "title": "Vlastní skladba",
+      "destination": "Document"
+    },
+    {
+      "id": "08",
+      "title": "YouTube cvičení",
+      "destination": "Document"
+    },
+    {
+      "id": "09",
+      "title": "Přesný trénink",
+      "destination": "Document"
+    },
+    {
+      "id": "10",
+      "title": "Power chordy",
+      "destination": "Document"
+    },
+    {
+      "id": "11",
+      "title": "Gallop",
+      "destination": "Document"
+    },
+    {
+      "id": "12",
+      "title": "Palm mute",
+      "destination": "Document"
+    },
+    {
+      "id": "13",
+      "title": "Aparát",
+      "destination": "Tool"
+    },
+    {
+      "id": "14",
+      "title": "Nahrávky",
+      "destination": "Library"
+    },
+    {
+      "id": "15",
+      "title": "Studio",
+      "destination": "Document"
+    },
+    {
+      "id": "16",
+      "title": "Looper",
+      "destination": "Tool"
+    },
+    {
+      "id": "17",
+      "title": "Akordy",
+      "destination": "Document"
+    },
+    {
+      "id": "18",
+      "title": "Stupnice",
+      "destination": "Document"
+    },
+    {
+      "id": "19",
+      "title": "Riffy",
+      "destination": "Document"
+    },
+    {
+      "id": "20",
+      "title": "Noty a tabulatury",
+      "destination": "Document"
+    },
+    {
+      "id": "21",
+      "title": "Hmatník",
+      "destination": "Document"
+    },
+    {
+      "id": "22",
+      "title": "Sluch",
+      "destination": "Document"
+    },
+    {
+      "id": "23",
+      "title": "AI — rozhovor",
+      "destination": "Document"
+    },
+    {
+      "id": "24",
+      "title": "AI — plán",
+      "destination": "Document"
+    },
+    {
+      "id": "25",
+      "title": "AI — zpětná vazba",
+      "destination": "Document"
+    },
+    {
+      "id": "26",
+      "title": "Moje kytara",
+      "destination": "Settings"
+    },
+    {
+      "id": "27",
+      "title": "Pokrok",
+      "destination": "Document"
+    },
+    {
+      "id": "28",
+      "title": "Nastavení",
+      "destination": "Settings"
+    },
+    {
+      "id": "29",
+      "title": "Zvuková zařízení",
+      "destination": "Settings"
+    },
+    {
+      "id": "30",
+      "title": "Zálohy a soubory",
+      "destination": "Settings"
+    },
+    {
+      "id": "31",
+      "title": "První spuštění",
+      "destination": "Dialog"
+    },
+    {
+      "id": "32",
+      "title": "Export nahrávky",
+      "destination": "Dialog"
+    }
+  ]
+}

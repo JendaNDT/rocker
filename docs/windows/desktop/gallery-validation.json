@@ -1,0 +1,13 @@
+{
+  "result": "passed",
+  "sourceCommit": "69f6c8896593c48b6c43d011bf442f4c1d737a6b",
+  "windowsRun": 38477297083,
+  "imageModalThemeCases": 64,
+  "imageDecodeVerified": true,
+  "escapeFocusReturnVerified": true,
+  "searchVerified": true,
+  "mobileWidth": 390,
+  "mobileOverflow": false,
+  "actualWindowsCaptures": true,
+  "hardwareVerified": false
+}

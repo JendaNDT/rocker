@@ -1,0 +1,130 @@
+{
+  "onlineYouTubeVerified": false,
+  "result": "passed",
+  "correspondingSourcesSeparate": true,
+  "nativeSuites": 22,
+  "installer": "Rocker-Windows-Setup-0.3.0-x64.exe",
+  "onlineAiVerified": false,
+  "smartAppControlVerified": false,
+  "actualLatencyVerified": false,
+  "nativeWorkspaces": 32,
+  "manualHardwareVerified": false,
+  "windowsRun": "https://github.com/JendaNDT/rocker/actions/runs/38477297083",
+  "reports": [
+    {
+      "result": "passed",
+      "report": "application-services.json"
+    },
+    {
+      "result": "passed",
+      "report": "application-host.json"
+    },
+    {
+      "result": "passed",
+      "report": "desktop-runtime.json"
+    },
+    {
+      "result": "passed",
+      "report": "desktop-interactions.json"
+    },
+    {
+      "result": "passed",
+      "report": "desktop-functional-coverage.json"
+    },
+    {
+      "result": "passed",
+      "report": "domain-checks.json"
+    },
+    {
+      "result": "passed",
+      "report": "storage-checks.json"
+    },
+    {
+      "result": "passed",
+      "report": "notation-checks.json"
+    },
+    {
+      "result": "passed",
+      "report": "media-checks.json"
+    },
+    {
+      "result": "passed",
+      "report": "transport-checks.json"
+    },
+    {
+      "result": "passed",
+      "report": "browser-ui-import.json"
+    },
+    {
+      "result": "passed",
+      "report": "browser-bookmark-import.json"
+    },
+    {
+      "result": "passed",
+      "report": "power-recovery.json"
+    },
+    {
+      "result": "passed",
+      "report": "performance-checks.json"
+    },
+    {
+      "result": "passed",
+      "report": "accessibility.json"
+    },
+    {
+      "result": "passed",
+      "report": "design-views.json"
+    },
+    {
+      "result": "passed",
+      "report": "ux-layout.json"
+    },
+    {
+      "result": "passed",
+      "report": "workspace-enhancements.json"
+    },
+    {
+      "result": "passed",
+      "report": "retro-instruments.json"
+    },
+    {
+      "result": "passed",
+      "report": "metronome-visualization.json"
+    },
+    {
+      "result": "passed",
+      "report": "visual-finish.json"
+    },
+    {
+      "result": "passed",
+      "report": "desktop-host-experiment.json"
+    },
+    {
+      "result": "passed",
+      "report": "practice-profile.json"
+    },
+    {
+      "result": "passed",
+      "report": "overview-live.json"
+    },
+    {
+      "result": "passed",
+      "report": "first-run.json"
+    },
+    {
+      "result": "passed",
+      "report": "file-commands.json"
+    },
+    {
+      "result": "passed",
+      "report": "window-smoke.json"
+    },
+    {
+      "result": "passed",
+      "report": "installer/installer-smoke.json"
+    }
+  ],
+  "sourceCommit": "69f6c8896593c48b6c43d011bf442f4c1d737a6b",
+  "narratorAndHighContrastManualVerified": false,
+  "wallClockHourOnHardwareVerified": false
+}

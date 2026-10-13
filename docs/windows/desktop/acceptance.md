@@ -1,10 +1,9 @@
 # Desktopová přejímka — význam důkazů
 
 Referenční kompletní Windows běh
-[38472294424](https://github.com/JendaNDT/rocker/actions/runs/38472294424),
-revize `f846c3a6470c1efb7f9c17c43970e113303bb30c`, uspěl včetně instalátoru.
-Finální galerie a vydání musí uvádět svůj vlastní novější úspěšný běh;
-tato tabulka není náhradou jeho `candidate-validation.json`.
+[38477297083](https://github.com/JendaNDT/rocker/actions/runs/38477297083),
+revize `69f6c8896593c48b6c43d011bf442f4c1d737a6b`, uspěl včetně instalátoru.
+[Galerie](gallery.html) i [candidate-validation.json](candidate-validation.json) uvádějí stejnou revizi a úspěšný běh.
 
 WinUI diagnostika používá skutečná okna, SQLite a skutečné připravené
 syntetické soubory. 22 native sad používá označené testovací signály/backendy.
