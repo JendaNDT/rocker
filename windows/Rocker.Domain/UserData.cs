@@ -12,7 +12,8 @@ public sealed record AppSettings(string Theme = "system", string TuningId = "sta
     [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)] PlanProgress? PracticePlan = null,
     [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingDefault)] bool KeepAwake = false,
     [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingNull)] PlanProgress? AiPlanProgress = null,
-    [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingDefault)] int SetupStep = 0);
+    [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingDefault)] int SetupStep = 0,
+    [property: JsonIgnore(Condition=JsonIgnoreCondition.WhenWritingDefault)] bool CheckUpdatesOnStartup = false);
 public sealed record PlanProgress(string Key, IReadOnlyList<string> Completed);
 public sealed record DevicePreference(string Backend, string Input, string Output, double SampleRate=0, uint BufferFrames=0, int InputChannel=-1, uint OutputFirst=0);
 public sealed record Pickup(string Position, string Type);
@@ -51,7 +52,7 @@ public sealed record DataDocument(string Kind, string Id, int SchemaVersion, Jso
 public static class UserData
 {
     public static readonly JsonSerializerOptions Json = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase, MaxDepth = 32 };
-    public static IReadOnlySet<string> Kinds { get; } = new HashSet<string>(StringComparer.Ordinal) { "settings","instrument","progress","lessons","amp","amp-presets","metronome","metronome-presets","custom-tunings","yt-loops","ai-settings","chat","recording","project","song" };
+    public static IReadOnlySet<string> Kinds { get; } = new HashSet<string>(StringComparer.Ordinal) { "settings","instrument","progress","lessons","amp","amp-presets","metronome","metronome-presets","custom-tunings","yt-loops","ai-settings","chat","recording","project","song","practice-workspace" };
     public static bool ValidId(string? id) => !string.IsNullOrWhiteSpace(id) && id.Length <= 128 && !id.Any(char.IsControl);
     public static bool ValidHash(string? value) => value is not null && value.Length == 64 && value.All(c => c is >= '0' and <= '9' or >= 'a' and <= 'f');
     public static bool ValidRelativePath(string? path) => path is not null && path.Length is > 0 and <= 512 && !path.StartsWith('/') && !path.Contains('\\') && !path.Contains(':') && !path.Any(char.IsControl) && path.Split('/').All(segment => segment.Length > 0 && segment is not "." and not ".." && !segment.EndsWith('.') && segment.All(c => char.IsAsciiLetterOrDigit(c) || c is '_' or '-' or '.'));
@@ -67,6 +68,7 @@ public static class UserData
         object value;
         switch (document.Kind)
         {
+            case "practice-workspace": value=PracticeWorkspaceRules.Validate(Read<PracticeWorkspace>(document.Value));break;
             case "song":
                 var song=SongRules.Validate(Read<SongSession>(document.Value));Require(song.Id==document.Id,"ID skladby neodpovídá záznamu.");value=song;break;
             case "settings":

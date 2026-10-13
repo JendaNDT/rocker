@@ -15,6 +15,7 @@ public sealed partial class MainWindow
 {
     private readonly Dictionary<string,SongSession> songs=[];
     private SongSession? song;
+    private string? appliedSongLoopId; private double appliedSongLoopStart, appliedSongLoopEnd;
     private ComboBox? songSelector;
     private ListView? songSections;
     private NumberBox? songA,songB,songSpeed;
@@ -126,7 +127,7 @@ public sealed partial class MainWindow
     {
         if(song is null || audio is null || songA is null || songB is null)return;
         if(!double.IsFinite(songA.Value) || !double.IsFinite(songB.Value) || songA.Value<0 || songB.Value<=songA.Value || songB.Value>song.Duration)throw new InvalidOperationException("Konec B musí následovat po začátku A a ležet ve skladbě.");
-        await audio.SetLoopAsync(songA.Value/currentSpeed,songB.Value/currentSpeed,true);DrawSongWaveform();
+        await audio.SetLoopAsync(songA.Value/currentSpeed,songB.Value/currentSpeed,true);appliedSongLoopId=song.Id;appliedSongLoopStart=songA.Value;appliedSongLoopEnd=songB.Value;DrawSongWaveform();
     }
     private async Task SaveSongSectionAsync()
     {

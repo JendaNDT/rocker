@@ -35,15 +35,18 @@ public sealed partial class MainWindow
         var start=new Button{Content=compact?"Nahrávat kytaru":"Spustit nahrávání",MinHeight=40,Tag=compact?"compact-recording":null};start.Click+=async(_,_)=>await StartCaptureAsync();recordingStarts.Add(start);panel.Children.Add(start);
         var stop=new Button{Content=compact?"Zastavit a uložit":"Zastavit a uložit nahrávku",MinHeight=40,Tag=compact?"compact-recording":null,IsEnabled=captureDraft is not null};stop.Click+=async(_,_)=>await StopCaptureAsync();recordingStops.Add(stop);panel.Children.Add(stop);
         var marker=new Button{Content="Přidat značku během nahrávání…"};marker.Click+=async(_,_)=>{if(captureDraft is null || audio is null)return;double time=audio.GetRecording().CapturedFrames/(double)captureDraft.Rate;var label=await AskRecordingNameAsync("Nová značka","Značka");if(label is not null)captureMarkers.Add(new(Guid.NewGuid().ToString("N"),time,label));};settings.Children.Add(marker);
-        var status=Text("Nahrávání je zastavené.",true);recordingLabels.Add(status);panel.Children.Add(status);if(compact)panel.Children.Add(new Expander{Header="Název, zdroj a předtakt",Content=settings,HorizontalAlignment=HorizontalAlignment.Stretch});return Card(panel);
+        var status=Text("Nahrávání je zastavené.",true);recordingLabels.Add(status);panel.Children.Add(status);if(compact){var more=new Expander{Header="Název, zdroj a předtakt",Content=settings,HorizontalAlignment=HorizontalAlignment.Stretch};panel.Children.Add(more);focusSecondary.Add(more);}return Card(panel);
     }
     private FrameworkElement BuildRecordings()
     {
-        var panel=Stack();panel.Children.Add(BuildRecordingControls());
-        recordingList=new ListView{Header="Knihovna nahrávek",DisplayMemberPath="LibraryLabel",SelectionMode=ListViewSelectionMode.Multiple,IsItemClickEnabled=true};
-        recordingList.ItemClick+=async(_,e)=>{if(e.ClickedItem is RecordingData recording)await PlayRecordingAsync(recording);};panel.Children.Add(recordingList);
+        var panel=Stack();var libraryPanel=Stack();
+        recordingList=new ListView{Header="Knihovna nahrávek",DisplayMemberPath="LibraryLabel",SelectionMode=ListViewSelectionMode.Multiple,IsItemClickEnabled=true,MaxHeight=240};
+        recordingList.ItemClick+=async(_,e)=>{if(e.ClickedItem is RecordingData recording){try{await PlayRecordingAsync(recording);}catch(Exception error){ShowPersistenceError(error.Message);}}};libraryPanel.Children.Add(recordingList);
         Button Action(string label,Func<RecordingData,Task> action){var button=new Button{Content=label};button.Click+=async(_,_)=>{if(recordingList?.SelectedItem is RecordingData selected)try{await action(selected);}catch(Exception error){ShowPersistenceError(error.Message);}};panel.Children.Add(button);return button;}
-        Action("Přehrát vybranou nahrávku",PlayRecordingAsync);
+        var play=Action("Přehrát vybranou nahrávku",PlayRecordingAsync);panel.Children.Remove(play);libraryPanel.Children.Add(play);
+        var preview=Action("Zobrazit průběh bez přehrávání",PreviewRecordingAsync);panel.Children.Remove(preview);libraryPanel.Children.Add(preview);
+        panel.Children.Add(ResponsiveColumns(Card(libraryPanel),BuildRecordingWaveform()));
+        panel.Children.Add(BuildRecordingControls(compact:true));
         var compareA=new Button{Content="Porovnat A · první ze dvou vybraných"};var compareB=new Button{Content="Porovnat B · druhá ze dvou vybraných"};
         async Task Compare(int index){if(recordingList.SelectedItems.Count!=2 || busy)return;var pair=recordingList.SelectedItems.Cast<RecordingData>().ToArray();double position=audio?.GetTransport().PositionSeconds*currentSpeed??0;await PlayRecordingAsync(pair[index]);if(currentSpeed!=1)await ChangeSongSpeedAsync(1);if(audio is not null)await audio.SeekAsync(Math.Min(position,pair[index].DurationSec));}
         compareA.Click+=async(_,_)=>{try{await Compare(0);}catch(Exception error){ShowPersistenceError(error.Message);}};compareB.Click+=async(_,_)=>{try{await Compare(1);}catch(Exception error){ShowPersistenceError(error.Message);}};panel.Children.Add(compareA);panel.Children.Add(compareB);
@@ -58,7 +61,7 @@ public sealed partial class MainWindow
     private async Task ReloadRecordingsAsync()
     {
         if(recordingLibrary is null || recordingList is null)return;
-        try{var values=await recordingLibrary.ListAsync();if(closed || recordingList is null)return;recordingList.ItemsSource=values;var summary=string.Join("\n",values.Select(r=>$"{r.Name} · {FormatTime(r.DurationSec)}"+(r.Capture?.Partial==true?" · neúplná / obnovená":"")));Microsoft.UI.Xaml.Automation.AutomationProperties.SetHelpText(recordingList,summary);}
+        try{var values=await recordingLibrary.ListAsync();if(closed || recordingList is null)return;recordingList.ItemsSource=values;if(playingRecording is not null){playingRecording=values.FirstOrDefault(r=>r.Id==playingRecording.Id);DrawRecordingWaveform();}var summary=string.Join("\n",values.Select(r=>$"{r.Name} · {FormatTime(r.DurationSec)}"+(r.Capture?.Partial==true?" · neúplná / obnovená":"")));Microsoft.UI.Xaml.Automation.AutomationProperties.SetHelpText(recordingList,summary);}
         catch(Exception error){if(!closed)ShowPersistenceError("Knihovnu nelze načíst. "+error.Message);}
     }
     private async Task<string?> AskRecordingNameAsync(string title,string current)
@@ -99,15 +102,14 @@ public sealed partial class MainWindow
     {
         if(audio is null)return;try
         {
-            var state=audio.GetRecording();string status=captureDraft is null?"Nahrávání je zastavené.":$"{captureDraft.Name} · {FormatTime(state.Duration)} · "+(state.State==1?"Předtakt…":state.State==3?"Dokončuji zápis…":state.State==5?"Přerušeno; zachovávám dostupný zvuk.":"Nahrávání");
+            RefreshRecordingWaveform();var state=audio.GetRecording();string status=captureDraft is null?"Nahrávání je zastavené.":$"{captureDraft.Name} · {FormatTime(state.Duration)} · "+(state.State==1?"Předtakt…":state.State==3?"Dokončuji zápis…":state.State==5?"Přerušeno; zachovávám dostupný zvuk.":"Nahrávání");
             foreach(var label in recordingLabels)label.Text=status;foreach(var start in recordingStarts){start.IsEnabled=captureDraft is null && !recordingOperation && persistenceReady;if(start.Tag as string=="compact-recording")start.Visibility=captureDraft is null?Visibility.Visible:Visibility.Collapsed;}foreach(var stop in recordingStops){stop.IsEnabled=captureDraft is not null && !recordingOperation;if(stop.Tag as string=="compact-recording")stop.Visibility=captureDraft is not null?Visibility.Visible:Visibility.Collapsed;}
             if(captureDraft is not null && !recordingOperation && state.State is 4 or 5)_=StopCaptureAsync();
         }catch(Exception error){if(!closed)ShowPersistenceError("Stav nahrávání není dostupný. "+error.Message);}
     }
     private async Task PlayRecordingAsync(RecordingData value)
     {
-        if(audio is null || busy)return;if(!await new OwnedMedia(userFiles).VerifyAsync(new(value.RelativePath,value.Sha256,value.Bytes)))throw new InvalidDataException("Zvukový soubor chybí nebo je změněný.");
-        await OpenSongFileAsync(OwnedPaths.Resolve(userFiles.Root,value.RelativePath),value.Name);playingRecording=value;await audio.PlayAsync();
+        await PreviewRecordingAsync(value);if(audio is not null && playingRecording?.Id==value.Id && RecordingWaveformReady())await audio.PlayAsync();
     }
     private async Task EditRecordingMarkersAsync(RecordingData value)
     {

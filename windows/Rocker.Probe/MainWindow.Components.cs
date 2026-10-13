@@ -46,12 +46,12 @@ public sealed partial class MainWindow
         var listPanel = Stack(); listPanel.Children.Add(Text("Nativní seznam · Ctrl/Shift pro více položek")); listPanel.Children.Add(list); panel.Children.Add(Card(listPanel));
         return panel;
     }
-    private async Task CaptureNativeViewAsync(string name="native-content.png")
+    private async Task CaptureNativeViewAsync(string name="native-content.png",FrameworkElement? element=null)
     {
         var directory = Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTICS_DIR");
         if (string.IsNullOrEmpty(directory)) return;
         var bitmap = new RenderTargetBitmap();
-        await bitmap.RenderAsync(ShellRoot);
+        await bitmap.RenderAsync(element??ShellRoot);
         var buffer = await bitmap.GetPixelsAsync();
         if (bitmap.PixelWidth <= 0 || bitmap.PixelHeight <= 0 || buffer.Length > 64 * 1024 * 1024) throw new InvalidOperationException("Invalid native view capture.");
         var pixels = new byte[buffer.Length];

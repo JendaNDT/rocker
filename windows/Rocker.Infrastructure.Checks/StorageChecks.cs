@@ -21,6 +21,7 @@ internal static class StorageChecks
             UserData.Document("custom-tunings","default",Array.Empty<CustomTuning>()),UserData.Document("yt-loops","default",new[] { new SavedVideoLoop("loop","abcdefghijk","Test",1,4,0.75) }),
             UserData.Document("ai-settings","default",new AiSettings()),UserData.Document("chat","default",new[] { new SavedChatMessage("user","Test") })
         };
+        docs.Add(UserData.Document("practice-workspace","default",PracticeWorkspaceRules.Empty));
         var mediaStore = new OwnedMedia(files);
         using var source = new MemoryStream([82,73,70,70,0,1,2,3]);
         var media = await mediaStore.ImportAsync(source,".wav");

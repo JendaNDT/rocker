@@ -41,6 +41,7 @@ public sealed partial class MainWindow
         var live=new Button{Content="Volné hraní v Live",MinHeight=40};live.Click+=(_,_)=>Navigate(new("02"));actions.Children.Add(live);
         if(appSettings.ResumeTask is { } resume){var next=new Button{Content="Pokračovat · "+TaskTitle(resume),MinHeight=40};next.Click+=(_,_)=>Navigate(resume);actions.Children.Add(next);}
         panel.Children.Add(Card(ResponsiveColumns(welcome,actions)));
+        panel.Children.Add(BuildPracticeShortcuts());
         var select=new ComboBox{Header="Cvičební plán",ItemsSource=new[]{"Denní plán · bez účtu a internetu","Můj uložený AI plán"},SelectedIndex=planKind=="ai"?1:0,HorizontalAlignment=HorizontalAlignment.Stretch};
         select.SelectionChanged+=(_,_)=>{planKind=select.SelectedIndex==1?"ai":"daily";workspaceCache.Remove(new("01"));ShowWorkspace();};panel.Children.Add(select);
         if(missingAi){panel.Children.Add(Text("Zatím nemáš uložený AI plán. Denní plán funguje bez účtu i internetu.",true));var create=new Button{Content="Navrhnout AI plán",MinHeight=40};create.Click+=(_,_)=>Navigate(new("24"));panel.Children.Add(create);return panel;}

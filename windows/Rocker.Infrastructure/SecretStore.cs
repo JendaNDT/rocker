@@ -12,9 +12,9 @@ public sealed class SecretAccess(SecretState state,string? value = null)
 public sealed class SecretStore(UserFiles files,string provider="gemini")
 {
     private static readonly byte[] Entropy = SHA256.HashData(Encoding.UTF8.GetBytes("JendaNDT.Rocker:AI-key:DPAPI:v1"));
-    private byte[] ProviderEntropy=>provider=="gemini"?Entropy:SHA256.HashData(Encoding.UTF8.GetBytes("JendaNDT.Rocker:AI-key:DPAPI:openai:v1"));
+    private byte[] ProviderEntropy=>provider=="gemini"?Entropy:SHA256.HashData(Encoding.UTF8.GetBytes("JendaNDT.Rocker:AI-key:DPAPI:"+provider+":v1"));
     private static ReadOnlySpan<byte> Magic => "RockerSecret1\0"u8;
-    public string PathForKey => Path.Combine(files.DirectoryFor("secrets"),(provider switch{"gemini"=>"ai-key.dpapi","openai"=>"openai-key.dpapi",_=>throw new ArgumentException("Neplatný poskytovatel klíče.")}));
+    public string PathForKey => Path.Combine(files.DirectoryFor("secrets"),(provider switch{"gemini"=>"ai-key.dpapi","openai"=>"openai-key.dpapi","github-updates"=>"github-updates.dpapi",_=>throw new ArgumentException("Neplatný poskytovatel klíče.")}));
     public async Task<SecretAccess> ReadAsync(CancellationToken cancellation = default)
     {
         if (!OperatingSystem.IsWindows()) return new(SecretState.Unsupported);

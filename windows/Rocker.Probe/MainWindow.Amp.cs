@@ -44,7 +44,7 @@ public sealed partial class MainWindow
     private FrameworkElement BuildCompactAmplifier()
     {
         var panel=Stack();liveAmpEnabledBox=new CheckBox{Content="Aparát",IsChecked=appSettings.AmpEnabled};liveAmpEnabledBox.Checked+=AmplifierEnabled_Changed;liveAmpEnabledBox.Unchecked+=AmplifierEnabled_Changed;panel.Children.Add(liveAmpEnabledBox);
-        liveAmpPresetsBox=PresetSelector();panel.Children.Add(liveAmpPresetsBox);var open=new Button{Content="Ovladače aparátu"};open.Click+=(_,_)=>Navigate(new("13"));panel.Children.Add(open);return Card(panel);
+        liveAmpPresetsBox=PresetSelector();panel.Children.Add(liveAmpPresetsBox);var open=new Button{Content="Ovladače aparátu"};open.Click+=(_,_)=>Navigate(new("13"));panel.Children.Add(open);focusSecondary.Add(open);return Card(panel);
     }
     private ComboBox PresetSelector()
     {

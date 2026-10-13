@@ -70,7 +70,9 @@ public sealed partial class MainWindow
     private void ShowWorkspace()
     {
         if (!shellReady || closed) return;
-        var target = navigation.Current;ApplyNavigationTask(target);var view = WorkspaceViews.Get(target.ViewId);
+        var target = navigation.Current;
+        if (focusMode && target.ViewId != "02") SetFocusMode(false);
+        ApplyNavigationTask(target);var view = WorkspaceViews.Get(target.ViewId);
         foreach(var old in workspaceCache.Keys.Where(k=>k.ViewId==target.ViewId && k!=target).ToArray())workspaceCache.Remove(old);
         if(aiActive is { } active && target.ViewId!=active.View)aiCancellation?.Cancel();
         if(target.ViewId!=rhythmView && (rhythmRunning || rhythmOperation))_ = StopRhythmUiAsync();
@@ -98,7 +100,7 @@ public sealed partial class MainWindow
         LabelNativeControls(ShellRoot);
         if(view.Id=="28")RefreshSettingsControls();
         RefreshPlanControls();
-        RefreshWorkspaceChrome();
+        RefreshWorkspaceChrome();RefreshFavoriteButton();RefreshFocusChrome();
         if(aiPages.TryGetValue(view.Id,out var aiPage) && !aiBusy)RefreshAiPage(aiPage);
         if (view.Id == "08" && !videoInitializationStarted) _ = EnsureVideoAsync();
     }
@@ -195,6 +197,7 @@ public sealed partial class MainWindow
         if (closeApproved) return;
         args.Cancel = true;
         if (closingWindow) return;
+        if (workspaceOperation || updateInstalling) { ShowPersistenceError("Počkej na dokončení sestavy nebo přípravy aktualizace."); return; }
         if (studioOperation || studioEditTask is{IsCompleted:false}) { ShowPersistenceError("Počkej na dokončení práce ve Studiu."); return; }
         if (looperOperation) { ShowPersistenceError("Počkej na dokončení práce s Looperem."); return; }
         if (exportOperation) { ShowPersistenceError("Počkej na dokončení exportu nebo jej zruš v pohledu Export."); return; }
@@ -225,10 +228,10 @@ public sealed partial class MainWindow
             catch (Exception error) { WriteShellDiagnostic("window-state-error.json",new { error = error.Message }); }
             ampApplyTimer.Stop();metroApplyTimer.Stop();timer.Stop();
             if(audio is not null) { await audio.DisposeAsync();audio=null; }
-            closeApproved = true; Close();
+            LaunchPendingInstaller();closeApproved = true; Close();
         }
         catch (Exception error) { ShellNotice.IsOpen = true; ShellNotice.Severity = InfoBarSeverity.Error; ShellNotice.Message = "Okno nelze zavřít. " + error.Message; }
-        finally { closingWindow = false; }
+        finally { closingWindow = false;if(!closeApproved)pendingUpdateInstaller=null; }
     }
     private async Task VerifyShellAsync()
     {
@@ -260,6 +263,7 @@ public sealed partial class MainWindow
         await VerifyFirstRunAsync();
         await VerifyFileCommandsAsync();
         await VerifyPowerRecoveryAsync();
+        await VerifyWorkspaceEnhancementsAsync();
         await VerifyWorkspaceUxAsync();
         await VerifyAllDesignViewsAsync();
         await CaptureVisualFinishAsync();

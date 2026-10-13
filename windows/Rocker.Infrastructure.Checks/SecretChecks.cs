@@ -29,6 +29,9 @@ internal static class SecretChecks
             cancellation.Cancel();try { await store.SetAsync("replacement",cancellation.Token);throw new Exception("Cancelled secret changed"); }
             catch (OperationCanceledException) { Check((await store.ReadAsync()).Value==canary,"cancelled change preserves key"); }
         }
+        var githubStore=new SecretStore(files,"github-updates");await githubStore.SetAsync("GITHUB_DPAPI_SYNTHETIC_CANARY");
+        Check((await new SecretStore(files,"github-updates").ReadAsync()).Value=="GITHUB_DPAPI_SYNTHETIC_CANARY" && githubStore.PathForKey!=store.PathForKey,"private update token reopens in its own DPAPI provider");
+        await File.WriteAllBytesAsync(githubStore.PathForKey,encrypted);Check((await githubStore.ReadAsync()).State==SecretState.Unavailable,"AI ciphertext cannot be used as GitHub update credentials");await githubStore.RemoveAsync();
         await store.SetAsync("changed-test-key"); Check((await store.ReadAsync()).Value=="changed-test-key","replacement key");
         await store.RemoveAsync();Check((await store.ReadAsync()).State==SecretState.Missing,"key removed");
         await File.WriteAllBytesAsync(store.PathForKey,[1,2,3]);

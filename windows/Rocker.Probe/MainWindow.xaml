@@ -8,7 +8,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <MenuBar>
+        <MenuBar x:Name="MainMenu">
             <MenuBarItem Title="Soubor">
                 <MenuFlyoutItem Text="Otevřít soubor…" Click="OpenFile_Click">
                     <MenuFlyoutItem.KeyboardAccelerators><KeyboardAccelerator Key="O" Modifiers="Control" /></MenuFlyoutItem.KeyboardAccelerators>
@@ -39,17 +39,22 @@
                     <MenuFlyoutItem.KeyboardAccelerators><KeyboardAccelerator Key="Left" Modifiers="Menu" /></MenuFlyoutItem.KeyboardAccelerators>
                 </MenuFlyoutItem>
                 <MenuFlyoutItem x:Name="ForwardMenu" Text="Vpřed" Click="Forward_Click" IsEnabled="False" />
+                <MenuFlyoutItem Text="Jen hraju · F11" Click="FocusMode_Click"><MenuFlyoutItem.KeyboardAccelerators><KeyboardAccelerator Key="F11" /></MenuFlyoutItem.KeyboardAccelerators></MenuFlyoutItem>
+                <MenuFlyoutItem Text="Hledat v Rockeru…" Click="Search_Click"><MenuFlyoutItem.KeyboardAccelerators><KeyboardAccelerator Key="K" Modifiers="Control" /></MenuFlyoutItem.KeyboardAccelerators></MenuFlyoutItem>
+                <MenuFlyoutItem Text="Oblíbené…" Click="Favorites_Click" />
                 <MenuFlyoutSeparator />
                 <MenuFlyoutItem Text="Podle Windows" Tag="system" Click="Theme_Click" />
                 <MenuFlyoutItem Text="Tmavý Vintage" Tag="dark" Click="Theme_Click" />
                 <MenuFlyoutItem Text="Světlý Vintage" Tag="light" Click="Theme_Click" />
             </MenuBarItem>
             <MenuBarItem Title="Nástroje">
+                <MenuFlyoutItem Text="Uložit sestavu cvičení…" Click="SaveSetup_Click" />
+                <MenuFlyoutItem Text="Moje sestavy cvičení…" Click="Setups_Click" />
                 <MenuFlyoutItem Text="Zvuková zařízení" Tag="29" Click="NavigateMenu_Click" />
                 <MenuFlyoutItem Text="Nastavení" Tag="28" Click="NavigateMenu_Click" />
                 <MenuFlyoutItem Text="Zálohy a soubory" Tag="30" Click="NavigateMenu_Click" />
             </MenuBarItem>
-            <MenuBarItem Title="Nápověda"><MenuFlyoutItem Text="Návod k používání" Click="Guide_Click" /><MenuFlyoutItem Text="O aplikaci Rocker" Click="About_Click" /></MenuBarItem>
+            <MenuBarItem Title="Nápověda"><MenuFlyoutItem Text="Aktualizace…" Click="Updates_Click" /><MenuFlyoutItem Text="Návod k používání" Click="Guide_Click" /><MenuFlyoutItem Text="O aplikaci Rocker" Click="About_Click" /></MenuBarItem>
         </MenuBar>
         <NavigationView x:Name="Navigation" Grid.Row="1" IsSettingsVisible="False" PaneDisplayMode="Auto"
                         OpenPaneLength="192" ExpandedModeThresholdWidth="900" CompactModeThresholdWidth="640"
@@ -66,16 +71,24 @@
                     <TextBlock Text="KYTAROVÉ STUDIO" FontSize="10" CharacterSpacing="120" Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                 </StackPanel>
             </NavigationView.PaneHeader>
-            <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+            <ScrollViewer x:Name="WorkspaceScroll" HorizontalScrollBarVisibility="Disabled">
                 <StackPanel Margin="24,12,24,24" Spacing="12" MaxWidth="1100" HorizontalAlignment="Stretch">
-                    <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,4,0,0">
+                    <Grid ColumnSpacing="12" Margin="0,4,0,0">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                         <Border Width="3" Height="27" CornerRadius="1" Background="{ThemeResource VintageAccent}" VerticalAlignment="Center"/>
-                        <TextBlock x:Name="WorkspaceTitle" Text="Přehled" FontSize="30" FontWeight="SemiBold"/>
-                    </StackPanel>
+                        <TextBlock x:Name="WorkspaceTitle" Grid.Column="1" Text="Přehled" FontSize="30" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                        <StackPanel x:Name="WorkspaceTools" Grid.Column="2" Orientation="Horizontal" Spacing="8">
+                            <Button x:Name="SearchButton" Click="Search_Click" AutomationProperties.Name="Hledat v Rockeru · Ctrl+K" ToolTipService.ToolTip="Hledat v Rockeru · Ctrl+K"><SymbolIcon Symbol="Find"/></Button>
+                            <Button x:Name="FavoriteViewButton" Click="FavoriteView_Click" AutomationProperties.Name="Přidat pohled do oblíbených"><FontIcon Glyph="&#xE734;"/></Button>
+                            <Button x:Name="FocusExitButton" Content="Zpět · Esc" Click="FocusMode_Click" Visibility="Collapsed" />
+                        </StackPanel>
+                    </Grid>
                     <TextBlock x:Name="WorkspaceTrail" Text="Rocker / Přehled" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
                     <InfoBar x:Name="ShellNotice" IsOpen="False" IsClosable="True" Severity="Informational" Title="Rocker"
                              Message="" />
-                    <ContentControl x:Name="WorkspaceContent" HorizontalContentAlignment="Stretch" />
+                    <ContentControl x:Name="WorkspaceContent" HorizontalContentAlignment="Stretch">
+                        <ContentControl.ContentTransitions><TransitionCollection><EntranceThemeTransition IsStaggeringEnabled="False"/></TransitionCollection></ContentControl.ContentTransitions>
+                    </ContentControl>
                     <StackPanel x:Name="NotationPanel" Visibility="Collapsed" Spacing="12">
                 <TextBlock Text="Noty a tabulatury" Style="{ThemeResource SubtitleTextBlockStyle}" />
                 <TextBlock Text="Nativní zobrazení a společný přehrávač. Poslech používá syntetický strunný zvuk a bicí; nejde o skutečný kytarový aparát ani zvuk původních nástrojů."

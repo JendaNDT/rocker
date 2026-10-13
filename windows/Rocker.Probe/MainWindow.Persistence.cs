@@ -41,6 +41,7 @@ public sealed partial class MainWindow
             InitializeTuner(snapshot.Documents);
             InitializeTraining(snapshot.Documents);
             InitializeSongs(snapshot.Documents);
+            InitializePracticeWorkspace(snapshot.Documents);
             InitializeVideoPractice(snapshot.Documents);
             InitializeAi(snapshot.Documents);if(practiceSession.Phase is PracticePhase.Running or PracticePhase.Paused)practiceSession.End();RefreshPracticeControls();
             await RestoreDevicePreferenceAsync();

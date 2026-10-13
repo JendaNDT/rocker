@@ -1,0 +1,21 @@
+# Pohodlí při hraní — pět rozšíření Windows aplikace
+
+Zadání Jendy z 13. 10. 2026: implementovat režim hraní, společné sestavy cvičení, vyhledávání a oblíbené, průběh nahrávek, pohodlnější aktualizace a vizuální detaily.
+
+## Implementace
+
+Režim Jen hraju přizpůsobí stávající Live; nesestavuje druhé zvukové jádro. Nativní navigace, číselné ovladače, seznamy, klávesnice a menu zůstávají. F11 / Esc, velké hlavní akce, světlý i tmavý Vintage. Přepínání obsahu používá standardní Windows EntranceThemeTransition; dialogy přebírají zvolený vzhled.
+
+`PracticeWorkspace` přidává validovaný typ dokumentu `practice-workspace` do SQLite. Sestava drží přesnou úlohu, kopii aparátu a metronomu, ladění a případně stabilní ID skladby, rychlost, pozici a A/B. Oblíbené používají stabilní klíče místo názvů. Limit 100 sestav, 500 oblíbených, 200 výsledků; hledání bez české diakritiky. Starý profil začíná prázdnou knihovnou. Úplné zálohy nový typ obsahují, média zůstávají v existujících knihovnách. Sestava nezapíná monitoring, metronom ani přehrávání a neukládá ovladač/zařízení jako součást zvukového presetu.
+
+Zvuková vlna využívá existující nativní dekódovanou cache. Nahrávka se ověřuje proti svému hashi, předběžný poslech zůstává pozastavený, úsek lze zvolit myší i číselnými poli. Přehrávač a značky používají čas původního zdroje, včetně zpomalení. Výběr soubor nepoškozuje.
+
+Aktualizace čtou pouze Windows vydání JendaNDT/rocker, včetně soukromých prerelease kandidátů. Úspěšný `candidate-validation.json`, SHA-256 a běh novější než nainstalovaný build tvoří nabídku. Stažení je omezené velikostí, nepřenáší přístupový token na server souborů, maže neúplné soubory a před spuštěním znovu ověřuje hash/formát. Installer se spouští až explicitním potvrzením a přes existující uložení/zastavení při zavírání. GitHub token je volitelný, oddělený DPAPI provider; pro soukromý repozitář funguje bez tokenu cesta přes přihlášený systémový prohlížeč. Aktualizace nestahují ovladače a nemění ochranu Windows. Cache není součást uživatelských záloh.
+
+## Ověření
+
+Místně: 58 C# souborů s reálnými WinUI referencemi bez chyb; doménové reference 69 + 182 hraničních kontrol a 372 dalších případů / 350 stavů; infrastruktura včetně 14 nových kontrol aktualizací a knihovny; TypeScript a 567 testů. Podklady: `local-validation.json`.
+
+Windows: čeká na aktuální běh. Nový `workspace-enhancements.json` vyžaduje 16 kontrol skutečného okna, sdíleného audia, obnovení sestavy, vyhledávání, dekódované vlny a A/B při zpomalení. Snímky režimu hraní, dialogů, nahrávek a aktualizací vznikají z izolovaného syntetického profilu. Jejich existence není ruční přejímka.
+
+Online kontrola soukromých aktualizací s uživatelským tokenem a potvrzené spuštění instalátoru z aplikace zůstávají ručními scénáři. Automatické testy používají syntetické HTTP odpovědi a nespouštějí stažený kontrolní EXE. Fyzická hra na M-Track, skutečná odezva a ostatní dřívější W44 scénáře zůstávají neprovedené.
