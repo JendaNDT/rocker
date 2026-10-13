@@ -1,19 +1,21 @@
 {
-  "runId": 38301809142,
-  "runUrl": "https://github.com/JendaNDT/rocker/actions/runs/38301809142",
-  "commit": "6be7ff90dad38ddd4f901af7ecf6c11caf86881d",
+  "runId": 38361957245,
+  "runUrl": "https://github.com/JendaNDT/rocker/actions/runs/38361957245",
+  "commit": "b550d64d8fad4d0fab1c8f0001fd4302141967a8",
   "result": "passed",
   "candidate": {
-    "sourceCommit": "6be7ff90dad38ddd4f901af7ecf6c11caf86881d",
-    "actualLatencyVerified": false,
-    "onlineAiVerified": false,
-    "windowsRun": "https://github.com/JendaNDT/rocker/actions/runs/38301809142",
-    "wallClockHourOnHardwareVerified": false,
-    "smartAppControlVerified": false,
     "manualHardwareVerified": false,
+    "smartAppControlVerified": false,
+    "result": "passed",
+    "windowsRun": "https://github.com/JendaNDT/rocker/actions/runs/38361957245",
+    "nativeWorkspaces": 32,
+    "wallClockHourOnHardwareVerified": false,
+    "nativeSuites": 22,
+    "onlineAiVerified": false,
+    "onlineYouTubeVerified": false,
+    "correspondingSourcesSeparate": true,
     "narratorAndHighContrastManualVerified": false,
     "installer": "Rocker-Windows-Setup-0.2.0-x64.exe",
-    "result": "passed",
     "reports": [
       {
         "result": "passed",
@@ -65,6 +67,10 @@
       },
       {
         "result": "passed",
+        "report": "workspace-enhancements.json"
+      },
+      {
+        "result": "passed",
         "report": "visual-finish.json"
       },
       {
@@ -92,117 +98,41 @@
         "report": "installer/installer-smoke.json"
       }
     ],
-    "onlineYouTubeVerified": false,
-    "nativeSuites": 22,
-    "correspondingSourcesSeparate": true,
-    "nativeWorkspaces": 32
+    "actualLatencyVerified": false,
+    "sourceCommit": "b550d64d8fad4d0fab1c8f0001fd4302141967a8"
   },
-  "installer": {
-    "installedNativeWindow": true,
-    "smartAppControlVerified": false,
+  "installed": {
+    "result": "passed",
+    "unicodeProjectActivation": true,
     "failedUpdatePreservedShortcutAndAssociation": true,
-    "perUserInstall": true,
-    "transitionUsesSameCandidateBinariesWithSyntheticVersionLabels": true,
+    "installedNativeWindow": true,
     "hardwareVerified": false,
     "preUpdateFullBackupAndRawDatabase": true,
+    "historicBinaryDowngradeVerified": false,
     "adminRequired": false,
     "projectAssociationRegistered": true,
-    "historicBinaryDowngradeVerified": false,
-    "offlineSelfContainedStart": true,
-    "unicodeProjectActivation": true,
-    "installedInventoryMatchesPortableArchive": true,
-    "exactDllRepair": true,
-    "result": "passed",
     "versionTransitionPreservedDataAndPriorBinary": true,
-    "uninstallPreservedDatabaseAndSentinel": true
+    "offlineSelfContainedStart": true,
+    "uninstallPreservedDatabaseAndSentinel": true,
+    "smartAppControlVerified": false,
+    "exactDllRepair": true,
+    "transitionUsesSameCandidateBinariesWithSyntheticVersionLabels": true,
+    "installedInventoryMatchesPortableArchive": true,
+    "perUserInstall": true
   },
-  "knownManualLimits": "Hardware/latency/online/Narrator/DPI/clean VM remain unperformed; accelerated offline benchmark is not an hour of live playing.",
-  "ux": {
+  "window": {
+    "windowTitle": "Rocker — Přehled",
+    "audioHostsCreated": 1,
+    "audioCoexistenceVerified": false,
+    "onlineVideoVerified": false,
+    "checkedAtUtc": "2026-10-13T07:32:51.7801895Z",
+    "audioPlaybackVerified": false,
+    "localVideoBridgeVerified": true,
+    "nativeNotationVerified": true,
+    "webViewRuntime": "153.0.4234.48",
+    "midiPreparedInCommonEngine": true,
     "result": "passed",
-    "idleSettingsHasNoPlayerOrPracticeBar": true,
-    "desktopNavigationShowsLabels": true,
-    "liveHasPrimarySetupAndRelevantActions": true,
-    "liveFooterHeightDip": 45,
-    "liveTuningScaleVisible": true,
-    "liveTuningScaleBottomDip": 672,
-    "clientHeightDip": 749,
-    "liveScaleHeightDip": 70,
-    "liveScaleWidthDip": 0,
-    "emptyMediaDoesNotOccupyLive": true,
-    "narrowWorkspaceFits": true,
-    "loadedMediaHasAccessibleTransport": true,
-    "manualUsabilityVerified": false
-  },
-  "graphics": {
-    "result": "passed",
-    "captures": [
-      {
-        "file": "screens/finish-dark-01.png",
-        "theme": "dark",
-        "view": "01",
-        "clientWidthDip": 1028,
-        "clientHeightDip": 749
-      },
-      {
-        "file": "screens/finish-dark-02.png",
-        "theme": "dark",
-        "view": "02",
-        "clientWidthDip": 1028,
-        "clientHeightDip": 749
-      },
-      {
-        "file": "screens/finish-dark-03.png",
-        "theme": "dark",
-        "view": "03",
-        "clientWidthDip": 1028,
-        "clientHeightDip": 749
-      },
-      {
-        "file": "screens/finish-dark-04.png",
-        "theme": "dark",
-        "view": "04",
-        "clientWidthDip": 1028,
-        "clientHeightDip": 749
-      },
-      {
-        "file": "screens/finish-dark-13.png",
-        "theme": "dark",
-        "view": "13",
-        "clientWidthDip": 1028,
-        "clientHeightDip": 749
-      },
-      {
-        "file": "screens/finish-dark-17.png",
-        "theme": "dark",
-        "view": "17",
-        "clientWidthDip": 1028,
-        "clientHeightDip": 749
-      },
-      {
-        "file": "screens/finish-dark-18.png",
-        "theme": "dark",
-        "view": "18",
-        "clientWidthDip": 1028,
-        "clientHeightDip": 749
-      },
-      {
-        "file": "screens/finish-light-02.png",
-        "theme": "light",
-        "view": "02",
-        "clientWidthDip": 1028,
-        "clientHeightDip": 749
-      },
-      {
-        "file": "screens/finish-light-13.png",
-        "theme": "light",
-        "view": "13",
-        "clientWidthDip": 1028,
-        "clientHeightDip": 749
-      }
-    ],
-    "iconPublished": true,
-    "liveInputAndMonitoringNotSimulated": true,
-    "manualVisualAcceptanceVerified": false,
-    "systemHighContrastManualVerified": false
+    "exitCode": 0,
+    "nativeShellViewsVisited": 32
   }
 }

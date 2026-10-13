@@ -1,7 +1,7 @@
 {
-  "runId": 38301809142,
-  "runUrl": "https://github.com/JendaNDT/rocker/actions/runs/38301809142",
-  "commit": "6be7ff90dad38ddd4f901af7ecf6c11caf86881d",
+  "runId": 38361957245,
+  "runUrl": "https://github.com/JendaNDT/rocker/actions/runs/38361957245",
+  "commit": "b550d64d8fad4d0fab1c8f0001fd4302141967a8",
   "result": "passed",
   "home": {
     "result": "passed",
@@ -603,76 +603,14 @@
     "narratorManualVerified": false,
     "highContrastManualVerified": false
   },
-  "visualFinish": {
+  "accessibility": {
     "result": "passed",
-    "captures": [
-      {
-        "file": "screens/finish-dark-01.png",
-        "theme": "dark",
-        "view": "01",
-        "clientWidthDip": 1028,
-        "clientHeightDip": 749
-      },
-      {
-        "file": "screens/finish-dark-02.png",
-        "theme": "dark",
-        "view": "02",
-        "clientWidthDip": 1028,
-        "clientHeightDip": 749
-      },
-      {
-        "file": "screens/finish-dark-03.png",
-        "theme": "dark",
-        "view": "03",
-        "clientWidthDip": 1028,
-        "clientHeightDip": 749
-      },
-      {
-        "file": "screens/finish-dark-04.png",
-        "theme": "dark",
-        "view": "04",
-        "clientWidthDip": 1028,
-        "clientHeightDip": 749
-      },
-      {
-        "file": "screens/finish-dark-13.png",
-        "theme": "dark",
-        "view": "13",
-        "clientWidthDip": 1028,
-        "clientHeightDip": 749
-      },
-      {
-        "file": "screens/finish-dark-17.png",
-        "theme": "dark",
-        "view": "17",
-        "clientWidthDip": 1028,
-        "clientHeightDip": 749
-      },
-      {
-        "file": "screens/finish-dark-18.png",
-        "theme": "dark",
-        "view": "18",
-        "clientWidthDip": 1028,
-        "clientHeightDip": 749
-      },
-      {
-        "file": "screens/finish-light-02.png",
-        "theme": "light",
-        "view": "02",
-        "clientWidthDip": 1028,
-        "clientHeightDip": 749
-      },
-      {
-        "file": "screens/finish-light-13.png",
-        "theme": "light",
-        "view": "13",
-        "clientWidthDip": 1028,
-        "clientHeightDip": 749
-      }
-    ],
-    "iconPublished": true,
-    "liveInputAndMonitoringNotSimulated": true,
-    "manualVisualAcceptanceVerified": false,
+    "authoredControlsChecked": 642,
+    "unnamed": [],
+    "standardInvokeAndRangePatterns": true,
+    "narratorManualVerified": false,
+    "keyboardManualVerified": false,
+    "physicalDpiVerified": false,
     "systemHighContrastManualVerified": false
   }
 }

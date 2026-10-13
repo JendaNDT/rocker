@@ -1,7 +1,7 @@
 {
-  "runId": 38301809142,
-  "runUrl": "https://github.com/JendaNDT/rocker/actions/runs/38301809142",
-  "commit": "6be7ff90dad38ddd4f901af7ecf6c11caf86881d",
+  "runId": 38361957245,
+  "runUrl": "https://github.com/JendaNDT/rocker/actions/runs/38361957245",
+  "commit": "b550d64d8fad4d0fab1c8f0001fd4302141967a8",
   "result": "passed",
   "graphics": {
     "result": "passed",
@@ -75,23 +75,6 @@
     "manualVisualAcceptanceVerified": false,
     "systemHighContrastManualVerified": false
   },
-  "accessibility": {
-    "result": "passed",
-    "authoredControlsChecked": 624,
-    "unnamed": [],
-    "standardInvokeAndRangePatterns": true,
-    "narratorManualVerified": false,
-    "keyboardManualVerified": false,
-    "physicalDpiVerified": false,
-    "systemHighContrastManualVerified": false
-  },
-  "components": {
-    "result": "passed",
-    "checks": 35,
-    "realInputVerified": false,
-    "keyboardAndScreenReaderManualVerified": false,
-    "highContrastManualVerified": false
-  },
   "layout": {
     "result": "passed",
     "idleSettingsHasNoPlayerOrPracticeBar": true,
@@ -108,12 +91,112 @@
     "loadedMediaHasAccessibleTransport": true,
     "manualUsabilityVerified": false
   },
-  "manualVisualAcceptanceVerified": false,
-  "layoutDiagnosticNote": "The visibility assertion measures the Live control while attached; liveScaleWidthDip is read later after navigation and is zero for the detached cached page. The passed assertion and ux-live.png capture establish visibility at the measured desktop viewport.",
-  "visualReview": {
-    "all32CapturedViewsReviewed": true,
-    "darkAndLightInstrumentViewsReviewed": true,
-    "nativeCopperSliderAndNavigationVerifiedInCaptures": true,
-    "liveScaleVerifiedInCapture": true
+  "accessibility": {
+    "result": "passed",
+    "authoredControlsChecked": 642,
+    "unnamed": [],
+    "standardInvokeAndRangePatterns": true,
+    "narratorManualVerified": false,
+    "keyboardManualVerified": false,
+    "physicalDpiVerified": false,
+    "systemHighContrastManualVerified": false
+  },
+  "candidate": {
+    "manualHardwareVerified": false,
+    "smartAppControlVerified": false,
+    "result": "passed",
+    "windowsRun": "https://github.com/JendaNDT/rocker/actions/runs/38361957245",
+    "nativeWorkspaces": 32,
+    "wallClockHourOnHardwareVerified": false,
+    "nativeSuites": 22,
+    "onlineAiVerified": false,
+    "onlineYouTubeVerified": false,
+    "correspondingSourcesSeparate": true,
+    "narratorAndHighContrastManualVerified": false,
+    "installer": "Rocker-Windows-Setup-0.2.0-x64.exe",
+    "reports": [
+      {
+        "result": "passed",
+        "report": "domain-checks.json"
+      },
+      {
+        "result": "passed",
+        "report": "storage-checks.json"
+      },
+      {
+        "result": "passed",
+        "report": "notation-checks.json"
+      },
+      {
+        "result": "passed",
+        "report": "media-checks.json"
+      },
+      {
+        "result": "passed",
+        "report": "transport-checks.json"
+      },
+      {
+        "result": "passed",
+        "report": "browser-ui-import.json"
+      },
+      {
+        "result": "passed",
+        "report": "browser-bookmark-import.json"
+      },
+      {
+        "result": "passed",
+        "report": "power-recovery.json"
+      },
+      {
+        "result": "passed",
+        "report": "performance-checks.json"
+      },
+      {
+        "result": "passed",
+        "report": "accessibility.json"
+      },
+      {
+        "result": "passed",
+        "report": "design-views.json"
+      },
+      {
+        "result": "passed",
+        "report": "ux-layout.json"
+      },
+      {
+        "result": "passed",
+        "report": "workspace-enhancements.json"
+      },
+      {
+        "result": "passed",
+        "report": "visual-finish.json"
+      },
+      {
+        "result": "passed",
+        "report": "practice-profile.json"
+      },
+      {
+        "result": "passed",
+        "report": "overview-live.json"
+      },
+      {
+        "result": "passed",
+        "report": "first-run.json"
+      },
+      {
+        "result": "passed",
+        "report": "file-commands.json"
+      },
+      {
+        "result": "passed",
+        "report": "window-smoke.json"
+      },
+      {
+        "result": "passed",
+        "report": "installer/installer-smoke.json"
+      }
+    ],
+    "actualLatencyVerified": false,
+    "sourceCommit": "b550d64d8fad4d0fab1c8f0001fd4302141967a8"
   }
 }

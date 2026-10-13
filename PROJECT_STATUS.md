@@ -1,14 +1,14 @@
 # Rocker — stav projektu
 
-Aktualizováno 12. 10. 2026. Windows verze 0.2.0 má implementovaný celý rozsah W04–W43: 32 skutečných WinUI pohledů ve Vintage designu, společné C++/JUCE jádro, všechny původní výukové a pracovní funkce, data/migraci, zálohy a instalátor pro uživatele. Závěrečné automatické Windows kontroly aplikace, instalátoru a úplného kandidáta prošly v [běhu 38301809142](https://github.com/JendaNDT/rocker/actions/runs/38301809142), revize `6be7ff9`. [Sestavený soukromý kandidát](https://github.com/JendaNDT/rocker/releases/tag/windows-0.2.0-rc3-20261012) obsahuje instalátor, přenosný ZIP, samostatné zdroje a kontrolní součty.
+Aktualizováno 13. 10. 2026. W04–W43 jsou implementované a automaticky ověřené: 32 nativních WinUI pohledů, Vintage, C++/JUCE, pracovní funkce, data a instalátor.
 
-Grafika: dokončená [úprava Vintage vzhledu](docs/windows/graphics/README.md) — kovové ovladače, přesná stupnice ladičky, segmentové měřáky, vlastní ikona a sjednocené povrchy/typografie. [Galerie skutečné Windows aplikace](docs/windows/graphics/gallery.html) obsahuje i světlou variantu. Automatické kontroly a instalační cyklus prošly; ruční přijetí vzhledu zůstává na Jendovi.
+Dokončeno i [pět rozšíření pohodlí při hraní](docs/windows/improvements/README.md): Jen hraju (F11 / Esc), společné sestavy cvičení, vyhledávání a oblíbené (Ctrl+K), zvuková vlna nahrávek s A/B a značkami, kontrola/stažení aktualizací s výslovným potvrzením instalace. Nativní ovládání a společné zvukové jádro zůstávají. [Galerie](docs/windows/improvements/gallery.html).
 
-UI/UX: dokončená [úprava přehlednosti a rozložení](docs/windows/ux/README.md) — přímá čitelná navigace, kontextový spodní panel, přehled dalšího kroku a soustředěné ovládání Live. Nové rozložení i instalační cyklus prošly stejným Windows během.
+Ověřený RC4: Windows běh [38361957245](https://github.com/JendaNDT/rocker/actions/runs/38361957245), revize `b550d64`. Všech 18 nových kontrol skutečného okna, původní nativní/doménové/datové kontroly, 32 pohledů i instalační cyklus prošly. [Soukromý instalátor](https://github.com/JendaNDT/rocker/releases/tag/windows-0.2.0-rc4-20261013); zdroje jsou zvlášť. Main/PWA beze změny.
 
-[Roadmapa](WINDOWS_ROADMAP.md), [matice úplnosti a důkazy](docs/windows/w43/README.md), [návod](docs/windows/w43/user-guide.md), [skutečná galerie](docs/windows/w36/native-gallery/index.html). Testy všech doménových vrstev, médií, UI a obnovy běží automaticky. Detaily a konkrétní revize jsou v jednotlivých W protokolech; samotná implementace není důkaz ručního poslechu.
+Aktualizace soukromého repozitáře přímo z aplikace potřebují vlastní GitHub přístup chráněný DPAPI; bez něj je dostupný přihlášený systémový prohlížeč. Živý cloudový modul skutečně stáhl a ověřil předchozí instalátor; přihlášení uživatele a spuštění aktualizace z aplikace na jeho Windows zůstávají ručními scénáři. Sestavy a oblíbené patří do úplné zálohy, klíče a cache instalátorů nikoli.
 
-W44–W48 zbývají jako skutečná přejímka s bratrem, případné opravy a stabilní vydání. M-Track Solo, celková odezva, online YouTube/OpenAI, čistá offline VM a fyzická přístupnost nejsou potvrzené. Bratr dostane sestavený instalátor; zdroje jsou zvlášť. Soukromý repozitář, bez obchodu, nákupu certifikátu či veřejného vydání. Main a živá PWA zůstávají beze změny.
+W44–W48: zbývá skutečná přejímka s bratrem, případné opravy a stabilní vydání. M-Track Solo, celková odezva, online YouTube/OpenAI, čistá offline VM a fyzická přístupnost nejsou potvrzené. Automatické důkazy nejsou potvrzením poslechu. [Roadmapa](WINDOWS_ROADMAP.md), [matice](docs/windows/w43/README.md), [návod](docs/windows/w43/user-guide.md).
 
 ## Historický stav webové verze
 

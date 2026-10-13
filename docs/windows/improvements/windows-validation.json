@@ -1,0 +1,179 @@
+{
+  "runId": 38361957245,
+  "runUrl": "https://github.com/JendaNDT/rocker/actions/runs/38361957245",
+  "commit": "b550d64d8fad4d0fab1c8f0001fd4302141967a8",
+  "result": "passed",
+  "enhancements": {
+    "result": "passed",
+    "checks": {
+      "focusUsesSharedLiveHost": true,
+      "focusRecorderActionsAreLarge": true,
+      "focusNarrowFits": true,
+      "focusCanReturnWithoutStartingSound": true,
+      "preparationCanCancelWhileWorkspaceIsDisabled": true,
+      "setupAppliesNativeSoundAndTempo": true,
+      "setupDoesNotStartPlaybackOrMonitoring": true,
+      "workspaceSurvivesDatabaseReopen": true,
+      "globalIndexContainsLessonsChordsSongsRecordingsAndSetups": true,
+      "searchIsNativeDialog": true,
+      "nativeSearchIgnoresDiacritics": true,
+      "setupManagerIsNativeDialog": true,
+      "recordingPreviewHasDecodedWaveform": true,
+      "waveformSelectionRetainsSourceTimes": true,
+      "setupRestoresSongLoopAndSpeedPaused": true,
+      "setupKeepsOwnedReferenceAfterReopen": true,
+      "updatesRequireExplicitActions": true,
+      "singleAudioHostRemains": true
+    },
+    "newViews": 0,
+    "nativeWorkspaces": 32,
+    "sharedAudioHostCount": 1,
+    "liveInputNotSimulated": true,
+    "onlinePrivateUpdateVerified": false,
+    "installerExecutedByAppVerified": false,
+    "manualInteractionsVerified": false
+  },
+  "layout": {
+    "result": "passed",
+    "idleSettingsHasNoPlayerOrPracticeBar": true,
+    "desktopNavigationShowsLabels": true,
+    "liveHasPrimarySetupAndRelevantActions": true,
+    "liveFooterHeightDip": 45,
+    "liveTuningScaleVisible": true,
+    "liveTuningScaleBottomDip": 672,
+    "clientHeightDip": 749,
+    "liveScaleHeightDip": 70,
+    "liveScaleWidthDip": 0,
+    "emptyMediaDoesNotOccupyLive": true,
+    "narrowWorkspaceFits": true,
+    "loadedMediaHasAccessibleTransport": true,
+    "manualUsabilityVerified": false
+  },
+  "accessibility": {
+    "result": "passed",
+    "authoredControlsChecked": 642,
+    "unnamed": [],
+    "standardInvokeAndRangePatterns": true,
+    "narratorManualVerified": false,
+    "keyboardManualVerified": false,
+    "physicalDpiVerified": false,
+    "systemHighContrastManualVerified": false
+  },
+  "candidate": {
+    "manualHardwareVerified": false,
+    "smartAppControlVerified": false,
+    "result": "passed",
+    "windowsRun": "https://github.com/JendaNDT/rocker/actions/runs/38361957245",
+    "nativeWorkspaces": 32,
+    "wallClockHourOnHardwareVerified": false,
+    "nativeSuites": 22,
+    "onlineAiVerified": false,
+    "onlineYouTubeVerified": false,
+    "correspondingSourcesSeparate": true,
+    "narratorAndHighContrastManualVerified": false,
+    "installer": "Rocker-Windows-Setup-0.2.0-x64.exe",
+    "reports": [
+      {
+        "result": "passed",
+        "report": "domain-checks.json"
+      },
+      {
+        "result": "passed",
+        "report": "storage-checks.json"
+      },
+      {
+        "result": "passed",
+        "report": "notation-checks.json"
+      },
+      {
+        "result": "passed",
+        "report": "media-checks.json"
+      },
+      {
+        "result": "passed",
+        "report": "transport-checks.json"
+      },
+      {
+        "result": "passed",
+        "report": "browser-ui-import.json"
+      },
+      {
+        "result": "passed",
+        "report": "browser-bookmark-import.json"
+      },
+      {
+        "result": "passed",
+        "report": "power-recovery.json"
+      },
+      {
+        "result": "passed",
+        "report": "performance-checks.json"
+      },
+      {
+        "result": "passed",
+        "report": "accessibility.json"
+      },
+      {
+        "result": "passed",
+        "report": "design-views.json"
+      },
+      {
+        "result": "passed",
+        "report": "ux-layout.json"
+      },
+      {
+        "result": "passed",
+        "report": "workspace-enhancements.json"
+      },
+      {
+        "result": "passed",
+        "report": "visual-finish.json"
+      },
+      {
+        "result": "passed",
+        "report": "practice-profile.json"
+      },
+      {
+        "result": "passed",
+        "report": "overview-live.json"
+      },
+      {
+        "result": "passed",
+        "report": "first-run.json"
+      },
+      {
+        "result": "passed",
+        "report": "file-commands.json"
+      },
+      {
+        "result": "passed",
+        "report": "window-smoke.json"
+      },
+      {
+        "result": "passed",
+        "report": "installer/installer-smoke.json"
+      }
+    ],
+    "actualLatencyVerified": false,
+    "sourceCommit": "b550d64d8fad4d0fab1c8f0001fd4302141967a8"
+  },
+  "installed": {
+    "result": "passed",
+    "unicodeProjectActivation": true,
+    "failedUpdatePreservedShortcutAndAssociation": true,
+    "installedNativeWindow": true,
+    "hardwareVerified": false,
+    "preUpdateFullBackupAndRawDatabase": true,
+    "historicBinaryDowngradeVerified": false,
+    "adminRequired": false,
+    "projectAssociationRegistered": true,
+    "versionTransitionPreservedDataAndPriorBinary": true,
+    "offlineSelfContainedStart": true,
+    "uninstallPreservedDatabaseAndSentinel": true,
+    "smartAppControlVerified": false,
+    "exactDllRepair": true,
+    "transitionUsesSameCandidateBinariesWithSyntheticVersionLabels": true,
+    "installedInventoryMatchesPortableArchive": true,
+    "perUserInstall": true
+  }
+}
