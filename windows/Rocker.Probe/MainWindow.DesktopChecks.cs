@@ -47,8 +47,8 @@ public sealed partial class MainWindow
         using(documentContext.Enter(a)){Check(studioZoom==31,"other-project-state-survives-close");}
         OpenDesktop(new("01"));
         await CaptureDesktopRuntimeAsync();
-        await VerifyDesktopCoverageAsync();
         WriteShellDiagnostic("desktop-runtime.json",new{result="passed",checks=checks.Count,scenarios=checks,actualWindows=true,physicalPointerDragVerified=false,physicalAudioVerified=false,sourceCommit=Environment.GetEnvironmentVariable("GITHUB_SHA")});
+        await VerifyDesktopCoverageAsync();
     }
     private async Task CaptureDesktopRuntimeAsync()
     {

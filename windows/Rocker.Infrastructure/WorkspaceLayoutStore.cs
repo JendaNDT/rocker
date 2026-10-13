@@ -17,7 +17,8 @@ public sealed class WorkspaceLayoutStore(UserFiles files)
         };
     }
     private sealed record Window(string Id,DesktopWindowRole Role,DesktopPixelBounds Bounds,Key[] Documents,string? ToolViewId,bool Maximized,bool AlwaysOnTop,bool Visible,int SelectedDocumentIndex);
-    private sealed record Layout(int SchemaVersion,Window[] Windows,double LibraryWidthDip,double InspectorWidthDip,bool LibraryVisible,bool InspectorVisible,string[]? AttachedTools);
+    private sealed record View(Key Key,double Zoom,int Track,int Bar,int LoopFirst,int LoopLast,bool AllTracks,bool Follow);
+    private sealed record Layout(int SchemaVersion,Window[] Windows,double LibraryWidthDip,double InspectorWidthDip,bool LibraryVisible,bool InspectorVisible,string[]? AttachedTools,View[]? ViewPreferences);
     public DesktopWorkspaceLayout? Load()
     {
         if(!File.Exists(FilePath))return null;
@@ -26,14 +27,15 @@ public sealed class WorkspaceLayoutStore(UserFiles files)
         {
             var value=JsonSerializer.Deserialize<Layout>(File.ReadAllText(FilePath))??throw new InvalidDataException("Soubor rozložení je prázdný.");
             if(value.Windows is null || value.Windows.Any(w=>w is null || w.Documents is null || w.Documents.Any(k=>k is null)))throw new InvalidDataException("Soubor rozložení není úplný.");
-            return new DesktopWorkspaceLayout(value.SchemaVersion,value.Windows.Select(w=>new DesktopWindowLayout(w.Id,w.Role,w.Bounds,w.Documents.Select(k=>k.Read()).ToArray(),w.ToolViewId,w.Maximized,w.AlwaysOnTop,w.Visible,w.SelectedDocumentIndex)).ToArray(),value.LibraryWidthDip,value.InspectorWidthDip,value.LibraryVisible,value.InspectorVisible,value.AttachedTools).Validate();
+            if(value.ViewPreferences?.Any(v=>v is null || v.Key is null)==true)throw new InvalidDataException("Nastavení dokumentu není úplné.");
+            return new DesktopWorkspaceLayout(value.SchemaVersion,value.Windows.Select(w=>new DesktopWindowLayout(w.Id,w.Role,w.Bounds,w.Documents.Select(k=>k.Read()).ToArray(),w.ToolViewId,w.Maximized,w.AlwaysOnTop,w.Visible,w.SelectedDocumentIndex)).ToArray(),value.LibraryWidthDip,value.InspectorWidthDip,value.LibraryVisible,value.InspectorVisible,value.AttachedTools,value.ViewPreferences?.Select(v=>new DesktopViewPreferences(v.Key.Read(),v.Zoom,v.Track,v.Bar,v.LoopFirst,v.LoopLast,v.AllTracks,v.Follow)).ToArray()).Validate();
         }
         catch(Exception error) when(error is JsonException or ArgumentException){throw new InvalidDataException("Uložené rozložení je poškozené. Hudební data zůstávají zachovaná.",error);}
     }
     public Task SaveAsync(DesktopWorkspaceLayout layout,CancellationToken cancellation=default)
     {
         var value=layout.Validate();
-        var stored=new Layout(value.SchemaVersion,value.Windows.Select(w=>new Window(w.Id,w.Role,w.Bounds,w.Documents.Select(Key.From).ToArray(),w.ToolViewId,w.Maximized,w.AlwaysOnTop,w.Visible,w.SelectedDocumentIndex)).ToArray(),value.LibraryWidthDip,value.InspectorWidthDip,value.LibraryVisible,value.InspectorVisible,(value.AttachedTools??[]).ToArray());
+        var stored=new Layout(value.SchemaVersion,value.Windows.Select(w=>new Window(w.Id,w.Role,w.Bounds,w.Documents.Select(Key.From).ToArray(),w.ToolViewId,w.Maximized,w.AlwaysOnTop,w.Visible,w.SelectedDocumentIndex)).ToArray(),value.LibraryWidthDip,value.InspectorWidthDip,value.LibraryVisible,value.InspectorVisible,(value.AttachedTools??[]).ToArray(),(value.ViewPreferences??[]).Select(v=>new View(Key.From(v.Key),v.Zoom,v.Track,v.Bar,v.LoopFirst,v.LoopLast,v.AllTracks,v.Follow)).ToArray());
         return UserFiles.WriteTextAsync(FilePath,JsonSerializer.Serialize(stored),cancellation);
     }
 }

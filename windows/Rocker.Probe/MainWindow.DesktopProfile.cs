@@ -42,6 +42,7 @@ public sealed partial class MainWindow
         foreach(var window in desktopWindows.Where(w=>!floatingHosts.ContainsValue(w)).ToArray())
         {dialogService?.Forget(window.Root.XamlRoot);window.ExitApproved=true;window.Close();desktopWindows.Remove(window);}
         documentContext.Select(documentContext.Default);
+        desktopFileAliases.Clear();desktopProjectAliases.Clear();desktopLibraryAssets.Clear();
     }
     private void ReopenDesktopAfterRestore()
     {

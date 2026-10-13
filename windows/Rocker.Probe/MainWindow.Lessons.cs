@@ -27,6 +27,15 @@ public sealed partial class MainWindow
         var lesson=catalog!.Lessons.FirstOrDefault(l=>l.Id==id)??LessonRules.NextIncomplete(catalog.Lessons,completedLessons)??catalog.Lessons[0];activeLessonId=lesson.Id;
         if(!lessonSessions.ContainsKey(lesson.Id))lessonSessions.Add(lesson.Id,LessonSession.Start(lesson,savedLessonPositions.GetValueOrDefault(lesson.Id)) with{Completed=completedLessons.Contains(lesson.Id)});
         var panel=Stack();
+        Desktop.DocumentSurface? desktopLesson=null;ListView? stepList=null;bool selectingStep=false;
+        if(desktopEnabled)
+        {
+            stepList=new ListView{SelectionMode=ListViewSelectionMode.Single,IsItemClickEnabled=true,DisplayMemberPath="Title",ItemsSource=lesson.Steps.Select((s,i)=>new ListEntry(i.ToString(),$"{i+1:00} · {s.GetProperty("title").GetString()}",s.GetProperty("kind").GetString()!)).ToArray()};
+            var outline=Stack();outline.Children.Add(Text("KROKY LEKCE",true));outline.Children.Add(stepList);
+            var details=Stack();details.Children.Add(Text(lesson.Title));details.Children.Add(Text($"{lesson.EstimatedMinutes} minut · {lesson.Steps.Count} kroků",true));details.Children.Add(Text("Měření tónu potvrzuje pouze skutečný vstup. Kroky můžeš procházet i ručně.",true));
+            desktopLesson=new(new ScrollViewer{Content=panel,HorizontalScrollBarVisibility=ScrollBarVisibility.Disabled},outline,details);
+            stepList.ItemClick+=async(_,e)=>{using var scope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive || selectingStep || e.ClickedItem is not ListEntry item)return;if(audio is not null)await audio.StopPreviewAsync();var previous=lessonSessions[lesson.Id];lessonSessions[lesson.Id]=LessonSession.Start(lesson,int.Parse(item.Id)) with{Completed=previous.Completed};SaveLessonProgress();Render();};
+        }
         async Task Change(bool forward){if(audio is not null)await audio.StopPreviewAsync();var current=lessonSessions[lesson.Id];if(current.Completed)return;lessonSessions[lesson.Id]=forward?(current.IsLast?current.Finish():current.Next()):current.Previous();if(forward && current.IsLast)completedLessons.Add(lesson.Id);SaveLessonProgress();SaveProgressAndAchievements();Render();}
         void Render()
         {
@@ -50,8 +59,14 @@ public sealed partial class MainWindow
             var previousKey=new KeyboardAccelerator{Key=VirtualKey.Left,Modifiers=VirtualKeyModifiers.Control};previousKey.Invoked+=async(_,e)=>{using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;if(CurrentTarget.ViewId=="06" && previous.IsEnabled){e.Handled=true;await Change(false);}};previous.KeyboardAccelerators.Add(previousKey);
             var nextKey=new KeyboardAccelerator{Key=VirtualKey.Right,Modifiers=VirtualKeyModifiers.Control};nextKey.Invoked+=async(_,e)=>{using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;if(CurrentTarget.ViewId=="06" && next.IsEnabled){e.Handled=true;await Change(true);}};next.KeyboardAccelerators.Add(nextKey);
             panel.Children.Add(previous);panel.Children.Add(next);var back=new Button{Content="Výběr lekcí"};back.Click+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;Navigate(new("05"));};panel.Children.Add(back);
+            if(desktopLesson is not null)
+            {
+                desktopLesson.Toolbar.Children.Clear();foreach(var button in new[]{back,previous,next}){panel.Children.Remove(button);button.MinHeight=32;desktopLesson.Toolbar.Children.Add(button);}
+                selectingStep=true;try{stepList!.SelectedIndex=session.StepIndex;}finally{selectingStep=false;}
+                desktopLesson.Footer.Children.Clear();desktopLesson.Footer.Children.Add(Text($"Krok {session.StepIndex+1} / {lesson.Steps.Count}"+(session.Completed?" · dokončeno":""),true));
+            }
         }
-        Render();return Card(panel);
+        Render();return desktopLesson is not null?desktopLesson:Card(panel);
     }
     private async Task<bool> PlayTeachingAsync(IReadOnlyList<TeachingNote> notes,bool repeat=false,uint countIn=0)
     {

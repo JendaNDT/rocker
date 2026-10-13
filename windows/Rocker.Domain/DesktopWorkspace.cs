@@ -98,8 +98,9 @@ public sealed record DesktopTransportOwnership(DesktopDocumentKey? Owner, bool C
 public sealed record DesktopPixelBounds(int X, int Y, int Width, int Height);
 public sealed record DesktopWindowLayout(string Id, DesktopWindowRole Role, DesktopPixelBounds Bounds,
     IReadOnlyList<DesktopDocumentKey> Documents, string? ToolViewId = null, bool Maximized = false, bool AlwaysOnTop = false, bool Visible = true, int SelectedDocumentIndex = 0);
+public sealed record DesktopViewPreferences(DesktopDocumentKey Key,double Zoom=1,int Track=0,int Bar=1,int LoopFirst=1,int LoopLast=1,bool AllTracks=false,bool Follow=true);
 public sealed record DesktopWorkspaceLayout(int SchemaVersion, IReadOnlyList<DesktopWindowLayout> Windows,
-    double LibraryWidthDip = 220, double InspectorWidthDip = 240, bool LibraryVisible = true, bool InspectorVisible = true, IReadOnlyList<string>? AttachedTools = null)
+    double LibraryWidthDip = 220, double InspectorWidthDip = 240, bool LibraryVisible = true, bool InspectorVisible = true, IReadOnlyList<string>? AttachedTools = null,IReadOnlyList<DesktopViewPreferences>? ViewPreferences=null)
 {
     public const int CurrentSchema = 1;
     public DesktopWorkspaceLayout Validate()
@@ -136,6 +137,10 @@ public sealed record DesktopWorkspaceLayout(int SchemaVersion, IReadOnlyList<Des
             throw new InvalidDataException("Hlavní, Live a nastavovací okno musí být jednoznačné.");
         foreach(var attached in AttachedTools??[])
             if(!DesktopRoutes.ToolViews.Contains(attached) || !tools.Add(attached))throw new InvalidDataException("Připojený nástroj není jednoznačný.");
-        return this with { Windows = windows.AsReadOnly(), AttachedTools=Array.AsReadOnly((AttachedTools??[]).ToArray()) };
+        var preferences=new HashSet<DesktopDocumentKey>();
+        if(ViewPreferences?.Count>64)throw new InvalidDataException("Příliš mnoho nastavení dokumentů.");
+        foreach(var view in ViewPreferences??[])
+            if(view is null || view.Key is null || !documents.Contains(view.Key) || !preferences.Add(view.Key) || !double.IsFinite(view.Zoom) || view.Zoom is <.1 or >200 || view.Track is <0 or >10000 || view.Bar is <1 or >100000 || view.LoopFirst is <1 or >100000 || view.LoopLast<view.LoopFirst || view.LoopLast>100000)throw new InvalidDataException("Nastavení dokumentu není platné.");
+        return this with { Windows = windows.AsReadOnly(), AttachedTools=Array.AsReadOnly((AttachedTools??[]).ToArray()),ViewPreferences=Array.AsReadOnly((ViewPreferences??[]).ToArray()) };
     }
 }

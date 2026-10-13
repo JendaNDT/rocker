@@ -24,6 +24,7 @@ public sealed partial class MainWindow
     private readonly TextBlock desktopSource = new() { Text="Zdroj: žádný",TextTrimming=TextTrimming.CharacterEllipsis };
     private readonly ListView desktopOperations = new(){DisplayMemberPath="Title",MaxHeight=100,SelectionMode=ListViewSelectionMode.Single};
     private readonly Button cancelDesktopOperation = new(){Content="Zrušit vybranou operaci",MinHeight=30};
+    private readonly Button desktopCompletePlan = new(){Content="Potvrdit blok plánu",MinHeight=30,Visibility=Visibility.Collapsed};
     private double desktopLibraryWidth=230,desktopInspectorWidth=280;
     private bool desktopLibraryVisible=true,desktopInspectorVisible=true;
     private readonly TextBlock operationStatus = new() { TextWrapping=TextWrapping.Wrap };
@@ -62,7 +63,7 @@ public sealed partial class MainWindow
         librarySearch.TextChanged+=(_,_)=>RefreshDesktopLibrary();desktopLibrary.ItemInvoked+=(_,e)=>{if(e.InvokedItem is TreeViewNode{Content:LibraryEntry entry})Navigate(entry.Target);else if(e.InvokedItem is LibraryEntry item)Navigate(item.Target);};
         desktopRoot.Children.Add(library);Grid.SetColumn(documentTabs,2);desktopRoot.Children.Add(documentTabs);
         var right=new Grid{Padding=new Thickness(12),RowSpacing=10};right.RowDefinitions.Add(new(){Height=GridLength.Auto});right.RowDefinitions.Add(new(){Height=GridLength.Auto});right.RowDefinitions.Add(new(){Height=GridLength.Auto});right.RowDefinitions.Add(new(){Height=new(1,GridUnitType.Star)});
-        right.Children.Add(inspectorTitle);Grid.SetRow(inspectorDetails,1);right.Children.Add(inspectorDetails);var operationPanel=Stack();operationPanel.Spacing=4;operationPanel.Children.Add(operationStatus);operationPanel.Children.Add(desktopOperations);operationPanel.Children.Add(cancelDesktopOperation);Grid.SetRow(operationPanel,2);right.Children.Add(operationPanel);
+        right.Children.Add(inspectorTitle);Grid.SetRow(inspectorDetails,1);right.Children.Add(inspectorDetails);var operationPanel=Stack();operationPanel.Spacing=4;operationPanel.Children.Add(desktopCompletePlan);desktopCompletePlan.Click+=CompletePlan_Click;operationPanel.Children.Add(operationStatus);operationPanel.Children.Add(desktopOperations);operationPanel.Children.Add(cancelDesktopOperation);Grid.SetRow(operationPanel,2);right.Children.Add(operationPanel);
         cancelDesktopOperation.Click+=(_,_)=>{if(desktopOperations.SelectedItem is OperationStatus operation)services.Operations.Cancel(operation.Id);};desktopOperations.SelectionChanged+=(_,_)=>cancelDesktopOperation.IsEnabled=desktopOperations.SelectedItem is OperationStatus{CanCancel:true};Grid.SetRow(toolTabs,3);right.Children.Add(toolTabs);Grid.SetColumn(right,4);desktopRoot.Children.Add(right);
         AddDesktopSplitter(1,0);AddDesktopSplitter(3,4);
         Grid.SetRow(desktopRoot,1);ShellRoot.Children.Add(desktopRoot);
@@ -115,10 +116,10 @@ public sealed partial class MainWindow
             string identity=route.Destination==DesktopDestination.Settings?"settings":target.ViewId;
             if(desktopTools.TryGetValue(identity,out var existing)){
                 if(!floatingHosts.ContainsKey(existing.Tab) && !toolTabs.TabItems.Contains(existing.Tab))toolTabs.TabItems.Add(existing.Tab);
-                if(route.Destination==DesktopDestination.Settings && existing.Session.Target!=target){existing.Session.Target=target;using var settingsScope=documentContext.Enter(existing.Session);existing.Tab.Content=new ScrollViewer{Content=target.ViewId=="29"?TakeDevicePanel():BuildWorkspace(target),Padding=new(16)};existing.Tab.Header=WorkspaceViews.Get(target.ViewId).Title;}
+                if(route.Destination==DesktopDestination.Settings && existing.Session.Target!=target){existing.Session.Target=target;using var settingsScope=documentContext.Enter(existing.Session);existing.Tab.Content=BuildDesktopSettingsContent(existing.Session,target);existing.Tab.Header=WorkspaceViews.Get(target.ViewId).Title;}
                 ActivateDesktopTab(existing.Tab);return existing.Session;}
             var session=new DocumentSession(target);using var scope=documentContext.Enter(route.Destination==DesktopDestination.Tool || route.Destination==DesktopDestination.Live ? documentContext.Default : session);
-            FrameworkElement page=target.ViewId=="29"?TakeDevicePanel():BuildWorkspace(target);
+            FrameworkElement page=route.Destination==DesktopDestination.Settings?BuildDesktopSettingsContent(session,target):BuildWorkspace(target);
             var tab=CreateDesktopTab(session,page,false);desktopTools.Add(identity,(session,tab));
             if(route.Destination==DesktopDestination.Tool){toolTabs.TabItems.Add(tab);toolTabs.SelectedItem=tab;}
             else{toolTabs.TabItems.Add(tab);DetachDesktopTab(tab);}
@@ -174,10 +175,15 @@ public sealed partial class MainWindow
             if(tabs==toolTabs && document || tabs==documentTabs && !document)return;
             if(targetHost is not null && tabs.TabItems.OfType<TabViewItem>().FirstOrDefault()?.Tag is DocumentSession target && desktopDocuments.ContainsKey(target)!=document)return;
             if(!document && !DesktopRoutes.ToolViews.Contains(session.Target.ViewId))return;
-            floatingHosts.TryGetValue(tab,out var oldHost);RemoveDesktopTabParent(tab);floatingHosts.Remove(tab);tabs.TabItems.Add(tab);tabs.SelectedItem=tab;if(targetHost is not null)floatingHosts[tab]=targetHost;
-            if(oldHost is not null && oldHost!=targetHost && oldHost.Tabs.TabItems.Count==0){dialogService?.Forget(oldHost.Root.XamlRoot);oldHost.ExitApproved=true;oldHost.Close();desktopWindows.Remove(oldHost);}
+            MoveDesktopTab(tab,tabs,targetHost);
             e.Handled=true;
         };
+    }
+    private void MoveDesktopTab(TabViewItem tab,TabView tabs,DesktopWindow? targetHost=null)
+    {
+        floatingHosts.TryGetValue(tab,out var oldHost);RemoveDesktopTabParent(tab);floatingHosts.Remove(tab);
+        tabs.TabItems.Add(tab);tabs.SelectedItem=tab;if(targetHost is not null)floatingHosts[tab]=targetHost;
+        if(oldHost is not null && oldHost!=targetHost && oldHost.Tabs.TabItems.Count==0){dialogService?.Forget(oldHost.Root.XamlRoot);oldHost.ExitApproved=true;oldHost.Close();desktopWindows.Remove(oldHost);}
     }
     private void RemoveDesktopTabParent(TabViewItem item)
     {
@@ -262,6 +268,7 @@ public sealed partial class MainWindow
             _=>WorkspaceDescription(session.Target)
         };
         if(services.Transport.Owner==session)details+="\nZdroj společného přehrávače";
+        RefreshPlanControls();
         if(inspectorTitle.Text!=title)inspectorTitle.Text=title;if(inspectorDetails.Text!=details)inspectorDetails.Text=details;
         string source=services.Transport.Owner is{ } owner?TabFor(owner)?.Header as string??WorkspaceViews.Get(owner.Target.ViewId).Title:"žádný";
         if(desktopSource.Text!="Zdroj: "+source)desktopSource.Text="Zdroj: "+source;

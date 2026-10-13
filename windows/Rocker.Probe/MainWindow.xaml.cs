@@ -65,6 +65,7 @@ public sealed partial class MainWindow : Window
     }
     private async void Stop_Click(object sender, RoutedEventArgs e)
     {
+        if(desktopEnabled){try{await StopDesktopAudioAsync();}catch(Exception error){ShowError(error);}return;}
         if(desktopEnabled){await ExecuteDesktopCommandAsync("transport.stop");return;}
         using var invocationScope=documentContext.Enter(documentContext.Current);
 
@@ -153,7 +154,7 @@ public sealed partial class MainWindow : Window
     {
         using var invocationScope=documentContext.Enter(documentContext.Current);
 
-        if(busy || closed)return;SetBusy(true);var previous=preview;NotationStatus.Text="Načítám a vykresluji noty…";
+        if(busy || closed)return;using var operation=services.Operations.Begin(documentContext.Current.Id,"score-load","Načítání partitury",cancellable:false);SetBusy(true);var previous=preview;NotationStatus.Text="Načítám a vykresluji noty…";
         try
         {
             var result=await Task.Run(()=>{using var file=File.OpenRead(path);if(file.Length>ScorePreview.MaximumFileBytes)throw new InvalidDataException("Soubor přesahuje limit 4 MB.");var bytes=new byte[(int)file.Length];file.ReadExactly(bytes);return ScoreDocument.Load(bytes).Render();});if(closed)return;

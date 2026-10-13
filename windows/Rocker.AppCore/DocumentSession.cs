@@ -6,6 +6,7 @@ namespace Rocker.AppCore;
 public sealed class DocumentSession
 {
     private readonly Dictionary<string, object?> state = [];
+    private readonly object stateGate = new();
     public string Id { get; } = Guid.NewGuid().ToString("N");
     public DesktopDocumentKey? Key { get; }
     public NavigationTarget Target { get; set; }
@@ -14,11 +15,14 @@ public sealed class DocumentSession
     public DocumentSession(NavigationTarget target, DesktopDocumentKey? key = null) { WorkspaceViews.Validate(target); Target = target; Key = key; }
     public T Get<T>(string name, Func<T> initialize)
     {
-        if (!state.TryGetValue(name, out var value)) state.Add(name, value = initialize());
-        return (T)value!;
+        lock(stateGate)
+        {
+            if (!state.TryGetValue(name, out var value)) state.Add(name, value = initialize());
+            return (T)value!;
+        }
     }
-    public void Set<T>(string name, T value) => state[name] = value;
-    public void Close() => IsAlive = false;
+    public void Set<T>(string name, T value) { lock(stateGate)state[name] = value; }
+    public void Close() { lock(stateGate){IsAlive=false;state.Clear();} }
 }
 
 public sealed class DocumentContext

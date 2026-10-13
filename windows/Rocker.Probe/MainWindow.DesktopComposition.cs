@@ -88,5 +88,5 @@ public sealed partial class MainWindow
         return surface;
     }
     private static UIElement DesktopDocumentContent(FrameworkElement page)
-        =>page is DocumentSurface or Views.ScoreDocumentView or Views.VideoDocumentView ? page : new ScrollViewer{Content=page,Padding=new Thickness(16),HorizontalScrollBarVisibility=ScrollBarVisibility.Disabled};
+        =>page is DocumentSurface or Views.ScoreDocumentView or Views.VideoDocumentView || page.Tag is "desktop-settings" ? page : new ScrollViewer{Content=page,Padding=new Thickness(16),HorizontalScrollBarVisibility=ScrollBarVisibility.Disabled};
 }

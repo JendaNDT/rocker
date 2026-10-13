@@ -53,7 +53,7 @@ public sealed partial class MainWindow
         var markA=new Button{Content="Nastavit A na aktuální pozici"};markA.Click+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;if(audio is not null)songA.Value=audio.GetTransport().PositionSeconds*currentSpeed;};range.Children.Add(markA);
         var markB=new Button{Content="Nastavit B na aktuální pozici"};markB.Click+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;if(audio is not null)songB.Value=audio.GetTransport().PositionSeconds*currentSpeed;};range.Children.Add(markB);
         var loop=new Button{Content="Opakovat úsek A–B"};loop.Click+=async(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;try{await ApplySongLoopAsync();}catch(Exception error){ShowError(error);}};range.Children.Add(loop);
-        var whole=new Button{Content="Vypnout opakování"};whole.Click+=async(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;try{if(audio is not null)await audio.SetLoopAsync(0,0,false);}catch(Exception error){ShowError(error);}};range.Children.Add(whole);
+        var whole=new Button{Content="Vypnout opakování"};whole.Click+=async(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;try{if(audio is not null){if(desktopEnabled)await ClaimDesktopSourceAsync(capturedDocument);await audio.SetLoopAsync(0,0,false);}}catch(Exception error){ShowError(error);}};range.Children.Add(whole);
         var save=new Button{Content="Uložit pojmenovaný úsek…"};save.Click+=async(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;try{await SaveSongSectionAsync();}catch(Exception error){ShowError(error);}};range.Children.Add(save);panel.Children.Add(Card(range));
         songSections=new ListView{Header="Uložené úseky",DisplayMemberPath="Label",IsItemClickEnabled=true,SelectionMode=ListViewSelectionMode.Single,ItemsSource=song?.Sections??[]};
         songSections.ItemClick+=async(_,e)=>{using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;if(e.ClickedItem is SongSection section){songA.Value=section.Start;songB.Value=section.End;try{await ApplySongLoopAsync();}catch(Exception error){ShowError(error);}}};panel.Children.Add(songSections);
@@ -65,8 +65,8 @@ public sealed partial class MainWindow
         var ramp=new ToggleSwitch{Header="Postupné zrychlování A–B",IsOn=song?.Ramp??false};var rampStep=SongNumber("Přírůstek rychlosti",song?.RampStep??.05,.01,.25,.01);var rampEvery=SongNumber("Zrychlit po opakováních",song?.RampEvery??4,1,32,1);var rampTarget=SongNumber("Cílová rychlost",song?.RampTarget??1,.25,2,.05);
         void SaveRamp(){if(song is null || songUpdating || !double.IsFinite(rampStep.Value) || !double.IsFinite(rampEvery.Value) || !double.IsFinite(rampTarget.Value))return;song=song with{Ramp=ramp.IsOn,RampStep=rampStep.Value,RampEvery=(uint)rampEvery.Value,RampTarget=rampTarget.Value};SaveSong();}
         ramp.Toggled+=async(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;SaveRamp();if(!ramp.IsOn){try{await CancelSongRampAsync();}catch(Exception error){ShowError(error);}}};rampStep.ValueChanged+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;SaveRamp();};rampEvery.ValueChanged+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;SaveRamp();};rampTarget.ValueChanged+=(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;SaveRamp();};panel.Children.Add(ramp);panel.Children.Add(rampStep);panel.Children.Add(rampEvery);panel.Children.Add(rampTarget);
-        var play=new Button{Content="Přehrát s předtaktem"};play.Click+=async(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;if(song is null || audio is null || busy)return;try{SavePractice();var config=audio.GetMetronome() with{Enabled=false,Ramp=false};await audio.SetMetronomeAsync(config);await audio.SetMetronomeAsync(config with{Enabled=true,Bpm=(uint)song.Bpm,Beats=song.Beats,CountIn=song.CountInBars});await audio.PlayWithCountInAsync(song.CountInBars,song.Beats,song.Bpm);}catch(Exception error){ShowError(error);}};panel.Children.Add(play);
-        var pause=new Button{Content="Pozastavit skladbu"};pause.Click+=async(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;try{if(audio is not null)await audio.PauseAsync();}catch(Exception error){ShowError(error);}};panel.Children.Add(pause);
+        var play=new Button{Content="Přehrát s předtaktem"};play.Click+=async(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;if(song is null || audio is null || busy)return;try{if(desktopEnabled)await ClaimDesktopSourceAsync(capturedDocument);SavePractice();var config=audio.GetMetronome() with{Enabled=false,Ramp=false};await audio.SetMetronomeAsync(config);await audio.SetMetronomeAsync(config with{Enabled=true,Bpm=(uint)song.Bpm,Beats=song.Beats,CountIn=song.CountInBars});await audio.PlayWithCountInAsync(song.CountInBars,song.Beats,song.Bpm);}catch(Exception error){ShowError(error);}};panel.Children.Add(play);
+        var pause=new Button{Content="Pozastavit skladbu"};pause.Click+=async(_,_)=>{using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;try{if(audio is not null && (!desktopEnabled || services.Transport.Owner==capturedDocument))await audio.PauseAsync();}catch(Exception error){ShowError(error);}};panel.Children.Add(pause);
         panel.Children.Add(Text("Skladba a monitoring kytary mají samostatné ovládání. Tlačítko Zastavit ve spodním panelu zastaví všechny zdroje. Soubory zůstávají na původním místě; záloha uchová jejich pozice a úseky, původní zvuk připojené skladby zálohuj zvlášť.",true));
         songUpdating=false;DrawSongWaveform();return desktopEnabled?ComposeDesktopSong(panel):panel;
     }
@@ -122,6 +122,16 @@ public sealed partial class MainWindow
         finally{if(!closed){SetBusy(false);if(songCancel is not null)songCancel.IsEnabled=false;}}
     }
     private async Task ChangeSongSpeedAsync(double speed)
+    {
+        using var scope=documentContext.Enter(documentContext.Current);
+        if(desktopEnabled && services.Transport.Owner==documentContext.Current)
+        {
+            using var operation=services.Operations.Begin(documentContext.Current.Id,"source-update","Změna rychlosti skladby",cancellable:false);
+            await services.Transport.UpdateOwnerAsync(documentContext.Current,()=>ChangeSongSpeedCoreAsync(speed));
+        }
+        else await ChangeSongSpeedCoreAsync(speed);
+    }
+    private async Task ChangeSongSpeedCoreAsync(double speed)
     {
         using var invocationScope=documentContext.Enter(documentContext.Current);
 

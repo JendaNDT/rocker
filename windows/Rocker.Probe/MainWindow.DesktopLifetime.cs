@@ -34,5 +34,5 @@ public sealed partial class MainWindow
         foreach(var window in desktopWindows.ToArray()){dialogService?.Forget(window.Root.XamlRoot);window.ExitApproved=true;window.Close();}
         desktopWindows.Clear();floatingHosts.Clear();desktopDocuments.Clear();desktopTools.Clear();
     }
-    private bool DesktopHasCriticalOperation()=>services.Operations.Snapshot().Any(o=>!o.CanCancel && o.Kind is not "dialog");
+    private bool DesktopHasCriticalOperation()=>services.Operations.Snapshot().Any(o=>!o.CanCancel);
 }

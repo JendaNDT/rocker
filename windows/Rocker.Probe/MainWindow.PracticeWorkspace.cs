@@ -159,10 +159,12 @@ public sealed partial class MainWindow
     }
     private PracticeSetup CapturePracticeSetup(string name)
     {
+        var target=CurrentTarget;
+        using var sourceScope=documentContext.Enter(desktopEnabled?services.Transport.Owner??documentContext.Current:documentContext.Current);
         var transport = audio?.GetTransport();
         bool hasSong = song is not null && mediaPath == song.SourcePath && transport is { Ready: not 0 } && !studioOwnsPlayback;
         bool loop = hasSong && appliedSongLoopId == song!.Id && transport is { } t && (t.Reserved & 1) != 0;
-        return PracticeWorkspaceRules.Validate(new PracticeSetup(Guid.NewGuid().ToString("D"), name, CurrentTarget, ampSettings,
+        return PracticeWorkspaceRules.Validate(new PracticeSetup(Guid.NewGuid().ToString("D"), name, target, ampSettings,
             appSettings.AmpEnabled, metroConfig, appSettings.TuningId, hasSong ? song!.Id : null,
             hasSong ? currentSpeed : 1, hasSong ? Math.Clamp(transport!.Value.PositionSeconds * currentSpeed, 0, song!.Duration) : 0,
             loop ? appliedSongLoopStart : 0, loop ? appliedSongLoopEnd : 0, loop, hasSong && playingRecording is { } recording && mediaPath==OwnedPaths.Resolve(userFiles.Root,recording.RelativePath)?recording.Id:null));
@@ -237,6 +239,7 @@ public sealed partial class MainWindow
         if (audio is null || !persistenceReady || busy || workspaceOperation || powerTransition || deviceOperationRunning || fileOperation
             || captureDraft is not null || recordingOperation || studioOperation || studioEditTask is { IsCompleted: false } || looperOperation || backupOperationRunning || profileOperation || secretOperationRunning || closingWindow)
             throw new InvalidOperationException("Nejdřív dokonči práci nebo zastav nahrávání.");
+        if(desktopEnabled){await ApplyDesktopPracticeSetupAsync(selected);return;}
         workspaceOperation = true;BeginPreparation("Připravuji sestavu cvičení…");
         try
         {

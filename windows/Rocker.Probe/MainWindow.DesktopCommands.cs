@@ -43,7 +43,7 @@ public sealed partial class MainWindow
             bool control=Microsoft.UI.Input.InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Control).HasFlag(Windows.UI.Core.CoreVirtualKeyStates.Down);
             bool shift=Microsoft.UI.Input.InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Shift).HasFlag(Windows.UI.Core.CoreVirtualKeyStates.Down);
             string? command=control?args.Key switch{VirtualKey.O=>"file.open",VirtualKey.S=>"file.save",VirtualKey.W=>"document.close",VirtualKey.K=>"window.search",VirtualKey.Y=>"edit.redo",VirtualKey.Z=>shift?"edit.redo":"edit.undo",_=>null}:args.Key switch{VirtualKey.F11=>"window.focus",VirtualKey.Space=>"transport.toggle",_=>null};
-            if(command is "edit.undo" or "edit.redo" && TextOrInteractiveFocus(args.OriginalSource as DependencyObject))return;
+            if(command is "edit.undo" or "edit.redo" && DesktopTextEditorFocus(args.OriginalSource as DependencyObject))return;
             if(command=="transport.toggle" && TextOrInteractiveFocus(args.OriginalSource as DependencyObject))return;
             if(args.Key==VirtualKey.Escape && focusMode){SetFocusMode(false);args.Handled=true;return;}
             if(control && args.Key==VirtualKey.Tab)
@@ -54,6 +54,8 @@ public sealed partial class MainWindow
             if(command is null)return;args.Handled=true;await ExecuteDesktopCommandAsync(command);
         };
     }
+    private static bool DesktopTextEditorFocus(DependencyObject? source)
+    {for(var item=source;item is not null;item=Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(item))if(item is TextBox or PasswordBox or RichEditBox or NumberBox)return true;return false;}
     private void InitializeDesktopWindowMenu(Desktop.DesktopWindow window,TabViewItem item)
     {
         var file=new MenuBarItem{Title="Soubor"};var edit=new MenuBarItem{Title="Úpravy"};var view=new MenuBarItem{Title="Okno"};var playback=new MenuBarItem{Title="Přehrávání"};

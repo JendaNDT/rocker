@@ -15,7 +15,7 @@ public sealed partial class MainWindow
         var key=DesktopDocumentKey.ForCanonicalFile("07",path);
         var session=OpenDesktop(new("07",relocated?.Id),key);
         using var scope=documentContext.Enter(session);
-        if(song is not null && mediaPath==path)return;
+        if(song is not null && mediaPath is not null && Rocker.Infrastructure.CanonicalFiles.ResolveExisting(mediaPath).Identity==Rocker.Infrastructure.CanonicalFiles.ResolveExisting(path).Identity)return;
         if(session.Get<Task?>("song-loading",()=>null) is{ } pending){await pending;return;}
         var loading=LoadDesktopSongCoreAsync(session,path,name,relocated);session.Set("song-loading",loading);
         try{await loading;}finally{session.Set<Task?>("song-loading",null);}
@@ -35,18 +35,28 @@ public sealed partial class MainWindow
             mediaPath=path;mediaMidi=null;currentSpeed=song.Speed;songPeaks=result.Peaks;SaveSong();RememberFile(path);RebuildDesktopDocument(session);RefreshDesktopLibrary();
         }
         catch(OperationCanceledException){ShowPreparationCancelled();}
+        catch(Exception error){if(session.IsAlive)ShowPersistenceError("Skladbu nelze načíst: "+error.Message);}
     }
     private async Task<bool> OpenDesktopRecordingAsync(RecordingData value)
     {
         using var invocationScope=documentContext.Enter(documentContext.Current);
 
         var session=OpenDesktop(new("14",value.Id));using var scope=documentContext.Enter(session);
+        if(playingRecording?.Id==value.Id && recordingPeaks.Length>0)return true;
+        if(session.Get<Task<bool>?>("recording-loading",()=>null) is{ } pending)return await pending;
+        var loading=InspectDesktopRecordingAsync(session,value);session.Set("recording-loading",loading);
+        try{return await loading;}finally{session.Set<Task<bool>?>("recording-loading",null);}
+    }
+    private async Task<bool> InspectDesktopRecordingAsync(DocumentSession session,RecordingData value)
+    {
+        using var scope=documentContext.Enter(session);
         using var operation=services.Operations.Begin(session.Id,"inspect-recording","Čtení nahrávky");
         if(!await new Rocker.Infrastructure.OwnedMedia(userFiles).VerifyAsync(new(value.RelativePath,value.Sha256,value.Bytes),operation.Cancellation))throw new InvalidDataException("Nahrávka chybí nebo je změněná.");
         string path=Rocker.Infrastructure.OwnedPaths.Resolve(userFiles.Root,value.RelativePath);
         var result=await MediaInspection.ReadAsync(path,operation.Cancellation);if(!session.IsAlive)return false;
         playingRecording=value;mediaPath=path;mediaMidi=null;currentSpeed=1;recordingPeaks=result.Peaks;songPeaks=result.Peaks;
-        RebuildDesktopDocument(session);DrawRecordingWaveform();return true;
+        song=songs.Values.FirstOrDefault(s=>string.Equals(s.SourcePath,path,StringComparison.OrdinalIgnoreCase))??new(Guid.NewGuid().ToString("D"),value.Name,path,result.DurationSeconds);SaveSong();
+        RebuildDesktopDocument(session);SetRecordingRange(0,value.DurationSec);DrawRecordingWaveform();RefreshRecordingWaveform();return true;
     }
     private void RebuildDesktopDocument(DocumentSession session)
     {

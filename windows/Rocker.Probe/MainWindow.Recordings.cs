@@ -121,6 +121,13 @@ public sealed partial class MainWindow
     {
         using var invocationScope=documentContext.Enter(documentContext.Current);
 
+        if(desktopEnabled)
+        {
+            if(!await OpenDesktopRecordingAsync(value))return;
+            var session=OpenDesktop(new("14",value.Id));using var scope=documentContext.Enter(session);
+            await ClaimDesktopSourceAsync(session);if(audio is not null)await audio.PlayAsync();return;
+        }
+
         if(await PreviewRecordingAsync(value) && audio is not null && playingRecording?.Id==value.Id && RecordingWaveformReady())await audio.PlayAsync();
         else if(desktopEnabled && audio is not null && documentContext.Current.Target.ViewId=="14"){await ClaimDesktopSourceAsync(documentContext.Current);await audio.PlayAsync();}
     }

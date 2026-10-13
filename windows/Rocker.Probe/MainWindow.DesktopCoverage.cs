@@ -26,6 +26,9 @@ public sealed partial class MainWindow
                 if(route.Destination is DesktopDestination.Tool or DesktopDestination.Live or DesktopDestination.Settings)
                 {var tab=TabFor(session)??throw new InvalidOperationException("Missing tool host: "+view.Id);DetachDesktopTab(tab);root=HostRoot(session);}
                 else root=ShellRoot;
+                var deadline=DateTime.UtcNow.AddSeconds(5);
+                while((root.XamlRoot is null || root.ActualWidth<=0 || root.ActualHeight<=0) && DateTime.UtcNow<deadline)await Task.Delay(25);
+                root.UpdateLayout();await Task.Delay(100);
                 if(root.XamlRoot is null || root.ActualWidth<=0 || root.ActualHeight<=0)throw new InvalidOperationException("Desktop view has no actual layout: "+view.Id);
                 await CaptureDesktopElementAsync(root,name);
             }

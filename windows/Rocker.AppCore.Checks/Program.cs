@@ -63,6 +63,12 @@ Check(!await exit.ResolveAsync(_=>Task.FromResult(CloseChoice.Save)) && exit.Gua
 Check(!await exit.ResolveAsync(_=>Task.FromResult(CloseChoice.Cancel)) && exit.Guards.Count==1,"Canceled exit retains the pending work");
 exit.Guards["doc-a/studio"]=new(new(false,true),()=>{++saved;return Task.FromResult(true);},()=>{});
 Check(await exit.ResolveAsync(_=>Task.FromResult(CloseChoice.Save),"doc-a") && saved==1 && exit.Guards.Count==0,"Explicit save resolves only the requested document");
+int discarded=0,decisions=0;
+exit.Guards["a/work"]=new(new(false,true),()=>Task.FromResult(true),()=>++discarded);
+exit.Guards["b/work"]=new(new(false,true),()=>Task.FromResult(false),()=>++discarded);
+Check(!await exit.ResolveAsync(_=>Task.FromResult(++decisions==1?CloseChoice.Discard:CloseChoice.Cancel)) && discarded==0 && exit.Guards.Count==2,"Canceling a later window retains earlier proposed discards");
+decisions=0;Check(!await exit.ResolveAsync(_=>Task.FromResult(++decisions==1?CloseChoice.Discard:CloseChoice.Save)) && discarded==0 && exit.Guards.Count==2,"Failed save prevents every proposed discard and partial shutdown");
+Check(await exit.ResolveAsync(_=>Task.FromResult(CloseChoice.Discard)) && discarded==2 && exit.Guards.Count==0,"Discards apply together after all decisions succeed");
 var router=new CommandRouter();var commandContext=new CommandContext(docB,"window-b",docB);DocumentSession? commandOwner=null;
 router.Register(new("save","Uložit",_=>true,async c=>{await Task.Yield();commandOwner=c.Session;}));
 Check(await router.ExecuteAsync("save",commandContext) && commandOwner==docB,"Command retains the initiating document across an await");

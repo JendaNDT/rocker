@@ -70,7 +70,7 @@ public sealed partial class MainWindow
     {
         using var invocationScope=documentContext.Enter(documentContext.Current);
 
-        using var request = services.Operations.Begin("ai-"+page.View,"ai-request","Dotaz AI tutora");using var link=request.Cancellation.Register(()=>cancellation.Cancel());
+        using var request = services.Operations.Begin(documentContext.Current.Id,"ai-request","Dotaz AI tutora");using var link=request.Cancellation.Register(()=>cancellation.Cancel());
         try{page.Status.Text="Připojuji AI…";var access=await new SecretStore(userFiles,"openai").ReadAsync(cancellation.Token);if(access.State!=SecretState.Ready)throw new AiRequestException("OpenAI klíč není dostupný. Ulož jej v Nastavení; starý Gemini klíč se jinému poskytovateli neposílá.");cancellation.Token.ThrowIfCancellationRequested();await operation(access.Value!,cancellation.Token);}
         catch(OperationCanceledException){if(!closed)page.Status.Text="Dotaz byl zrušen. Neúplná odpověď nebyla přijata.";}
         catch(AiRequestException error){if(!closed)page.Status.Text=error.Message;}

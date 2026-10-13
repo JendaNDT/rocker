@@ -28,13 +28,13 @@ public sealed partial class MainWindow
         recordingWaveform.ActualThemeChanged += (_, _) => {using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;DrawRecordingWaveform();};
         recordingWaveform.PointerPressed += (_, args) =>
         {using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;
-            if (!RecordingWaveformReady() || !args.GetCurrentPoint(recordingWaveform).Properties.IsLeftButtonPressed) return;
+            if (!RecordingWaveformAvailable() || !args.GetCurrentPoint(recordingWaveform).Properties.IsLeftButtonPressed) return;
             recordingDragStart = args.GetCurrentPoint(recordingWaveform).Position.X;
             recordingWaveform.CapturePointer(args.Pointer); args.Handled = true;
         };
         recordingWaveform.PointerMoved += (_, args) =>
         {using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;
-            if (recordingDragStart is not double start || !RecordingWaveformReady()) return;
+            if (recordingDragStart is not double start || !RecordingWaveformAvailable()) return;
             var finish = args.GetCurrentPoint(recordingWaveform).Position.X;
             if (Math.Abs(start - finish) < 4) return;
             SetRecordingRange(WaveformSeconds(Math.Min(start, finish)), WaveformSeconds(Math.Max(start, finish)));
@@ -43,11 +43,11 @@ public sealed partial class MainWindow
         {using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;
             if (recordingDragStart is not double start) return;
             recordingDragStart = null; recordingWaveform.ReleasePointerCapture(args.Pointer); args.Handled = true;
-            if (!RecordingWaveformReady()) return;
+            if (!RecordingWaveformAvailable()) return;
             double finish = args.GetCurrentPoint(recordingWaveform).Position.X;
             try
             {
-                if (Math.Abs(start - finish) < 4) await audio!.SeekAsync(WaveformSeconds(finish) / currentSpeed);
+                if (Math.Abs(start - finish) < 4) { if(desktopEnabled)await ClaimDesktopSourceAsync(capturedDocument);await audio!.SeekAsync(WaveformSeconds(finish) / currentSpeed); }
                 else SetRecordingRange(WaveformSeconds(Math.Min(start, finish)), WaveformSeconds(Math.Max(start, finish)));
             }
             catch (Exception) { ShowPersistenceError("Pozici nahrávky se nepodařilo změnit."); }
@@ -63,7 +63,7 @@ public sealed partial class MainWindow
         void Action(string label, Func<Task> action)
         {
             var button = new Button { Content = label, MinHeight = 40, IsEnabled = false };
-            button.Click += async (_, _) => {using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return; try { if (RecordingWaveformReady()) await action(); } catch (Exception error) { ShowPersistenceError(error.Message); } };
+            button.Click += async (_, _) => {using var documentScope = documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return; try { if (!RecordingWaveformAvailable())return;if(desktopEnabled)await ClaimDesktopSourceAsync(capturedDocument);if(RecordingWaveformReady())await action(); } catch (Exception error) { ShowPersistenceError(error.Message); } };
             recordingWaveformActions.Add(button); panel.Children.Add(button);
         }
         Action("Opakovat vybraný úsek A–B", async () =>
@@ -87,8 +87,9 @@ public sealed partial class MainWindow
         });
         return Card(panel);
     }
-    private bool RecordingWaveformReady() => audio is not null && !busy && !fileOperation && !workspaceOperation && !closingWindow && !powerTransition
-        && playingRecording is not null && mediaPath == OwnedPaths.Resolve(userFiles.Root, playingRecording.RelativePath) && audio.GetTransport().Ready != 0;
+    private bool RecordingWaveformAvailable() => !busy && !fileOperation && !workspaceOperation && !closingWindow && !powerTransition
+        && playingRecording is not null && mediaPath == OwnedPaths.Resolve(userFiles.Root, playingRecording.RelativePath) && recordingPeaks.Length>0;
+    private bool RecordingWaveformReady() => RecordingWaveformAvailable() && audio is not null && audio.GetTransport().Ready!=0 && (!desktopEnabled || services.Transport.Owner==documentContext.Current);
     private double WaveformSeconds(double x) => recordingWaveform!.ActualWidth <= 0 ? 0 : Math.Clamp(x / recordingWaveform.ActualWidth, 0, 1) * playingRecording!.DurationSec;
     private void SetRecordingRange(double a, double b)
     {
@@ -155,14 +156,14 @@ public sealed partial class MainWindow
     }
     private void RefreshRecordingWaveform()
     {
-        bool ready = RecordingWaveformReady();
-        foreach (var action in recordingWaveformActions) action.IsEnabled = ready;
-        if (recordingRangeA is not null) recordingRangeA.IsEnabled = ready;
-        if (recordingRangeB is not null) recordingRangeB.IsEnabled = ready;
+        bool ready = RecordingWaveformReady(),available=RecordingWaveformAvailable();
+        foreach (var action in recordingWaveformActions) action.IsEnabled = available;
+        if (recordingRangeA is not null){recordingRangeA.IsEnabled=available;if(playingRecording is{ } recording)recordingRangeA.Maximum=recording.DurationSec;}
+        if (recordingRangeB is not null){recordingRangeB.IsEnabled=available;if(playingRecording is{ } recording)recordingRangeB.Maximum=recording.DurationSec;}
         if(recordingWaveformStatus is not null && playingRecording is null)recordingWaveformStatus.Text="Vyber nahrávku a použij Zobrazit průběh nebo Přehrát. Přetažením vybereš úsek; kliknutím změníš pozici.";
         if (recordingWaveformStatus is not null && playingRecording is { } value)
             recordingWaveformStatus.Text = ready ? value.Name + " · " + FormatTime(value.DurationSec) + $" · úsek {recordingRangeA?.Value:0.##}–{recordingRangeB?.Value:0.##} s · {value.Markers.Count} značek"
-                : "Přehrávač používá jiný zdroj. Pro práci s tímto průběhem znovu otevři nahrávku.";
+                : available ? value.Name+" · průběh připravený; přehrávání převezme zdroj až po tvém příkazu." : "Průběh nahrávky zatím není připravený.";
         if (recordingPlayhead is not null && recordingWaveform is not null && playingRecording is { DurationSec: > 0 })
         {
             recordingPlayhead.Visibility = ready ? Visibility.Visible : Visibility.Collapsed;

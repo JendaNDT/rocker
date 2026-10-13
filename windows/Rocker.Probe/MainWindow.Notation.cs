@@ -36,7 +36,7 @@ public sealed partial class MainWindow
     {
         using var invocationScope=documentContext.Enter(documentContext.Current);
 
-        if(busy || notationDocument is null || closed)return;SetBusy(true);var document=notationDocument;var previousOptions=notationOptions;
+        if(busy || notationDocument is null || closed)return;using var operation=services.Operations.Begin(documentContext.Current.Id,"score-render","Vykreslení partitury",cancellable:false);SetBusy(true);var document=notationDocument;var previousOptions=notationOptions;
         try{var result=await Task.Run(()=>document.Render(options));if(closed)return;await SetNotationImageAsync(result);notationOptions=options;MarkNotationBar(double.IsFinite(NotationBar.Value)?(int)NotationBar.Value:options.FirstBar);NotationStatus.Text=$"{notationName} · {document.Tracks[options.Track].Name} · takty {options.FirstBar}–{Math.Min(document.BarCount,options.FirstBar+options.PageBars-1)} · {options.Scale:P0}";
             if(prepareAudio && audio is not null && (!desktopEnabled || services.Transport.Owner==documentContext.Current)){if(!await StopCaptureAsync())return;var old=audio.GetTransport();bool wasNotation=ReferenceEquals(mediaMidi,notationPlayingMidi) && mediaMidi is not null;double position=wasNotation?old.PositionSeconds*currentSpeed:0;await PrepareNotationAsync(result);await audio.SeekAsync(Math.Min(position/currentSpeed,audio.GetTransport().DurationSeconds));if(wasNotation && old.Playing!=0)await audio.PlayAsync();}
         }catch(Exception error){if(preview?.Options!=options)notationOptions=previousOptions;NotationStatus.Text="Notový pohled nelze změnit. "+error.Message;}

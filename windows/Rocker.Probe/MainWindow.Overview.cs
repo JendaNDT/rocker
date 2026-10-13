@@ -26,6 +26,7 @@ public sealed partial class MainWindow
     private NavigationTarget DailyTarget(PlanItem item)=>item.LessonId is not null?new("06",item.LessonId):item.TrainerId=="surgical"?new("09",catalog!.Items("surgicalExercises").First().GetProperty("id").GetString()):item.TrainerId=="riff"?new("19",catalog!.Items("riffs").First().GetProperty("id").GetString()):new(item.Href switch{"/tuner"=>"03","/metronome"=>"04","/youtube"=>"08",_=>"05"});
     private FrameworkElement BuildOverview()
     {
+        if(desktopEnabled)return BuildDesktopOverview();
         var panel=Stack();
         string key=CurrentPlanKey;
         bool missingAi=planKind=="ai" && aiSettings.Plan is null;
@@ -65,7 +66,7 @@ public sealed partial class MainWindow
         return WorkspaceViews.Get(target.ViewId).Title;
     }
     private void OpenPlanTask(string key,PlanTask task){openedPlanTask=(key,task);appliedNavigationTask=null;workspaceCache.Remove(task.Target);Navigate(task.Target);}
-    private void RefreshPlanControls(){PlanButtons.Visibility=openedPlanTask is not null && CurrentTarget.ViewId!="01"?Visibility.Visible:Visibility.Collapsed;PlanTaskLabel.Text=openedPlanTask is { } p?"Plán · "+p.Task.Title:"";CompletePlan.IsEnabled=openedPlanTask is { } o && o.Key==CurrentPlanKey && CurrentTarget==o.Task.Target && !PlanDone(o.Key,o.Task.Id);}
+    private void RefreshPlanControls(){PlanButtons.Visibility=openedPlanTask is not null && CurrentTarget.ViewId!="01"?Visibility.Visible:Visibility.Collapsed;PlanTaskLabel.Text=openedPlanTask is { } p?"Plán · "+p.Task.Title:"";CompletePlan.IsEnabled=openedPlanTask is { } o && o.Key==CurrentPlanKey && CurrentTarget==o.Task.Target && !PlanDone(o.Key,o.Task.Id);desktopCompletePlan.Visibility=desktopEnabled && PlanButtons.Visibility==Visibility.Visible?Visibility.Visible:Visibility.Collapsed;desktopCompletePlan.IsEnabled=CompletePlan.IsEnabled;}
     private void ReturnPlan_Click(object sender,RoutedEventArgs args)=>Navigate(new("01"));
     private void CompletePlan_Click(object sender,RoutedEventArgs args)
     {
