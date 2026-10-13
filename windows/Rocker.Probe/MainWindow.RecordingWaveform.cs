@@ -85,7 +85,7 @@ public sealed partial class MainWindow
             await recordingLibrary!.SaveAsync(value with { Markers = Practice.SortMarkers([.. value.Markers, new(Guid.NewGuid().ToString("N"), seconds, label)]) });
             await ReloadRecordingsAsync(); DrawRecordingWaveform();
         });
-        return Card(panel);
+        return desktopEnabled?ComposeDesktopRecordingEditor(panel):Card(panel);
     }
     private bool RecordingWaveformAvailable() => !busy && !fileOperation && !workspaceOperation && !closingWindow && !powerTransition
         && playingRecording is not null && mediaPath == OwnedPaths.Resolve(userFiles.Root, playingRecording.RelativePath) && recordingPeaks.Length>0;
@@ -126,32 +126,32 @@ public sealed partial class MainWindow
         if (recordingWaveform is null) return;
         recordingWaveform.Children.Clear(); recordingPlayhead = null;
         if (playingRecording is null || recordingPeaks.Length == 0 || recordingWaveform.ActualWidth <= 0) return;
-        double width = recordingWaveform.ActualWidth, duration = Math.Max(.000001, playingRecording.DurationSec);
+        double width = recordingWaveform.ActualWidth, height = Math.Max(1,recordingWaveform.ActualHeight), middle = height/2, duration = Math.Max(.000001, playingRecording.DurationSec);
         var accent = recordingWaveformCaption!.Foreground;
         var secondary = recordingWaveformStatus!.Foreground;
         double a = recordingRangeA?.Value ?? 0, b = recordingRangeB?.Value ?? duration;
         if (double.IsFinite(a) && double.IsFinite(b) && b > a)
         {
             double left = Math.Clamp(a / duration, 0, 1) * width, right = Math.Clamp(b / duration, 0, 1) * width;
-            var selection = new Rectangle { Width = Math.Max(0, right - left), Height = 160, Fill = accent, Opacity = .12, IsHitTestVisible = false };
+            var selection = new Rectangle { Width = Math.Max(0, right - left), Height = height, Fill = accent, Opacity = .12, IsHitTestVisible = false };
             Canvas.SetLeft(selection, left); recordingWaveform.Children.Add(selection);
         }
-        recordingWaveform.Children.Add(new Line { X1 = 0, X2 = width, Y1 = 80, Y2 = 80, Stroke = secondary, Opacity = .4, IsHitTestVisible = false });
+        recordingWaveform.Children.Add(new Line { X1 = 0, X2 = width, Y1 = middle, Y2 = middle, Stroke = secondary, Opacity = .4, IsHitTestVisible = false });
         var wave = new Polyline { Stroke = accent, StrokeThickness = 1, IsHitTestVisible = false };
         for (int i = 0; i < recordingPeaks.Length; ++i)
         {
-            double x = i * width / Math.Max(1, recordingPeaks.Length - 1), peak = Math.Clamp(recordingPeaks[i], 0, 1) * 58;
-            wave.Points.Add(new(x, 80 - peak)); wave.Points.Add(new(x, 80 + peak));
+            double x = i * width / Math.Max(1, recordingPeaks.Length - 1), peak = Math.Clamp(recordingPeaks[i], 0, 1) * height * .36;
+            wave.Points.Add(new(x, middle - peak)); wave.Points.Add(new(x, middle + peak));
         }
         recordingWaveform.Children.Add(wave);
         foreach (var marker in playingRecording.Markers)
         {
             double x = marker.TimeSec / duration * width;
-            recordingWaveform.Children.Add(new Line { X1 = x, X2 = x, Y1 = 20, Y2 = 145, Stroke = secondary, StrokeThickness = 1, IsHitTestVisible = false });
+            recordingWaveform.Children.Add(new Line { X1 = x, X2 = x, Y1 = 20, Y2 = Math.Max(20,height-15), Stroke = secondary, StrokeThickness = 1, IsHitTestVisible = false });
             var label = Text(marker.Label); label.FontSize = 10; label.MaxWidth = Math.Min(120, width); label.TextWrapping = TextWrapping.NoWrap; label.TextTrimming = TextTrimming.CharacterEllipsis; label.IsHitTestVisible = false;
             Canvas.SetLeft(label, Math.Clamp(x + 3, 0, Math.Max(0, width - label.MaxWidth))); recordingWaveform.Children.Add(label);
         }
-        recordingPlayhead = new Line { Y1 = 0, Y2 = 160, Stroke = recordingRangeA!.Foreground, StrokeThickness = 2, IsHitTestVisible = false };
+        recordingPlayhead = new Line { Y1 = 0, Y2 = height, Stroke = recordingRangeA!.Foreground, StrokeThickness = 2, IsHitTestVisible = false };
         recordingWaveform.Children.Add(recordingPlayhead); RefreshRecordingWaveform();
     }
     private void RefreshRecordingWaveform()

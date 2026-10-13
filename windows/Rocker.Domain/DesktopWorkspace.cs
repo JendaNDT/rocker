@@ -100,12 +100,12 @@ public sealed record DesktopWindowLayout(string Id, DesktopWindowRole Role, Desk
     IReadOnlyList<DesktopDocumentKey> Documents, string? ToolViewId = null, bool Maximized = false, bool AlwaysOnTop = false, bool Visible = true, int SelectedDocumentIndex = 0);
 public sealed record DesktopViewPreferences(DesktopDocumentKey Key,double Zoom=1,int Track=0,int Bar=1,int LoopFirst=1,int LoopLast=1,bool AllTracks=false,bool Follow=true);
 public sealed record DesktopWorkspaceLayout(int SchemaVersion, IReadOnlyList<DesktopWindowLayout> Windows,
-    double LibraryWidthDip = 220, double InspectorWidthDip = 240, bool LibraryVisible = true, bool InspectorVisible = true, IReadOnlyList<string>? AttachedTools = null,IReadOnlyList<DesktopViewPreferences>? ViewPreferences=null)
+    double LibraryWidthDip = 220, double InspectorWidthDip = 240, bool LibraryVisible = true, bool InspectorVisible = true, IReadOnlyList<string>? AttachedTools = null,IReadOnlyList<DesktopViewPreferences>? ViewPreferences=null,int InterfaceRevision=0)
 {
     public const int CurrentSchema = 1;
     public DesktopWorkspaceLayout Validate()
     {
-        if (SchemaVersion != CurrentSchema || Windows is null || Windows.Count is < 1 or > 12 ||
+        if (InterfaceRevision is <0 or >2 || SchemaVersion != CurrentSchema || Windows is null || Windows.Count is < 1 or > 12 ||
             !double.IsFinite(LibraryWidthDip) || LibraryWidthDip is < 120 or > 800 ||
             !double.IsFinite(InspectorWidthDip) || InspectorWidthDip is < 120 or > 800)
             throw new InvalidDataException("Rozložení pracovního prostředí není platné.");

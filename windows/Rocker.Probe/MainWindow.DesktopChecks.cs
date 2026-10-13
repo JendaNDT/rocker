@@ -35,7 +35,9 @@ public sealed partial class MainWindow
         using(documentContext.Enter(score)){Check(ReferenceEquals(image,ScoreImage.Source) && NotationBar.Value==selectedBar,"detach-preserves-score-and-selection");Check(!ReferenceEquals(rootBefore,scoreDocumentView.XamlRoot),"actual-xaml-root-transfer");}
         AttachDesktopTab(tab);await Task.Delay(100);
         using(documentContext.Enter(score))Check(ReferenceEquals(image,ScoreImage.Source) && NotationBar.Value==selectedBar,"reattach-preserves-score-state");
-        var tuner=OpenDesktop(new("03"));var tunerTab=TabFor(tuner)!;DetachDesktopTab(tunerTab);await Task.Delay(100);
+        var tuner=OpenDesktop(new("03"));var tunerTab=TabFor(tuner)!;
+        Check(floatingHosts.ContainsKey(tunerTab),"instrument-opens-in-its-own-window-by-default");
+        DetachDesktopTab(tunerTab);await Task.Delay(100);
         Check(OpenDesktop(new("03"))==tuner && TabFor(tuner)==tunerTab,"tool-singleton");
         var tunerHost=floatingHosts[tunerTab];SendMessageW(WinRT.Interop.WindowNative.GetWindowHandle(tunerHost),0x0010,0,0);await Task.Delay(100);
         Check(desktopEnabled && !closed && floatingHosts.ContainsKey(tunerTab),"closing-tool-keeps-application");
@@ -48,6 +50,7 @@ public sealed partial class MainWindow
         await CloseDesktopTabAsync(desktopDocuments[b]);Check(!b.IsAlive && a.IsAlive,"closing-one-document-keeps-other-session");
         using(documentContext.Enter(a)){Check(studioZoom==31,"other-project-state-survives-close");}
         OpenDesktop(new("01"));
+        await VerifyWorkbenchLayoutAsync();
         await CaptureDesktopRuntimeAsync();
         WriteShellDiagnostic("desktop-runtime.json",new{result="passed",checks=checks.Count,scenarios=checks,actualWindows=true,physicalPointerDragVerified=false,physicalAudioVerified=false,sourceCommit=Environment.GetEnvironmentVariable("GITHUB_SHA")});
         await VerifyDesktopInteractionsAsync();

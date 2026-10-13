@@ -11,6 +11,9 @@ namespace Rocker.Probe.Controls;
 /// <summary>Native, scalable cabinet ornamentation; the contained controls retain their peers.</summary>
 public sealed class VintageHousing : Grid
 {
+    private readonly StackPanel contentPanel;
+    private readonly UIElement contentElement;
+    public UIElement ReleaseContent() { contentPanel.Children.Remove(contentElement); return contentElement; }
     public bool HasSpeakerGrille { get; }
     internal static Style Material(string name) => (Style)Application.Current.Resources[name];
     public VintageHousing(UIElement content, string? plaque = null, bool speaker = false, bool compact = false, bool instrument = false)
@@ -29,6 +32,7 @@ public sealed class VintageHousing : Grid
             wood.SizeChanged += (_, args) => DrawGrain(grain, cheek, args.NewSize.Height);
         }
         var panel = new StackPanel { Spacing = 12 };
+        contentPanel = panel; contentElement = content;
         if (plaque is not null) panel.Children.Add(Plaque(plaque));
         if (speaker) panel.Children.Add(Speaker());
         panel.Children.Add(content);

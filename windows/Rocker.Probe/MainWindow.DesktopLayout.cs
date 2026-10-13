@@ -44,7 +44,7 @@ public sealed partial class MainWindow
             if(session.Target.ViewId=="15")preferences.Add(new(session.Key!,studioZoom));
             if(session.Target.ViewId=="20" && notationDocument is not null)preferences.Add(new(session.Key!,notationOptions.Scale,notationOptions.Track,(int)NotationBar.Value,(int)NotationLoopFirst.Value,Math.Max((int)NotationLoopFirst.Value,(int)NotationLoopLast.Value),NotationAllTracks.IsChecked==true,NotationFollow.IsChecked==true));
         }
-        var layout=new DesktopWorkspaceLayout(1,windows,desktopLibraryWidth,desktopInspectorWidth,desktopLibraryVisible,desktopInspectorVisible,attached,preferences);
+        var layout=new DesktopWorkspaceLayout(1,windows,desktopLibraryWidth,desktopInspectorWidth,desktopLibraryVisible,desktopInspectorVisible,attached,preferences,InterfaceRevision:2);
         await new WorkspaceLayoutStore(userFiles).SaveAsync(layout);
     }
     private async Task RestoreDesktopLayoutAsync()
@@ -55,7 +55,7 @@ public sealed partial class MainWindow
         try
         {
             var layout=new WorkspaceLayoutStore(userFiles).Load();if(layout is null)return;
-            desktopLibraryWidth=layout.LibraryWidthDip;desktopInspectorWidth=layout.InspectorWidthDip;desktopLibraryVisible=layout.LibraryVisible;desktopInspectorVisible=layout.InspectorVisible;RefreshDesktopPaneWidths();
+            bool migrateWorkbench=layout.InterfaceRevision<2;desktopLibraryWidth=migrateWorkbench?210:layout.LibraryWidthDip;desktopInspectorWidth=migrateWorkbench?250:layout.InspectorWidthDip;desktopLibraryVisible=layout.LibraryVisible;desktopInspectorVisible=!migrateWorkbench && layout.InspectorVisible;RefreshDesktopPaneWidths();
             foreach(var window in layout.Windows)
             {
                 if(window.Role==DesktopWindowRole.Workspace)FitDesktopWindow(this,window.Bounds,window.Maximized);
@@ -102,7 +102,7 @@ public sealed partial class MainWindow
                     string id=window.ToolViewId??(window.Role==DesktopWindowRole.Live?"02":"28");var session=OpenDesktop(new(id));var tab=TabFor(session)!;DetachDesktopTab(tab);var host=floatingHosts[tab];FitDesktopWindow(host,window.Bounds,window.Maximized,window.AlwaysOnTop);if(!window.Visible)host.AppWindow.Hide();
                 }
             }
-            foreach(string tool in layout.AttachedTools??[])OpenDesktop(new(tool));
+            foreach(string tool in layout.AttachedTools??[]){var session=OpenDesktop(new(tool));if(migrateWorkbench)DetachDesktopTab(TabFor(session));else AttachDesktopTab(TabFor(session));}
             var main=layout.Windows.Single(w=>w.Role==DesktopWindowRole.Workspace);var selectedKey=main.Documents.Count>0?main.Documents[main.SelectedDocumentIndex]:null;
             var selected=desktopDocuments.FirstOrDefault(p=>p.Key.Key?.Equals(selectedKey)==true).Value??documentTabs.TabItems.OfType<TabViewItem>().FirstOrDefault();if(selected is not null)ActivateDesktopTab(selected);
         }

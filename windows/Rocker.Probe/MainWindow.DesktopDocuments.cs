@@ -47,17 +47,18 @@ public sealed partial class MainWindow
     }
     private FrameworkElement BuildDesktopRecordingView()
     {
-        var session=documentContext.Current;var panel=Stack();
-        panel.Children.Add(Text(playingRecording?.Name??"Nahrávka"));
-        var buttons=new StackPanel{Orientation=Orientation.Horizontal,Spacing=8};
-        void Action(string title,Func<Task> work){var button=new Button{Content=title};button.Click+=async(_,_)=>{using var scope=documentContext.Enter(session);try{await work();}catch(Exception error){ShowPersistenceError(error.Message);}};buttons.Children.Add(button);}
-        Action("Přehrát",async()=>{await ClaimDesktopSourceAsync(session);if(audio is not null)await audio.PlayAsync();});
-        Action("Pozastavit",async()=>{if(services.Transport.Owner==session && audio is not null)await audio.PauseAsync();});
-        Action("Značky a poznámky…",async()=>{if(playingRecording is{ } recording)await EditRecordingMarkersAsync(recording);});
+        var session=documentContext.Current;
+        var surface=(Desktop.DocumentSurface)BuildRecordingWaveform();
+        void Action(string title,Func<Task> work)
+        {
+            var button=new Button{Content=title,MinHeight=32};
+            button.Click+=async(_,_)=>{using var scope=documentContext.Enter(session);if(!session.IsAlive)return;try{await work();}catch(Exception error){ShowPersistenceError(error.Message);}};
+            surface.Toolbar.Children.Insert(0,button);
+        }
         Action("Exportovat…",async()=>{if(playingRecording is{ } recording)await ExportRecordingAsync(recording);});
-        panel.Children.Add(new ScrollViewer{Content=buttons,HorizontalScrollBarVisibility=ScrollBarVisibility.Auto,HorizontalScrollMode=ScrollMode.Enabled,VerticalScrollBarVisibility=ScrollBarVisibility.Disabled});
-        panel.Children.Add(BuildRecordingWaveform());
-        if(playingRecording is{ } value)panel.Children.Add(Text($"{FormatTime(value.DurationSec)} · {value.Markers.Count} značek\n"+value.RelativePath,true));
-        return panel;
+        Action("Značky a poznámky…",async()=>{if(playingRecording is{ } recording)await EditRecordingMarkersAsync(recording);});
+        Action("Pauza",async()=>{if(services.Transport.Owner==session && audio is not null)await audio.PauseAsync();});
+        Action("Přehrát",async()=>{await ClaimDesktopSourceAsync(session);if(audio is not null)await audio.PlayAsync();});
+        return surface;
     }
 }

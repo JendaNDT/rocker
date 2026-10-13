@@ -14,8 +14,19 @@ public sealed partial class MainWindow
         list.ItemsSource=tasks.Select(t=>new ListEntry(t.Id,(PlanDone(key,t.Id)?"Hotovo · ":"")+t.Title,t.Detail)).ToArray();
         var description=Text("Vyber blok plánu. Otevře se jako dokument nebo nástroj; ostatní práce zůstane otevřená.",true);
         var title=Text("Dnešní plán");title.FontSize=22;title.FontWeight=Microsoft.UI.Text.FontWeights.SemiBold;
-        var body=new Grid{RowSpacing=12};body.RowDefinitions.Add(new(){Height=GridLength.Auto});body.RowDefinitions.Add(new(){Height=GridLength.Auto});body.RowDefinitions.Add(new(){Height=new(1,GridUnitType.Star)});body.Children.Add(title);Grid.SetRow(description,1);body.Children.Add(description);Grid.SetRow(list,2);body.Children.Add(list);
-        var details=Stack();details.Children.Add(Text("MOJE KYTARA",true));details.Children.Add(Text(instrumentProfile.Name));details.Children.Add(Text(CurrentTuning().Label,true));
+        var body=new Grid{RowSpacing=10};
+        body.RowDefinitions.Add(new(){Height=GridLength.Auto});body.RowDefinitions.Add(new(){Height=new(1,GridUnitType.Star)});
+        body.RowDefinitions.Add(new(){Height=GridLength.Auto});body.RowDefinitions.Add(new(){Height=new(1,GridUnitType.Star)});
+        title.Text="DNEŠNÍ CVIČENÍ";title.FontSize=12;title.CharacterSpacing=100;body.Children.Add(title);
+        Grid.SetRow(list,1);body.Children.Add(list);
+        var documentsTitle=Text("MOJE DOKUMENTY",true);documentsTitle.FontSize=12;documentsTitle.CharacterSpacing=100;Grid.SetRow(documentsTitle,2);body.Children.Add(documentsTitle);
+        var documents=new ListView{IsItemClickEnabled=true,SelectionMode=ListViewSelectionMode.Single,DisplayMemberPath="Title"};
+        documents.ItemsSource=desktopLibraryAssets.Values.SelectMany(v=>v).Where(e=>e.Target.ViewId is "14" or "15").Concat(songs.Values.Select(song=>new LibraryEntry(song.Name,new("07",song.Id)))).Take(40).ToArray();
+        documents.ItemClick+=(_,e)=>{using var scope=documentContext.Enter(owner);if(owner.IsAlive && e.ClickedItem is LibraryEntry entry)Navigate(entry.Target);};
+        Grid.SetRow(documents,3);body.Children.Add(documents);
+        if(((LibraryEntry[])documents.ItemsSource).Length==0){var empty=Text("Otevři skladbu nebo noty přes Soubor. Projekty a nahrávky se zobrazí tady.",true);Grid.SetRow(empty,3);body.Children.Add(empty);}
+
+        var details=Stack();details.Children.Add(Controls.VintageHousing.Plaque("ROCKER / WORKBENCH"));details.Children.Add(Text("MOJE KYTARA",true));details.Children.Add(Text(instrumentProfile.Name));details.Children.Add(Text(CurrentTuning().Label,true));
         var taskTitle=Text("Další krok");var taskDescription=Text("",true);details.Children.Add(taskTitle);details.Children.Add(taskDescription);
         var open=PrimaryAction("Otevřít vybraný blok");open.MinHeight=32;details.Children.Add(open);
         void Select(){if(list.SelectedItem is not ListEntry entry)return;var task=tasks.First(t=>t.Id==entry.Id);taskTitle.Text=task.Title;taskDescription.Text=task.Detail+$"\n{task.Minutes} minut";open.IsEnabled=true;}
@@ -23,7 +34,7 @@ public sealed partial class MainWindow
         list.SelectionChanged+=(_,_)=>{using var scope=documentContext.Enter(owner);if(owner.IsAlive)Select();};list.ItemClick+=(_,e)=>{using var scope=documentContext.Enter(owner);if(!owner.IsAlive)return;list.SelectedItem=e.ClickedItem;Open();};open.Click+=(_,_)=>{using var scope=documentContext.Enter(owner);if(owner.IsAlive)Open();};
         var surface=new DocumentSurface(body,inspector:details);
         void Action(string label,Action callback){var button=new Button{Content=label,MinHeight=32};button.Click+=(_,_)=>{using var scope=documentContext.Enter(owner);if(owner.IsAlive)callback();};surface.Toolbar.Children.Add(button);}
-        Action("Live · F11",()=>SetFocusMode(true));Action("Sestavy",()=>Setups_Click(this,new()));Action("Hledat · Ctrl+K",()=>Search_Click(this,new()));
+        Action("Sestavy cvičení",()=>Setups_Click(this,new()));Action("Nahrávky",()=>Navigate(new("14")));Action("Nový projekt",()=>Navigate(new("15")));
         if(appSettings.ResumeTask is{ } resume)Action("Pokračovat",()=>Navigate(resume));
         var plan=new ComboBox{ItemsSource=new[]{"Denní plán","Uložený AI plán"},SelectedIndex=planKind=="ai"?1:0,MinWidth=150};Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(plan,"Typ cvičebního plánu");
         plan.SelectionChanged+=(_,_)=>{using var scope=documentContext.Enter(owner);if(!owner.IsAlive)return;planKind=plan.SelectedIndex==1?"ai":"daily";RebuildDesktopDocument(owner);};surface.Toolbar.Children.Add(plan);

@@ -26,8 +26,8 @@ public sealed partial class MainWindow
     private readonly ListView desktopOperations = new(){DisplayMemberPath="Title",MaxHeight=100,SelectionMode=ListViewSelectionMode.Single};
     private readonly Button cancelDesktopOperation = new(){Content="Zrušit vybranou operaci",MinHeight=30};
     private readonly Button desktopCompletePlan = new(){Content="Potvrdit blok plánu",MinHeight=30,Visibility=Visibility.Collapsed};
-    private double desktopLibraryWidth=230,desktopInspectorWidth=280;
-    private bool desktopLibraryVisible=true,desktopInspectorVisible=true;
+    private double desktopLibraryWidth=210,desktopInspectorWidth=250;
+    private bool desktopLibraryVisible=true,desktopInspectorVisible=false;
     private bool desktopStartupReady;
     private readonly TextBlock operationStatus = new() { TextWrapping=TextWrapping.Wrap };
     private readonly Dictionary<DocumentSession,TabViewItem> desktopDocuments = [];
@@ -63,8 +63,8 @@ public sealed partial class MainWindow
         desktopRoot.ColumnDefinitions.Add(new(){Width=new(1,GridUnitType.Star)});
         desktopRoot.ColumnDefinitions.Add(new(){Width=new(5)});
         desktopRoot.ColumnDefinitions.Add(new(){Width=new(280)});
-        var library=new Grid{Padding=new Thickness(12),RowSpacing=8};library.RowDefinitions.Add(new(){Height=GridLength.Auto});library.RowDefinitions.Add(new(){Height=GridLength.Auto});library.RowDefinitions.Add(new(){Height=new(1,GridUnitType.Star)});
-        library.Children.Add(new TextBlock{Text="KNIHOVNA",FontSize=12,CharacterSpacing=100});Grid.SetRow(librarySearch,1);library.Children.Add(librarySearch);Grid.SetRow(desktopLibrary,2);library.Children.Add(desktopLibrary);
+        var library=new Grid{Padding=new Thickness(8),RowSpacing=8};library.RowDefinitions.Add(new(){Height=GridLength.Auto});library.RowDefinitions.Add(new(){Height=GridLength.Auto});library.RowDefinitions.Add(new(){Height=new(1,GridUnitType.Star)});
+        library.Children.Add(desktopLibrarySection);Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(desktopLibrarySection,"Oblast průzkumníku");desktopLibrarySection.SelectionChanged+=(_,_)=>{desktopLibraryPage=null;RefreshDesktopLibrary();};Grid.SetRow(librarySearch,1);library.Children.Add(librarySearch);Grid.SetRow(desktopLibrary,2);library.Children.Add(desktopLibrary);
         librarySearch.TextChanged+=(_,_)=>{desktopLibraryPage=null;RefreshDesktopLibrary();};desktopLibrary.ItemInvoked+=(_,e)=>{if(e.InvokedItem is TreeViewNode{Content:LibraryEntry entry})Navigate(entry.Target);else if(e.InvokedItem is LibraryEntry item)Navigate(item.Target);};
         desktopRoot.Children.Add(library);Grid.SetColumn(documentTabs,2);desktopRoot.Children.Add(documentTabs);
         var right=new Grid{Padding=new Thickness(12),RowSpacing=10};right.RowDefinitions.Add(new(){Height=GridLength.Auto});right.RowDefinitions.Add(new(){Height=GridLength.Auto});right.RowDefinitions.Add(new(){Height=GridLength.Auto});right.RowDefinitions.Add(new(){Height=new(1,GridUnitType.Star)});
@@ -83,10 +83,9 @@ public sealed partial class MainWindow
         windowsMenu.Items.Add(new MenuFlyoutSeparator());
         Menu("Skrýt / zobrazit knihovnu",()=>{desktopLibraryVisible=!desktopLibraryVisible;RefreshDesktopPaneWidths();});
         Menu("Skrýt / zobrazit inspektor a nástroje",()=>{desktopInspectorVisible=!desktopInspectorVisible;RefreshDesktopPaneWidths();});
-        Menu("Obnovit výchozí rozložení",()=>{desktopLibraryWidth=230;desktopInspectorWidth=280;desktopLibraryVisible=desktopInspectorVisible=true;RefreshDesktopPaneWidths();foreach(var tab in floatingHosts.Keys.ToArray())AttachDesktopTab(tab);});
+        Menu("Obnovit výchozí rozložení",()=>{desktopLibraryWidth=210;desktopInspectorWidth=250;desktopLibraryVisible=true;desktopInspectorVisible=false;RefreshDesktopPaneWidths();foreach(var tab in floatingHosts.Keys.Where(t=>t.Tag is DocumentSession session && desktopDocuments.ContainsKey(session)).ToArray())AttachDesktopTab(tab);foreach(var tool in desktopTools.Values.Where(t=>DesktopRoutes.ToolViews.Contains(t.Session.Target.ViewId)))DetachDesktopTab(tool.Tab);});
         MainMenu.Items.Add(windowsMenu);
-        var sourceRow=new StackPanel{Orientation=Orientation.Horizontal,Spacing=10};sourceRow.Children.Add(desktopSource);var stopAll=new Button{Content="Zastavit vše",MinHeight=30};stopAll.Click+=Stop_Click;sourceRow.Children.Add(stopAll);MediaTitle.Visibility=Visibility.Collapsed;
-        Grid.SetColumn(sourceRow,0);MediaTransportRow.Children.Add(sourceRow);
+        MediaTitle.Visibility=Visibility.Collapsed;InitializeDesktopWorkbench();
         services.Operations.Changed+=DesktopOperationsChanged;
         InitializeDesktopCommands();BindDesktopCommands(ShellRoot);RefreshDesktopLibrary();_=RefreshDesktopLibraryAssetsAsync();OpenDesktop(new("01"));
         if(!appSettings.Onboarded && activationRequests.Count==0 && string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTICS_DIR")))_=ShowDesktopDialogAsync(new("31"));
@@ -108,8 +107,8 @@ public sealed partial class MainWindow
     {
         if(!desktopEnabled || desktopRoot.ColumnDefinitions.Count!=5)return;
         double width=ShellRoot.ActualWidth;
-        desktopRoot.ColumnDefinitions[0].Width=new(desktopLibraryVisible && width>=760?desktopLibraryWidth:0);
-        desktopRoot.ColumnDefinitions[4].Width=new(desktopInspectorVisible && width>=1060?desktopInspectorWidth:0);
+        desktopRoot.ColumnDefinitions[0].Width=new(desktopLibraryVisible && width>=680?Math.Min(desktopLibraryWidth,width*.25):0);
+        desktopRoot.ColumnDefinitions[4].Width=new(desktopInspectorVisible && width>=900?Math.Min(desktopInspectorWidth,width*.25):0);
     }
     private DocumentSession OpenDesktop(NavigationTarget target,DesktopDocumentKey? key=null,bool loadAssets=true)
     {
@@ -125,10 +124,10 @@ public sealed partial class MainWindow
                 if(route.Destination==DesktopDestination.Settings && existing.Session.Target!=target){existing.Session.Target=target;using var settingsScope=documentContext.Enter(existing.Session);existing.Tab.Content=BuildDesktopSettingsContent(existing.Session,target);existing.Tab.Header=WorkspaceViews.Get(target.ViewId).Title;}
                 ActivateDesktopTab(existing.Tab);return existing.Session;}
             var session=new DocumentSession(target);using var scope=documentContext.Enter(session);
-            FrameworkElement page=route.Destination==DesktopDestination.Settings?BuildDesktopSettingsContent(session,target):BuildWorkspace(target);
+            FrameworkElement page=route.Destination==DesktopDestination.Settings?BuildDesktopSettingsContent(session,target):route.Destination==DesktopDestination.Tool?ComposeDesktopInstrument(target.ViewId,BuildWorkspace(target)):BuildWorkspace(target);
             var tab=CreateDesktopTab(session,page,false);desktopTools.Add(identity,(session,tab));
-            if(route.Destination==DesktopDestination.Tool){toolTabs.TabItems.Add(tab);toolTabs.SelectedItem=tab;}
-            else{toolTabs.TabItems.Add(tab);DetachDesktopTab(tab);}
+            toolTabs.TabItems.Add(tab);
+            if(!desktopRestoring)DetachDesktopTab(tab);
             ActivateDesktopTab(tab);return session;
         }
         if(key is null && target.ViewId=="07" && target.ItemId is{ } songId && songs.TryGetValue(songId,out var savedSong))key=DesktopDocumentKey.ForCanonicalFile("07",RecentFiles.ValidatePath(savedSong.SourcePath));
@@ -225,13 +224,14 @@ public sealed partial class MainWindow
             }
             desktopWindows.Remove(window);
         };
+        if(item.Tag is DocumentSession toolSession && DesktopRoutes.ToolViews.Contains(toolSession.Target.ViewId))window.AppWindow.Resize(toolSession.Target.ViewId=="13"?new(1100,760):toolSession.Target.ViewId=="04"?new(940,760):new(820,740));
         window.Activate();
     }
     private void AttachDesktopTab(TabViewItem? item)
     {
         if(item is null)return;if(item.Tag is DocumentSession moving && moving.Target.ViewId is "02" or "26" or "28" or "29" or "30")return;RemoveDesktopTabParent(item);
         if(floatingHosts.Remove(item,out var host) && host.Tabs.TabItems.Count==0){dialogService?.Forget(host.Root.XamlRoot);host.ExitApproved=true;host.Close();desktopWindows.Remove(host);}
-        var session=(DocumentSession)item.Tag;var target=desktopDocuments.ContainsKey(session)?documentTabs:toolTabs;target.TabItems.Add(item);target.SelectedItem=item;Activate();
+        var session=(DocumentSession)item.Tag;var target=desktopDocuments.ContainsKey(session)?documentTabs:toolTabs;target.TabItems.Add(item);target.SelectedItem=item;if(target==toolTabs){desktopInspectorVisible=true;RefreshDesktopPaneWidths();}Activate();
     }
     private async Task CloseDesktopHostAsync(DesktopWindow window)
     {

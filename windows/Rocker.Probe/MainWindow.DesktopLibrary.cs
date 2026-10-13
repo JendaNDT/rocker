@@ -25,10 +25,17 @@ public sealed partial class MainWindow
         }
         groups["Skladby"]=songs.Values.Select(song=>new LibraryEntry(song.Name,new("07",song.Id))).ToList();
         foreach(var group in desktopLibraryAssets)groups[group.Key]=group.Value;
+        var visibleViews = desktopLibrarySection.SelectedIndex switch
+        {
+            1 => new[]{"05","06","09","10","11","12","21","22"},
+            2 => new[]{"07","08","14","15","20"},
+            3 => new[]{"17","18","19","20","23","24","25"},
+            _ => new[]{"01","02","03","04","13","16","27","28","29","30"}
+        };
         foreach(var group in groups)
         {
-            var matches=group.Value.Where(e=>query.Length==0 || PracticeWorkspaceRules.SearchText(group.Key).Contains(query,StringComparison.Ordinal) || PracticeWorkspaceRules.SearchText(e.Title).Contains(query,StringComparison.Ordinal)).ToArray();
-            if(matches.Length==0)continue;var node=new TreeViewNode{Content=group.Key,IsExpanded=query.Length>0 || expanded.Contains(group.Key)};
+            var matches=group.Value.Where(e=>query.Length>0 ? PracticeWorkspaceRules.SearchText(group.Key).Contains(query,StringComparison.Ordinal) || PracticeWorkspaceRules.SearchText(e.Title).Contains(query,StringComparison.Ordinal) : visibleViews.Contains(e.Target.ViewId)).ToArray();
+            if(matches.Length==0)continue;var node=new TreeViewNode{Content=group.Key,IsExpanded=query.Length>0 || expanded.Contains(group.Key) || group.Value.Count<6};
             foreach(var entry in matches)node.Children.Add(new TreeViewNode{Content=entry});desktopLibrary.RootNodes.Add(node);
         }
     }
@@ -40,7 +47,7 @@ public sealed partial class MainWindow
         {
             var snapshot=await database.SnapshotAsync();var recordings=recordingLibrary is null?[]:await recordingLibrary.ListAsync();if(closed)return;
             desktopLibraryAssets["Projekty"]=snapshot.Documents.Where(d=>d.Kind=="project").Select(d=>UserData.Read<ProjectIndex>(d.Value)).OrderBy(p=>p.Name).Select(p=>new LibraryEntry(p.Name,new("15",p.Id))).ToList();
-            desktopLibraryAssets["Moje nahrávky"]=recordings.Select(r=>new LibraryEntry(r.LibraryLabel,new("14",r.Id))).ToList();RefreshDesktopLibrary();
+            desktopLibraryAssets["Moje nahrávky"]=recordings.Select(r=>new LibraryEntry(r.LibraryLabel,new("14",r.Id))).ToList();RefreshDesktopLibrary();foreach(var overview in services.Documents.All.Where(s=>s.Target.ViewId=="01").ToArray())RebuildDesktopDocument(overview);
         }
         catch(Exception error){if(!closed)ShowPersistenceError("Knihovnu nelze obnovit: "+error.Message);}
     }
