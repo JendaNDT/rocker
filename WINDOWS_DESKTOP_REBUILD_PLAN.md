@@ -1,6 +1,6 @@
 # Rocker — implementační plán přestavby desktopového prostředí
 
-Datum: 13. 10. 2026. Stav: **realizace D01–D36 schválená; D01 a D02 dokončené, navazuje D03**.
+Datum: 13. 10. 2026. Stav: **realizace D01–D36 schválená; D01–D04 dokončené v jejich rozsahu, navazuje D05**.
 
 Jenda chce změnit způsob práce s Rockerem na profesionální Windows nástroj:
 pracovní plochu s dokumenty, panely a více skutečnými okny. Vintage zůstává
@@ -430,7 +430,7 @@ se předá až po D35/D36.
 
 #### D03 — Ověřit více oken, docking a systémové chování
 
-- Stav: technický experiment implementovaný; [rozhodnutí a scénáře](docs/windows/desktop/window-decision.md). Lokální C# semantic check prošel; skutečné Windows ověření v [běhu 38437376867](https://github.com/JendaNDT/rocker/actions/runs/38437376867) probíhá. D03 zatím není označený jako automaticky ověřený.
+- Stav: dokončeno. [Rozhodnutí a scénáře](docs/windows/desktop/window-decision.md), [Windows důkazy](docs/windows/desktop/windows-validation.json). Běh 38437376867 nad revizí 11242c9 uspěl: 19 nových kontrol v obou diagnostických profilech, 22 native sad a instalační cyklus. Experiment zachoval text/zoom/výběr, WebView2 core/state a jediný audio host. Fyzický pointer drag, další monitor a produkční shell zůstávají dalšími scénáři.
 - Závislosti: D02.
 - Změna: malý skutečný WinUI řez s dvěma okny, jedním přesouvatelným dokumentem a nástrojem; vyzkoušet XamlRoot, HWND, tab drag/drop, WebView2 a notový pohled.
 - Soubory: Desktop/WindowManager.cs, Windows/DocumentWindow.xaml, Windows/ToolWindow.xaml; docs/windows/desktop/window-decision.md.
@@ -442,6 +442,7 @@ se předá až po D35/D36.
 
 #### D04 — Definovat dokumentové a workspace modely
 
+- Stav: implementováno a lokálně ověřeno. [Modely a hranice](docs/windows/desktop/document-models.md), [72 kontrol](docs/windows/desktop/models-validation.json). Překlad starých ID, stabilní identity, layout a pravidla zavření/vlastnictví jsou čistá doména; dosud neřídí produkční shell. D03 Windows důkaz patří jeho vlastní zdrojové revizi, nikoli novým D04 modelům.
 - Závislosti: D01, D03.
 - Změna: stabilní DocumentKey, WindowRole, ToolId, DocumentState, WorkspaceLayout, transport owner a pravidla přechodů; zachovat překlad NavigationTarget.
 - Soubory: Rocker.Domain/DesktopWorkspace.cs, DocumentSession.cs; Rocker.Domain/Navigation.cs pouze pro kompatibilitu starých ID.

@@ -9,7 +9,11 @@ včetně [výchozích automatických kontrol](baseline-validation.json).
 [D02 — galerie všech 32 návrhů](design-gallery.html) a
 [specifikace](design-spec.md) jsou připravené; [prohlížečová kontrola](design-validation.json)
 ověřila 64 kombinací pohledů a vzhledů, filtry, poslechové stavy a mobilní prohlížení.
-Probíhá [D03 — skutečný Windows experiment](window-decision.md). Produkční shell zatím není nahrazený.
+[D03 — skutečný Windows experiment](window-decision.md) prošel
+[Windows kontrolou](windows-validation.json): 19 nových assertionů v obou profilech
+a instalační cyklus. [D04 — čisté dokumentové modely](document-models.md)
+má [72 lokálních kontrol](models-validation.json). Navazuje D05.
+Produkční shell zatím není nahrazený.
 Poslední sestavený kandidát zůstává RC6. Nové samostatné Live, plovoucí
 nástroje a dokumentová okna mají vzniknout podle plánu.
 Galerie obsahuje návrhy s ukázkovými daty, tato složka zatím neobsahuje

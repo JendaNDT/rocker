@@ -1,0 +1,18 @@
+{
+  "result": "passed",
+  "referenceCases": 69,
+  "boundaryChecks": 184,
+  "desktopWorkspaceChecks": 72,
+  "contentGroups": 15,
+  "surgicalStatesCompared": 37,
+  "extendedReferenceCases": 372,
+  "extendedStatesCompared": 350,
+  "sourceHashes": {
+    "windows/Rocker.Domain/DesktopWorkspace.cs": "26e5369c137d5ff92afd97572daedaac43c1b7bdd0a498bb6608ad3c944568d9",
+    "windows/Rocker.Domain.Checks/DesktopWorkspaceChecks.cs": "c463e9dd73e020b6717ed9bbfa4783115f2589847b2c20867abef28addf21bb3",
+    "windows/Rocker.Domain.Checks/Program.cs": "e981d0c65a46105fef58d750d94b88db36192588c6cbf5ac4a3e93801e0a7309"
+  },
+  "validatedAtUtc": "2026-10-13T17:42:12.062636+00:00",
+  "kind": "D04 portable domain contracts; no windows or devices opened",
+  "windowsRuntimeOfModelsVerified": false
+}

@@ -1,6 +1,6 @@
 {
   "result": "passed",
-  "validatedAtUtc": "2026-10-13T17:27:47.569067+00:00",
+  "validatedAtUtc": "2026-10-13T17:44:17.307290+00:00",
   "kind": "implementation-plan-document-validation",
   "applicationChanged": false,
   "runtimeVerified": false,
@@ -13,7 +13,7 @@
     "title": "Rocker 0.2.0 RC6 — viditelné retro kyvadlo a doby metronomu"
   },
   "planFile": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
-  "planSha256": "b3dde457b5790b5959acffb6049cf39b69d8dce06883d148f6686a12e635352b",
+  "planSha256": "9b44bc71f0538baafe45cfd666d431f6e4c7f42da54dcbcfcd1dd3f58edcbcbd",
   "steps": [
     {
       "id": "D01",
@@ -35,7 +35,7 @@
       "dependsOn": [
         "D02"
       ],
-      "status": "runtime-validation-in-progress"
+      "status": "windows-runtime-verified"
     },
     {
       "id": "D04",
@@ -44,7 +44,7 @@
         "D01",
         "D03"
       ],
-      "status": "planned"
+      "status": "implemented-portable-domain-verified"
     },
     {
       "id": "D05",
@@ -815,7 +815,143 @@
     },
     {
       "from": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
+      "target": "docs/windows/desktop/design-gallery.html"
+    },
+    {
+      "from": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
+      "target": "docs/windows/desktop/design-spec.md"
+    },
+    {
+      "from": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
+      "target": "docs/windows/desktop/design-validation.json"
+    },
+    {
+      "from": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
+      "target": "docs/windows/desktop/window-decision.md"
+    },
+    {
+      "from": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
+      "target": "docs/windows/desktop/windows-validation.json"
+    },
+    {
+      "from": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
+      "target": "docs/windows/desktop/document-models.md"
+    },
+    {
+      "from": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
+      "target": "docs/windows/desktop/models-validation.json"
+    },
+    {
+      "from": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
       "target": "AGENTS.md"
+    },
+    {
+      "from": "docs/windows/desktop/README.md",
+      "target": "../../../WINDOWS_DESKTOP_REBUILD_PLAN.md"
+    },
+    {
+      "from": "docs/windows/desktop/README.md",
+      "target": "baseline.md"
+    },
+    {
+      "from": "docs/windows/desktop/README.md",
+      "target": "baseline-validation.json"
+    },
+    {
+      "from": "docs/windows/desktop/README.md",
+      "target": "design-gallery.html"
+    },
+    {
+      "from": "docs/windows/desktop/README.md",
+      "target": "design-spec.md"
+    },
+    {
+      "from": "docs/windows/desktop/README.md",
+      "target": "design-validation.json"
+    },
+    {
+      "from": "docs/windows/desktop/README.md",
+      "target": "window-decision.md"
+    },
+    {
+      "from": "docs/windows/desktop/README.md",
+      "target": "windows-validation.json"
+    },
+    {
+      "from": "docs/windows/desktop/README.md",
+      "target": "document-models.md"
+    },
+    {
+      "from": "docs/windows/desktop/README.md",
+      "target": "models-validation.json"
+    },
+    {
+      "from": "docs/windows/desktop/README.md",
+      "target": "plan-validation.json"
+    },
+    {
+      "from": "docs/windows/desktop/baseline.md",
+      "target": "../baseline/README.md"
+    },
+    {
+      "from": "docs/windows/desktop/baseline.md",
+      "target": "inventory.json"
+    },
+    {
+      "from": "docs/windows/desktop/baseline.md",
+      "target": "source-inventory.json"
+    },
+    {
+      "from": "docs/windows/desktop/baseline.md",
+      "target": "source-manifest.json"
+    },
+    {
+      "from": "docs/windows/desktop/baseline.md",
+      "target": "baseline-validation.json"
+    },
+    {
+      "from": "docs/windows/desktop/baseline.md",
+      "target": "../../../scripts/verify-windows-desktop-baseline.mjs"
+    },
+    {
+      "from": "docs/windows/desktop/baseline.md",
+      "target": "../../../windows/Rocker.Probe/MainWindow.Shell.cs"
+    },
+    {
+      "from": "docs/windows/desktop/baseline.md",
+      "target": "../baseline/fixtures/domain-cases.json"
+    },
+    {
+      "from": "docs/windows/desktop/baseline.md",
+      "target": "../baseline/inventory.json"
+    },
+    {
+      "from": "docs/windows/desktop/baseline.md",
+      "target": "../../../windows/Rocker.Infrastructure/WindowPreferences.cs"
+    },
+    {
+      "from": "docs/windows/desktop/document-models.md",
+      "target": "../../../windows/Rocker.Domain/DesktopWorkspace.cs"
+    },
+    {
+      "from": "docs/windows/desktop/document-models.md",
+      "target": "models-validation.json"
+    },
+    {
+      "from": "docs/windows/desktop/document-models.md",
+      "target": "../../../windows/Rocker.Domain.Checks/DesktopWorkspaceChecks.cs"
+    },
+    {
+      "from": "docs/windows/desktop/window-decision.md",
+      "target": "../../../windows/Rocker.Probe/Desktop/DesktopHostExperiment.cs"
+    },
+    {
+      "from": "docs/windows/desktop/window-decision.md",
+      "target": "windows-validation.json"
+    },
+    {
+      "from": "docs/windows/desktop/design-spec.md",
+      "target": "design-gallery.html"
     }
   ],
   "errors": [],

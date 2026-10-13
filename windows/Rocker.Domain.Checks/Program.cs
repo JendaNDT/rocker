@@ -133,7 +133,8 @@ Check(runtimeContent.Items("riffs").Count() == 14 && runtimeContent.Items("riffs
 Check(runtimeContent.ResolveRiff("smoke-on-the-water")?.GetProperty("id").GetString() == "chromatic-pulse" && runtimeContent.ResolveRiff("seven-nation-army")?.GetProperty("id").GetString() == "root-and-third", "legacy riff selections resolve to replacement IDs");
 PracticeSessionChecks.Run(Check);
 PracticeWorkspaceChecks.Run(Check);
+int desktopChecks = DesktopWorkspaceChecks.Run();
 Console.WriteLine($"PASS: {extended.Cases} additional PWA cases and {extended.States} rhythm/palm-mute/break reference states.");
 Console.WriteLine($"PASS: {compared} frozen PWA cases and {checks - compared} additional assertions, including {surgicalStates} frozen surgical states; hardware and manual acceptance remain unperformed.");
 
-if (args.Length == 3) File.WriteAllText(args[2], JsonSerializer.Serialize(new { result = "passed", referenceCases = compared, boundaryChecks = checks - compared, contentGroups = 15, surgicalStatesCompared = surgicalStates, extendedReferenceCases = extended.Cases, extendedStatesCompared = extended.States }));
+if (args.Length == 3) File.WriteAllText(args[2], JsonSerializer.Serialize(new { result = "passed", referenceCases = compared, boundaryChecks = checks - compared, desktopWorkspaceChecks = desktopChecks, contentGroups = 15, surgicalStatesCompared = surgicalStates, extendedReferenceCases = extended.Cases, extendedStatesCompared = extended.States }));
