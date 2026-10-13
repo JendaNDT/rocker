@@ -365,9 +365,31 @@
   ],
   "sourceHashes": {
     "design-gallery.html": "cc5217e8cb521a70bb4fc751f31bd6e1543a329968fe8baee577a61b557d9c39",
-    "design-gallery.css": "b429391271b53bc44d2a6f0e75defa1056fb5a2d97bd1edadd2c1f046cdac89d",
-    "design-gallery.js": "3d14d81b4e41a9c85360bead9776b7f2131ee9c64e846f1530b30e0a30235705",
+    "design-gallery.css": "98750b885d3f1d10ac8ea972c0229e0359cac56d74e2449a01a83eab9b426eba",
+    "design-gallery.js": "f38b525a01c40f55cffad8e1549264b88b51a48e45f78c66ba939a1d7921d46a",
     "design-spec.md": "f52d41a9de9c02acab4ebbc3fb4147107a3d594132b1a200e39608d37e87510f"
   },
-  "harnessCorrection": "Expected filter counts corrected to actual classification: 21 documents, 6 system views, 4 tools, 1 Live; all 64 theme/modal cases and state checks rerun."
+  "harnessCorrection": "Expected filter counts corrected to actual classification: 21 documents, 6 system views, 4 tools, 1 Live; all 64 theme/modal cases and state checks rerun.",
+  "ownedDialogRefinementCases": [
+    {
+      "id": "31",
+      "theme": "dark",
+      "ownedDialogLayout": "passed"
+    },
+    {
+      "id": "32",
+      "theme": "dark",
+      "ownedDialogLayout": "passed"
+    },
+    {
+      "id": "31",
+      "theme": "light",
+      "ownedDialogLayout": "passed"
+    },
+    {
+      "id": "32",
+      "theme": "light",
+      "ownedDialogLayout": "passed"
+    }
+  ]
 }

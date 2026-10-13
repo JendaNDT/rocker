@@ -155,6 +155,7 @@ function settingsContent(model){
   }
 }
 function buildWindow(model){
+  const ownedDialog=model.id==="31" || model.id==="32";
   const caption=wrap("div","caption",wrap("span","app-glyph","R")+"Rocker — "+escapeText(model.title)+wrap("div","caption-actions","<i>−</i><i>□</i><i>×</i>"));
   const menu=wrap("div","menu-row","<span>Soubor</span><span>Úpravy</span><span>Zobrazení</span><span>Nástroje</span><span>Okno</span><span>Nápověda</span>");
   const toolbar=wrap("div","toolbar",action("Otevřít…")+action("Uložit")+wrap("span","divider","")+action("Zpět / znovu")+action("Hledat · Ctrl+K")+action("Live")+action("Rozložení · Cvičení"));
@@ -163,9 +164,9 @@ function buildWindow(model){
   let content="";
   if(model.kind==="tool")content=wrap("div","tool-content",toolsContent(model))+status;
   else if(model.kind==="live")content=wrap("div","tool-content",monitoring()+wrap("div","instrument-row",tuner()+metro(true))+wrap("div","chain",wrap("span","effect active","Aparát · Warm clean")+action("Presety…")+action("Otevřít aparát"))+wrap("div","signal-route","<span>Kytara</span> → <span>Aparát</span> → <span>Poslech</span> → <span>Mix</span>")+wrap("div","subtoolbar",action("Nahrávat kytaru",true)+action("Zastavit a uložit")+action("Jen hraju · F11")))+transport+status;
-  else if(model.kind==="system")content=wrap("div","workarea",wrap("aside","settings-navigation",["Obecné","Zvuková zařízení","Moje kytara","Klíče a AI","Zálohy a soubory","Aktualizace"].map(g=>wrap("div","library-row"+(model.title.startsWith(g)?" selected":""),g)).join(""))+wrap("div","document-body",wrap("div","document-title",model.title)+wrap("div","document-subtitle","Samostatné systémové okno · návrh")+settingsContent(model)))+status;
+  else if(model.kind==="system")content=wrap("div","workarea",(ownedDialog?"":wrap("aside","settings-navigation",["Obecné","Zvuková zařízení","Moje kytara","Klíče a AI","Zálohy a soubory","Aktualizace"].map(g=>wrap("div","library-row"+(model.title.startsWith(g)?" selected":""),g)).join("")))+wrap("div","document-body",wrap("div","document-title",model.title)+wrap("div","document-subtitle",ownedDialog?"Dialog se skutečným vlastníkem · návrh":"Samostatné systémové okno · návrh")+settingsContent(model)))+status;
   else content=toolbar+wrap("div","workarea",library(model)+wrap("div","document-area",wrap("div","tabs",wrap("div","tab active",escapeText(model.title)+(model.id==="15"?" *":"")+"<b>×</b>")+wrap("div","tab","Cvičná skladba <b>×</b>")+wrap("div","tab","Noty <b>×</b>"))+wrap("div","document-body",wrap("div","document-title",escapeText(model.title))+wrap("div","document-subtitle",escapeText(model.summary)+" · ukázkové údaje")+documentContent(model)))+inspector(model))+transport+status;
-  return wrap("div","mock-window "+model.kind+(theme==="light"?" light":""),caption+(model.kind==="tool"?"":menu)+content);
+  return wrap("div","mock-window "+model.kind+(ownedDialog?" dialog-preview":"")+(theme==="light"?" light":""),caption+(model.kind==="tool" || ownedDialog?"":menu)+content);
 }
 function fit(container,inner){
   const node=inner.querySelector(".mock-window");

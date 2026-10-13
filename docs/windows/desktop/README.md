@@ -9,7 +9,7 @@ včetně [výchozích automatických kontrol](baseline-validation.json).
 [D02 — galerie všech 32 návrhů](design-gallery.html) a
 [specifikace](design-spec.md) jsou připravené; [prohlížečová kontrola](design-validation.json)
 ověřila 64 kombinací pohledů a vzhledů, filtry, poslechové stavy a mobilní prohlížení.
-Navazuje D03 — skutečný Windows experiment.
+Probíhá [D03 — skutečný Windows experiment](window-decision.md). Produkční shell zatím není nahrazený.
 Poslední sestavený kandidát zůstává RC6. Nové samostatné Live, plovoucí
 nástroje a dokumentová okna mají vzniknout podle plánu.
 Galerie obsahuje návrhy s ukázkovými daty, tato složka zatím neobsahuje

@@ -430,6 +430,7 @@ se předá až po D35/D36.
 
 #### D03 — Ověřit více oken, docking a systémové chování
 
+- Stav: technický experiment implementovaný; [rozhodnutí a scénáře](docs/windows/desktop/window-decision.md). Lokální C# semantic check prošel; skutečné Windows ověření v [běhu 38437376867](https://github.com/JendaNDT/rocker/actions/runs/38437376867) probíhá. D03 zatím není označený jako automaticky ověřený.
 - Závislosti: D02.
 - Změna: malý skutečný WinUI řez s dvěma okny, jedním přesouvatelným dokumentem a nástrojem; vyzkoušet XamlRoot, HWND, tab drag/drop, WebView2 a notový pohled.
 - Soubory: Desktop/WindowManager.cs, Windows/DocumentWindow.xaml, Windows/ToolWindow.xaml; docs/windows/desktop/window-decision.md.
