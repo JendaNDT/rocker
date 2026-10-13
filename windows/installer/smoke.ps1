@@ -45,14 +45,16 @@ try {
     $currentAssociation=Get-ItemPropertyValue 'HKCU:/Software/Classes/JendaNDT.Rocker.Project/shell/open/command' -Name '(default)'
     $shortcut=Join-Path $env:APPDATA 'Microsoft/Windows/Start Menu/Programs/Rocker/Rocker.lnk'
     $shortcutHash=(Get-FileHash $shortcut -Algorithm SHA256).Hash
+    $candidateVersion=[Version]$info.toolchain.productVersion
+    $futureVersion="$($candidateVersion.Major).$($candidateVersion.Minor).$($candidateVersion.Build+1)"
     $futurePackages=Join-Path $fixture 'future';New-Item -ItemType Directory -Force $futurePackages | Out-Null
-    & (Join-Path $PSScriptRoot 'build.ps1') -ApplicationDirectory $app -PackageDirectory $futurePackages -Version '0.2.1' -Revision $info.commit
+    & (Join-Path $PSScriptRoot 'build.ps1') -ApplicationDirectory $app -PackageDirectory $futurePackages -Version $futureVersion -Revision $info.commit
     $invalidProfile=Join-Path $fixture 'incompatible-profile';New-Item -ItemType Directory -Force (Join-Path $invalidProfile 'database') | Out-Null
     $invalidDatabase=Join-Path $invalidProfile 'database/rocker.db';[IO.File]::WriteAllBytes($invalidDatabase,[byte[]]@(1,2,3));$invalidHash=(Get-FileHash $invalidDatabase -Algorithm SHA256).Hash
     $env:ROCKER_USER_DATA_DIR=$invalidProfile
-    $failed=Start-Process (Join-Path $futurePackages 'Rocker-Windows-Setup-0.2.1-x64.exe') -ArgumentList ($arguments+@("/LOG=`"$(Join-Path $ReportDirectory 'failed-update.log')`"")) -Wait -PassThru
+    $failed=Start-Process (Join-Path $futurePackages "Rocker-Windows-Setup-$futureVersion-x64.exe") -ArgumentList ($arguments+@("/LOG=`"$(Join-Path $ReportDirectory 'failed-update.log')`"")) -Wait -PassThru
     if($failed.ExitCode -eq 0 -or (Get-FileHash $invalidDatabase -Algorithm SHA256).Hash -ne $invalidHash){throw 'An invalid profile was accepted or changed by update preflight.'}
-    if(Test-Path (Join-Path $install ('versions/0.2.1-'+$info.commit.Substring(0,12)))){throw 'Failed preparation published candidate files into the installation.'}
+    if(Test-Path (Join-Path $install ('versions/'+$futureVersion+'-'+$info.commit.Substring(0,12)))){throw 'Failed preparation published candidate files into the installation.'}
     if((Get-ItemPropertyValue 'HKCU:/Software/JendaNDT/Rocker' -Name CurrentPath) -ne $currentPath -or (Get-ItemPropertyValue 'HKCU:/Software/Classes/JendaNDT.Rocker.Project/shell/open/command' -Name '(default)') -ne $currentAssociation -or (Get-FileHash $shortcut -Algorithm SHA256).Hash -ne $shortcutHash){throw 'Failed update changed the current path, shortcut or project association.'}
     $env:ROCKER_USER_DATA_DIR=$oldData
     # Continue with the actual candidate, installed forms, repair and file activation.

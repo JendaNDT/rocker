@@ -34,7 +34,7 @@ public sealed partial class MainWindow : Window
         PositionSlider.AddHandler(UIElement.PointerCaptureLostEvent, new PointerEventHandler(Position_Released), true);
         VideoSeek.AddHandler(UIElement.PointerPressedEvent,new PointerEventHandler((_,args)=>{if(args.GetCurrentPoint(VideoSeek).Properties.IsLeftButtonPressed)videoSeeking=true;}),true);
         VideoSeek.AddHandler(UIElement.PointerCaptureLostEvent,new PointerEventHandler(VideoSeek_Released),true);
-        Closed += (_, _) => { closed = true;updateCancellation?.Cancel();updateHttp.Dispose();DetachNativeEvents(); timer.Stop(); VideoView.Close(); };
+        Closed += (_, _) => { closed = true;updateCancellation?.Cancel();updateHttp.Dispose();DetachNativeEvents(); timer.Stop(); LegacyVideoView.Close(); };
         Activated += async (_, _) =>
         {
             if (initialNotationStarted) return;
@@ -42,7 +42,7 @@ public sealed partial class MainWindow : Window
             await InitializePersistenceAsync();
             if (closed) return;
             if (!closed && !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTICS_DIR"))) { await LoadScoreAsync(Path.Combine(AppContext.BaseDirectory, "fixtures", "notation-phrases.gp"));await VerifyShellAsync(); }
-            else { NotationStatus.Text="Otevři Guitar Pro nebo MusicXML. Noty fungují bez internetu."; InitializeDesktop(); await RestoreDesktopLayoutAsync(); if(appSettings.CheckUpdatesOnStartup)_ = CheckUpdatesAsync(true); }
+            else { NotationStatus.Text="Otevři Guitar Pro nebo MusicXML. Noty fungují bez internetu."; InitializeDesktop(); await RestoreDesktopLayoutAsync();desktopStartupReady=true; if(appSettings.CheckUpdatesOnStartup)_ = CheckUpdatesAsync(true); }
         };
         timer.Tick += (_, _) => RefreshState();
         try
@@ -86,7 +86,7 @@ public sealed partial class MainWindow : Window
             string playLabel = transport.Playing != 0 ? "Pozastavit" : "Přehrát";
             if (PlayMediaButton.Label != playLabel) { PlayMediaButton.Label = playLabel; PlayMediaButton.Icon = new SymbolIcon(transport.Playing != 0 ? Symbol.Pause : Symbol.Play); }
             RewindButton.IsEnabled = PositionSlider.IsEnabled = !busy && transport.Ready != 0;
-            SpeedBox.IsEnabled = !studioOwnsPlayback && !busy && transport.Ready != 0;
+            using(var sourceScope=desktopEnabled && services.Transport.Owner is{ } owner?documentContext.Enter(owner):null)SpeedBox.IsEnabled = !studioOwnsPlayback && captureDraft is null && !busy && transport.Ready != 0;
             PlayScoreButton.IsEnabled = !deviceSelectionUnavailable && !deviceOperationRunning && !powerTransition && !busy && preview is not null;
             if (!positionDragging)
             {

@@ -222,6 +222,7 @@
     <Style x:Key="VintageBarreStyle" TargetType="Line">
         <Setter Property="Stroke" Value="{ThemeResource VintageAccent}" /><Setter Property="StrokeThickness" Value="14" />
     </Style>
+    <Style x:Key="VintageDesktopHostStyle" TargetType="Grid"><Setter Property="Background" Value="{ThemeResource VintageBackground}"/></Style>
     <Style x:Key="VintageRootButtonStyle" TargetType="Button">
         <Setter Property="CornerRadius" Value="6"/>
         <Setter Property="Background" Value="{ThemeResource VintageAccent}" />

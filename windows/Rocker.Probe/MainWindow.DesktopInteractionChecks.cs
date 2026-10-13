@@ -55,6 +55,9 @@ public sealed partial class MainWindow
         for(int i=0;i<12;++i){var cycle=OpenDesktop(new("21","cycle-"+i));var tab=desktopDocuments[cycle];DetachDesktopTab(tab);await Task.Delay(20);AttachDesktopTab(tab);await CloseDesktopTabAsync(tab);}
         Check(desktopWindows.Count==windowsBefore && services.Documents.All.Count==documentsBefore && services.Audio.HostsCreated==hosts,"repeated-open-transfer-close-releases-window-and-document-registries");
         var settings=OpenDesktop(new("29"));OpenDesktop(new("28"));Check(OpenDesktop(new("29"))==settings,"settings-categories-reuse-the-same-window-and-device-panel");
+        var previousSettings=appSettings;appSettings=appSettings with{SetupStep=0};var wizard=ShowDesktopDialogAsync(new("31"));var deadline=DateTime.UtcNow.AddSeconds(5);while(desktopFirstRunDialog?.IsLoaded!=true && !wizard.IsCompleted && DateTime.UtcNow<deadline)await Task.Delay(25);
+        Check(desktopFirstRunDialog?.IsLoaded==true,"first-run-opens-one-owned-desktop-dialog");
+        var oldContent=desktopFirstRunDialog!.Content;SetSetupStep(1);Check(appSettings.SetupStep==1 && !ReferenceEquals(oldContent,desktopFirstRunDialog.Content),"first-run-advances-within-the-existing-dialog");DismissDesktopFirstRun();await wizard;appSettings=previousSettings;SaveSettings();
         await StopForPowerTransitionAsync();Check(audio.GetSnapshot().State==Rocker.Interop.AudioState.Stopped && !audio.GetMeters().Monitoring && services.Transport.Grader is null,"one-power-transition-stops-the-shared-session-in-all-windows");
         WriteShellDiagnostic("desktop-interactions.json",new{result="passed",checks=checks.Count,scenarios=checks,sourceCommit=Environment.GetEnvironmentVariable("GITHUB_SHA"),actualWindows=true,syntheticAudioFiles=true,physicalAudioVerified=false,physicalPickerInteractionVerified=false});
     }

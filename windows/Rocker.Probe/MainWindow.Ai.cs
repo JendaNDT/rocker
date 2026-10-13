@@ -7,6 +7,8 @@ namespace Rocker.Probe;
 public sealed partial class MainWindow
 {
     private AiSettings aiSettings=new("gpt-4.1-mini",Provider:"openai");
+    private AiSettings CurrentAiRequestSettings=>documentContext.Current.Get<AiSettings?>("ai-request-settings",()=>null)??aiSettings;
+    private string CurrentAiRequestContext=>documentContext.Current.Get<string?>("ai-request-context",()=>null)??AiContext(aiSettings.IncludeProgress,aiSettings.IncludeInstrument);
     private readonly List<SavedChatMessage> aiHistory=[];
     private Dictionary<string,AiPage> aiPages { get => documentContext.Current.Get<Dictionary<string,AiPage>>("aiPages", () => []); }
     private static readonly HttpClient aiHttp=new(new SocketsHttpHandler{AllowAutoRedirect=false}){Timeout=Timeout.InfiniteTimeSpan};
@@ -61,9 +63,10 @@ public sealed partial class MainWindow
     private void UpdateAiControls(){foreach(var page in aiPages.Values){page.Send.IsEnabled=page.Models.IsEnabled=!aiBusy;page.Cancel.IsEnabled=aiBusy && ReferenceEquals(aiActive,page);foreach(var editor in page.Editors)editor.IsEnabled=!aiBusy;}foreach(var editor in aiPlanEditors){editor.Title.IsEnabled=editor.Detail.IsEnabled=editor.Minutes.IsEnabled=editor.View.IsEnabled=editor.Item.IsEnabled=!aiBusy;}}
     private void BeginAi(AiPage page,Func<string,CancellationToken,Task> operation,bool requireModel=true)
     {
-        if(aiBusy || closed || closingWindow)return;if(aiSettings.Provider!="openai"){page.Status.Text="Gemini není pro tento osobní způsob použití podle aktuálních podmínek dostupné. Vyber OpenAI a ulož jeho vlastní klíč.";return;}
-        aiSettings=aiSettings with{Model=string.IsNullOrWhiteSpace(page.Model.Text) && !requireModel?aiSettings.Model:page.Model.Text.Trim(),IncludeProgress=page.Progress.IsChecked==true,IncludeInstrument=page.Instrument.IsChecked==true};
+        if(aiBusy || closed || closingWindow)return;string provider=page.Provider.SelectedIndex==0?"openai":"gemini";if(provider!="openai"){page.Status.Text="Gemini není pro tento osobní způsob použití podle aktuálních podmínek dostupné. Vyber OpenAI a ulož jeho vlastní klíč.";return;}
+        aiSettings=aiSettings with{Provider=provider,Model=string.IsNullOrWhiteSpace(page.Model.Text) && !requireModel?aiSettings.Model:page.Model.Text.Trim(),IncludeProgress=page.Progress.IsChecked==true,IncludeInstrument=page.Instrument.IsChecked==true};
         try{PersistAiSettings();}catch(Exception){page.Status.Text="Vyber model AI.";return;}
+        documentContext.Current.Set("ai-request-settings",aiSettings);documentContext.Current.Set("ai-request-context",AiContext(aiSettings.IncludeProgress,aiSettings.IncludeInstrument));page.Context.Text=CurrentAiRequestContext;
         aiBusy=true;aiActive=page;aiCancellation=new();UpdateAiControls();aiTask=RunAiAsync(page,operation,aiCancellation);
     }
     private async Task RunAiAsync(AiPage page,Func<string,CancellationToken,Task> operation,CancellationTokenSource cancellation)
@@ -75,7 +78,7 @@ public sealed partial class MainWindow
         catch(OperationCanceledException){if(!closed)page.Status.Text="Dotaz byl zrušen. Neúplná odpověď nebyla přijata.";}
         catch(AiRequestException error){if(!closed)page.Status.Text=error.Message;}
         catch(Exception){if(!closed)page.Status.Text="Odpověď se nepodařilo přijmout nebo uložit. Dotaz se automaticky neopakuje.";}
-        finally{cancellation.Dispose();if(ReferenceEquals(aiCancellation,cancellation)){aiCancellation=null;aiActive=null;aiBusy=false;}if(!closed)UpdateAiControls();}
+        finally{cancellation.Dispose();if(ReferenceEquals(aiCancellation,cancellation)){aiCancellation=null;aiActive=null;aiBusy=false;documentContext.Current.Set<AiSettings?>("ai-request-settings",null);documentContext.Current.Set<string?>("ai-request-context",null);}if(!closed)UpdateAiControls();}
     }
     private void ShowAiPartial(AiPage page,string value,CancellationToken cancellation){var target=documentContext.Current;if(!closed && !cancellation.IsCancellationRequested && ReferenceEquals(aiActive,page))DispatcherQueue.TryEnqueue(()=>{using var scope=documentContext.Enter(target);if(target.IsAlive && !closed && !cancellation.IsCancellationRequested && ReferenceEquals(aiActive,page))page.Response.Text=value;});}
     private async Task CancelAiAsync(){

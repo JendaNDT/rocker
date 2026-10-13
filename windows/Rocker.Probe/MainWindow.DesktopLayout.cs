@@ -12,6 +12,7 @@ public sealed partial class MainWindow
     private bool desktopRestoring;
     private static DesktopPixelBounds DesktopBounds(Window window)
     {
+        if(window is Desktop.DesktopWindow host)return host.NormalBounds;
         var position=window.AppWindow.Position;var size=window.AppWindow.Size;return new(position.X,position.Y,size.Width,size.Height);
     }
     private void FitDesktopWindow(Window window,DesktopPixelBounds bounds,bool maximized=false,bool topmost=false)
@@ -19,6 +20,7 @@ public sealed partial class MainWindow
         var area=DisplayArea.GetFromRect(new(bounds.X,bounds.Y,bounds.Width,bounds.Height),DisplayAreaFallback.Nearest).WorkArea;
         var fitted=new WindowRectangle(bounds.X,bounds.Y,bounds.Width,bounds.Height).FitTo(new(area.X,area.Y,area.Width,area.Height));
         window.AppWindow.MoveAndResize(new(fitted.X,fitted.Y,fitted.Width,fitted.Height));
+        if(window is Desktop.DesktopWindow host)host.RememberBounds(new(fitted.X,fitted.Y,fitted.Width,fitted.Height));
         if(window.AppWindow.Presenter is OverlappedPresenter presenter){presenter.IsAlwaysOnTop=topmost;if(maximized)presenter.Maximize();}
     }
     private async Task SaveDesktopLayoutAsync()

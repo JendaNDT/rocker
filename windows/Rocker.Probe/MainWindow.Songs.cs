@@ -126,6 +126,7 @@ public sealed partial class MainWindow
         using var scope=documentContext.Enter(documentContext.Current);
         if(desktopEnabled && services.Transport.Owner==documentContext.Current)
         {
+            if(captureDraft is not null)throw new InvalidOperationException("Nejdřív zastav a ulož nahrávání; rychlost jeho zdroje zůstává zachovaná.");
             using var operation=services.Operations.Begin(documentContext.Current.Id,"source-update","Změna rychlosti skladby",cancellable:false);
             await services.Transport.UpdateOwnerAsync(documentContext.Current,()=>ChangeSongSpeedCoreAsync(speed));
         }

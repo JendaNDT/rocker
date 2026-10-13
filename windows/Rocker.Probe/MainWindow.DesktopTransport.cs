@@ -13,7 +13,7 @@ public sealed partial class MainWindow
 
         path=Rocker.Infrastructure.CanonicalFiles.ResolveExisting(path).Path;
         var key=DesktopDocumentKey.ForCanonicalFile("07",path);
-        var session=OpenDesktop(new("07",relocated?.Id),key);
+        var session=OpenDesktop(new("07",relocated?.Id),key,loadAssets:false);
         using var scope=documentContext.Enter(session);
         if(song is not null && mediaPath is not null && Rocker.Infrastructure.CanonicalFiles.ResolveExisting(mediaPath).Identity==Rocker.Infrastructure.CanonicalFiles.ResolveExisting(path).Identity)return;
         if(session.Get<Task?>("song-loading",()=>null) is{ } pending){await pending;return;}
@@ -64,7 +64,7 @@ public sealed partial class MainWindow
         using var scope=documentContext.Enter(session);
         if(session.Target.ViewId is "08" or "20")return;
         var page=BuildDesktopDocumentPage(session.Target);tab.Content=DesktopDocumentContent(page);
-        tab.Header=session.Target.ViewId=="07"?song?.Name??"Skladba":session.Target.ViewId=="15"?studioProject?.Name??"Studio":WorkspaceViews.Get(session.Target.ViewId).Title;
+        tab.Header=session.Target.ViewId=="07"?song?.Name??"Skladba":session.Target.ViewId=="15"?studioProject?.Name??"Studio":session.Target.ViewId=="14"?playingRecording?.Name??"Nahrávka":WorkspaceViews.Get(session.Target.ViewId).Title;
     }
     private async Task ClaimDesktopSourceAsync(DocumentSession requested)
     {
@@ -159,7 +159,7 @@ public sealed partial class MainWindow
             if(desktopDocuments.TryGetValue(session,out var tab))
             {
                 session.Dirty=closeGuards.Any(p=>p.Key.StartsWith(session.Id+"/",StringComparison.Ordinal) && p.Value.State.RequiresConfirmation);
-                string title=session.Target.ViewId=="07"?song?.Name??"Skladba":session.Target.ViewId=="15"?studioProject?.Name??"Studio":WorkspaceViews.Get(session.Target.ViewId).Title;
+                string title=session.Target.ViewId=="07"?song?.Name??"Skladba":session.Target.ViewId=="15"?studioProject?.Name??"Studio":session.Target.ViewId=="14"?playingRecording?.Name??"Nahrávka":WorkspaceViews.Get(session.Target.ViewId).Title;
                 if(session.Target.ViewId=="20" && notationName.Length>0)title=notationName;
                 tab.Header=title+(session.Dirty?" *":"");
             }

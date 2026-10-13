@@ -11,10 +11,11 @@ public sealed partial class MainWindow
     private void RefreshDesktopLibrary()
     {
         if(!desktopEnabled)return;
+        if(desktopLibraryPage is not null)return;
         var expanded=desktopLibrary.RootNodes.Where(n=>n.IsExpanded).Select(n=>n.Content as string).ToHashSet();
         desktopLibrary.Visibility=Visibility.Visible;
-        if(desktopLibrary.Parent is Grid parent)foreach(var old in parent.Children.OfType<ScrollViewer>().ToArray())parent.Children.Remove(old);
-        desktopLibrary.RootNodes.Clear();string query=librarySearch.Text.Trim();
+        if(desktopLibrary.Parent is Grid parent)foreach(var old in parent.Children.OfType<FrameworkElement>().Where(c=>c.Tag as string=="desktop-library").ToArray())parent.Children.Remove(old);
+        desktopLibrary.RootNodes.Clear();string query=PracticeWorkspaceRules.SearchText(librarySearch.Text.Trim());
         var groups=WorkspaceViews.All.Where(v=>v.Id is not("31" or "32")).GroupBy(v=>v.Group).ToDictionary(g=>g.Key,g=>g.Select(v=>new LibraryEntry(v.Title,new(v.Id))).ToList());
         if(catalog is not null)
         {
@@ -26,7 +27,7 @@ public sealed partial class MainWindow
         foreach(var group in desktopLibraryAssets)groups[group.Key]=group.Value;
         foreach(var group in groups)
         {
-            var matches=group.Value.Where(e=>query.Length==0 || group.Key.Contains(query,StringComparison.CurrentCultureIgnoreCase) || e.Title.Contains(query,StringComparison.CurrentCultureIgnoreCase)).ToArray();
+            var matches=group.Value.Where(e=>query.Length==0 || PracticeWorkspaceRules.SearchText(group.Key).Contains(query,StringComparison.Ordinal) || PracticeWorkspaceRules.SearchText(e.Title).Contains(query,StringComparison.Ordinal)).ToArray();
             if(matches.Length==0)continue;var node=new TreeViewNode{Content=group.Key,IsExpanded=query.Length>0 || expanded.Contains(group.Key)};
             foreach(var entry in matches)node.Children.Add(new TreeViewNode{Content=entry});desktopLibrary.RootNodes.Add(node);
         }

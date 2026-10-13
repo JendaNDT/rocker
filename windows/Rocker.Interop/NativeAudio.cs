@@ -115,6 +115,9 @@ public sealed partial class NativeAudio : IDisposable, IAsyncDisposable
         if (result != 0 || pointer == IntPtr.Zero)
             throw new InvalidOperationException($"Zvukové jádro se nepodařilo vytvořit (stav {result}).");
         handle = new AudioHandle(pointer);
+        try{CheckResult(MediaSourceTicket(pointer,out _));}
+        catch(EntryPointNotFoundException){handle.Dispose();throw new InvalidOperationException("Zvuková knihovna patří k jiné verzi Rockeru. Oprav instalaci aplikace.");}
+        catch{handle.Dispose();throw;}
     }
 
     public Task StartAsync() => ReservedStartAsync(0);

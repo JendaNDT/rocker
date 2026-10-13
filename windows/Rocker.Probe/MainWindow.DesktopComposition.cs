@@ -34,6 +34,8 @@ public sealed partial class MainWindow
         }
         void AddMenu(string title,StackPanel content){if(content.Children.Count==0)return;var button=new Button{Content=title,MinHeight=32,Flyout=new Flyout{Content=new ScrollViewer{Content=content,MaxHeight=520,MaxWidth=380}}};surface.Toolbar.Children.Insert(0,button);}
         AddMenu("Nahrávání",recordActions);AddMenu("Export",exportActions);AddMenu("Projekt",fileActions);
+        var owner=documentContext.Current;
+        var redo=new Button{Content="Znovu",MinHeight=32};ToolTipService.SetToolTip(redo,"Opakovat vrácenou editaci · Ctrl+Y");redo.Click+=async(_,_)=>await ExecuteDesktopCommandAsync("edit.redo",owner);surface.Toolbar.Children.Add(redo);
         return surface;
     }
     private FrameworkElement ComposeDesktopSong(StackPanel source)
