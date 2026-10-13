@@ -17,6 +17,16 @@ Tento konkrétní pokyn má pro Windows přepis přednost před obecnými pravid
 čekání na další schválení níže a v `SKILL.md`. Neznamená povolení nákupů
 certifikátů/licencí ani veřejného vydávání mimo dohodnuté soukromé předání.
 
+**Navazující schválení desktopové přestavby (13. 10. 2026):** Jenda po
+předání úplného `WINDOWS_DESKTOP_REBUILD_PLAN.md` výslovně schválil
+zahájení práce („Ok. Tak se můžeš pustit do práce.“). Postupovat podle
+D01–D36 po malých navazujících krocích, včetně návrhů, oddělení služeb,
+více oken, všech funkcí a Vintage grafiky. Zachovat průběžné automatické
+kontroly a skutečné Windows buildy; znovu nežádat schválení každého kroku
+ani uživatelský test rozpracovaného řezu. Ruční přejímka patří ucelenému
+kandidátovi. Toto schválení nemění omezení nákupů, soukromého předání
+a povinnost rozlišovat návrhy, implementaci, automatické a ruční důkazy.
+
 Jenda je vibecoder — má skvělé nápady, ale neprogramuje. Plná pravidla jsou
 v `SKILL.md`. Stručně:
 

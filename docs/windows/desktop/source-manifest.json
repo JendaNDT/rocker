@@ -1,0 +1,1558 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "1e3e8611c4caf4975d22eb36fefdf875d997e284",
+  "files": [
+    {
+      "path": "docs/windows/baseline/fixtures/audio/a4-440.m4a",
+      "sha256": "bbdcfe15bc9ebb4ee17e0482c10b49269af7cc42aea3a4d0cf5617935f9c9c1b"
+    },
+    {
+      "path": "docs/windows/baseline/fixtures/audio/a4-440.mp3",
+      "sha256": "1045356442dad96d3f600464b61462ff348c5546e27749e89f1b6c6b4b8247ce"
+    },
+    {
+      "path": "docs/windows/baseline/fixtures/audio/a4-440.ogg",
+      "sha256": "64461bfebd3729dbf85b4f532eefdd960a1eb89a011002da341f061ef8a37b5d"
+    },
+    {
+      "path": "docs/windows/baseline/fixtures/audio/a4-440.wav",
+      "sha256": "e4df7c1075940a8d01285505c96e080a5adae2c819ae7f16a0e9338e6a228110"
+    },
+    {
+      "path": "docs/windows/baseline/fixtures/audio/a4-440.webm",
+      "sha256": "09d831260c9720d715af19efcc98e7680f87dc876490cc32e427d45d70f3d837"
+    },
+    {
+      "path": "docs/windows/baseline/fixtures/audio/impulses.wav",
+      "sha256": "21adc968f23a4834137a37f570316df3b476b88979a0b6a01cbe428bfd009116"
+    },
+    {
+      "path": "docs/windows/baseline/fixtures/audio/input-1-only.wav",
+      "sha256": "d811d847a53db5b52a23bbcf0d7d3f91cc1e592d31ba3c64e1738bcbeaa64c10"
+    },
+    {
+      "path": "docs/windows/baseline/fixtures/audio/input-2-only.wav",
+      "sha256": "77b5633afefcc460d7cd6b414bfb9bc47183cdcc7d091451fa205fe1ce173a14"
+    },
+    {
+      "path": "docs/windows/baseline/fixtures/audio/low-e2.wav",
+      "sha256": "0cfbc70ddd6bd9ee368716d57c47dde704665fcfbbe4b98c6e748f5edf86d057"
+    },
+    {
+      "path": "docs/windows/baseline/fixtures/audio/repeated-e2.wav",
+      "sha256": "76a1005bddaa84068ef8d9e702c518660956a2089de89821a1e13f7dd1465c0b"
+    },
+    {
+      "path": "docs/windows/baseline/fixtures/audio/silence.wav",
+      "sha256": "0a8f76d89c709043814cb74f331a4578d17ff61256303bd0019a263d053f86e8"
+    },
+    {
+      "path": "docs/windows/baseline/fixtures/content.json",
+      "sha256": "e17199296f0399d783e24da0d2f4b38993ca0064d0c8656138f12f5e1b5d4d49"
+    },
+    {
+      "path": "docs/windows/baseline/fixtures/domain-cases.json",
+      "sha256": "547c5a196b95cb9c5d83640e4e53d8319331a882b9b6c7ad865a5574e9bb38bc"
+    },
+    {
+      "path": "docs/windows/baseline/fixtures/media.json",
+      "sha256": "9811fad37ff9bf1458237861bbab773330781c7fd35ee189cb84c538fa213dfc"
+    },
+    {
+      "path": "docs/windows/baseline/fixtures/notation-scale.musicxml",
+      "sha256": "1bed9d642bd4d9581a4b1abfa9ead772d36f61bfbaa6591aad89e92fa4dc4b90"
+    },
+    {
+      "path": "docs/windows/baseline/fixtures/recordings.json",
+      "sha256": "a1bbfb4b74c4999c64a6d211ceb596544036879715a5b52c12355a7422f26d2e"
+    },
+    {
+      "path": "docs/windows/baseline/fixtures/settings-corrupt-value.json",
+      "sha256": "4d78edd637aa073d798740d8c63574bc0c46394957ca220eec14bb4061c8bf51"
+    },
+    {
+      "path": "docs/windows/baseline/fixtures/settings-invalid.json",
+      "sha256": "54718105d6cdc1c4ba1c90680d9e4ce8753b0f77124527362979e936165f82b9"
+    },
+    {
+      "path": "docs/windows/baseline/fixtures/settings-partial.json",
+      "sha256": "014aa0936290b8f5b8c160078b20d86fa015c4c1b936dbcaac99ee27597fc154"
+    },
+    {
+      "path": "docs/windows/baseline/fixtures/settings-v1.json",
+      "sha256": "103f24e2f0fd61ece4573411be6148139d3f89d2870bec88ab1dc6f4391364f8"
+    },
+    {
+      "path": "docs/windows/baseline/fixtures/settings-v2.json",
+      "sha256": "650ecc67561cd2095ab07bd588bccad7339b197fb0912b810cb0a221548d5f96"
+    },
+    {
+      "path": "docs/windows/baseline/fixtures/surgical-traces.json",
+      "sha256": "909faa1b1dc8f3d9e8f3a05df1d572ee0e153026473bf9c119bc299b286eec27"
+    },
+    {
+      "path": "docs/windows/w06/domain-reference.json",
+      "sha256": "d22091b7a8d987c042c368061726d32f5be78c0d188f7a5326486ea9dd0d2d94"
+    },
+    {
+      "path": "src/lib/achievements.test.ts",
+      "sha256": "e15f5fb855f52408f335aa7865e0d926177fa20b69f6538ef80d6dd9aa4e9074"
+    },
+    {
+      "path": "src/lib/achievements.ts",
+      "sha256": "d70db8d3fba7134a9a965fafe1c04f3eb85f09503afab1812096ad49fe91abe6"
+    },
+    {
+      "path": "src/lib/ai/config.ts",
+      "sha256": "0e6d0367d6ad8c08e99de7c51742344efb5ad75c95be25fb25fe603aae078759"
+    },
+    {
+      "path": "src/lib/ai/context.test.ts",
+      "sha256": "211d4ba168353d536969f9a628e4f788b2bd8027804d203d4c7f4629993b4d7f"
+    },
+    {
+      "path": "src/lib/ai/context.ts",
+      "sha256": "d71845aebd7df826b2a70ee582d6188135013192f9bec95aa51065f57c2a3c7d"
+    },
+    {
+      "path": "src/lib/ai/feedback.test.ts",
+      "sha256": "d0f4823ce478c48d26988984992c9068a8952427d0ba3c2ac6410f01eb983ec7"
+    },
+    {
+      "path": "src/lib/ai/feedback.ts",
+      "sha256": "7d10eb1b65ac467de6742daea7160c2d49331b9cc92f19ef8c5b6b3b55c63f06"
+    },
+    {
+      "path": "src/lib/ai/geminiClient.test.ts",
+      "sha256": "ba4d547d384449f87de22599e81c84f5d8f5ef0a96bb2cf427012d91d7657d08"
+    },
+    {
+      "path": "src/lib/ai/geminiClient.ts",
+      "sha256": "92ecac6b48fac477038e438fdce6bf7df3edcf189af7efae3b4a368dbd6273fa"
+    },
+    {
+      "path": "src/lib/ai/planGenerator.test.ts",
+      "sha256": "4d6cbbee63091a1b1562afb2f1d0383b710c2e7bf1c771a1ba5c95b2f0b79af7"
+    },
+    {
+      "path": "src/lib/ai/planGenerator.ts",
+      "sha256": "a0f1b241d9d813b8add4c5b5990461d3803729f25e93c6e21c221bd9a1c4bccd"
+    },
+    {
+      "path": "src/lib/ai/prompts.ts",
+      "sha256": "1e7140ff7f66a1f154ceb6d827409eaa1c0ff0d2dbdf2dfe92f8de78b89edbe3"
+    },
+    {
+      "path": "src/lib/ai/types.test.ts",
+      "sha256": "38eb68137fc9f704aa03d6f96ccc855ecc64fc922c24a86d09ad990e9859faaa"
+    },
+    {
+      "path": "src/lib/ai/types.ts",
+      "sha256": "e939b2aa3ea75b206ca2c0bcb8d8e0e84239080ddf0fc30848c1d675752b1e46"
+    },
+    {
+      "path": "src/lib/ampPresets.test.ts",
+      "sha256": "31d5798ef9e2fe91ac293ce335e8a0971ab3221ecf011e91f2fb8dfe0ee92fae"
+    },
+    {
+      "path": "src/lib/ampPresets.ts",
+      "sha256": "e2e9ea4dedaddafebec0e432ae4d3fcc1de056975618eb65a55c4d9dc97cf1f3"
+    },
+    {
+      "path": "src/lib/backup.test.ts",
+      "sha256": "9e1b32bdc41ebae54823dfef4a9ef96629fd82fae36a95a8732a0e6dbb589002"
+    },
+    {
+      "path": "src/lib/backup.ts",
+      "sha256": "770570840bdd82eaeca7cd9d0955c59d311cb81e737c3338a6790d06a40f0b63"
+    },
+    {
+      "path": "src/lib/breakReminder.test.ts",
+      "sha256": "a71024c373a12bfed488aa5b778085796d320b7e4d2d49322fb83ebfeb3c4648"
+    },
+    {
+      "path": "src/lib/breakReminder.ts",
+      "sha256": "47056d32d49b06c80233f966d0af2ff222c22776afa029dc8930bda83324b062"
+    },
+    {
+      "path": "src/lib/chords.test.ts",
+      "sha256": "76babb387341c56c2757c9b7635656996cf7b44c4b97fd802d23faf9003aec92"
+    },
+    {
+      "path": "src/lib/chords.ts",
+      "sha256": "36ccb103dfe8a6e58771de6eac9f5af6ecf41203b0d2059ac1e32c681be5b71a"
+    },
+    {
+      "path": "src/lib/customTunings.ts",
+      "sha256": "7831a9be91b2cab1373118c34058d41d9d123d51f61f59105fd81db47fc45c21"
+    },
+    {
+      "path": "src/lib/dailyPlan.test.ts",
+      "sha256": "36417734514b34944277ba9b5d4e888188b3d4dffe9475202da78495e78a9111"
+    },
+    {
+      "path": "src/lib/dailyPlan.ts",
+      "sha256": "e2f58007812d38689d877acd7414a78ab2238822f135b43f73104dfe629617c1"
+    },
+    {
+      "path": "src/lib/download.ts",
+      "sha256": "e3e4d58ab6ebf36cfe4c7d86e2c7ecfed38057de97f6555418cd8d3e9dba8eef"
+    },
+    {
+      "path": "src/lib/earTraining.test.ts",
+      "sha256": "25040ae4591cf10f08b21dc6107904d0f0f75bf10b661e8cf0b4e39f2310268c"
+    },
+    {
+      "path": "src/lib/earTraining.ts",
+      "sha256": "5e9d36a1bcda555f7de7c460bf0bd6496e92b99aee0357ed4c17cf54a202cace"
+    },
+    {
+      "path": "src/lib/exercises.ts",
+      "sha256": "08f38812c95dd05a958b01ff5817d039b38298f4306b6810653d3a94cbc92a1a"
+    },
+    {
+      "path": "src/lib/fretboardGame.test.ts",
+      "sha256": "523a64832330212d0f22b489b4892b21dafcea273c585c8a8a9c9a35147467cc"
+    },
+    {
+      "path": "src/lib/fretboardGame.ts",
+      "sha256": "4cbc0cd5e3f7a05285c9d6060e04e81b8d865a7bea1a9648cc3b61f8fec78bf6"
+    },
+    {
+      "path": "src/lib/gallopTrainer.test.ts",
+      "sha256": "4a2898c8027634a34203f7810da179d98df5a3257e729517503384d0abbdbff5"
+    },
+    {
+      "path": "src/lib/gallopTrainer.ts",
+      "sha256": "f99de900e4059e65a403bddbca6961da3a35026ea8e83797e1566c33763e0224"
+    },
+    {
+      "path": "src/lib/instrument.test.ts",
+      "sha256": "94fe109dee01f4d8c865b7f236328726153ac5dd99828f5a84eac79e25af3fa0"
+    },
+    {
+      "path": "src/lib/instrument.ts",
+      "sha256": "726f73665bfd12b0faae2240f59a8b6385e52067dcb41c43f64d9c182e39c447"
+    },
+    {
+      "path": "src/lib/lessonEngine.test.ts",
+      "sha256": "8d1a30b42f0080847ac01a54095e5021e6d164c76752ae78accff598b3675c6e"
+    },
+    {
+      "path": "src/lib/lessonEngine.ts",
+      "sha256": "59802a73a7a43743dcada71aa733d57c9a9cfdec84a42cce36986e47625b1ff8"
+    },
+    {
+      "path": "src/lib/lessonProgress.test.ts",
+      "sha256": "312c4c227b1d3eb6cb7979e112f361be863a477f8f44460b773549027e753060"
+    },
+    {
+      "path": "src/lib/lessonProgress.ts",
+      "sha256": "e6792fd40f726bd590106e0384efab8455007fbb7a576b93d47297e2b8985d75"
+    },
+    {
+      "path": "src/lib/lessons.ts",
+      "sha256": "c62bedfe2777288d3043f920b8faa74cb5aaf1eefec7f4cee360c4c8e121eeb7"
+    },
+    {
+      "path": "src/lib/loopMix.test.ts",
+      "sha256": "6ca3ec81db0bc4fe8bb15371e3b967d14432602216c32c19b5544293ce2a3100"
+    },
+    {
+      "path": "src/lib/loopMix.ts",
+      "sha256": "3cdb047e86267e57da1517a63a1690b26e3eebc2a4e73fc9e6668599f08bf0e3"
+    },
+    {
+      "path": "src/lib/math.test.ts",
+      "sha256": "b183d9a60c89242fa82793709e1653ac0c228039dca046692be3e43bb0163199"
+    },
+    {
+      "path": "src/lib/math.ts",
+      "sha256": "9c0526f5bf7dd9ad4cf901352bc4ad984818f1f1fac3b949b56766c89e4b2697"
+    },
+    {
+      "path": "src/lib/metalExercises.test.ts",
+      "sha256": "284ba8b7d76216b2748c3ea04e4333100a35d30af34788e13d89e3e28d0db68e"
+    },
+    {
+      "path": "src/lib/metalExercises.ts",
+      "sha256": "17fdbd24282ceef3947780dd2a4118704f65a7718d1ffbdb89bba18854987742"
+    },
+    {
+      "path": "src/lib/metalRiffs.test.ts",
+      "sha256": "e643f57d8450c896b9903053cf2fb266295ab9aab96018798ba921910e82b83a"
+    },
+    {
+      "path": "src/lib/metalRiffs.ts",
+      "sha256": "5faf0f48d3bd6d346a15db4c1867f3b82caed101658ba8898e1aac51206879a2"
+    },
+    {
+      "path": "src/lib/metronomeConfig.test.ts",
+      "sha256": "14e7106c8dcae8038cca2752fd34a650b39a1b97cd777f53090dc0882fe1845f"
+    },
+    {
+      "path": "src/lib/metronomeConfig.ts",
+      "sha256": "a06afb4202205db6243664d655e3cc2b7a174290084d914e3fb3e0f384985573"
+    },
+    {
+      "path": "src/lib/metronomePresets.test.ts",
+      "sha256": "c35e4e6caa5d2ee0ce7653901266ca18d1cd1fda4b6fa451688bccd1a01f9f2b"
+    },
+    {
+      "path": "src/lib/metronomePresets.ts",
+      "sha256": "0fd3b60cea1e7f54da73384f258438c58c5727d2d0b9c2f6a5ac2359b4d02fd4"
+    },
+    {
+      "path": "src/lib/migrationArchive.test.ts",
+      "sha256": "d6221c314cab869da6392270dccb179cfddc787448d9e87da7d29dea8678dc42"
+    },
+    {
+      "path": "src/lib/migrationArchive.ts",
+      "sha256": "95a687ee120134eb0220d098710587ff0effe78e076244fb8a1a1ca45d27b575"
+    },
+    {
+      "path": "src/lib/multitrack.test.ts",
+      "sha256": "f5088a72ca4432ee8233bdf0ed4ca694c12b6b57c35a339753f06c92f54a1e62"
+    },
+    {
+      "path": "src/lib/multitrack.ts",
+      "sha256": "cc49f03513169bf9622c15dc937c1a13e7460a7c9ef2efaa4eae0ec0eaec9cf2"
+    },
+    {
+      "path": "src/lib/palmMute.test.ts",
+      "sha256": "ebe1852d56162a062d33befedd083be864d4e547bea7fcd69ae0216ad3b06866"
+    },
+    {
+      "path": "src/lib/palmMute.ts",
+      "sha256": "30d95d2b351bf6c00e2b764ee4966b662eade025961587db8dd012e738c9e0a7"
+    },
+    {
+      "path": "src/lib/pitch.test.ts",
+      "sha256": "cd2195554587df92281fea3be9ab93f1b7ffa438fafbfef5c6c3effc2baa49fe"
+    },
+    {
+      "path": "src/lib/pitch.ts",
+      "sha256": "8398d237b037a6231a0be0894cfb0333459e2bfdcecc54134abd90c46f53dca1"
+    },
+    {
+      "path": "src/lib/powerChordTrainer.test.ts",
+      "sha256": "361005b74a0a357f316614ba6e71654d89a6b29e894ffca3ba9932009aaaf02c"
+    },
+    {
+      "path": "src/lib/powerChordTrainer.ts",
+      "sha256": "44f4ba34df61621a9a53e16337cc86bb2f46e1641a49d103e65676699ba7ac6d"
+    },
+    {
+      "path": "src/lib/powerChords.test.ts",
+      "sha256": "83db68a5d20680f02675eadd91abd5668b1d643c9f6c46695b8deef0b242a5fb"
+    },
+    {
+      "path": "src/lib/powerChords.ts",
+      "sha256": "faa642100c9eeca02897b757427e092fa3efd5f4f8f8b292517e5cf0cc1975f2"
+    },
+    {
+      "path": "src/lib/practiceTime.test.ts",
+      "sha256": "92209978fcd84375f9188f980ef154de7448bcb1aab6cad6633a91ee69773ae7"
+    },
+    {
+      "path": "src/lib/practiceTime.ts",
+      "sha256": "bd327c9efc1a09625ba9571703654e21240aae7b0729f8d6d77da5703e400de6"
+    },
+    {
+      "path": "src/lib/progress.test.ts",
+      "sha256": "2c0c18c846af13cdad87a7d795cfc24025354eb9ad8ef26028aca60cc9dbae17"
+    },
+    {
+      "path": "src/lib/progress.ts",
+      "sha256": "236d9d61d547678102aeaa25b3bfdc355ff70e3e014a37a93ed6f01e290cfd89"
+    },
+    {
+      "path": "src/lib/recordings.test.ts",
+      "sha256": "9758469970cbdee0b70b8fa6ba22d1cd0d6399703fe497c134ff29781e451168"
+    },
+    {
+      "path": "src/lib/recordings.ts",
+      "sha256": "e7bbfb17ded16a93a1146c9994e1f899ad7c18e01fc84e640afd7b8040605096"
+    },
+    {
+      "path": "src/lib/recordingsDb.test.ts",
+      "sha256": "cae5da756e23e5e8d83508009943b3610fb4306dcc13442242b98659b8a7c2ec"
+    },
+    {
+      "path": "src/lib/recordingsDb.ts",
+      "sha256": "f8b639fc85c030982965ac1cdfb18acef830e4b4a40365afaec4da390a6e9601"
+    },
+    {
+      "path": "src/lib/resolveTuning.test.ts",
+      "sha256": "e43dd752995129d12e772a0cfc83015cd60d3a5374ac88e2649ff42c07c96538"
+    },
+    {
+      "path": "src/lib/resolveTuning.ts",
+      "sha256": "36967aaae4339a8c853bf7fbb01860f66d166d50c443c37d109f8490ad415329"
+    },
+    {
+      "path": "src/lib/scales.test.ts",
+      "sha256": "e223f827d779acc641105e465ce9d7a28153dfe7032e0415a7c9cbc5d926a599"
+    },
+    {
+      "path": "src/lib/scales.ts",
+      "sha256": "22acf3de61cf05778f1583c48d106d53a68016943c5dd17fa56c30d46c5b7ac1"
+    },
+    {
+      "path": "src/lib/screens.ts",
+      "sha256": "56cb715811249b069872a9923643fb40592cb88a2342fc01f3a56b30dc9821ce"
+    },
+    {
+      "path": "src/lib/surgicalEngine.test.ts",
+      "sha256": "6d5034be15a3a4365e7010b2db5283afceb69d17b4747e24444575dc8dcb801f"
+    },
+    {
+      "path": "src/lib/surgicalEngine.ts",
+      "sha256": "484f7ee46c4a68fbfeb2c108e1354f97ef753ba55cd38c125246f33f1bebfbb2"
+    },
+    {
+      "path": "src/lib/tempo.test.ts",
+      "sha256": "ff5481759dfc16c1ca336db0ff834376bc89cb3e66dd685608966858cee54abe"
+    },
+    {
+      "path": "src/lib/tempo.ts",
+      "sha256": "098ee4489d3c223981c34177279cb9302e11a0bb96c14a30a9ec7739d78fbf66"
+    },
+    {
+      "path": "src/lib/wav.test.ts",
+      "sha256": "85e6db7c4fc76941014caefe5be1511d96896e8cc5049891b7dae9b2eb20e15e"
+    },
+    {
+      "path": "src/lib/wav.ts",
+      "sha256": "7a1f386357e08c47c748dc5bab7320113cc870582dd63ab1a724d9ec63079712"
+    },
+    {
+      "path": "src/lib/waveform.test.ts",
+      "sha256": "72f7e52fa77d3a9e66d98efa75619023d9fbd1a42ebbb590bc16a0171aee9760"
+    },
+    {
+      "path": "src/lib/waveform.ts",
+      "sha256": "b4a32559ec9a60c97aecb1c94e453c29a5a955a3bf7a1451f86163b4f95ba4d2"
+    },
+    {
+      "path": "src/lib/youtube.test.ts",
+      "sha256": "b99c4ece2e384c38ddc08da5c9c8a7a1222382ede27276fd604495d9d2a03e51"
+    },
+    {
+      "path": "src/lib/youtube.ts",
+      "sha256": "1c41ced487626ca225858c4a01e34ed1d7cd6681dc306f532bc2c7149b78ece4"
+    },
+    {
+      "path": "src/lib/youtubeApi.ts",
+      "sha256": "dee4924952c90ca444b49fe72b025ff9cdb75b34e805215030e68ea4dbcbab40"
+    },
+    {
+      "path": "src/lib/ytLoops.test.ts",
+      "sha256": "c566c9b03b6a813499091ef72f2451979154da32a755e71afd539b1ed88fe1fe"
+    },
+    {
+      "path": "src/lib/ytLoops.ts",
+      "sha256": "5302dc79899216d4dd25a331dc36d319204ee7236591149ac5285d56327138af"
+    },
+    {
+      "path": "windows/.gitignore",
+      "sha256": "2cf06bc72ad189ff4daad305132f2e4614f212c1438e142776f75b7bd7f4b9cb"
+    },
+    {
+      "path": "windows/CMakeLists.txt",
+      "sha256": "b3aa24678e230937972730fe45566cd3c1b96d15aa90b8f3a0a573c82e913fcf"
+    },
+    {
+      "path": "windows/Directory.Build.props",
+      "sha256": "e65c68709c2a789a6847e77474e69551c99c51b9867493018635b4ce9ecaff58"
+    },
+    {
+      "path": "windows/LICENSE",
+      "sha256": "d8a6cc31abc16b6748c7a21f21611f5a1ec33f67d22ca23d7da1c19b95496bee"
+    },
+    {
+      "path": "windows/PwaMigration/README.md",
+      "sha256": "658b40a1d755e280998c41e7afb1cce3559debf1271d6d059422eff027e3782c"
+    },
+    {
+      "path": "windows/PwaMigration/exporter.js",
+      "sha256": "07cb745b94b20b481d2548528d4c2129fefa821af22d63e72ea32ac2c3b9fb72"
+    },
+    {
+      "path": "windows/PwaMigration/exporter.ts",
+      "sha256": "a090fc88670efd3d956c599c9c7daa5f756d43671afd419c34bb3dc1ebcb0dfe"
+    },
+    {
+      "path": "windows/PwaMigration/helper.html",
+      "sha256": "5776c353869371a5fe43b7b5aea1d80381c241de64d0ad4cc55512e8f1b7d43b"
+    },
+    {
+      "path": "windows/README.md",
+      "sha256": "c67cfa0d7957f8b53fbf574c15186c9d9598b8e8305e10b1804126cb07afac31"
+    },
+    {
+      "path": "windows/Rocker.Domain.Checks/DomainReference.cs",
+      "sha256": "58cbe2ba5fa4a613737ba714faa915097a271455f2f7f13d82fc3a167e1eaa48"
+    },
+    {
+      "path": "windows/Rocker.Domain.Checks/PracticeSessionChecks.cs",
+      "sha256": "451c0c1ec00efd2a058f988745828fbecb43b92e45fecbc42c67c497df6cbec0"
+    },
+    {
+      "path": "windows/Rocker.Domain.Checks/PracticeWorkspaceChecks.cs",
+      "sha256": "6baea1d7bcb8a138540bba2955d908643a9c7752c7bfd6f45ccd3078bfe77038"
+    },
+    {
+      "path": "windows/Rocker.Domain.Checks/Program.cs",
+      "sha256": "d40c016dc00bfb24a529ca781bad97c3f26e3d92052bab8c11a1eae1f096d5d6"
+    },
+    {
+      "path": "windows/Rocker.Domain.Checks/Rocker.Domain.Checks.csproj",
+      "sha256": "d584455edca6db90f13c8c5494c654bd88bcbff8bf8c794da03c0a6429ba799a"
+    },
+    {
+      "path": "windows/Rocker.Domain.Checks/packages.lock.json",
+      "sha256": "2fca1e92299cf1a28b24d2196aa62757d75804f86c2987dd162e2c5f3d74596c"
+    },
+    {
+      "path": "windows/Rocker.Domain/AiPlan.cs",
+      "sha256": "e96d4dec4431e75ae1d01b72008b95a57cd75b762e508d8f415707707ba491ab"
+    },
+    {
+      "path": "windows/Rocker.Domain/AmpRules.cs",
+      "sha256": "5e89eca4fc0f2b108b814479471937b83c8195566a84cf7f14550245bd5b55f9"
+    },
+    {
+      "path": "windows/Rocker.Domain/ContentCatalog.cs",
+      "sha256": "fc7b8ddc26ab8736d1e9025df25cb7b31360972ded1357fb68aadd69180dcd19"
+    },
+    {
+      "path": "windows/Rocker.Domain/ContentValidation.cs",
+      "sha256": "485a3104c7cc338f12734799abefea0c9339f6ec84824765bc31f9f190a20473"
+    },
+    {
+      "path": "windows/Rocker.Domain/LegacyMigration.cs",
+      "sha256": "d77ac1f4a7c13e9d48144faf8cbe164fed31137210c6195a396d404f8d7f8a8b"
+    },
+    {
+      "path": "windows/Rocker.Domain/LessonRules.cs",
+      "sha256": "c1003a8c251f91737dc17d9e56ddc04cadac2f6bd768e9b575fa8dbedb9b490f"
+    },
+    {
+      "path": "windows/Rocker.Domain/LessonSession.cs",
+      "sha256": "cd52957d334e60d7ca92dc8b8f15201482b62212c7241ed38a0851df7df8e1b4"
+    },
+    {
+      "path": "windows/Rocker.Domain/LibraryPractice.cs",
+      "sha256": "fc825c1b70904417d514ec5e5ec0f4338d4608cd4a002f2ca9df70b80eae96aa"
+    },
+    {
+      "path": "windows/Rocker.Domain/MetronomeRules.cs",
+      "sha256": "2abdc397a7b702446fa3cfeff2ff2a0cf7b4fd0ddc1784049eec0c27274a783c"
+    },
+    {
+      "path": "windows/Rocker.Domain/Music.cs",
+      "sha256": "19d665121008f58de014e7e2d7fb79c2b737e844bdf9aef16dd2e26af2e4af18"
+    },
+    {
+      "path": "windows/Rocker.Domain/MusicShapes.cs",
+      "sha256": "51c2110c4c70ce632f9ac7ee0badcb35820c5aea80668f654628fee910a38242"
+    },
+    {
+      "path": "windows/Rocker.Domain/Navigation.cs",
+      "sha256": "ced1dbb5508d37ebf348195cb18cc350dc4870756fcbec5fa6272fe5b8ec30eb"
+    },
+    {
+      "path": "windows/Rocker.Domain/PalmMuteRules.cs",
+      "sha256": "481beeb84a2243ef3c44dff85caba262078f748640fce6b4efeded8beca71734"
+    },
+    {
+      "path": "windows/Rocker.Domain/Practice.cs",
+      "sha256": "ba0ab3581d39b3cc36cce9b2281d72511e3de13fce25acd7b240d69ebc8ca70f"
+    },
+    {
+      "path": "windows/Rocker.Domain/PracticeSession.cs",
+      "sha256": "de1de026762132734a8c241b8a7ad6a60befa2dc47639b8eb0bddd2b4344df42"
+    },
+    {
+      "path": "windows/Rocker.Domain/PracticeWorkspace.cs",
+      "sha256": "f76c42c0d1c1d0b450d78f6a8e94bea72e0f4246d63aa8d09698b912e191cedc"
+    },
+    {
+      "path": "windows/Rocker.Domain/ProgressRules.cs",
+      "sha256": "12d1e71224ea082deb8b352c833303d8bc87508fd388a4614de589e87c12b20d"
+    },
+    {
+      "path": "windows/Rocker.Domain/RhythmPreview.cs",
+      "sha256": "43fd968a6ce1ed7dcb1c4d1d2804a24b292af447ef1196da444c0585f896bb6f"
+    },
+    {
+      "path": "windows/Rocker.Domain/RhythmTrainers.cs",
+      "sha256": "8ec372355e097fa21a997e75af0f1ce642f40d870b0a80d493a59e5136bc30e8"
+    },
+    {
+      "path": "windows/Rocker.Domain/Rocker.Domain.csproj",
+      "sha256": "c68e8dabe75621f2d7a5f868e33f8df2918abf78d4cc865f911064c83987efdb"
+    },
+    {
+      "path": "windows/Rocker.Domain/SongSession.cs",
+      "sha256": "563540d64899e170eeec3549d533cbc5203c33c50909d7576b33aebcf0a0a6bf"
+    },
+    {
+      "path": "windows/Rocker.Domain/StudioRules.cs",
+      "sha256": "70bae6be36d6ea0ea3077fc88865f5ed61bb820a598eb87a7c288b3f3d86691c"
+    },
+    {
+      "path": "windows/Rocker.Domain/SurgicalEngine.cs",
+      "sha256": "65a62ca10ca594689c31c42e7c4fe0af71bf8119f85123693ce86c287bd6ce72"
+    },
+    {
+      "path": "windows/Rocker.Domain/SurgicalNoteGate.cs",
+      "sha256": "c9e65c4425af0d48802bc255c70aaf73f07b376080eb87b7a7e27ca3cbf0815a"
+    },
+    {
+      "path": "windows/Rocker.Domain/TeachingPreview.cs",
+      "sha256": "2db7f2d0aa77fecad421437dcab7863eb33ca83703a81ed76b04a25f5e4fac4b"
+    },
+    {
+      "path": "windows/Rocker.Domain/ToneAdvisor.cs",
+      "sha256": "024b5baf884a80ef89bcdda63826c648fd678ee07fe274ca93ef26e385f671d5"
+    },
+    {
+      "path": "windows/Rocker.Domain/UserData.cs",
+      "sha256": "6089f23c568c6c40e854c79343795d392793037a812f2104bc92ccb7ca56fd45"
+    },
+    {
+      "path": "windows/Rocker.Domain/packages.lock.json",
+      "sha256": "1d1dc155698e2dec519b9782729f488be113028b4abf40d5dbc4b58be4049792"
+    },
+    {
+      "path": "windows/Rocker.Infrastructure.Checks/AiChecks.cs",
+      "sha256": "2dcf6ccb5f25e121ddefdb20caee787dcbd34ba47f29c74937a4a78c97b3c924"
+    },
+    {
+      "path": "windows/Rocker.Infrastructure.Checks/AudioDiagnosticChecks.cs",
+      "sha256": "e79c9c42a6dac4e008cc44e82b87b8922e38edb80e6458f09ee874feee37dfbb"
+    },
+    {
+      "path": "windows/Rocker.Infrastructure.Checks/BackupChecks.cs",
+      "sha256": "a29652948da33a770f1020117a765736a9df165c7c41932c34c236e86793255d"
+    },
+    {
+      "path": "windows/Rocker.Infrastructure.Checks/BrowserMigrationChecks.cs",
+      "sha256": "64e1c154c6627fe180b475840b2b52358ae953430a17b0f142cab9fb6ab5bbd9"
+    },
+    {
+      "path": "windows/Rocker.Infrastructure.Checks/MigrationChecks.cs",
+      "sha256": "17e3637bc52542661a5d8b271417efb173aa804b07663aef4e40a2a533394173"
+    },
+    {
+      "path": "windows/Rocker.Infrastructure.Checks/Program.cs",
+      "sha256": "6311b31508cd999378012ba1e32082b4aee6bed848b46cc4043e0ddffbc35010"
+    },
+    {
+      "path": "windows/Rocker.Infrastructure.Checks/RecordingChecks.cs",
+      "sha256": "c4c84222a7d187f594e9cda9b42a2774691aa8db36dbf5f07d4fe599ff99e0c6"
+    },
+    {
+      "path": "windows/Rocker.Infrastructure.Checks/ReleaseUpdateChecks.cs",
+      "sha256": "9d573f36c420d7d084839dfc00125cbfe5a60656f5e2e372d6471c19be2f02d7"
+    },
+    {
+      "path": "windows/Rocker.Infrastructure.Checks/Rocker.Infrastructure.Checks.csproj",
+      "sha256": "4b02aeff040e4982b65ead57ff27035e2506f75bc617f9be661bb5eb37236498"
+    },
+    {
+      "path": "windows/Rocker.Infrastructure.Checks/SecretChecks.cs",
+      "sha256": "663f7cd84b2de1f815d2fb9e16d7e7a7b021ae2dca4c1cbf1063fa8dad035162"
+    },
+    {
+      "path": "windows/Rocker.Infrastructure.Checks/StorageChecks.cs",
+      "sha256": "93fa417febdfcee64a752ab7a43fac0319176d0788600097cb5c1d66aabef36f"
+    },
+    {
+      "path": "windows/Rocker.Infrastructure.Checks/UpdateChecks.cs",
+      "sha256": "0706a8f8ffdd9d38ffbb3da5f412b3f22c916227df15727c2f78dec47ede900b"
+    },
+    {
+      "path": "windows/Rocker.Infrastructure.Checks/packages.lock.json",
+      "sha256": "e5f6886d3869300d7281292d70c94e99bc4cf45fa7e9f9408b1d3c0eed1ba3d2"
+    },
+    {
+      "path": "windows/Rocker.Infrastructure/AiHttpClient.cs",
+      "sha256": "bf058f17acd46fdff9ba0fbdbda60a81cd14b186a05616e42408dfba64bc60f8"
+    },
+    {
+      "path": "windows/Rocker.Infrastructure/AudioDiagnostics.cs",
+      "sha256": "33f74688c4565941dcdbc6b92601e931955c147d1a6d7d5d60f98db1e9e67779"
+    },
+    {
+      "path": "windows/Rocker.Infrastructure/Autosave.cs",
+      "sha256": "08cdc0faa8a393415ed2fea6eddd55d43691cabd710767974d543bd76d51f800"
+    },
+    {
+      "path": "windows/Rocker.Infrastructure/BackupService.cs",
+      "sha256": "091fca04ebb224ad9b4e164b9116be87ff1798cf1c1bee813769d5a0d8b8eb19"
+    },
+    {
+      "path": "windows/Rocker.Infrastructure/ColdProfileRecovery.cs",
+      "sha256": "80b75195c780bc978b452a0545cc36f6f03d1fc19f30346d7501736edf71c0f9"
+    },
+    {
+      "path": "windows/Rocker.Infrastructure/DataRepository.cs",
+      "sha256": "7d0dcc5d7af4c1e628123702077768c445a96bb8c904dfe11c944d0e8b443609"
+    },
+    {
+      "path": "windows/Rocker.Infrastructure/InstanceChannel.cs",
+      "sha256": "00f0db59c599d08443cfe4ed98e784aebc57b1fa804db7d91af034caf58017cb"
+    },
+    {
+      "path": "windows/Rocker.Infrastructure/LegacyImport.cs",
+      "sha256": "98b02e6c92d6e0a9e9ec02acb4e27469902690108c4c4e605c24345e43f897af"
+    },
+    {
+      "path": "windows/Rocker.Infrastructure/OwnedMedia.cs",
+      "sha256": "b647a826297fb620e01141899f1e5b8d0e5b4ec4892da9366e3b08e84cec1dc1"
+    },
+    {
+      "path": "windows/Rocker.Infrastructure/ProjectRepository.cs",
+      "sha256": "b98c182faf786745b8e0dbe7e68663ac663f3e003767834e1784edc23800b4b6"
+    },
+    {
+      "path": "windows/Rocker.Infrastructure/RecentFiles.cs",
+      "sha256": "d52cab57d6051804bb974d87b6fb75a4f97d12fa693b1af44dad8e19768ee887"
+    },
+    {
+      "path": "windows/Rocker.Infrastructure/RecordingLibrary.cs",
+      "sha256": "596afd93490922659a3f7e24e95a2e233095742ff7d93d21e47220a22c5e9b2e"
+    },
+    {
+      "path": "windows/Rocker.Infrastructure/ReleaseUpdates.cs",
+      "sha256": "6bc07011744e061c8ed48bf77a7333c52c3e76072ca9c3b0576c5af4221032b6"
+    },
+    {
+      "path": "windows/Rocker.Infrastructure/Rocker.Infrastructure.csproj",
+      "sha256": "f2c250182c0d83a1221d5faa0bbcf41f67a675b5acc2e964f72ea45f22c1e6f6"
+    },
+    {
+      "path": "windows/Rocker.Infrastructure/SecretStore.cs",
+      "sha256": "1fef8671091ebfda45c61333fa2bf97221e9b1d948406ccef5a236af7c3ffab2"
+    },
+    {
+      "path": "windows/Rocker.Infrastructure/UpdatePreparation.cs",
+      "sha256": "1016c885990ada414a555625162ae20dbef3fc62b3218c5c3f9dc41dc2cff186"
+    },
+    {
+      "path": "windows/Rocker.Infrastructure/UserFiles.cs",
+      "sha256": "c2e0d5d8403f7efecb2e9bd59fcdebd37089a279cdcef117a3f726242e8bf2f5"
+    },
+    {
+      "path": "windows/Rocker.Infrastructure/WindowPreferences.cs",
+      "sha256": "619cd9778f1105fa085984f8a4e3217e4b174a0839b5a27da97b118c859607a9"
+    },
+    {
+      "path": "windows/Rocker.Infrastructure/packages.lock.json",
+      "sha256": "21458cb116db0a5df3b274be5b7cf1f53d8c4ecda8ac37cbdfa6502a594019e3"
+    },
+    {
+      "path": "windows/Rocker.Interop.Checks/Program.cs",
+      "sha256": "1b3cfabb65c545c592329cc051370a815020d50cf796112e71bdb757bac2afa5"
+    },
+    {
+      "path": "windows/Rocker.Interop.Checks/Rocker.Interop.Checks.csproj",
+      "sha256": "f027e9195121b6c46d0ca6a37e71e72136a7174e686f73739a61fa09aa626f48"
+    },
+    {
+      "path": "windows/Rocker.Interop.Checks/packages.lock.json",
+      "sha256": "5704f5898f7541877c816bc9f1c0630911121ff02fcaf53bafaee5f2a0fb01fe"
+    },
+    {
+      "path": "windows/Rocker.Interop/MediaExport.cs",
+      "sha256": "caa0597678ca4aa53e17205d515051a92963ed651c575a8f8f90142e0538d930"
+    },
+    {
+      "path": "windows/Rocker.Interop/NativeAudio.Amp.cs",
+      "sha256": "2726ec01c96b7bb65bcdce60231e0a42f5f40a037ba20a8a1c07089ca7ab2c7c"
+    },
+    {
+      "path": "windows/Rocker.Interop/NativeAudio.Analysis.cs",
+      "sha256": "542874b4c90183ac7581871d2f23098986a532279395c222a396c743c032adf3"
+    },
+    {
+      "path": "windows/Rocker.Interop/NativeAudio.Clock.cs",
+      "sha256": "53e9fa5832f703764c27a06f77dbc3feb1e0d1d1ecc27178b7c5e4136f90ad17"
+    },
+    {
+      "path": "windows/Rocker.Interop/NativeAudio.Devices.cs",
+      "sha256": "14d8e67b5a71844d6654c299aba9c91f28384f4062357552e97e76c5c63f5ec8"
+    },
+    {
+      "path": "windows/Rocker.Interop/NativeAudio.Diagnostics.cs",
+      "sha256": "9dee56801602c4d8172f586259dde450a5c4f1638fefd763839fe82ae910b228"
+    },
+    {
+      "path": "windows/Rocker.Interop/NativeAudio.Live.cs",
+      "sha256": "eba784d51d360cb7d39b11d8cd63139a0f3578effdd77661b25c70214174b759"
+    },
+    {
+      "path": "windows/Rocker.Interop/NativeAudio.Looper.cs",
+      "sha256": "555d9447a05af22177e18d66931d760bd020713d2567c5142f3e6c5886339ecc"
+    },
+    {
+      "path": "windows/Rocker.Interop/NativeAudio.Metronome.cs",
+      "sha256": "c87673a14324038c6dc6a75aeac44107a98b0014077049a7d5b6eff52ca1f2c4"
+    },
+    {
+      "path": "windows/Rocker.Interop/NativeAudio.Preview.cs",
+      "sha256": "b06760993d001bd9ef8ade816587d8b81dbda165820d17ab60795abdde260d0b"
+    },
+    {
+      "path": "windows/Rocker.Interop/NativeAudio.Project.cs",
+      "sha256": "f16c925ba38f887730db2ff52b894b82f11e77fdd4e660c8131bd9e79f5712e0"
+    },
+    {
+      "path": "windows/Rocker.Interop/NativeAudio.Recording.cs",
+      "sha256": "342dd9df0e257421fd10362de9f63f8c7fd0a4456fdc9b010557550b6525900b"
+    },
+    {
+      "path": "windows/Rocker.Interop/NativeAudio.Rhythm.cs",
+      "sha256": "28d215cb330736f0e7d3569eb0a39a6fb9ffacc0fc4bf5ccd6aa8e524e507c9a"
+    },
+    {
+      "path": "windows/Rocker.Interop/NativeAudio.Songs.cs",
+      "sha256": "b79eeb6757422ad6fc81a4635e19937e14acb326267d2c0d125413af70441e11"
+    },
+    {
+      "path": "windows/Rocker.Interop/NativeAudio.cs",
+      "sha256": "61ae47de451f3486675ab12b519c09ac2621e5e3d3d380c3bcaaf010ce1c1d54"
+    },
+    {
+      "path": "windows/Rocker.Interop/Rocker.Interop.csproj",
+      "sha256": "e69683a96bea2f059e0846b14b349d1b7d064241dcdc6ba0b3f0330e2d9d14fa"
+    },
+    {
+      "path": "windows/Rocker.Interop/packages.lock.json",
+      "sha256": "1d1dc155698e2dec519b9782729f488be113028b4abf40d5dbc4b58be4049792"
+    },
+    {
+      "path": "windows/Rocker.Notation.Checks/Program.cs",
+      "sha256": "ef4a3fe467fe1bc888cb742eefcb1fed2209b3d289877751ffeba90d6555f23a"
+    },
+    {
+      "path": "windows/Rocker.Notation.Checks/Rocker.Notation.Checks.csproj",
+      "sha256": "2b727bd9a88a5661ef108443d0196ff748fadb8c3f86ac7e4f574b7a718060c1"
+    },
+    {
+      "path": "windows/Rocker.Notation.Checks/packages.Linux.lock.json",
+      "sha256": "0875cf0979782e4d55f5313162b57a76d69f1224b9208148d425dbb4f3702090"
+    },
+    {
+      "path": "windows/Rocker.Notation.Checks/packages.Windows.lock.json",
+      "sha256": "ffac88a4076d3c1c390b5970562701c8c80b53c9e33a174aa72e7d175557a429"
+    },
+    {
+      "path": "windows/Rocker.Notation/Rocker.Notation.csproj",
+      "sha256": "e11333738437149d842620f1f1d8da6865dc1614efd9399b6e867906e342662c"
+    },
+    {
+      "path": "windows/Rocker.Notation/ScoreDocument.cs",
+      "sha256": "51f7892150e29d4cb24cfb2d5ba4a18ccb3ebe5049404f953802daaeafb4704b"
+    },
+    {
+      "path": "windows/Rocker.Notation/ScorePreview.cs",
+      "sha256": "c16eff970c2d327d53097e4a833da4eb4242f5557fcf33e87867e924117bab92"
+    },
+    {
+      "path": "windows/Rocker.Notation/fonts/NotoSans-Regular.otf",
+      "sha256": "bfb44de2c2031c391ff856943fe8f105ebb5d725cb9a04d493d211d5bbd5c21b"
+    },
+    {
+      "path": "windows/Rocker.Notation/fonts/OFL.txt",
+      "sha256": "e51d69f5e43cacd83ab6e5f3f1a47005380ae08b6d108d444be49e786d127458"
+    },
+    {
+      "path": "windows/Rocker.Notation/packages.lock.json",
+      "sha256": "a7973f00245b3c86080508526761e7dd9d428b207aa49a1261ed87efeba18ad9"
+    },
+    {
+      "path": "windows/Rocker.Probe/App.xaml",
+      "sha256": "c767f46470bad00ad057e502e287df098543c88ab18115dda87b4f9132e9d5db"
+    },
+    {
+      "path": "windows/Rocker.Probe/App.xaml.cs",
+      "sha256": "eaa6576b88ed947ea624c43f28167936ee6278a45109342ec5f3f903ff562961"
+    },
+    {
+      "path": "windows/Rocker.Probe/Assets/Rocker.ico",
+      "sha256": "c8f3269cefdd96ccd18192aeecfe8bb2d765d45df0fdf1e37c7accf37aa4367a"
+    },
+    {
+      "path": "windows/Rocker.Probe/Assets/Rocker.svg",
+      "sha256": "fc07f69605c107a4734770cacabc73f4c7e7f302c75d3d4cdad3e20a1f75a14a"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/ChordDiagram.xaml",
+      "sha256": "233f6fbb1a578ce94d9c9001742563e3a81ce471178260bf51521e6d5752f8d0"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/ChordDiagram.xaml.cs",
+      "sha256": "5b6754c0f7ce7758ba122c89ab2931a2e288fe00405d3be1e5dc6188fd7b3fd0"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/FretboardDiagram.xaml",
+      "sha256": "fec004c40a66099868a71bf6eacc3fbc97d4db3efb92135ec7ed9c82a1556d85"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/FretboardDiagram.xaml.cs",
+      "sha256": "d3b120dcd9c0b9f1ef694e1a6e6bfdd267fb33bdf620856ec5e7fed9aac63a62"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/LevelMeter.xaml",
+      "sha256": "1566ea6c755553b2bcc37cab58c9bbacb93ba13adcdbf4dc5a82b66a05fb357a"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/LevelMeter.xaml.cs",
+      "sha256": "9e520de0fc7f9440d7aa4a7181989beac6c8c51169cca129825c35f7479fc3f1"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/MetronomeVisual.cs",
+      "sha256": "43a902d4e17c23a06180d3fb0fbfbf280e32e11c7b4f604b1de0ca76cb8ef93e"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/PitchGauge.xaml",
+      "sha256": "84c6aaaeaefc385de7f0f11b7a0ccece9db75ae5fd9eeeb54d2105862f68bfc6"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/PitchGauge.xaml.cs",
+      "sha256": "0d32eaf362593b269f8f37f35a97b4520cda7d95fdd1f5dd24c0689f6176d984"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/ValueDial.xaml",
+      "sha256": "d640373f0fa0a2fd6efdb42143297be6ce8015b5db4d011c151450692438a2c4"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/ValueDial.xaml.cs",
+      "sha256": "87a5ba468051a77b9e4d2efb926919008f4bf2e5f2e370d8e4ddfe1786d15710"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/VintageHousing.cs",
+      "sha256": "c507da46278d15a1ad8df856aa0da4cc4c3be2dc83e5f98224b02b5d5812ec2e"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Accessibility.cs",
+      "sha256": "1ae6dfa4ea21f5091f0a6ad9355ab2874435213a3c2ad25bb6f634b3bb4d26a5"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Ai.cs",
+      "sha256": "cfd7bcf0e01cac50a96a4f6ba43b769a95083df898ea9a2fa1526a05440ec03e"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.AiChat.cs",
+      "sha256": "ea06464a68ba06574c41c2deefd24d586210e5a8db7755dbf001990c67903d83"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.AiChecks.cs",
+      "sha256": "e691fee1fbdd0e5e42d5b53c8dc6c285280a67f7ea362526081914811a395fe7"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.AiFeedback.cs",
+      "sha256": "fc7deeeb51193eaa33cc3ff49eabaa1c2f9c66d57405185996aad200f570cff2"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.AiPlan.cs",
+      "sha256": "8dab17d8b93045b9b18745f754faacf7a04a143049d0f666b9c5444a75d73bb6"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "sha256": "046cec47059ccf9720a6de028b84b9a02c37cd0cd8e0561bf559e0205b5cc645"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Backups.cs",
+      "sha256": "b690ac811e68706ad13f269858447da561860f53386a9a9751b20e62192350e5"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Components.cs",
+      "sha256": "7fd6e43044493af784c325c54706bd84cd1a07f3d3fcce3939110514248a2afd"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Design.cs",
+      "sha256": "2317c9c8944df5e3a6872c6a191e7f1aad3756dfe5d626115b8b1a45503a81c2"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Devices.cs",
+      "sha256": "ea707f2a76413285797b4dda96595d6476d822672aa0b264eac149085bc446a0"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Diagnostics.cs",
+      "sha256": "f5820182b20173c64e45bfed3213e00e98e39c68f8a8e64e44f2b47c18238ea9"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Files.cs",
+      "sha256": "647f506e0dba354b065e94c856edb7e41fd2a1fcdf5a36fcdddd3882d58ca3ab"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.FirstRun.cs",
+      "sha256": "a30ade5bd31bf8888b4b0c31cb579049078efbf149300ce1a61341e8e45bd967"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Focus.cs",
+      "sha256": "75c940068788d6a8ba766e3b63320ddbc32d07d26be1ef2e4a10bce30826c02e"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "sha256": "923f373a1e4003f47f0c0efe6141970f323be54e42e46a1d2a51bbf7e866ccf9"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Graphics.cs",
+      "sha256": "78a63601d7fa8951fd6ff978302686cbeb26d6d1bc3e7463924eb83895ba8115"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Instrument.cs",
+      "sha256": "78b39e377993c3d061f91a805935788a8d6bf4c78a9a1daa88713760c94f3b26"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Lessons.cs",
+      "sha256": "4f6d1cdac703cd5e961ff359b46eeca5e92ca08286d3816904ac712f850e3158"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Library.cs",
+      "sha256": "767d38c8ff43e1f9a6a3d3e9027ebc35f892c506deb5cf8c5b061b1120c02f48"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.LibraryChecks.cs",
+      "sha256": "d8055320267b62339afe8b431211c85071769bfd29a9c641c678e3e524b1ca3e"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Live.cs",
+      "sha256": "cef1715939c18bf851bc29deb191103a5a05fb80dec2047a06b6b5f245559403"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Looper.cs",
+      "sha256": "a3a92b90f5578b07ce653e871a6aff00b9b1d272879abf3d3fc2876e60a6e71a"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "sha256": "fd9474518db97a2198144a41981e3efbcf23bd0979f2bb72d546d9703b2ebceb"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.MetronomeChecks.cs",
+      "sha256": "08355a7059460986d676edd4b0f53ee46a52c212a2b7752f0b9cd22ba59f14ae"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Migration.cs",
+      "sha256": "faa5d2c750518f397ba274347cf42c9560638e7495091e54e59c919d007acb5a"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.NativeEvents.cs",
+      "sha256": "e0b54d206c2e719a26446a4ced7f46eb891ec3c1dacc3ac9df0738ec988a3a06"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Notation.cs",
+      "sha256": "b459ddbc0ab9608ed32197076b4e27040c7c4bbeb35fe48d68497c7336e96015"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Overview.cs",
+      "sha256": "6f4ead9e011f5807ade593a8e96bc318287627a19fc7a888af88188ab6fcdcb8"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PalmMute.cs",
+      "sha256": "9fbfded94f8ab44ba3c170da44ca36216dc47acca22586bdd4b32ab9fe56aed5"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Persistence.cs",
+      "sha256": "627e100c87db08ebfea0665c05dee08ab9265b4835ceb74c1b8ec1fed6f4304b"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeChecks.cs",
+      "sha256": "610092d8753f95a9638f997f4b92c21dfbc9832a35656d7c6f0c4ac762d5782e"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeSession.cs",
+      "sha256": "5b64795c1da047049b4d202434a716c528549481d8a0926428e948a1318b7300"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeWorkspace.cs",
+      "sha256": "cf8b1ec692ad583ab2a269e7f1f83b0ca540a26bbc5e6fd0c8140270edf4eb51"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Preparation.cs",
+      "sha256": "3873fc6980fa9e10fcf54f2a8eeba5d48974edbe0dfaae7780894bf959fdca25"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Progress.cs",
+      "sha256": "0161c11d59117fd4c18b659b1bcaa6d34c327ce85b9c8d71a465dad383895e25"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.RecordingWaveform.cs",
+      "sha256": "8aed0d37efdf93b829d4a29140e68e5f45a5701187c2cab94a3ea70fef859fd2"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "sha256": "a087df53dc5fe882d449dc02fa6831a4add06dab197719ee7aef7302aaf89b55"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recovery.cs",
+      "sha256": "38c5663eec586866e56f00fcb382e8bfaef5e2f69fda2ec0ccc900f56a62bd44"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "sha256": "427b4c64faf4c4497f67250cd2df6339298d316f4bd1561a42cb62f9d8c0fe64"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Riffs.cs",
+      "sha256": "fcf9b261dc03d549c8d32ec927fb28a63eb8cd0ff467f5eca1a7f5f73cecdeec"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Secrets.cs",
+      "sha256": "5ec98806efd9605890e73cdc3c7312a66ab0d14e3d429d47f8c796f33430df55"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Settings.cs",
+      "sha256": "025e12ad8762da882e0588fe3168246ae8bc783d92a50ef17224e547bd87071a"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "sha256": "9bbc6f26d2b3a08e9c2a50c6f6934179863a6cdf398a131bc573d4dd9f93629f"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "sha256": "f3ac963909dae3804240f7e4078e926a27f283bea5c8d042660ac79b08736482"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "sha256": "8ff61765d8aa885d062c992be5aa025c19b1feeec36bcb04622a9e18948f01c6"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Surgical.cs",
+      "sha256": "ed988aad191ba61a940e6932b9f800c59bb0f153467b34e77d11e9a1d574eac5"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "sha256": "2e606ba8385041897e85955ae291fc3baa1710837f10cf9badd6c211cdd3a796"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Updates.cs",
+      "sha256": "e8e84b4b835b08976328da6281f6f52f27873d056dc38caebe0c5b5fd4ff2b57"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Ux.cs",
+      "sha256": "b30b574653134a58ec19c30192dcbc3e8240e9e6d01ebf1086e8c05f7c2c4a9e"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Video.cs",
+      "sha256": "e7c52eb47b49e7515e8f976c90835b8342724f3ccad389e399d34e2ab23ed57a"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.VideoPractice.cs",
+      "sha256": "67a6b07e02d96e3b3941278bea8762936eafd9a36a80099cc649cf3331362ad8"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.WorkspaceChecks.cs",
+      "sha256": "8683e2884d893b86ea6a21018e2fb69a35c7be1e97c8539039d9ba56848813f6"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.WorkspaceFixture.cs",
+      "sha256": "9fb32680890afb5c6e31f9ad86c56299e7ea2d89e6fc797856173c9b7d0f6972"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "sha256": "a68bf9160f0d11f7aa18b6ef30e23255d9140472c94fa963f95874e9ba3b226d"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "sha256": "ae8101289e858b13db593e7d288f34b95d61d09d9aa470147969724c3c8f93cc"
+    },
+    {
+      "path": "windows/Rocker.Probe/Rocker.Probe.csproj",
+      "sha256": "22f3fd7c73f58d01298728d1737c214c7eed1a91b0e895c89a36c69e126e6a0b"
+    },
+    {
+      "path": "windows/Rocker.Probe/Themes/Vintage.xaml",
+      "sha256": "b254863539b15d99361561692d066ffb67cd62d570f673de61c6ed1f50558c01"
+    },
+    {
+      "path": "windows/Rocker.Probe/Video/player.contracts.cjs",
+      "sha256": "942e466c37c25a75947088bee6fb91f71de6943da29edd39be4aa24c312b18ed"
+    },
+    {
+      "path": "windows/Rocker.Probe/Video/player.html",
+      "sha256": "55e052d977f13388b780510a6e261dc15b367d2f48937291726fd7b9a782b2ec"
+    },
+    {
+      "path": "windows/Rocker.Probe/Video/player.js",
+      "sha256": "2a47c228be594a02321309811c21b74307438c9e7280b9ff6e0046cce6ec8c01"
+    },
+    {
+      "path": "windows/Rocker.Probe/app.manifest",
+      "sha256": "9f33df9f52c09b2ef6cd66ec2f8ef20b968c6e6d4e9fc783598524a596896c4d"
+    },
+    {
+      "path": "windows/Rocker.Probe/packages.lock.json",
+      "sha256": "5d2be3fe02e3d5fcafa2ff7018b6f3d197e7db548531ba82826d931700c36d40"
+    },
+    {
+      "path": "windows/Rocker.Video.Checks/Program.cs",
+      "sha256": "56ff13a27b4468de7dbc6c93f412ebb9297b6363365a746de2e2915d31bba977"
+    },
+    {
+      "path": "windows/Rocker.Video.Checks/Rocker.Video.Checks.csproj",
+      "sha256": "e55e61b905551f73d5eae1d6334834c29739777f190f31c6f2e2cb44449ab315"
+    },
+    {
+      "path": "windows/Rocker.Video.Checks/packages.lock.json",
+      "sha256": "68243276030ab7a79e4aff6c290927bc2ba24b4bb0b21776c0d07c9d943385cc"
+    },
+    {
+      "path": "windows/Rocker.Video/Rocker.Video.csproj",
+      "sha256": "e69683a96bea2f059e0846b14b349d1b7d064241dcdc6ba0b3f0330e2d9d14fa"
+    },
+    {
+      "path": "windows/Rocker.Video/VideoPractice.cs",
+      "sha256": "46e01710ba9bf7a7869692be6eb1f03fb1cd6eaf7f330372b6118b310614a90a"
+    },
+    {
+      "path": "windows/Rocker.Video/VideoProtocol.cs",
+      "sha256": "5797f6a6b3c7f5a4607e90f26e36cd996a4c7f79f1dddc6ca51d46f684838927"
+    },
+    {
+      "path": "windows/Rocker.Video/packages.lock.json",
+      "sha256": "1d1dc155698e2dec519b9782729f488be113028b4abf40d5dbc4b58be4049792"
+    },
+    {
+      "path": "windows/Rocker.slnx",
+      "sha256": "3ad27fb20535896cdfa5bf894672dd132e6bcfb1f7afa6d0cf4c7a04191bee74"
+    },
+    {
+      "path": "windows/THIRD_PARTY_NOTICES.md",
+      "sha256": "ef670dfb702f9e94f969e2b02dc73a758db4f78cfaf2fd34b2112372ce662548"
+    },
+    {
+      "path": "windows/build.ps1",
+      "sha256": "aaa798b1b3367463869371ba5f6ca97e44503d7ec3215bf71d23c838a6c762bf"
+    },
+    {
+      "path": "windows/capture-window.ps1",
+      "sha256": "8fcb7f114b636f3fb6ca450ad4748cca4f7c24135754be25d0d9c34069511aa7"
+    },
+    {
+      "path": "windows/content/catalog.json",
+      "sha256": "0ab729db56f9f229f44c15f985813a654819f2c345f5ddbb475dc18e841d8675"
+    },
+    {
+      "path": "windows/content/riff-replacements.json",
+      "sha256": "ae2f9045c12d21d19e8c8399d55b0ddd01905c4b569aeadd42ef33807edf64bd"
+    },
+    {
+      "path": "windows/content/runtime-catalog.json",
+      "sha256": "72b862e2e1954095c835183dbdea2d78f106a75f3efc85f576318d019124327a"
+    },
+    {
+      "path": "windows/ensure-webview-runtime.ps1",
+      "sha256": "340c06b871fb2f9ecdc506d47028175b4ab0cd4057aec708d6c96d5c03bab639"
+    },
+    {
+      "path": "windows/fixtures/README.md",
+      "sha256": "8bc095fc0698e05360329da384b81b46c866db2c6ab812ae7f996209ee221892"
+    },
+    {
+      "path": "windows/fixtures/media/README.md",
+      "sha256": "6e536da197fc2ea8a05c1f6fb515d38fe36c8a9e1b142d649c955711734fc821"
+    },
+    {
+      "path": "windows/fixtures/media/a4-streaming.webm",
+      "sha256": "df582eacf607a8d1e2b4c939dd63996649665a9062f45946ea601c27fc16e62f"
+    },
+    {
+      "path": "windows/fixtures/media/input-2-only.m4a",
+      "sha256": "0bc94befbac41c83ec2a16ea74152a4d254ddb914f6d9979197004b3d9b7c9a7"
+    },
+    {
+      "path": "windows/fixtures/media/input-2-only.webm",
+      "sha256": "91b6997e3815a80642a6e7f4cb5ebd5f73c973633356b0ecb5450d9403ed67e0"
+    },
+    {
+      "path": "windows/fixtures/notation-multitrack.musicxml",
+      "sha256": "dbae2a47235660879821b19835d7213dcad488ba80e2d9d0530469ca5312ed1a"
+    },
+    {
+      "path": "windows/fixtures/notation-original.gp3",
+      "sha256": "74858dea8063eded1a9376bb44ef6a60142c381d92bfb9fd449c0735d9013d3c"
+    },
+    {
+      "path": "windows/fixtures/notation-original.gp4",
+      "sha256": "20392cd6e68b6ead282ca7cbc60a819fdf95deeb32be5b2939b9115c993ff7fb"
+    },
+    {
+      "path": "windows/fixtures/notation-original.gp5",
+      "sha256": "9b73ae97734381c040d4326ef82c0ccb573c40fa9436642c0af809118291170d"
+    },
+    {
+      "path": "windows/fixtures/notation-original.gpx",
+      "sha256": "2d6dae55f4bd37d7120884a1d4eb9ebbf4d475a560a457eaa1f59c0b51d0bbf9"
+    },
+    {
+      "path": "windows/fixtures/notation-original.mxl",
+      "sha256": "deae7648b0e683b7b01d819934c2128338a1985bd324d6f7811cb41e83cfe49e"
+    },
+    {
+      "path": "windows/fixtures/notation-phrases.gp",
+      "sha256": "451456d7907f4381c604799b066b1e5a881c3eff27fb8abf8cf4983e12df800e"
+    },
+    {
+      "path": "windows/fixtures/notation-scale.musicxml",
+      "sha256": "1bed9d642bd4d9581a4b1abfa9ead772d36f61bfbaa6591aad89e92fa4dc4b90"
+    },
+    {
+      "path": "windows/global.json",
+      "sha256": "69554709212a18360c02a61d973cf9c1713f3725286ff237546b9909fc85d7da"
+    },
+    {
+      "path": "windows/installer/build.ps1",
+      "sha256": "d542a49c08495eaa1d781afa94f2c8e08f102faba6f02499b08f0de38426d715"
+    },
+    {
+      "path": "windows/installer/rocker.iss",
+      "sha256": "c926afd7d5515b5eafc7330227abdadd00fb824ba3265965b052ab68b8427ffe"
+    },
+    {
+      "path": "windows/installer/smoke.ps1",
+      "sha256": "135d3b1fe1ec7a72656ed9dec7a32117ab8aed26bb86fb995b162e8af65407d3"
+    },
+    {
+      "path": "windows/installer/toolchain.json",
+      "sha256": "454ef804f81482a147a53a6e4355e6d91fbda56423979dd7ad7929e47754794d"
+    },
+    {
+      "path": "windows/license-audit.ps1",
+      "sha256": "89cbfcf91a8786f1096781e132b4034a468ddb5fd9cf42e6789e4fd1f5dd6ba7"
+    },
+    {
+      "path": "windows/native/include/media_clip.h",
+      "sha256": "24c270f958bdf57afa4d458a005ea46eb1a05a2177b93ecb551ba72461e68faf"
+    },
+    {
+      "path": "windows/native/include/rocker_audio.h",
+      "sha256": "ec882967d9d84dc5986890415665091d9c97db384de89632abb8b657b9fcfb80"
+    },
+    {
+      "path": "windows/native/src/amp_dsp.h",
+      "sha256": "e06a0ff56abecd77ab0b78c315c5f8eaf7140303d18cb79fe0352ad37c088f76"
+    },
+    {
+      "path": "windows/native/src/analysis_processor.h",
+      "sha256": "3a71eeeaefe56e223e0e411f3799e40f687744eaef4c07459dbdedc0c8a2baae"
+    },
+    {
+      "path": "windows/native/src/analysis_worker.h",
+      "sha256": "a17000d4878275865346ede42d93bee5c146c225ad968bda2044804c1614f83b"
+    },
+    {
+      "path": "windows/native/src/audio_driver.h",
+      "sha256": "308c2562de066eaa068e7cf64042181a9c6185cea3c6d3f6aaf122bc230cb2a2"
+    },
+    {
+      "path": "windows/native/src/audio_host.cpp",
+      "sha256": "50c51debf2446e12a57a4957467c170fff22e54e80bb340ef3102e26e48fd536"
+    },
+    {
+      "path": "windows/native/src/biquad.h",
+      "sha256": "fbb80eb58c91cbdb5d195423b7ac14f918f5009563c596665ffe45b960b9a67a"
+    },
+    {
+      "path": "windows/native/src/callback_stats.h",
+      "sha256": "f1028691194adcdd586a8f9bca04d8b72a9301c535e81f0b9c686ac81d399c1e"
+    },
+    {
+      "path": "windows/native/src/control_executor.h",
+      "sha256": "e418097e912b50ee5bdeaf80a105304f7d6111b04747e932aad6e57fe3caa7b6"
+    },
+    {
+      "path": "windows/native/src/input_graph.h",
+      "sha256": "0964baabfe489a251b7d366ab99dd5298e33cfcdee096cc76d85199709a2baa9"
+    },
+    {
+      "path": "windows/native/src/juce_driver.cpp",
+      "sha256": "9da5a717a1e55099f5bb799c7cc759296e8227f014013fe6238e7916f449b2c2"
+    },
+    {
+      "path": "windows/native/src/looper_processor.h",
+      "sha256": "20709f347575c6e726b299b62ae03084760bb1de0ea1dd3e74e3594897a06509"
+    },
+    {
+      "path": "windows/native/src/media_clip.cpp",
+      "sha256": "8c1d127a56d5700477e4bf4ccdf49a63d111767cfcc452486f234d984c0ea821"
+    },
+    {
+      "path": "windows/native/src/media_decoders.h",
+      "sha256": "00c2b1995068d3c107f20f7bf325dec822ad1842d8915d0b65d86e0b0d66702b"
+    },
+    {
+      "path": "windows/native/src/metronome_dsp.h",
+      "sha256": "0fe4306bd02f040bd1ccea62f4eb77a3475a6a5d9fc087f8c90476ecdf08b178"
+    },
+    {
+      "path": "windows/native/src/mf_decoder.cpp",
+      "sha256": "ae1f8d062a757b72dba749013359cada62cf27110248b69dab81708423873b2d"
+    },
+    {
+      "path": "windows/native/src/midi_synth.cpp",
+      "sha256": "e06d8ee13ad538f2f37dee71a48fdbd7fbc09cda57f464aaf09985e09390898b"
+    },
+    {
+      "path": "windows/native/src/preview_processor.h",
+      "sha256": "fb574f9516ada04f778ae158d2e6aa18002725d79361d4feb3d46dc206a88b61"
+    },
+    {
+      "path": "windows/native/src/project_mixer.h",
+      "sha256": "160be6aa1ca54b29d510d62581d3a87e3fd427e7c996a0a63c3562d338418465"
+    },
+    {
+      "path": "windows/native/src/realtime_queue.h",
+      "sha256": "fd447045d2828191c4bfbcd0e2a00edf89f91a590e5aa2e8311911290c106410"
+    },
+    {
+      "path": "windows/native/src/recording_tap.h",
+      "sha256": "4ca53a6861e3a7feff379ac85390f9209ccb50596ee7ec5649cee5f71ec3aa3d"
+    },
+    {
+      "path": "windows/native/src/recording_worker.h",
+      "sha256": "d87c5e28cca1c54e95d458547a457a09bf471b6416ca6218929342e61d3f5bbd"
+    },
+    {
+      "path": "windows/native/src/reference_dsp.h",
+      "sha256": "930f38a80edb7de828b74bad513085a7b1bb8306216a404a5823e85733ccb3a4"
+    },
+    {
+      "path": "windows/native/src/render_processor.h",
+      "sha256": "b37e0d041ae2de850ade601f04389ef85bc21ed3fc962f00277c2a5d620da822"
+    },
+    {
+      "path": "windows/native/src/rhythm_processor.h",
+      "sha256": "80979e5627e83720a5ec763c0216d9115bd3c6a6a9be5931d3b182cccbf3c9b5"
+    },
+    {
+      "path": "windows/native/src/sample_clock.h",
+      "sha256": "5978563b49f3806ef4b020e7956a27ddd2f9543017ae3fd0be99d9f2db9403dd"
+    },
+    {
+      "path": "windows/native/src/streamed_media.cpp",
+      "sha256": "8eb021b198f9b0f810bc173bc9fba02ab774fc38eda6f948b529d76bfa115b96"
+    },
+    {
+      "path": "windows/native/src/tone_processor.h",
+      "sha256": "72290de49a397becb96055ea1189446eec324ca6d256fa2de85cb23816800a74"
+    },
+    {
+      "path": "windows/native/src/wave_writer.h",
+      "sha256": "7aa699e8963ab51269a5543356256da088ca7396fe210a1d37ee49a67637c937"
+    },
+    {
+      "path": "windows/native/src/webm_decoder.cpp",
+      "sha256": "b9d0a5efaee3054e653702f881b349e4cd049b138e79b85bd9c37185f131c543"
+    },
+    {
+      "path": "windows/native/tests/amp_tests.cpp",
+      "sha256": "fc6329512ed5371d7c523ee4bbaa872da431920e6fbed4cb93c6b15278a5f6b0"
+    },
+    {
+      "path": "windows/native/tests/analysis_tests.cpp",
+      "sha256": "702e27e878ad4ceea648df5a5fd8c667e0607209ae2e1b73134332914ead3512"
+    },
+    {
+      "path": "windows/native/tests/analysis_worker_tests.cpp",
+      "sha256": "9b1c4fd14f962dd0687b20234f4a9a45d558e9037cd7fd00d7878e8a07c9aeda"
+    },
+    {
+      "path": "windows/native/tests/audio_contract_tests.cpp",
+      "sha256": "10df62ba78d649a67ba3f5e6bfa2d8de685eaaaf21083428b524ee0398e7f0d7"
+    },
+    {
+      "path": "windows/native/tests/clock_tests.cpp",
+      "sha256": "6eb4f5c4fb470f8d276b4d4f74fb73a69533b00815b913c7518894be2602c859"
+    },
+    {
+      "path": "windows/native/tests/container_stream_tests.cpp",
+      "sha256": "dd4fd4161bc3657944b6e1dc630f14ef0156ad095258c615f44b40f8379e7445"
+    },
+    {
+      "path": "windows/native/tests/diagnostic_tests.cpp",
+      "sha256": "979fda57e4112bdf28f0ec00381ed2c874f8b76c85d8078e969ccc89e1550635"
+    },
+    {
+      "path": "windows/native/tests/fake_driver.cpp",
+      "sha256": "4d739e47d83e993fb87623409d8069b12e5805b56178f694444495934c9eef84"
+    },
+    {
+      "path": "windows/native/tests/incompatible_abi.c",
+      "sha256": "81dc6ef20608d87d4564b9e324e2c1069603ced44caa61a01706959b70243fbf"
+    },
+    {
+      "path": "windows/native/tests/looper_tests.cpp",
+      "sha256": "6dd28012f1cf7a3521d28070ed1e642a7a7ed7b41e1b663b6565e1558d149bf2"
+    },
+    {
+      "path": "windows/native/tests/media_tests.cpp",
+      "sha256": "31c1b2c6364f138ea89664901758e1b30bc355e710ed9fe3f9dc7220567c27a2"
+    },
+    {
+      "path": "windows/native/tests/metronome_tests.cpp",
+      "sha256": "142531a74c9d591521facdccb9bf94d506b0885fe5a5c21d2f4df5126d982a08"
+    },
+    {
+      "path": "windows/native/tests/midi_articulation_tests.cpp",
+      "sha256": "58cc5aab4e47703439da116c173388b3591301b72b5202986567b53bbddc438f"
+    },
+    {
+      "path": "windows/native/tests/performance_tests.cpp",
+      "sha256": "ee1f070cf1036536c8f33bd82c12a4e9319cf3b0706e910514401d6f1f62833f"
+    },
+    {
+      "path": "windows/native/tests/preview_tests.cpp",
+      "sha256": "a11bf47b458d7bf030a99dbb070934a9b7b33636def33215e8b9bb00abfce64d"
+    },
+    {
+      "path": "windows/native/tests/project_mixer_tests.cpp",
+      "sha256": "7252971f46f0f4fb0a2408d7df0a088be7358a4a5fd8515dbfff9b8b7cb2ada5"
+    },
+    {
+      "path": "windows/native/tests/realtime_tests.cpp",
+      "sha256": "bd7eb144706f2301377b38c3ab19019104a54153da5891a7fa1b2f9a192bc4c1"
+    },
+    {
+      "path": "windows/native/tests/recording_contract_tests.cpp",
+      "sha256": "29743d4a9519bd178261f9746a3ee5269b50f1d9ddadfee9c5bb2854cf53c223"
+    },
+    {
+      "path": "windows/native/tests/recording_tests.cpp",
+      "sha256": "b00e0c9a3e5cd5c24e10860e3ca27b1c1e78a9e743b8a2f41f4ec908ce8ac0d3"
+    },
+    {
+      "path": "windows/native/tests/rhythm_tests.cpp",
+      "sha256": "39149b50db14bf97ff6d359e07fa15777a4c68b0ed81451e408b5973d4e12149"
+    },
+    {
+      "path": "windows/native/tests/routing_tests.cpp",
+      "sha256": "b0371f3be33edeec76b00b7c1a0498feee32acb7109c3f6f52256f4df3bad1b0"
+    },
+    {
+      "path": "windows/native/tests/streamed_media_tests.cpp",
+      "sha256": "c29e48737293a55a65c2501c3ca4aad9728ba3457bdaad4895ea7767c6d7423f"
+    },
+    {
+      "path": "windows/native/tests/transport_tests.cpp",
+      "sha256": "1faf276c966c9774dd3b73b941bb11cd3f5ccb89cce28283ec180998a889a04d"
+    },
+    {
+      "path": "windows/package.ps1",
+      "sha256": "a3674c715c72b82ccefac0a8ded64194e618b4cbb3737096cc9cc82bb8a7a6e5"
+    },
+    {
+      "path": "windows/smoke.ps1",
+      "sha256": "bfb63938b12ee0ec9d808de6fbf02d8a0fe0d744f8405553b369573c12b4cb25"
+    },
+    {
+      "path": "windows/verify-candidate.ps1",
+      "sha256": "b97ce9f8afae63ee6a4a6fd28764d5904bb4704f6b60eea951c901f4bec8e7ec"
+    }
+  ]
+}

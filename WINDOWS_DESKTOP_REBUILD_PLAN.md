@@ -1,6 +1,6 @@
 # Rocker — implementační plán přestavby desktopového prostředí
 
-Datum: 13. 10. 2026. Stav: **plán připravený, implementace D01–D36 nezahájená**.
+Datum: 13. 10. 2026. Stav: **realizace D01–D36 schválená; D01 dokončený, navazuje D02**.
 
 Jenda chce změnit způsob práce s Rockerem na profesionální Windows nástroj:
 pracovní plochu s dokumenty, panely a více skutečnými okny. Vintage zůstává
@@ -400,7 +400,7 @@ není náhrada za funkční dokončení daného řádku.
 <a id="implementation"></a>
 ## 6. Postup implementace D01–D36
 
-Všechny kroky mají výchozí stav „plánováno“. Při realizaci doplnit ke každému
+Dosud nedokončené kroky mají stav „plánováno“. Při realizaci doplnit ke každému
 revizi, důkaz a rozlišení implementováno / automaticky ověřeno / ručně ověřeno.
 Uvedené nové soubory jsou zamýšlené cíle. Průběžné kroky nevyžadují ruční
 klikání Jendy; Windows automatizace probíhá průběžně a ucelený kandidát
@@ -410,6 +410,7 @@ se předá až po D35/D36.
 
 #### D01 — Zafixovat desktopový výchozí stav
 
+- Stav: dokončeno. [Inventura a zachované kontrakty](docs/windows/desktop/baseline.md), [čerstvé lokální výsledky](docs/windows/desktop/baseline-validation.json). Zafixováno 388 zdrojů, 32 funkcí, 16 datových druhů a 22 hranic služeb. TypeScript, lint, 567/567 Vitest testů, doménové/datové kontroly a 21/21 Linux native sad prošly; skutečný Windows důkaz RC6 je vedený jako historický, nový multi-window runtime ještě neověřený.
 - Závislosti: žádné.
 - Změna: vytvořit inventář globálních služeb, polí MainWindow, všech operací a vedlejších účinků navigace; zafixovat data a scénáře RC6.
 - Soubory: docs/windows/desktop/baseline.md; referenční podklady v docs/windows/baseline, w43 a metronome se použijí bez přepisování historie.
@@ -874,8 +875,9 @@ aktuální stav a nabídnout jasné rozhodnutí o práci vzniklé po aktualizaci
 ## 10. Zahájení práce a údržba plánu
 
 První implementační krok je D01, následuje společný návrh D02 a Windows
-experiment D03. Tento dokument lze použít jako zadání celé přestavby;
-neoznačuje její implementaci za schválenou nebo dokončenou pouhým uložením.
+experiment D03. Jenda 13. 10. 2026 výslovně schválil zahájení realizace
+celého tohoto plánu („Ok. Tak se můžeš pustit do práce.“). Schválení
+není důkazem dokončení jednotlivých kroků; jejich stavy a evidence se vedou zvlášť.
 Při zahájení realizace navázat na dohodnutý postup: malé návazné změny,
 automatické kontroly a sestavení průběžně, uživatelské testování uceleného
 kandidáta. Zachovat aktuální pravidla [AGENTS.md](AGENTS.md).

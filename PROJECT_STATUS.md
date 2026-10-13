@@ -2,7 +2,7 @@
 
 Aktualizováno 13. 10. 2026. W04–W43 jsou implementované a automaticky ověřené: 32 nativních WinUI pohledů, Vintage, C++/JUCE, pracovní funkce, data a instalátor.
 
-**Další směr:** připravený [úplný plán přestavby desktopového prostředí D01–D36](WINDOWS_DESKTOP_REBUILD_PLAN.md). Navrhuje pracovní plochu s knihovnou a inspektorem, dokumenty v záložkách i samostatných oknech, plovoucí nástroje, samostatné Live a sdílené aplikační služby. Převádí všech 32 funkcí a řeší grafiku, data, životní cyklus, automatické kontroly a sestavené předání. Implementace D zatím nezahájená; první krok při zahájení bude D01 — desktopová inventura. Uložený plán není nový sestavený kandidát.
+**Desktopová přestavba:** realizace [D01–D36](WINDOWS_DESKTOP_REBUILD_PLAN.md) je výslovně schválená. [D01 — inventura služeb a pracovních relací](docs/windows/desktop/baseline.md) je dokončený: 32 funkcí, 16 datových druhů, 22 hranic služeb a zafixované zdroje; nové lokální TypeScript/lint, 567 Vitest testů, doménové/datové kontroly a 21 Linux native sad prošly. Navazuje společný návrh D02, pak skutečný Windows experiment D03. Poslední sestavený kandidát zůstává RC6; nový multi-window runtime zatím neexistuje.
 
 Bratr nyní potvrdil funkční zvuk po zaškrtnutí monitoringu v Live. Původní hlášení „signál za aparátem, výsledný mix ticho“ způsoboval vypnutý poslech. Přestavba přidá viditelné vysvětlení tohoto stavu; potvrzení jednoho případu není dokončením celé hardwarové přejímky ani měřením latence.
 

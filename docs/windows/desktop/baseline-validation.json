@@ -1,0 +1,79 @@
+{
+  "result": "passed",
+  "validatedAtUtc": "2026-10-13T16:53:01.093555+00:00",
+  "sourceCommit": "1e3e8611c4caf4975d22eb36fefdf875d997e284",
+  "runtimeChanged": false,
+  "typeCheck": {
+    "command": "npx tsc --noEmit",
+    "exitCode": 0
+  },
+  "lint": {
+    "command": "npm run lint",
+    "exitCode": 0
+  },
+  "vitest": {
+    "tests": 567,
+    "passed": 567,
+    "failed": 0,
+    "files": 55
+  },
+  "domain": {
+    "result": "passed",
+    "referenceCases": 69,
+    "boundaryChecks": 184,
+    "contentGroups": 15,
+    "surgicalStatesCompared": 37,
+    "extendedReferenceCases": 372,
+    "extendedStatesCompared": 350
+  },
+  "infrastructure": {
+    "result": "passed",
+    "fileChecks": 17,
+    "aiChecks": 28,
+    "storageChecks": 40,
+    "secretChecks": 2,
+    "backupChecks": 20,
+    "migrationChecks": 28,
+    "diagnosticChecks": 10,
+    "recordingChecks": 25,
+    "updateChecks": 16,
+    "releaseUpdateChecks": 15,
+    "dpapiVerified": false,
+    "forcedTerminationVerified": true,
+    "manualHardwareVerified": false
+  },
+  "nativeLinux": {
+    "configuration": "Release, ROCKER_WITH_JUCE=OFF, ROCKER_WITH_MEDIA=ON",
+    "suites": 21,
+    "failed": 0,
+    "result": "passed",
+    "actualDeviceVerified": false
+  },
+  "frozenInventory": {
+    "result": "passed",
+    "command": "node scripts/verify-windows-desktop-baseline.mjs",
+    "sourceFiles": 388,
+    "functionViews": 32,
+    "dataKinds": 16,
+    "services": 22
+  },
+  "existingWindowsEvidence": {
+    "runId": 38416440273,
+    "commit": "5eb2eb97b2ce4f2340aa8b143714a93840c45fc0",
+    "result": "passed",
+    "reusedHistoricalEvidence": true,
+    "newWindowsBuildExecutedForInventory": false
+  },
+  "manualAcceptance": {
+    "guitarWorksAfterExplicitMonitoringConfirmedByUser": true,
+    "actualLatencyVerified": false,
+    "newDesktopUiVerified": false
+  },
+  "setupCorrections": [
+    {
+      "operation": "initial local CTest invocation",
+      "error": "CMake Python wrapper could not find its installed module",
+      "resolution": "Use PYTHONPATH=/workspace/.tools/rocker-native; unchanged test suite rerun passed"
+    }
+  ]
+}

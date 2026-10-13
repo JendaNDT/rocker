@@ -1,0 +1,1162 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "1e3e8611c4caf4975d22eb36fefdf875d997e284",
+  "runtimeChanged": false,
+  "audioHostsPerProcess": 1,
+  "activeNativeMediaSlots": 1,
+  "sourceCounts": {
+    "applicationCSharpFiles": 63,
+    "mainWindowFields": 362,
+    "mainWindowMethods": 441,
+    "namedXamlControls": 133
+  },
+  "dataKinds": [
+    "settings",
+    "instrument",
+    "progress",
+    "lessons",
+    "amp",
+    "amp-presets",
+    "metronome",
+    "metronome-presets",
+    "custom-tunings",
+    "yt-loops",
+    "ai-settings",
+    "chat",
+    "recording",
+    "project",
+    "song",
+    "practice-workspace"
+  ],
+  "views": [
+    {
+      "id": "01",
+      "title": "Přehled",
+      "source": {
+        "path": "windows/Rocker.Probe/MainWindow.Overview.cs",
+        "method": "BuildOverview",
+        "line": 27
+      },
+      "currentHost": "MainWindow",
+      "targetSession": "Úvodní dokument s pokračováním v přesné relaci, denní plán; z knihovny rovnou otevřít úlohu",
+      "targetSteps": [
+        "D27",
+        "D29"
+      ],
+      "dataKinds": [
+        "settings",
+        "lessons",
+        "progress"
+      ],
+      "scenarios": [
+        "open-and-preserve-current-function",
+        "move-without-changing-session",
+        "close-or-cancel-without-losing-work"
+      ]
+    },
+    {
+      "id": "02",
+      "title": "Live",
+      "source": {
+        "path": "windows/Rocker.Probe/MainWindow.Live.cs",
+        "method": "BuildLive",
+        "line": 16
+      },
+      "currentHost": "MainWindow",
+      "targetSession": "Samostatné LiveWindow, kompaktní nástroje, viditelný poslech a záznam, F11",
+      "targetSteps": [
+        "D14"
+      ],
+      "dataKinds": [
+        "settings",
+        "runtime-only"
+      ],
+      "scenarios": [
+        "open-and-preserve-current-function",
+        "move-without-changing-session",
+        "close-or-cancel-without-losing-work"
+      ]
+    },
+    {
+      "id": "03",
+      "title": "Ladička",
+      "source": {
+        "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+        "method": "BuildTuner",
+        "line": 32
+      },
+      "currentHost": "MainWindow",
+      "targetSession": "Připojitelný/plovoucí nástroj; detail ladění, kalibrace a referenčních tónů v nástroji",
+      "targetSteps": [
+        "D11"
+      ],
+      "dataKinds": [
+        "settings",
+        "custom-tunings"
+      ],
+      "scenarios": [
+        "open-and-preserve-current-function",
+        "move-without-changing-session",
+        "close-or-cancel-without-losing-work"
+      ]
+    },
+    {
+      "id": "04",
+      "title": "Metronom",
+      "source": {
+        "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+        "method": "BuildMetronome",
+        "line": 30
+      },
+      "currentHost": "MainWindow",
+      "targetSession": "Nástroj s kyvadlem nahoře, BPM/transportem a rozbalitelnými pokročilými volbami",
+      "targetSteps": [
+        "D12"
+      ],
+      "dataKinds": [
+        "metronome",
+        "metronome-presets"
+      ],
+      "scenarios": [
+        "open-and-preserve-current-function",
+        "move-without-changing-session",
+        "close-or-cancel-without-losing-work"
+      ]
+    },
+    {
+      "id": "05",
+      "title": "Výběr lekce",
+      "source": {
+        "path": "windows/Rocker.Probe/MainWindow.Lessons.cs",
+        "method": "BuildLessonList",
+        "line": 16
+      },
+      "currentHost": "MainWindow",
+      "targetSession": "Knihovna s kategoriemi, hledáním a detailem; otevře lekci jako dokument",
+      "targetSteps": [
+        "D23"
+      ],
+      "dataKinds": [
+        "lessons"
+      ],
+      "scenarios": [
+        "open-and-preserve-current-function",
+        "move-without-changing-session",
+        "close-or-cancel-without-losing-work"
+      ]
+    },
+    {
+      "id": "06",
+      "title": "Průběh lekce",
+      "source": {
+        "path": "windows/Rocker.Probe/MainWindow.Lessons.cs",
+        "method": "BuildLesson",
+        "line": 25
+      },
+      "currentHost": "MainWindow",
+      "targetSession": "Dokument: kroky vlevo, úloha uprostřed, kontext v inspektoru; relace uchová postup",
+      "targetSteps": [
+        "D23"
+      ],
+      "dataKinds": [
+        "lessons",
+        "progress"
+      ],
+      "scenarios": [
+        "open-and-preserve-current-function",
+        "move-without-changing-session",
+        "close-or-cancel-without-losing-work"
+      ]
+    },
+    {
+      "id": "07",
+      "title": "Vlastní skladba",
+      "source": {
+        "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+        "method": "BuildSong",
+        "line": 34
+      },
+      "currentHost": "MainWindow",
+      "targetSession": "Dokument: waveform, smyčka a transport; vlastnosti zdroje v inspektoru",
+      "targetSteps": [
+        "D17"
+      ],
+      "dataKinds": [
+        "song"
+      ],
+      "scenarios": [
+        "open-and-preserve-current-function",
+        "move-without-changing-session",
+        "close-or-cancel-without-losing-work"
+      ]
+    },
+    {
+      "id": "08",
+      "title": "YouTube cvičení",
+      "source": {
+        "path": "windows/Rocker.Probe/MainWindow.Video.cs",
+        "method": "InitializeVideoAsync",
+        "line": 18
+      },
+      "currentHost": "MainWindow",
+      "targetSession": "Video dokument, A/B a rychlost u videa; existující oficiální embed, online stavy",
+      "targetSteps": [
+        "D22"
+      ],
+      "dataKinds": [
+        "yt-loops"
+      ],
+      "scenarios": [
+        "open-and-preserve-current-function",
+        "move-without-changing-session",
+        "close-or-cancel-without-losing-work"
+      ]
+    },
+    {
+      "id": "09",
+      "title": "Přesný trénink",
+      "source": {
+        "path": "windows/Rocker.Probe/MainWindow.Surgical.cs",
+        "method": "BuildSurgical",
+        "line": 21
+      },
+      "currentHost": "MainWindow",
+      "targetSession": "Dokument hodnoticí relace, cílové tóny a skutečné výsledky; nastavení v inspektoru",
+      "targetSteps": [
+        "D24"
+      ],
+      "dataKinds": [
+        "progress",
+        "runtime-only"
+      ],
+      "scenarios": [
+        "open-and-preserve-current-function",
+        "move-without-changing-session",
+        "close-or-cancel-without-losing-work"
+      ]
+    },
+    {
+      "id": "10",
+      "title": "Power chordy",
+      "source": {
+        "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+        "method": "BuildRhythmTrainer",
+        "line": 33
+      },
+      "currentHost": "MainWindow",
+      "targetSession": "Tréninkový dokument; rytmus, vizualizace a výsledky pohromadě",
+      "targetSteps": [
+        "D24"
+      ],
+      "dataKinds": [
+        "progress",
+        "runtime-only"
+      ],
+      "scenarios": [
+        "open-and-preserve-current-function",
+        "move-without-changing-session",
+        "close-or-cancel-without-losing-work"
+      ]
+    },
+    {
+      "id": "11",
+      "title": "Gallop",
+      "source": {
+        "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+        "method": "BuildRhythmTrainer",
+        "line": 33
+      },
+      "currentHost": "MainWindow",
+      "targetSession": "Tréninkový dokument sdílí časování, samostatný druh úlohy a nastavení",
+      "targetSteps": [
+        "D24"
+      ],
+      "dataKinds": [
+        "progress",
+        "runtime-only"
+      ],
+      "scenarios": [
+        "open-and-preserve-current-function",
+        "move-without-changing-session",
+        "close-or-cancel-without-losing-work"
+      ]
+    },
+    {
+      "id": "12",
+      "title": "Palm mute",
+      "source": {
+        "path": "windows/Rocker.Probe/MainWindow.PalmMute.cs",
+        "method": "BuildPalmMute",
+        "line": 16
+      },
+      "currentHost": "MainWindow",
+      "targetSession": "Tréninkový dokument s kalibrací; nezaměnit proxy měření za nové rozpoznávání hry",
+      "targetSteps": [
+        "D24"
+      ],
+      "dataKinds": [
+        "settings",
+        "progress"
+      ],
+      "scenarios": [
+        "open-and-preserve-current-function",
+        "move-without-changing-session",
+        "close-or-cancel-without-losing-work"
+      ]
+    },
+    {
+      "id": "13",
+      "title": "Aparát",
+      "source": {
+        "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+        "method": "BuildAmplifier",
+        "line": 23
+      },
+      "currentHost": "MainWindow",
+      "targetSession": "Nástroj: viditelný řetězec, preset, bypass a základní knoflíky; detaily efektu v nástroji",
+      "targetSteps": [
+        "D13"
+      ],
+      "dataKinds": [
+        "amp",
+        "amp-presets"
+      ],
+      "scenarios": [
+        "open-and-preserve-current-function",
+        "move-without-changing-session",
+        "close-or-cancel-without-losing-work"
+      ]
+    },
+    {
+      "id": "14",
+      "title": "Nahrávky",
+      "source": {
+        "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+        "method": "BuildRecordings",
+        "line": 40
+      },
+      "currentHost": "MainWindow",
+      "targetSession": "Seznam v knihovně; vybraná nahrávka otevře editor waveform/A/B/značek",
+      "targetSteps": [
+        "D18"
+      ],
+      "dataKinds": [
+        "recording"
+      ],
+      "scenarios": [
+        "open-and-preserve-current-function",
+        "move-without-changing-session",
+        "close-or-cancel-without-losing-work"
+      ]
+    },
+    {
+      "id": "15",
+      "title": "Studio",
+      "source": {
+        "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+        "method": "BuildStudio",
+        "line": 25
+      },
+      "currentHost": "MainWindow",
+      "targetSession": "Projektový dokument: časová osa a stopy, mixer a inspektor; historie patří projektu",
+      "targetSteps": [
+        "D20"
+      ],
+      "dataKinds": [
+        "project",
+        "recording"
+      ],
+      "scenarios": [
+        "open-and-preserve-current-function",
+        "move-without-changing-session",
+        "close-or-cancel-without-losing-work"
+      ]
+    },
+    {
+      "id": "16",
+      "title": "Looper",
+      "source": {
+        "path": "windows/Rocker.Probe/MainWindow.Looper.cs",
+        "method": "BuildLooper",
+        "line": 19
+      },
+      "currentHost": "MainWindow",
+      "targetSession": "Připojitelný/plovoucí nástroj se skutečnou jednou looper relací, vrstvami a uložením",
+      "targetSteps": [
+        "D19"
+      ],
+      "dataKinds": [
+        "project",
+        "recording",
+        "runtime-only"
+      ],
+      "scenarios": [
+        "open-and-preserve-current-function",
+        "move-without-changing-session",
+        "close-or-cancel-without-losing-work"
+      ]
+    },
+    {
+      "id": "17",
+      "title": "Akordy",
+      "source": {
+        "path": "windows/Rocker.Probe/MainWindow.Library.cs",
+        "method": "BuildChords",
+        "line": 13
+      },
+      "currentHost": "MainWindow",
+      "targetSession": "Knihovna a referenční dokument s diagramem, prstoklady a cvičením",
+      "targetSteps": [
+        "D25"
+      ],
+      "dataKinds": [
+        "settings",
+        "runtime-only"
+      ],
+      "scenarios": [
+        "open-and-preserve-current-function",
+        "move-without-changing-session",
+        "close-or-cancel-without-losing-work"
+      ]
+    },
+    {
+      "id": "18",
+      "title": "Stupnice",
+      "source": {
+        "path": "windows/Rocker.Probe/MainWindow.Library.cs",
+        "method": "BuildScales",
+        "line": 24
+      },
+      "currentHost": "MainWindow",
+      "targetSession": "Knihovna a referenční dokument; diagram a nastavení podle výběru",
+      "targetSteps": [
+        "D25"
+      ],
+      "dataKinds": [
+        "settings",
+        "runtime-only"
+      ],
+      "scenarios": [
+        "open-and-preserve-current-function",
+        "move-without-changing-session",
+        "close-or-cancel-without-losing-work"
+      ]
+    },
+    {
+      "id": "19",
+      "title": "Riffy",
+      "source": {
+        "path": "windows/Rocker.Probe/MainWindow.Riffs.cs",
+        "method": "BuildRiffs",
+        "line": 11
+      },
+      "currentHost": "MainWindow",
+      "targetSession": "Knihovna; konkrétní riff otevírá dokument nebo navázaný trénink",
+      "targetSteps": [
+        "D25"
+      ],
+      "dataKinds": [
+        "progress",
+        "runtime-only"
+      ],
+      "scenarios": [
+        "open-and-preserve-current-function",
+        "move-without-changing-session",
+        "close-or-cancel-without-losing-work"
+      ]
+    },
+    {
+      "id": "20",
+      "title": "Noty a tabulatury",
+      "source": {
+        "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+        "method": "LoadScoreAsync",
+        "line": 143
+      },
+      "currentHost": "MainWindow",
+      "targetSession": "Dokument: noty využijí plochu, lišta stop/zoomu/taktů, inspektor a společný transport",
+      "targetSteps": [
+        "D21"
+      ],
+      "dataKinds": [
+        "song",
+        "runtime-only"
+      ],
+      "scenarios": [
+        "open-and-preserve-current-function",
+        "move-without-changing-session",
+        "close-or-cancel-without-losing-work"
+      ]
+    },
+    {
+      "id": "21",
+      "title": "Hmatník",
+      "source": {
+        "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+        "method": "BuildFretboardGame",
+        "line": 16
+      },
+      "currentHost": "MainWindow",
+      "targetSession": "Herní/cvičební dokument; zacílená klávesnice a oddělená relace hry",
+      "targetSteps": [
+        "D25"
+      ],
+      "dataKinds": [
+        "progress"
+      ],
+      "scenarios": [
+        "open-and-preserve-current-function",
+        "move-without-changing-session",
+        "close-or-cancel-without-losing-work"
+      ]
+    },
+    {
+      "id": "22",
+      "title": "Sluch",
+      "source": {
+        "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+        "method": "BuildEarGame",
+        "line": 32
+      },
+      "currentHost": "MainWindow",
+      "targetSession": "Herní/cvičební dokument; jasně označené ukázky a pravidla vlastnictví přehrávání",
+      "targetSteps": [
+        "D25"
+      ],
+      "dataKinds": [
+        "progress"
+      ],
+      "scenarios": [
+        "open-and-preserve-current-function",
+        "move-without-changing-session",
+        "close-or-cancel-without-losing-work"
+      ]
+    },
+    {
+      "id": "23",
+      "title": "AI — rozhovor",
+      "source": {
+        "path": "windows/Rocker.Probe/MainWindow.AiChat.cs",
+        "method": "BuildAiChat",
+        "line": 11
+      },
+      "currentHost": "MainWindow",
+      "targetSession": "AI dokument; historie, psaní, průběh a zrušení požadavku ve správné relaci",
+      "targetSteps": [
+        "D26"
+      ],
+      "dataKinds": [
+        "ai-settings",
+        "chat"
+      ],
+      "scenarios": [
+        "open-and-preserve-current-function",
+        "move-without-changing-session",
+        "close-or-cancel-without-losing-work"
+      ]
+    },
+    {
+      "id": "24",
+      "title": "AI — plán",
+      "source": {
+        "path": "windows/Rocker.Probe/MainWindow.AiPlan.cs",
+        "method": "BuildAiPlan",
+        "line": 11
+      },
+      "currentHost": "MainWindow",
+      "targetSession": "AI dokument; návrh plánu s výslovným použitím a vazbou na skutečné úlohy",
+      "targetSteps": [
+        "D26"
+      ],
+      "dataKinds": [
+        "ai-settings",
+        "settings"
+      ],
+      "scenarios": [
+        "open-and-preserve-current-function",
+        "move-without-changing-session",
+        "close-or-cancel-without-losing-work"
+      ]
+    },
+    {
+      "id": "25",
+      "title": "AI — zpětná vazba",
+      "source": {
+        "path": "windows/Rocker.Probe/MainWindow.AiFeedback.cs",
+        "method": "BuildAiFeedback",
+        "line": 9
+      },
+      "currentHost": "MainWindow",
+      "targetSession": "AI dokument se zdrojovými statistikami; nevydávat rady za měření audio hry",
+      "targetSteps": [
+        "D26"
+      ],
+      "dataKinds": [
+        "ai-settings",
+        "progress"
+      ],
+      "scenarios": [
+        "open-and-preserve-current-function",
+        "move-without-changing-session",
+        "close-or-cancel-without-losing-work"
+      ]
+    },
+    {
+      "id": "26",
+      "title": "Moje kytara",
+      "source": {
+        "path": "windows/Rocker.Probe/MainWindow.Instrument.cs",
+        "method": "BuildInstrument",
+        "line": 10
+      },
+      "currentHost": "MainWindow",
+      "targetSession": "Kategorie samostatného nastavení/profilu; související nástroje otevře příkazem",
+      "targetSteps": [
+        "D27",
+        "D28"
+      ],
+      "dataKinds": [
+        "instrument",
+        "settings"
+      ],
+      "scenarios": [
+        "open-and-preserve-current-function",
+        "move-without-changing-session",
+        "close-or-cancel-without-losing-work"
+      ]
+    },
+    {
+      "id": "27",
+      "title": "Pokrok",
+      "source": {
+        "path": "windows/Rocker.Probe/MainWindow.Progress.cs",
+        "method": "BuildProgress",
+        "line": 8
+      },
+      "currentHost": "MainWindow",
+      "targetSession": "Dokument statistik; skutečný čas, výsledky a režim bez odměn",
+      "targetSteps": [
+        "D27"
+      ],
+      "dataKinds": [
+        "progress",
+        "lessons"
+      ],
+      "scenarios": [
+        "open-and-preserve-current-function",
+        "move-without-changing-session",
+        "close-or-cancel-without-losing-work"
+      ]
+    },
+    {
+      "id": "28",
+      "title": "Nastavení",
+      "source": {
+        "path": "windows/Rocker.Probe/MainWindow.Settings.cs",
+        "method": "BuildSettings",
+        "line": 19
+      },
+      "currentHost": "MainWindow",
+      "targetSession": "Jedno SettingsWindow s kategoriemi, hledáním a vlastním správným HWND",
+      "targetSteps": [
+        "D28"
+      ],
+      "dataKinds": [
+        "settings"
+      ],
+      "scenarios": [
+        "open-and-preserve-current-function",
+        "move-without-changing-session",
+        "close-or-cancel-without-losing-work"
+      ]
+    },
+    {
+      "id": "29",
+      "title": "Zvuková zařízení",
+      "source": {
+        "path": "windows/Rocker.Probe/MainWindow.Devices.cs",
+        "method": "DeviceApply_Click",
+        "line": 85
+      },
+      "currentHost": "MainWindow",
+      "targetSession": "Kategorie nastavení; ověření karty a mono vstupu, ASIO/WASAPI, buffer a latence ovladače",
+      "targetSteps": [
+        "D28"
+      ],
+      "dataKinds": [
+        "settings"
+      ],
+      "scenarios": [
+        "open-and-preserve-current-function",
+        "move-without-changing-session",
+        "close-or-cancel-without-losing-work"
+      ]
+    },
+    {
+      "id": "30",
+      "title": "Zálohy a soubory",
+      "source": {
+        "path": "windows/Rocker.Probe/MainWindow.Backups.cs",
+        "method": "BuildBackups",
+        "line": 10
+      },
+      "currentHost": "MainWindow",
+      "targetSession": "Kategorie správy dat; stav globálních operací v centru operací",
+      "targetSteps": [
+        "D28",
+        "D30"
+      ],
+      "dataKinds": [
+        "runtime-only"
+      ],
+      "scenarios": [
+        "open-and-preserve-current-function",
+        "move-without-changing-session",
+        "close-or-cancel-without-losing-work"
+      ]
+    },
+    {
+      "id": "31",
+      "title": "První spuštění",
+      "source": {
+        "path": "windows/Rocker.Probe/MainWindow.FirstRun.cs",
+        "method": "BuildFirstRun",
+        "line": 8
+      },
+      "currentHost": "MainWindow",
+      "targetSession": "Průvodce ukotvený k pracovnímu oknu; krok poslechu výslovně vysvětlí monitoring",
+      "targetSteps": [
+        "D28"
+      ],
+      "dataKinds": [
+        "settings"
+      ],
+      "scenarios": [
+        "open-and-preserve-current-function",
+        "move-without-changing-session",
+        "close-or-cancel-without-losing-work"
+      ]
+    },
+    {
+      "id": "32",
+      "title": "Export nahrávky",
+      "source": {
+        "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+        "method": "BuildRecordingExport",
+        "line": 137
+      },
+      "currentHost": "MainWindow",
+      "targetSession": "Vlastněný exportní dialog nad konkrétní nahrávkou; dlouhá operace v centru operací",
+      "targetSteps": [
+        "D18",
+        "D30"
+      ],
+      "dataKinds": [
+        "recording"
+      ],
+      "scenarios": [
+        "open-and-preserve-current-function",
+        "move-without-changing-session",
+        "close-or-cancel-without-losing-work"
+      ]
+    }
+  ],
+  "services": [
+    {
+      "area": "Proces a aktivace",
+      "currentOwner": "App.window, instanceMutex, setupGuard, instanceListener jsou navázané na hlavní okno",
+      "targetBoundary": "App + WindowManager + ExitCoordinator; mutex po celou životnost procesu"
+    },
+    {
+      "area": "Audio a snapshoty",
+      "currentOwner": "MainWindow.audio a timer; Closed uvolňuje host, RefreshState čte a rozesílá pozorování",
+      "targetBoundary": "Jeden AudioSession, sdílené snapshoty; audio lifetime aplikace"
+    },
+    {
+      "area": "Zvukové zařízení",
+      "currentOwner": "MainWindow.Devices; preference v AppSettings, katalog/capabilities a reconfigure stavy",
+      "targetBoundary": "AudioSession a globální Device operation; UI ve SettingsWindow"
+    },
+    {
+      "area": "Aparát",
+      "currentOwner": "ampApplyTimer, parametry, presety a ovladače jsou v MainWindow.Amp",
+      "targetBoundary": "Globální Amp view model a AudioSession; plný nástroj i Live čtou stejný stav"
+    },
+    {
+      "area": "Metronom",
+      "currentOwner": "metroEnabled, config, revisions, timer, seznam weak vizualizací",
+      "targetBoundary": "Globální Metronome view model; zachovat native fázi, presety a delayed apply"
+    },
+    {
+      "area": "Monitoring",
+      "currentOwner": "liveMonitor, liveGain a liveUpdating v Live; gain není uložený přepínač pro automatický restart",
+      "targetBoundary": "AudioSession stav poslechu; renderer a UI nesmějí jej měnit při otevření okna"
+    },
+    {
+      "area": "Analýza/ladička",
+      "currentOwner": "native analysis, kalibrace a ref. tón; UI MainWindow.Tuner/Live",
+      "targetBoundary": "Globální Tuner view model a sdílená analýza"
+    },
+    {
+      "area": "Soubory a soukromý profil",
+      "currentOwner": "userFiles, database, autosave a appSettings žijí v MainWindow",
+      "targetBoundary": "ApplicationServices, jediná datová relace a koordinovaný flush"
+    },
+    {
+      "area": "Skladba a noty",
+      "currentOwner": "song/mediaPath/mediaMidi/preview, position, speed a jeden native clip",
+      "targetBoundary": "Document sessions + TransportCoordinator, nejvýše jedna aktivní mediální časová osa"
+    },
+    {
+      "area": "Video",
+      "currentOwner": "jeden VideoView a bridge; videoPractice, smyčky a profile dir v MainWindow",
+      "targetBoundary": "VideoDocumentSession a jediný host přehrávaného embed; bezpečná migrace HWND"
+    },
+    {
+      "area": "Nahrávání",
+      "currentOwner": "captureDraft, markers a recording metadata; tlačítka ve více pohledech",
+      "targetBoundary": "Globální RecordingSession a jasný vlastník výsledku"
+    },
+    {
+      "area": "Studio",
+      "currentOwner": "jeden studioProject, undo max 20 snapshotů, pending edits, studioTicket a captureProject",
+      "targetBoundary": "Per-project session; explicitní media vlastník a historie konkrétního projektu"
+    },
+    {
+      "area": "Looper",
+      "currentOwner": "jeden native looper; UI, fingerprint dirty stavu a project ID v okně",
+      "targetBoundary": "Globální LooperSession, oddělený lifetime panelu a vrstev"
+    },
+    {
+      "area": "Lekce",
+      "currentOwner": "lessonSessions dictionary a savedLessonPositions; UI vybraného kroku",
+      "targetBoundary": "Per-lesson document; jedna aktivní hodnoticí relace"
+    },
+    {
+      "area": "Trenažéry",
+      "currentOwner": "chirurgický gate, rhythm state a palm calibration plus navigační podmínky",
+      "targetBoundary": "Dokumentové relace a PracticeCoordinator; změna fokusu nezmění hodnoticí úlohu"
+    },
+    {
+      "area": "Knihovna a hry",
+      "currentOwner": "catalog, výběry a herní stavy; preview sdílí audio",
+      "targetBoundary": "Knihovna + referenční/herní dokumenty, řízený preview owner"
+    },
+    {
+      "area": "AI",
+      "currentOwner": "aiActive, request/cancellation a jednotlivé stránky",
+      "targetBoundary": "AI document/request session; výsledek patří konkrétnímu objektu"
+    },
+    {
+      "area": "Čas a pokrok",
+      "currentOwner": "practiceSession, last evidence/frame, DailyMinutes a wake lock v okně",
+      "targetBoundary": "Jeden PracticeCoordinator pro všechna okna"
+    },
+    {
+      "area": "Sestavy a hledání",
+      "currentOwner": "PracticeWorkspace, favorite entries, resume target, navigation",
+      "targetBoundary": "Překlad starých ID do dokumentového registru a nástrojů"
+    },
+    {
+      "area": "Zálohy/recovery/update",
+      "currentOwner": "globální operace a bariéry rozptýlené po partial MainWindow",
+      "targetBoundary": "OperationRegistry, ExitCoordinator a aplikační update/restore"
+    },
+    {
+      "area": "Dialogy/fokus",
+      "currentOwner": "pickery inicializované HWND tohoto MainWindow, ContentDialog se ShellRoot.XamlRoot",
+      "targetBoundary": "WindowContext a DialogService konkrétního volajícího okna"
+    },
+    {
+      "area": "Rozložení",
+      "currentOwner": "window.json v1; jedna normalBounds/theme, uložené při odchodu",
+      "targetBoundary": "Samostatný versioned multi-window layout, fitting podle monitoru/DPI"
+    }
+  ],
+  "navigationSideEffects": [
+    {
+      "trigger": "leave Live",
+      "effect": "exit focus mode",
+      "source": "windows/Rocker.Probe/MainWindow.Shell.cs#ShowWorkspace"
+    },
+    {
+      "trigger": "leave active AI view",
+      "effect": "cancel request",
+      "source": "windows/Rocker.Probe/MainWindow.Shell.cs#ShowWorkspace"
+    },
+    {
+      "trigger": "leave active rhythm view",
+      "effect": "StopRhythmUiAsync",
+      "source": "windows/Rocker.Probe/MainWindow.Shell.cs#ShowWorkspace"
+    },
+    {
+      "trigger": "leave palm mute",
+      "effect": "CancelPalm",
+      "source": "windows/Rocker.Probe/MainWindow.Shell.cs#ShowWorkspace"
+    },
+    {
+      "trigger": "leave ear trainer",
+      "effect": "PauseEarPreviewAsync",
+      "source": "windows/Rocker.Probe/MainWindow.Shell.cs#ShowWorkspace"
+    },
+    {
+      "trigger": "leave surgical trainer",
+      "effect": "set surgicalListening false",
+      "source": "windows/Rocker.Probe/MainWindow.Shell.cs#ShowWorkspace"
+    },
+    {
+      "trigger": "leave YouTube",
+      "effect": "send pause to embed",
+      "source": "windows/Rocker.Probe/MainWindow.Shell.cs#ShowWorkspace"
+    },
+    {
+      "trigger": "change ItemId within same ViewId",
+      "effect": "remove previous cached view",
+      "source": "windows/Rocker.Probe/MainWindow.Shell.cs#ShowWorkspace"
+    }
+  ],
+  "operationFlags": [
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Ai.cs",
+      "line": 13,
+      "name": "aiCancellation",
+      "type": "CancellationTokenSource?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Ai.cs",
+      "line": 13,
+      "name": "aiTask",
+      "type": "Task?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Backups.cs",
+      "line": 9,
+      "name": "backupOperationRunning",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Devices.cs",
+      "line": 11,
+      "name": "deviceOperationRunning",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Files.cs",
+      "line": 20,
+      "name": "recentSaveTask",
+      "type": "Task",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Files.cs",
+      "line": 20,
+      "name": "fileOperation",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Files.cs",
+      "line": 20,
+      "name": "fileCancellation",
+      "type": "CancellationTokenSource?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 12,
+      "name": "earOperation",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Instrument.cs",
+      "line": 8,
+      "name": "profileOperation",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Looper.cs",
+      "line": 12,
+      "name": "looperOperation",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.NativeEvents.cs",
+      "line": 15,
+      "name": "powerStopTask",
+      "type": "Task",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.NativeEvents.cs",
+      "line": 16,
+      "name": "powerTransition",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Overview.cs",
+      "line": 10,
+      "name": "appliedNavigationTask",
+      "type": "NavigationTarget?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Overview.cs",
+      "line": 17,
+      "name": "openedPlanTask",
+      "type": "(string Key,PlanTask Task)?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PalmMute.cs",
+      "line": 12,
+      "name": "palmOperation",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeWorkspace.cs",
+      "line": 12,
+      "name": "workspaceOperation",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Preparation.cs",
+      "line": 7,
+      "name": "preparationCancellation",
+      "type": "CancellationTokenSource?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "line": 14,
+      "name": "recordingOperation",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "line": 19,
+      "name": "exportOperation",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "line": 19,
+      "name": "exportCancellation",
+      "type": "CancellationTokenSource?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "line": 16,
+      "name": "rhythmTicket",
+      "type": "ulong",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "line": 18,
+      "name": "rhythmOperation",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "line": 18,
+      "name": "rhythmStopTask",
+      "type": "Task?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Secrets.cs",
+      "line": 8,
+      "name": "secretOperationRunning",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 24,
+      "name": "closingWindow",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 27,
+      "name": "songRampTask",
+      "type": "Task?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 19,
+      "name": "studioOperation",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 21,
+      "name": "studioTicket",
+      "type": "ulong",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 23,
+      "name": "studioEditTask",
+      "type": "Task?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Surgical.cs",
+      "line": 11,
+      "name": "surgicalStartOperation",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Updates.cs",
+      "line": 12,
+      "name": "updateCancellation",
+      "type": "CancellationTokenSource?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Updates.cs",
+      "line": 15,
+      "name": "updateOperation",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 19,
+      "name": "playbackIntent",
+      "type": "int",
+      "modifiers": "private"
+    }
+  ],
+  "closeGuards": [
+    "recording",
+    "looper",
+    "studio"
+  ],
+  "manualAcceptance": {
+    "guitarWorksAfterExplicitMonitoringConfirmedByUser": true,
+    "actualLatencyVerified": false,
+    "newDesktopUiVerified": false,
+    "allHardwareScenariosVerified": false
+  }
+}

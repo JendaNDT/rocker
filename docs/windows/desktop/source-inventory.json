@@ -1,0 +1,6549 @@
+{
+  "kind": "read-only-roslyn-source-inventory",
+  "sources": [
+    {
+      "path": "windows/Rocker.Probe/App.xaml.cs",
+      "sha256": "eaa6576b88ed947ea624c43f28167936ee6278a45109342ec5f3f903ff562961"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/ChordDiagram.xaml.cs",
+      "sha256": "5b6754c0f7ce7758ba122c89ab2931a2e288fe00405d3be1e5dc6188fd7b3fd0"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/FretboardDiagram.xaml.cs",
+      "sha256": "d3b120dcd9c0b9f1ef694e1a6e6bfdd267fb33bdf620856ec5e7fed9aac63a62"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/LevelMeter.xaml.cs",
+      "sha256": "9e520de0fc7f9440d7aa4a7181989beac6c8c51169cca129825c35f7479fc3f1"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/MetronomeVisual.cs",
+      "sha256": "43a902d4e17c23a06180d3fb0fbfbf280e32e11c7b4f604b1de0ca76cb8ef93e"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/PitchGauge.xaml.cs",
+      "sha256": "0d32eaf362593b269f8f37f35a97b4520cda7d95fdd1f5dd24c0689f6176d984"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/ValueDial.xaml.cs",
+      "sha256": "87a5ba468051a77b9e4d2efb926919008f4bf2e5f2e370d8e4ddfe1786d15710"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/VintageHousing.cs",
+      "sha256": "c507da46278d15a1ad8df856aa0da4cc4c3be2dc83e5f98224b02b5d5812ec2e"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Accessibility.cs",
+      "sha256": "1ae6dfa4ea21f5091f0a6ad9355ab2874435213a3c2ad25bb6f634b3bb4d26a5"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Ai.cs",
+      "sha256": "cfd7bcf0e01cac50a96a4f6ba43b769a95083df898ea9a2fa1526a05440ec03e"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.AiChat.cs",
+      "sha256": "ea06464a68ba06574c41c2deefd24d586210e5a8db7755dbf001990c67903d83"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.AiChecks.cs",
+      "sha256": "e691fee1fbdd0e5e42d5b53c8dc6c285280a67f7ea362526081914811a395fe7"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.AiFeedback.cs",
+      "sha256": "fc7deeeb51193eaa33cc3ff49eabaa1c2f9c66d57405185996aad200f570cff2"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.AiPlan.cs",
+      "sha256": "8dab17d8b93045b9b18745f754faacf7a04a143049d0f666b9c5444a75d73bb6"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "sha256": "046cec47059ccf9720a6de028b84b9a02c37cd0cd8e0561bf559e0205b5cc645"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Backups.cs",
+      "sha256": "b690ac811e68706ad13f269858447da561860f53386a9a9751b20e62192350e5"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Components.cs",
+      "sha256": "7fd6e43044493af784c325c54706bd84cd1a07f3d3fcce3939110514248a2afd"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Design.cs",
+      "sha256": "2317c9c8944df5e3a6872c6a191e7f1aad3756dfe5d626115b8b1a45503a81c2"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Devices.cs",
+      "sha256": "ea707f2a76413285797b4dda96595d6476d822672aa0b264eac149085bc446a0"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Diagnostics.cs",
+      "sha256": "f5820182b20173c64e45bfed3213e00e98e39c68f8a8e64e44f2b47c18238ea9"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Files.cs",
+      "sha256": "647f506e0dba354b065e94c856edb7e41fd2a1fcdf5a36fcdddd3882d58ca3ab"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.FirstRun.cs",
+      "sha256": "a30ade5bd31bf8888b4b0c31cb579049078efbf149300ce1a61341e8e45bd967"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Focus.cs",
+      "sha256": "75c940068788d6a8ba766e3b63320ddbc32d07d26be1ef2e4a10bce30826c02e"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "sha256": "923f373a1e4003f47f0c0efe6141970f323be54e42e46a1d2a51bbf7e866ccf9"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Graphics.cs",
+      "sha256": "78a63601d7fa8951fd6ff978302686cbeb26d6d1bc3e7463924eb83895ba8115"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Instrument.cs",
+      "sha256": "78b39e377993c3d061f91a805935788a8d6bf4c78a9a1daa88713760c94f3b26"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Lessons.cs",
+      "sha256": "4f6d1cdac703cd5e961ff359b46eeca5e92ca08286d3816904ac712f850e3158"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Library.cs",
+      "sha256": "767d38c8ff43e1f9a6a3d3e9027ebc35f892c506deb5cf8c5b061b1120c02f48"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.LibraryChecks.cs",
+      "sha256": "d8055320267b62339afe8b431211c85071769bfd29a9c641c678e3e524b1ca3e"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Live.cs",
+      "sha256": "cef1715939c18bf851bc29deb191103a5a05fb80dec2047a06b6b5f245559403"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Looper.cs",
+      "sha256": "a3a92b90f5578b07ce653e871a6aff00b9b1d272879abf3d3fc2876e60a6e71a"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "sha256": "fd9474518db97a2198144a41981e3efbcf23bd0979f2bb72d546d9703b2ebceb"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.MetronomeChecks.cs",
+      "sha256": "08355a7059460986d676edd4b0f53ee46a52c212a2b7752f0b9cd22ba59f14ae"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Migration.cs",
+      "sha256": "faa5d2c750518f397ba274347cf42c9560638e7495091e54e59c919d007acb5a"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.NativeEvents.cs",
+      "sha256": "e0b54d206c2e719a26446a4ced7f46eb891ec3c1dacc3ac9df0738ec988a3a06"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Notation.cs",
+      "sha256": "b459ddbc0ab9608ed32197076b4e27040c7c4bbeb35fe48d68497c7336e96015"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Overview.cs",
+      "sha256": "6f4ead9e011f5807ade593a8e96bc318287627a19fc7a888af88188ab6fcdcb8"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PalmMute.cs",
+      "sha256": "9fbfded94f8ab44ba3c170da44ca36216dc47acca22586bdd4b32ab9fe56aed5"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Persistence.cs",
+      "sha256": "627e100c87db08ebfea0665c05dee08ab9265b4835ceb74c1b8ec1fed6f4304b"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeChecks.cs",
+      "sha256": "610092d8753f95a9638f997f4b92c21dfbc9832a35656d7c6f0c4ac762d5782e"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeSession.cs",
+      "sha256": "5b64795c1da047049b4d202434a716c528549481d8a0926428e948a1318b7300"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeWorkspace.cs",
+      "sha256": "cf8b1ec692ad583ab2a269e7f1f83b0ca540a26bbc5e6fd0c8140270edf4eb51"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Preparation.cs",
+      "sha256": "3873fc6980fa9e10fcf54f2a8eeba5d48974edbe0dfaae7780894bf959fdca25"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Progress.cs",
+      "sha256": "0161c11d59117fd4c18b659b1bcaa6d34c327ce85b9c8d71a465dad383895e25"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "sha256": "a087df53dc5fe882d449dc02fa6831a4add06dab197719ee7aef7302aaf89b55"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.RecordingWaveform.cs",
+      "sha256": "8aed0d37efdf93b829d4a29140e68e5f45a5701187c2cab94a3ea70fef859fd2"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recovery.cs",
+      "sha256": "38c5663eec586866e56f00fcb382e8bfaef5e2f69fda2ec0ccc900f56a62bd44"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "sha256": "427b4c64faf4c4497f67250cd2df6339298d316f4bd1561a42cb62f9d8c0fe64"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Riffs.cs",
+      "sha256": "fcf9b261dc03d549c8d32ec927fb28a63eb8cd0ff467f5eca1a7f5f73cecdeec"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Secrets.cs",
+      "sha256": "5ec98806efd9605890e73cdc3c7312a66ab0d14e3d429d47f8c796f33430df55"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Settings.cs",
+      "sha256": "025e12ad8762da882e0588fe3168246ae8bc783d92a50ef17224e547bd87071a"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "sha256": "9bbc6f26d2b3a08e9c2a50c6f6934179863a6cdf398a131bc573d4dd9f93629f"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "sha256": "f3ac963909dae3804240f7e4078e926a27f283bea5c8d042660ac79b08736482"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "sha256": "8ff61765d8aa885d062c992be5aa025c19b1feeec36bcb04622a9e18948f01c6"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Surgical.cs",
+      "sha256": "ed988aad191ba61a940e6932b9f800c59bb0f153467b34e77d11e9a1d574eac5"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "sha256": "2e606ba8385041897e85955ae291fc3baa1710837f10cf9badd6c211cdd3a796"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Updates.cs",
+      "sha256": "e8e84b4b835b08976328da6281f6f52f27873d056dc38caebe0c5b5fd4ff2b57"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Ux.cs",
+      "sha256": "b30b574653134a58ec19c30192dcbc3e8240e9e6d01ebf1086e8c05f7c2c4a9e"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Video.cs",
+      "sha256": "e7c52eb47b49e7515e8f976c90835b8342724f3ccad389e399d34e2ab23ed57a"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.VideoPractice.cs",
+      "sha256": "67a6b07e02d96e3b3941278bea8762936eafd9a36a80099cc649cf3331362ad8"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.WorkspaceChecks.cs",
+      "sha256": "8683e2884d893b86ea6a21018e2fb69a35c7be1e97c8539039d9ba56848813f6"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.WorkspaceFixture.cs",
+      "sha256": "9fb32680890afb5c6e31f9ad86c56299e7ea2d89e6fc797856173c9b7d0f6972"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "sha256": "ae8101289e858b13db593e7d288f34b95d61d09d9aa470147969724c3c8f93cc"
+    }
+  ],
+  "mainWindowFields": [
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Ai.cs",
+      "line": 9,
+      "name": "aiSettings",
+      "type": "AiSettings",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Ai.cs",
+      "line": 10,
+      "name": "aiHistory",
+      "type": "List<SavedChatMessage>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Ai.cs",
+      "line": 11,
+      "name": "aiPages",
+      "type": "Dictionary<string,AiPage>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Ai.cs",
+      "line": 12,
+      "name": "aiHttp",
+      "type": "HttpClient",
+      "modifiers": "private static readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Ai.cs",
+      "line": 13,
+      "name": "aiCancellation",
+      "type": "CancellationTokenSource?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Ai.cs",
+      "line": 13,
+      "name": "aiTask",
+      "type": "Task?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Ai.cs",
+      "line": 13,
+      "name": "aiActive",
+      "type": "AiPage?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Ai.cs",
+      "line": 13,
+      "name": "aiBusy",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Ai.cs",
+      "line": 13,
+      "name": "aiRefreshing",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.AiChat.cs",
+      "line": 10,
+      "name": "aiChatList",
+      "type": "ListView?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.AiPlan.cs",
+      "line": 9,
+      "name": "aiPlanDraft",
+      "type": "AiPracticePlan?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.AiPlan.cs",
+      "line": 9,
+      "name": "aiPlanBlocks",
+      "type": "StackPanel?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.AiPlan.cs",
+      "line": 10,
+      "name": "aiPlanEditors",
+      "type": "List<(TextBox Title,TextBox Detail,NumberBox Minutes,ComboBox View,ComboBox Item)>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "line": 12,
+      "name": "ampSettings",
+      "type": "AmpSettings",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "line": 13,
+      "name": "userAmpPresets",
+      "type": "List<AmpPreset>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "line": 14,
+      "name": "ampDials",
+      "type": "Dictionary<string,ValueDial>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "line": 15,
+      "name": "ampApplyTimer",
+      "type": "DispatcherTimer",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "line": 16,
+      "name": "ampTimerInitialized",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "line": 16,
+      "name": "ampUiUpdating",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "line": 17,
+      "name": "ampRevision",
+      "type": "int",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "line": 17,
+      "name": "appliedAmpRevision",
+      "type": "int",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "line": 18,
+      "name": "ampApplying",
+      "type": "Task?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "line": 19,
+      "name": "ampPresetsBox",
+      "type": "ComboBox?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "line": 19,
+      "name": "liveAmpPresetsBox",
+      "type": "ComboBox?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "line": 19,
+      "name": "ampDistortionBox",
+      "type": "ComboBox?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "line": 19,
+      "name": "ampCabinetBox",
+      "type": "ComboBox?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "line": 20,
+      "name": "ampEnabledBox",
+      "type": "CheckBox?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "line": 20,
+      "name": "liveAmpEnabledBox",
+      "type": "CheckBox?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "line": 21,
+      "name": "ampStatus",
+      "type": "TextBlock?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Backups.cs",
+      "line": 9,
+      "name": "backupOperationRunning",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Components.cs",
+      "line": 12,
+      "name": "componentMode",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Devices.cs",
+      "line": 9,
+      "name": "deviceCatalog",
+      "type": "DeviceCatalog?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Devices.cs",
+      "line": 10,
+      "name": "deviceCapabilities",
+      "type": "DeviceCapabilities?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Devices.cs",
+      "line": 11,
+      "name": "deviceUiUpdating",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Devices.cs",
+      "line": 11,
+      "name": "deviceOperationRunning",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Devices.cs",
+      "line": 11,
+      "name": "deviceSelectionUnavailable",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Diagnostics.cs",
+      "line": 11,
+      "name": "diagnosticStatus",
+      "type": "TextBlock?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Files.cs",
+      "line": 16,
+      "name": "activationRequests",
+      "type": "Queue<string>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Files.cs",
+      "line": 20,
+      "name": "recentFiles",
+      "type": "List<RecentFile>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Files.cs",
+      "line": 20,
+      "name": "recentSaveTask",
+      "type": "Task",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Files.cs",
+      "line": 20,
+      "name": "fileOperation",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Files.cs",
+      "line": 20,
+      "name": "fileCancellation",
+      "type": "CancellationTokenSource?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Focus.cs",
+      "line": 11,
+      "name": "focusMode",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Focus.cs",
+      "line": 12,
+      "name": "focusPaneWasOpen",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Focus.cs",
+      "line": 13,
+      "name": "focusSecondary",
+      "type": "List<FrameworkElement>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 9,
+      "name": "GameStandardTuning",
+      "type": "int[]",
+      "modifiers": "private static readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 10,
+      "name": "fretScore",
+      "type": "GameScore",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 10,
+      "name": "earScore",
+      "type": "GameScore",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 10,
+      "name": "fretTarget",
+      "type": "int",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 10,
+      "name": "earIndex",
+      "type": "int",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 10,
+      "name": "earRoot",
+      "type": "int",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 11,
+      "name": "earKind",
+      "type": "int",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 12,
+      "name": "fretStarted",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 12,
+      "name": "fretHintUsed",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 12,
+      "name": "earStarted",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 12,
+      "name": "earHeard",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 12,
+      "name": "earOperation",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 12,
+      "name": "earGeneration",
+      "type": "int",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 13,
+      "name": "gameBoard",
+      "type": "FretboardDiagram?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 13,
+      "name": "fretQuestion",
+      "type": "TextBlock?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 13,
+      "name": "fretFeedback",
+      "type": "TextBlock?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 13,
+      "name": "earQuestion",
+      "type": "TextBlock?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 13,
+      "name": "earFeedback",
+      "type": "TextBlock?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 14,
+      "name": "earMode",
+      "type": "ComboBox?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 14,
+      "name": "earOrder",
+      "type": "ComboBox?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 14,
+      "name": "earAnswers",
+      "type": "List<Button>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 15,
+      "name": "recentExerciseInteraction",
+      "type": "DateTimeOffset?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Instrument.cs",
+      "line": 8,
+      "name": "profileOperation",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Instrument.cs",
+      "line": 8,
+      "name": "pickupEditors",
+      "type": "List<(ComboBox Position,ComboBox Type)>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Instrument.cs",
+      "line": 9,
+      "name": "profileName",
+      "type": "TextBox?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Instrument.cs",
+      "line": 9,
+      "name": "profileBody",
+      "type": "TextBox?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Instrument.cs",
+      "line": 9,
+      "name": "profileScale",
+      "type": "TextBox?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Instrument.cs",
+      "line": 9,
+      "name": "profileGauge",
+      "type": "TextBox?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Instrument.cs",
+      "line": 9,
+      "name": "profileNotes",
+      "type": "TextBox?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Instrument.cs",
+      "line": 9,
+      "name": "profileTuning",
+      "type": "ComboBox?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Instrument.cs",
+      "line": 9,
+      "name": "profileHand",
+      "type": "ComboBox?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Lessons.cs",
+      "line": 13,
+      "name": "activeLessonId",
+      "type": "string?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Lessons.cs",
+      "line": 14,
+      "name": "lessonReading",
+      "type": "TextBlock?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Lessons.cs",
+      "line": 15,
+      "name": "lessonLastSequence",
+      "type": "ulong",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Library.cs",
+      "line": 10,
+      "name": "libraryChord",
+      "type": "ChordDiagram?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Library.cs",
+      "line": 10,
+      "name": "libraryScale",
+      "type": "FretboardDiagram?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Library.cs",
+      "line": 11,
+      "name": "libraryCounts",
+      "type": "Dictionary<string,int>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Live.cs",
+      "line": 9,
+      "name": "liveTunerNote",
+      "type": "TextBlock?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Live.cs",
+      "line": 9,
+      "name": "liveTunerCents",
+      "type": "TextBlock?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Live.cs",
+      "line": 9,
+      "name": "liveTunerNeedle",
+      "type": "PitchGauge?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Live.cs",
+      "line": 10,
+      "name": "liveInputMeter",
+      "type": "LevelMeter?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Live.cs",
+      "line": 10,
+      "name": "liveProcessedMeter",
+      "type": "LevelMeter?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Live.cs",
+      "line": 10,
+      "name": "liveMixMeter",
+      "type": "LevelMeter?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Live.cs",
+      "line": 11,
+      "name": "liveState",
+      "type": "TextBlock?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Live.cs",
+      "line": 11,
+      "name": "liveDiagnostic",
+      "type": "TextBlock?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Live.cs",
+      "line": 12,
+      "name": "liveMonitor",
+      "type": "CheckBox?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Live.cs",
+      "line": 13,
+      "name": "liveStart",
+      "type": "Button?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Live.cs",
+      "line": 13,
+      "name": "liveStop",
+      "type": "Button?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Live.cs",
+      "line": 13,
+      "name": "liveDevice",
+      "type": "TextBlock?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Live.cs",
+      "line": 14,
+      "name": "liveGain",
+      "type": "double",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Live.cs",
+      "line": 15,
+      "name": "liveUpdating",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Looper.cs",
+      "line": 12,
+      "name": "looperOperation",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Looper.cs",
+      "line": 12,
+      "name": "looperAligned",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Looper.cs",
+      "line": 12,
+      "name": "looperUseDriverDelay",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Looper.cs",
+      "line": 13,
+      "name": "looperBus",
+      "type": "uint",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Looper.cs",
+      "line": 13,
+      "name": "looperCountIn",
+      "type": "uint",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Looper.cs",
+      "line": 13,
+      "name": "looperManualDelay",
+      "type": "uint",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Looper.cs",
+      "line": 14,
+      "name": "looperReading",
+      "type": "TextBlock?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Looper.cs",
+      "line": 14,
+      "name": "looperLayers",
+      "type": "StackPanel?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Looper.cs",
+      "line": 15,
+      "name": "looperShownLayers",
+      "type": "uint",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Looper.cs",
+      "line": 16,
+      "name": "looperSavedFingerprint",
+      "type": "string?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Looper.cs",
+      "line": 16,
+      "name": "looperProjectId",
+      "type": "string?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Looper.cs",
+      "line": 16,
+      "name": "looperCreated",
+      "type": "DateTimeOffset",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Looper.cs",
+      "line": 17,
+      "name": "looperSessions",
+      "type": "ComboBox?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 15,
+      "name": "MetroSounds",
+      "type": "string[]",
+      "modifiers": "private static readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 16,
+      "name": "MetroSoundNames",
+      "type": "string[]",
+      "modifiers": "private static readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 17,
+      "name": "metroConfig",
+      "type": "MetronomeConfig",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 18,
+      "name": "metroPresets",
+      "type": "List<MetroPreset>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 19,
+      "name": "metroRefresh",
+      "type": "List<Action>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 20,
+      "name": "metroTaps",
+      "type": "List<double>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 21,
+      "name": "metroApplyTimer",
+      "type": "DispatcherTimer",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 22,
+      "name": "metroEnabled",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 22,
+      "name": "metroUpdating",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 22,
+      "name": "metroTimerInitialized",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 23,
+      "name": "metroRevision",
+      "type": "int",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 23,
+      "name": "metroAppliedRevision",
+      "type": "int",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 24,
+      "name": "metroApplying",
+      "type": "Task?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 25,
+      "name": "metroPresetId",
+      "type": "string?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 26,
+      "name": "metroBeatPanel",
+      "type": "StackPanel?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 27,
+      "name": "metroVisuals",
+      "type": "List<WeakReference<MetronomeVisual>>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 28,
+      "name": "metroBeatButtons",
+      "type": "List<Button>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.NativeEvents.cs",
+      "line": 11,
+      "name": "wakeLockApplied",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.NativeEvents.cs",
+      "line": 13,
+      "name": "nativeWindowCallback",
+      "type": "WindowSubclass?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.NativeEvents.cs",
+      "line": 13,
+      "name": "nativeWindow",
+      "type": "nint",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.NativeEvents.cs",
+      "line": 13,
+      "name": "timeZoneNotifications",
+      "type": "int",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.NativeEvents.cs",
+      "line": 14,
+      "name": "practiceTimeZone",
+      "type": "TimeZoneInfo",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.NativeEvents.cs",
+      "line": 15,
+      "name": "powerStopTask",
+      "type": "Task",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.NativeEvents.cs",
+      "line": 16,
+      "name": "powerTransition",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Notation.cs",
+      "line": 11,
+      "name": "notationDocument",
+      "type": "ScoreDocument?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Notation.cs",
+      "line": 11,
+      "name": "notationOptions",
+      "type": "NotationOptions",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Notation.cs",
+      "line": 12,
+      "name": "notationSourcePath",
+      "type": "string?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Notation.cs",
+      "line": 12,
+      "name": "notationName",
+      "type": "string",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Notation.cs",
+      "line": 12,
+      "name": "notationPlayingMidi",
+      "type": "byte[]?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Notation.cs",
+      "line": 12,
+      "name": "notationUpdating",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Notation.cs",
+      "line": 12,
+      "name": "notationFollowBar",
+      "type": "int",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Notation.cs",
+      "line": 13,
+      "name": "notationLoop",
+      "type": "(double Start,double End)?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Notation.cs",
+      "line": 13,
+      "name": "nextNotationFollowRender",
+      "type": "DateTime",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Overview.cs",
+      "line": 10,
+      "name": "appliedNavigationTask",
+      "type": "NavigationTarget?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Overview.cs",
+      "line": 17,
+      "name": "planKind",
+      "type": "string",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Overview.cs",
+      "line": 17,
+      "name": "openedPlanTask",
+      "type": "(string Key,PlanTask Task)?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PalmMute.cs",
+      "line": 9,
+      "name": "palmOpen",
+      "type": "List<double>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PalmMute.cs",
+      "line": 9,
+      "name": "palmMuted",
+      "type": "List<double>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PalmMute.cs",
+      "line": 10,
+      "name": "palmCollect",
+      "type": "string?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PalmMute.cs",
+      "line": 10,
+      "name": "palmPickup",
+      "type": "string",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PalmMute.cs",
+      "line": 11,
+      "name": "palmLastHit",
+      "type": "ulong",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PalmMute.cs",
+      "line": 11,
+      "name": "palmStartFrame",
+      "type": "ulong",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PalmMute.cs",
+      "line": 11,
+      "name": "palmEpoch",
+      "type": "uint",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PalmMute.cs",
+      "line": 11,
+      "name": "palmListening",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PalmMute.cs",
+      "line": 12,
+      "name": "palmGeneration",
+      "type": "int",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PalmMute.cs",
+      "line": 12,
+      "name": "palmOperation",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PalmMute.cs",
+      "line": 12,
+      "name": "palmSampleContext",
+      "type": "string?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PalmMute.cs",
+      "line": 12,
+      "name": "palmLastReading",
+      "type": "string",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PalmMute.cs",
+      "line": 13,
+      "name": "palmState",
+      "type": "PalmMuteState?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PalmMute.cs",
+      "line": 13,
+      "name": "palmReading",
+      "type": "TextBlock?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PalmMute.cs",
+      "line": 13,
+      "name": "palmSummary",
+      "type": "TextBlock?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PalmMute.cs",
+      "line": 13,
+      "name": "palmResults",
+      "type": "ListView?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Persistence.cs",
+      "line": 9,
+      "name": "database",
+      "type": "DataRepository?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Persistence.cs",
+      "line": 10,
+      "name": "autosave",
+      "type": "Autosave?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Persistence.cs",
+      "line": 11,
+      "name": "appSettings",
+      "type": "AppSettings",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Persistence.cs",
+      "line": 12,
+      "name": "savedLessonPositions",
+      "type": "Dictionary<string,int>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Persistence.cs",
+      "line": 13,
+      "name": "persistenceReady",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeSession.cs",
+      "line": 10,
+      "name": "practiceSession",
+      "type": "PracticeSession",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeSession.cs",
+      "line": 11,
+      "name": "practiceAudioFrame",
+      "type": "ulong",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeSession.cs",
+      "line": 11,
+      "name": "practiceAudioEpoch",
+      "type": "uint",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeSession.cs",
+      "line": 11,
+      "name": "practiceLastFlush",
+      "type": "double",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeSession.cs",
+      "line": 11,
+      "name": "practicePreviewUntil",
+      "type": "double",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeSession.cs",
+      "line": 11,
+      "name": "practiceLastUiInteraction",
+      "type": "double",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeSession.cs",
+      "line": 12,
+      "name": "PracticeViews",
+      "type": "HashSet<string>",
+      "modifiers": "private static readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeWorkspace.cs",
+      "line": 11,
+      "name": "practiceWorkspace",
+      "type": "PracticeWorkspace",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeWorkspace.cs",
+      "line": 12,
+      "name": "workspaceOperation",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Preparation.cs",
+      "line": 7,
+      "name": "preparationCancellation",
+      "type": "CancellationTokenSource?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "line": 12,
+      "name": "recordingLibrary",
+      "type": "RecordingLibrary?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "line": 13,
+      "name": "captureDraft",
+      "type": "CaptureDraft?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "line": 14,
+      "name": "recordingOperation",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "line": 15,
+      "name": "recordingList",
+      "type": "ListView?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "line": 16,
+      "name": "recordingLabels",
+      "type": "List<TextBlock>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "line": 17,
+      "name": "recordingStarts",
+      "type": "List<Button>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "line": 17,
+      "name": "recordingStops",
+      "type": "List<Button>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "line": 18,
+      "name": "playingRecording",
+      "type": "RecordingData?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "line": 19,
+      "name": "exportOperation",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "line": 19,
+      "name": "exportCancellation",
+      "type": "CancellationTokenSource?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "line": 20,
+      "name": "captureMarkers",
+      "type": "List<Marker>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "line": 21,
+      "name": "recordingBus",
+      "type": "uint",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "line": 21,
+      "name": "recordingCountIn",
+      "type": "uint",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "line": 22,
+      "name": "recordingName",
+      "type": "string",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.RecordingWaveform.cs",
+      "line": 12,
+      "name": "recordingWaveform",
+      "type": "Canvas?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.RecordingWaveform.cs",
+      "line": 13,
+      "name": "recordingRangeA",
+      "type": "NumberBox?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.RecordingWaveform.cs",
+      "line": 13,
+      "name": "recordingRangeB",
+      "type": "NumberBox?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.RecordingWaveform.cs",
+      "line": 14,
+      "name": "recordingWaveformStatus",
+      "type": "TextBlock?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.RecordingWaveform.cs",
+      "line": 15,
+      "name": "recordingWaveformActions",
+      "type": "List<Button>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.RecordingWaveform.cs",
+      "line": 16,
+      "name": "recordingPeaks",
+      "type": "float[]",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.RecordingWaveform.cs",
+      "line": 17,
+      "name": "recordingRangeUpdating",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.RecordingWaveform.cs",
+      "line": 18,
+      "name": "recordingDragStart",
+      "type": "double?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.RecordingWaveform.cs",
+      "line": 19,
+      "name": "recordingPlayhead",
+      "type": "Line?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.RecordingWaveform.cs",
+      "line": 19,
+      "name": "recordingWaveformCaption",
+      "type": "TextBlock?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "line": 13,
+      "name": "progressData",
+      "type": "ProgressData",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "line": 14,
+      "name": "instrumentProfile",
+      "type": "InstrumentProfile",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "line": 15,
+      "name": "powerExercise",
+      "type": "PowerChordExercise?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "line": 15,
+      "name": "gallopExercise",
+      "type": "GallopExercise?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "line": 16,
+      "name": "rhythmView",
+      "type": "string?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "line": 16,
+      "name": "rhythmExerciseId",
+      "type": "string?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "line": 16,
+      "name": "rhythmTicket",
+      "type": "ulong",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "line": 16,
+      "name": "rhythmSavedRounds",
+      "type": "ulong",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "line": 17,
+      "name": "rhythmUiGeneration",
+      "type": "int",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "line": 17,
+      "name": "rhythmEditors",
+      "type": "Dictionary<string,List<Control>>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "line": 18,
+      "name": "rhythmRunning",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "line": 18,
+      "name": "rhythmOperation",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "line": 18,
+      "name": "rhythmStopTask",
+      "type": "Task?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "line": 19,
+      "name": "rhythmReadings",
+      "type": "Dictionary<string,TextBlock>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "line": 19,
+      "name": "rhythmTargets",
+      "type": "Dictionary<string,TextBlock>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "line": 20,
+      "name": "rhythmDiagrams",
+      "type": "Dictionary<string,ChordDiagram>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "line": 21,
+      "name": "rhythmRoundBars",
+      "type": "Dictionary<string,ProgressBar>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "line": 21,
+      "name": "rhythmChordKeys",
+      "type": "Dictionary<string,string>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "line": 21,
+      "name": "rhythmCells",
+      "type": "Dictionary<string,TextBlock>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Riffs.cs",
+      "line": 9,
+      "name": "selectedRiff",
+      "type": "PracticeRiff?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Riffs.cs",
+      "line": 9,
+      "name": "riffNotesList",
+      "type": "ListView?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Riffs.cs",
+      "line": 9,
+      "name": "riffTab",
+      "type": "Grid?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Riffs.cs",
+      "line": 10,
+      "name": "riffTabCells",
+      "type": "List<(Button Cell,double Start,double Duration)>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Secrets.cs",
+      "line": 8,
+      "name": "secretOperationRunning",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Settings.cs",
+      "line": 8,
+      "name": "settingsTheme",
+      "type": "ComboBox?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Settings.cs",
+      "line": 9,
+      "name": "settingsZen",
+      "type": "CheckBox?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Settings.cs",
+      "line": 9,
+      "name": "settingsAwake",
+      "type": "CheckBox?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Settings.cs",
+      "line": 10,
+      "name": "settingsAudioSummary",
+      "type": "TextBlock?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Settings.cs",
+      "line": 11,
+      "name": "refreshingSettingsControls",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 13,
+      "name": "userFiles",
+      "type": "UserFiles",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 14,
+      "name": "navigation",
+      "type": "NavigationSession",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 15,
+      "name": "navigationItems",
+      "type": "Dictionary<string, NavigationViewItem>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 16,
+      "name": "navigationParents",
+      "type": "Dictionary<string, NavigationViewItem>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 17,
+      "name": "workspaceCache",
+      "type": "Dictionary<NavigationTarget, FrameworkElement>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 18,
+      "name": "lessonSessions",
+      "type": "Dictionary<string, LessonSession>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 19,
+      "name": "completedLessons",
+      "type": "HashSet<string>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 19,
+      "name": "visitedViews",
+      "type": "HashSet<string>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 20,
+      "name": "closeGuards",
+      "type": "Dictionary<string, CloseGuard>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 21,
+      "name": "catalog",
+      "type": "ContentCatalog?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 22,
+      "name": "windowStore",
+      "type": "WindowPreferencesStore?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 23,
+      "name": "normalBounds",
+      "type": "WindowRectangle",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 24,
+      "name": "selectingNavigation",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 24,
+      "name": "shellReady",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 24,
+      "name": "closingWindow",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 24,
+      "name": "closeApproved",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 24,
+      "name": "videoInitializationStarted",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 25,
+      "name": "selectedTheme",
+      "type": "string",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 26,
+      "name": "audioHostsCreated",
+      "type": "int",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 16,
+      "name": "songs",
+      "type": "Dictionary<string,SongSession>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 17,
+      "name": "song",
+      "type": "SongSession?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 18,
+      "name": "appliedSongLoopId",
+      "type": "string?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 18,
+      "name": "appliedSongLoopStart",
+      "type": "double",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 18,
+      "name": "appliedSongLoopEnd",
+      "type": "double",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 19,
+      "name": "songSelector",
+      "type": "ComboBox?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 20,
+      "name": "songSections",
+      "type": "ListView?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 21,
+      "name": "songA",
+      "type": "NumberBox?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 21,
+      "name": "songB",
+      "type": "NumberBox?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 21,
+      "name": "songSpeed",
+      "type": "NumberBox?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 22,
+      "name": "songWaveform",
+      "type": "Canvas?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 23,
+      "name": "songReading",
+      "type": "TextBlock?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 24,
+      "name": "songCancel",
+      "type": "Button?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 25,
+      "name": "songPeaks",
+      "type": "float[]",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 26,
+      "name": "songUpdating",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 26,
+      "name": "songLoadCancelled",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 27,
+      "name": "songRampTask",
+      "type": "Task?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 27,
+      "name": "songRampQueuedSpeed",
+      "type": "double?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 28,
+      "name": "songLastSave",
+      "type": "DateTime",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 13,
+      "name": "studioProject",
+      "type": "ProjectManifest?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 14,
+      "name": "studioProjects",
+      "type": "ComboBox?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 14,
+      "name": "studioRecordings",
+      "type": "ComboBox?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 15,
+      "name": "studioTrackList",
+      "type": "ListView?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 16,
+      "name": "studioTrackEditor",
+      "type": "StackPanel?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 17,
+      "name": "studioReading",
+      "type": "TextBlock?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 18,
+      "name": "studioTimeline",
+      "type": "Canvas?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 19,
+      "name": "studioOperation",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 19,
+      "name": "studioUpdating",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 19,
+      "name": "studioOwnsPlayback",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 19,
+      "name": "studioLoadCancelled",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 20,
+      "name": "studioCaptureProject",
+      "type": "string?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 20,
+      "name": "studioCaptureBacking",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 20,
+      "name": "studioInputDelay",
+      "type": "int",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 20,
+      "name": "studioOutputDelay",
+      "type": "int",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 20,
+      "name": "studioManualDelayMs",
+      "type": "double",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 21,
+      "name": "studioTicket",
+      "type": "ulong",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 21,
+      "name": "studioZoom",
+      "type": "double",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 21,
+      "name": "studioExportStart",
+      "type": "double",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 21,
+      "name": "studioExportEnd",
+      "type": "double",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 22,
+      "name": "studioUndo",
+      "type": "Stack<ProjectManifest>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 23,
+      "name": "studioPendingEdits",
+      "type": "Dictionary<string,ProjectTrack>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 23,
+      "name": "studioEditTask",
+      "type": "Task?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 23,
+      "name": "studioPendingTimeline",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Surgical.cs",
+      "line": 9,
+      "name": "surgicalState",
+      "type": "SurgicalState?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Surgical.cs",
+      "line": 10,
+      "name": "surgicalGate",
+      "type": "SurgicalNoteGate",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Surgical.cs",
+      "line": 11,
+      "name": "surgicalListening",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Surgical.cs",
+      "line": 11,
+      "name": "surgicalStartOperation",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Surgical.cs",
+      "line": 12,
+      "name": "surgicalEpoch",
+      "type": "uint",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Surgical.cs",
+      "line": 13,
+      "name": "surgicalReading",
+      "type": "TextBlock?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Surgical.cs",
+      "line": 13,
+      "name": "surgicalTarget",
+      "type": "TextBlock?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Surgical.cs",
+      "line": 13,
+      "name": "surgicalProgress",
+      "type": "TextBlock?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Surgical.cs",
+      "line": 14,
+      "name": "surgicalNotes",
+      "type": "ListView?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Surgical.cs",
+      "line": 15,
+      "name": "surgicalStart",
+      "type": "Button?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Surgical.cs",
+      "line": 15,
+      "name": "surgicalStop",
+      "type": "Button?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 14,
+      "name": "customTunings",
+      "type": "List<CustomTuning>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 15,
+      "name": "tunerUpdating",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 15,
+      "name": "tunerChromatic",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 15,
+      "name": "noiseCalibrationPending",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 16,
+      "name": "tunerString",
+      "type": "int",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 17,
+      "name": "tunerTuningBox",
+      "type": "ComboBox?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 18,
+      "name": "tunerAutoBox",
+      "type": "CheckBox?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 19,
+      "name": "tunerStringsPanel",
+      "type": "StackPanel?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 20,
+      "name": "tunerNote",
+      "type": "TextBlock?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 20,
+      "name": "tunerStatus",
+      "type": "TextBlock?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 20,
+      "name": "tunerCentText",
+      "type": "TextBlock?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 20,
+      "name": "tunerAnalysisText",
+      "type": "TextBlock?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 21,
+      "name": "tunerNeedle",
+      "type": "PitchGauge?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 22,
+      "name": "tunerLevel",
+      "type": "LevelMeter?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 23,
+      "name": "tunerStringButtons",
+      "type": "List<Button>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 24,
+      "name": "tunerStableSince",
+      "type": "double?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 25,
+      "name": "tunerConfirmedKey",
+      "type": "string?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 26,
+      "name": "tunerLastEpoch",
+      "type": "uint",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 27,
+      "name": "noiseCalibrationToken",
+      "type": "ulong",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 52,
+      "name": "tunerAutoString",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 53,
+      "name": "tunerGateBox",
+      "type": "NumberBox?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Updates.cs",
+      "line": 11,
+      "name": "updateHttp",
+      "type": "HttpClient",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Updates.cs",
+      "line": 12,
+      "name": "updateCancellation",
+      "type": "CancellationTokenSource?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Updates.cs",
+      "line": 13,
+      "name": "availableUpdate",
+      "type": "VerifiedRelease?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Updates.cs",
+      "line": 14,
+      "name": "downloadedUpdate",
+      "type": "string?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Updates.cs",
+      "line": 14,
+      "name": "pendingUpdateInstaller",
+      "type": "string?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Updates.cs",
+      "line": 15,
+      "name": "updateOperation",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Updates.cs",
+      "line": 15,
+      "name": "updateInstalling",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Updates.cs",
+      "line": 16,
+      "name": "updateStatus",
+      "type": "TextBlock?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Updates.cs",
+      "line": 17,
+      "name": "updateProgress",
+      "type": "ProgressBar?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Updates.cs",
+      "line": 18,
+      "name": "updateCheckButton",
+      "type": "Button?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Updates.cs",
+      "line": 18,
+      "name": "updateDownloadButton",
+      "type": "Button?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Updates.cs",
+      "line": 18,
+      "name": "updateInstallButton",
+      "type": "Button?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Updates.cs",
+      "line": 18,
+      "name": "updateCancelButton",
+      "type": "Button?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Updates.cs",
+      "line": 19,
+      "name": "updateAtStartup",
+      "type": "CheckBox?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Updates.cs",
+      "line": 20,
+      "name": "updateMessage",
+      "type": "string",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Video.cs",
+      "line": 13,
+      "name": "videoBridgeReady",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Video.cs",
+      "line": 13,
+      "name": "videoReady",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Video.cs",
+      "line": 13,
+      "name": "changingVideoRates",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Video.cs",
+      "line": 14,
+      "name": "videoPosition",
+      "type": "double",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Video.cs",
+      "line": 14,
+      "name": "videoProgressObserved",
+      "type": "DateTimeOffset",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Video.cs",
+      "line": 15,
+      "name": "videoPractice",
+      "type": "VideoPractice",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Video.cs",
+      "line": 16,
+      "name": "savedVideoLoops",
+      "type": "List<SavedVideoLoop>",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Video.cs",
+      "line": 17,
+      "name": "pendingVideoLoop",
+      "type": "SavedVideoLoop?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Video.cs",
+      "line": 17,
+      "name": "deletedVideoLoop",
+      "type": "SavedVideoLoop?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.VideoPractice.cs",
+      "line": 10,
+      "name": "videoSeeking",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.VideoPractice.cs",
+      "line": 10,
+      "name": "changingVideoLoop",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.WorkspaceChecks.cs",
+      "line": 11,
+      "name": "activeWorkspaceDialog",
+      "type": "ContentDialog?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 14,
+      "name": "timer",
+      "type": "DispatcherTimer",
+      "modifiers": "private readonly"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 15,
+      "name": "audio",
+      "type": "NativeAudio?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 16,
+      "name": "preview",
+      "type": "ScorePreview?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 17,
+      "name": "closed",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 18,
+      "name": "busy",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 18,
+      "name": "updatingPosition",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 18,
+      "name": "positionDragging",
+      "type": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 19,
+      "name": "playbackIntent",
+      "type": "int",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 20,
+      "name": "mediaPath",
+      "type": "string?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 21,
+      "name": "mediaMidi",
+      "type": "byte[]?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 22,
+      "name": "currentSpeed",
+      "type": "double",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 23,
+      "name": "initialNotationStarted",
+      "type": "bool",
+      "modifiers": "private"
+    }
+  ],
+  "mainWindowMethods": [
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Accessibility.cs",
+      "line": 13,
+      "name": "AuthoredElements",
+      "returnType": "IEnumerable<FrameworkElement>",
+      "modifiers": "private static"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Accessibility.cs",
+      "line": 24,
+      "name": "LabelNativeControls",
+      "returnType": "void",
+      "modifiers": "private static"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Accessibility.cs",
+      "line": 33,
+      "name": "VerifyAccessibilityAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Ai.cs",
+      "line": 29,
+      "name": "InitializeAi",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Ai.cs",
+      "line": 33,
+      "name": "PersistAiSettings",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Ai.cs",
+      "line": 34,
+      "name": "PersistAiHistory",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Ai.cs",
+      "line": 35,
+      "name": "AiContext",
+      "returnType": "string",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Ai.cs",
+      "line": 42,
+      "name": "BuildAiCommon",
+      "returnType": "(StackPanel Panel,AiPage Page)",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Ai.cs",
+      "line": 56,
+      "name": "RefreshAiPage",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Ai.cs",
+      "line": 60,
+      "name": "UpdateAiControls",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Ai.cs",
+      "line": 61,
+      "name": "BeginAi",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Ai.cs",
+      "line": 68,
+      "name": "RunAiAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Ai.cs",
+      "line": 76,
+      "name": "ShowAiPartial",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Ai.cs",
+      "line": 77,
+      "name": "CancelAiAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.AiChat.cs",
+      "line": 11,
+      "name": "BuildAiChat",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.AiChat.cs",
+      "line": 25,
+      "name": "RefreshAiChat",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.AiChat.cs",
+      "line": 26,
+      "name": "ExportAiChat_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.AiChecks.cs",
+      "line": 7,
+      "name": "VerifyAiViewsAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.AiFeedback.cs",
+      "line": 9,
+      "name": "BuildAiFeedback",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.AiPlan.cs",
+      "line": 11,
+      "name": "BuildAiPlan",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.AiPlan.cs",
+      "line": 20,
+      "name": "AiPlanTargetContext",
+      "returnType": "string",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.AiPlan.cs",
+      "line": 21,
+      "name": "RenderAiPlanDraft",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.AiPlan.cs",
+      "line": 31,
+      "name": "SelectedAiTask",
+      "returnType": "string?",
+      "modifiers": "private static"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.AiPlan.cs",
+      "line": 32,
+      "name": "AcceptAiPlan",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "line": 22,
+      "name": "AllAmpPresets",
+      "returnType": "AmpPreset[]",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "line": 23,
+      "name": "BuildAmplifier",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "line": 44,
+      "name": "BuildCompactAmplifier",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "line": 49,
+      "name": "PresetSelector",
+      "returnType": "ComboBox",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "line": 54,
+      "name": "AmplifierEnabled_Changed",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "line": 56,
+      "name": "AmpValue",
+      "returnType": "double",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "line": 57,
+      "name": "SetAmpValue",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "line": 61,
+      "name": "NativeAmplifier",
+      "returnType": "AmplifierConfiguration",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "line": 62,
+      "name": "QueueAmplifier",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "line": 70,
+      "name": "RefreshAmplifierControls",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "line": 81,
+      "name": "ApplyAmplifierAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "line": 88,
+      "name": "InitializeAmplifierAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "line": 94,
+      "name": "VerifyAmplifierAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "line": 106,
+      "name": "SaveAmpPreset_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Amp.cs",
+      "line": 116,
+      "name": "DeleteAmpPreset_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Backups.cs",
+      "line": 10,
+      "name": "BuildBackups",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Components.cs",
+      "line": 13,
+      "name": "Components_Click",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Components.cs",
+      "line": 14,
+      "name": "ShowComponents",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Components.cs",
+      "line": 22,
+      "name": "BuildComponents",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Components.cs",
+      "line": 49,
+      "name": "CaptureNativeViewAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Components.cs",
+      "line": 69,
+      "name": "VerifyComponents",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Design.cs",
+      "line": 8,
+      "name": "ResponsiveColumns",
+      "returnType": "FrameworkElement",
+      "modifiers": "private static"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Design.cs",
+      "line": 14,
+      "name": "ResponsiveInstrumentColumns",
+      "returnType": "FrameworkElement",
+      "modifiers": "private static"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Design.cs",
+      "line": 20,
+      "name": "Descendants",
+      "returnType": "IEnumerable<DependencyObject>",
+      "modifiers": "private static"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Design.cs",
+      "line": 22,
+      "name": "VerifyAllDesignViewsAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Devices.cs",
+      "line": 14,
+      "name": "DeviceBusy",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Devices.cs",
+      "line": 15,
+      "name": "DeviceOperationAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Devices.cs",
+      "line": 23,
+      "name": "DevicesRefresh_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Devices.cs",
+      "line": 24,
+      "name": "RefreshDeviceListAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Devices.cs",
+      "line": 34,
+      "name": "DeviceBackend_Changed",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Devices.cs",
+      "line": 35,
+      "name": "SelectedBackend",
+      "returnType": "DeviceBackend?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Devices.cs",
+      "line": 36,
+      "name": "UpdateDeviceNames",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Devices.cs",
+      "line": 46,
+      "name": "DeviceNames_Changed",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Devices.cs",
+      "line": 57,
+      "name": "InvalidateCapabilities",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Devices.cs",
+      "line": 58,
+      "name": "SelectedDevice",
+      "returnType": "DeviceConfiguration",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Devices.cs",
+      "line": 68,
+      "name": "DeviceInspect_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Devices.cs",
+      "line": 84,
+      "name": "SelectNumber",
+      "returnType": "void",
+      "modifiers": "private static"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Devices.cs",
+      "line": 85,
+      "name": "DeviceApply_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Devices.cs",
+      "line": 92,
+      "name": "DeviceControlPanel_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Devices.cs",
+      "line": 93,
+      "name": "ShowDeviceDetailsAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Devices.cs",
+      "line": 99,
+      "name": "VerifyDevicesAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Devices.cs",
+      "line": 107,
+      "name": "RestoreDevicePreferenceAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Diagnostics.cs",
+      "line": 12,
+      "name": "BuildAudioDiagnostics",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Diagnostics.cs",
+      "line": 18,
+      "name": "RefreshAudioDiagnostics",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Diagnostics.cs",
+      "line": 23,
+      "name": "CaptureDiagnosticsAsync",
+      "returnType": "Task<string>",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Diagnostics.cs",
+      "line": 30,
+      "name": "ExportDiagnostics_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Diagnostics.cs",
+      "line": 37,
+      "name": "VerifyDiagnosticsAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Files.cs",
+      "line": 17,
+      "name": "SetForegroundWindow",
+      "returnType": "bool",
+      "modifiers": "private static extern"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Files.cs",
+      "line": 18,
+      "name": "QueueFileActivation",
+      "returnType": "void",
+      "modifiers": "internal"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Files.cs",
+      "line": 19,
+      "name": "ProcessFileActivation",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Files.cs",
+      "line": 21,
+      "name": "InitializeFileCommands",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Files.cs",
+      "line": 29,
+      "name": "TextOrInteractiveFocus",
+      "returnType": "bool",
+      "modifiers": "private static"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Files.cs",
+      "line": 31,
+      "name": "ToggleTransportAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Files.cs",
+      "line": 35,
+      "name": "OpenFile_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Files.cs",
+      "line": 39,
+      "name": "OpenWorkspaceFileAsync",
+      "returnType": "Task",
+      "modifiers": "internal async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Files.cs",
+      "line": 50,
+      "name": "RememberFile",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Files.cs",
+      "line": 54,
+      "name": "SaveRecentAfterAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Files.cs",
+      "line": 55,
+      "name": "RefreshRecentMenu",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Files.cs",
+      "line": 59,
+      "name": "CurrentFilePath",
+      "returnType": "string?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Files.cs",
+      "line": 60,
+      "name": "RevealCurrentFileAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Files.cs",
+      "line": 64,
+      "name": "RevealFile_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Files.cs",
+      "line": 65,
+      "name": "CancelFile_Click",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Files.cs",
+      "line": 66,
+      "name": "VerifyFileCommandsAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Files.cs",
+      "line": 70,
+      "name": "SaveCurrent_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Files.cs",
+      "line": 72,
+      "name": "UndoCurrent_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.FirstRun.cs",
+      "line": 8,
+      "name": "BuildFirstRun",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.FirstRun.cs",
+      "line": 23,
+      "name": "SetSetupStep",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.FirstRun.cs",
+      "line": 24,
+      "name": "VerifyFirstRunAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Focus.cs",
+      "line": 14,
+      "name": "InitializeFocusCommands",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Focus.cs",
+      "line": 22,
+      "name": "FocusMode_Click",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Focus.cs",
+      "line": 27,
+      "name": "SetFocusMode",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Focus.cs",
+      "line": 41,
+      "name": "RefreshFocusChrome",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 16,
+      "name": "BuildFretboardGame",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 22,
+      "name": "AnswerFretGame",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 29,
+      "name": "UpdateFretQuestion",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 30,
+      "name": "UpdateFretGame",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 32,
+      "name": "BuildEarGame",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 39,
+      "name": "NextEarQuestion",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 40,
+      "name": "AnswerEarGame",
+      "returnType": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 45,
+      "name": "PlayEarAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 51,
+      "name": "UpdateEarGame",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 52,
+      "name": "ResetLibraryGames",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Games.cs",
+      "line": 53,
+      "name": "PauseEarPreviewAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Graphics.cs",
+      "line": 9,
+      "name": "CaptureVisualFinishAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Instrument.cs",
+      "line": 10,
+      "name": "BuildInstrument",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Instrument.cs",
+      "line": 27,
+      "name": "SaveInstrumentAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Lessons.cs",
+      "line": 16,
+      "name": "BuildLessonList",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Lessons.cs",
+      "line": 25,
+      "name": "BuildLesson",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Lessons.cs",
+      "line": 56,
+      "name": "PlayTeachingAsync",
+      "returnType": "Task<bool>",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Lessons.cs",
+      "line": 61,
+      "name": "RefreshLesson",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Lessons.cs",
+      "line": 70,
+      "name": "VerifyLessonsAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Library.cs",
+      "line": 13,
+      "name": "BuildChords",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Library.cs",
+      "line": 24,
+      "name": "BuildScales",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Library.cs",
+      "line": 32,
+      "name": "UseLibraryTuningAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.LibraryChecks.cs",
+      "line": 6,
+      "name": "VerifyLibraryGames",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Live.cs",
+      "line": 16,
+      "name": "BuildLive",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Live.cs",
+      "line": 41,
+      "name": "LiveStart_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Live.cs",
+      "line": 49,
+      "name": "LiveMonitoring_Changed",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Live.cs",
+      "line": 50,
+      "name": "ApplyLiveMonitoring",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Live.cs",
+      "line": 56,
+      "name": "RefreshLive",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Looper.cs",
+      "line": 18,
+      "name": "LoopFingerprint",
+      "returnType": "string",
+      "modifiers": "private static"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Looper.cs",
+      "line": 19,
+      "name": "BuildLooper",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Looper.cs",
+      "line": 42,
+      "name": "RefreshLooper",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Looper.cs",
+      "line": 51,
+      "name": "ResetLooperWorkspace",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Looper.cs",
+      "line": 52,
+      "name": "PauseLooperForSaveAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Looper.cs",
+      "line": 59,
+      "name": "SaveLooperSessionAsync",
+      "returnType": "Task<bool>",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Looper.cs",
+      "line": 71,
+      "name": "ReloadLooperSessionsAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Looper.cs",
+      "line": 75,
+      "name": "OpenLooperSessionAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Looper.cs",
+      "line": 85,
+      "name": "ExportLoopRecordingAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Looper.cs",
+      "line": 90,
+      "name": "VerifyLooperAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 29,
+      "name": "AllMetroPresets",
+      "returnType": "MetroPreset[]",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 30,
+      "name": "BuildMetronome",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 69,
+      "name": "BuildCompactMetronome",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 79,
+      "name": "MetroVisualSelector",
+      "returnType": "ComboBox",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 88,
+      "name": "MetroColumns",
+      "returnType": "FrameworkElement",
+      "modifiers": "private static"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 94,
+      "name": "CreateMetroVisual",
+      "returnType": "MetronomeVisual",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 98,
+      "name": "RefreshMetroVisuals",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 103,
+      "name": "MetroTransport",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 107,
+      "name": "MetroNumber",
+      "returnType": "NumberBox",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 109,
+      "name": "MetroFlag",
+      "returnType": "CheckBox",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 111,
+      "name": "MetroSound",
+      "returnType": "ComboBox",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 113,
+      "name": "ChangeMetro",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 114,
+      "name": "RebuildMetroBeats",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 120,
+      "name": "MetroBeatLabel",
+      "returnType": "string",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 121,
+      "name": "NativeMetronome",
+      "returnType": "MetronomeConfiguration",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 122,
+      "name": "QueueMetronome",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 127,
+      "name": "RefreshMetronomeControls",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 129,
+      "name": "ApplyMetronomeAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 131,
+      "name": "MetroStart_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 136,
+      "name": "MetroStop_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 138,
+      "name": "RefreshMetronome",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 146,
+      "name": "InitializeMetronomeAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 151,
+      "name": "VerifyMetronomeAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 157,
+      "name": "SaveMetroPreset_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Metronome.cs",
+      "line": 159,
+      "name": "DeleteMetroPreset_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.MetronomeChecks.cs",
+      "line": 12,
+      "name": "VerifyMetronomeVisualizationAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Migration.cs",
+      "line": 9,
+      "name": "BuildLegacyImport",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.NativeEvents.cs",
+      "line": 7,
+      "name": "SetWindowSubclass",
+      "returnType": "bool",
+      "modifiers": "private static extern"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.NativeEvents.cs",
+      "line": 8,
+      "name": "RemoveWindowSubclass",
+      "returnType": "bool",
+      "modifiers": "private static extern"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.NativeEvents.cs",
+      "line": 9,
+      "name": "DefSubclassProc",
+      "returnType": "nint",
+      "modifiers": "private static extern"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.NativeEvents.cs",
+      "line": 10,
+      "name": "SetThreadExecutionState",
+      "returnType": "uint",
+      "modifiers": "private static extern"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.NativeEvents.cs",
+      "line": 12,
+      "name": "UpdateWakeLock",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.NativeEvents.cs",
+      "line": 17,
+      "name": "StopForPowerTransitionAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.NativeEvents.cs",
+      "line": 36,
+      "name": "InitializeNativeEvents",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.NativeEvents.cs",
+      "line": 40,
+      "name": "OnNativeWindowMessage",
+      "returnType": "nint",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.NativeEvents.cs",
+      "line": 53,
+      "name": "DetachNativeEvents",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.NativeEvents.cs",
+      "line": 54,
+      "name": "VerifyPowerRecoveryAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Notation.cs",
+      "line": 14,
+      "name": "SetNotationImageAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Notation.cs",
+      "line": 19,
+      "name": "SetNotationDocument",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Notation.cs",
+      "line": 24,
+      "name": "UpdateNotationOccurrences",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Notation.cs",
+      "line": 28,
+      "name": "MarkNotationBar",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Notation.cs",
+      "line": 33,
+      "name": "ChangeNotationViewAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Notation.cs",
+      "line": 41,
+      "name": "PrepareNotationAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Notation.cs",
+      "line": 46,
+      "name": "NotationTrack_Changed",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Notation.cs",
+      "line": 47,
+      "name": "NotationAudio_Changed",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Notation.cs",
+      "line": 48,
+      "name": "NotationZoom_Changed",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Notation.cs",
+      "line": 49,
+      "name": "NotationBar_Changed",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Notation.cs",
+      "line": 53,
+      "name": "NotationLoopFirst_Changed",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Notation.cs",
+      "line": 54,
+      "name": "NotationLoop_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Notation.cs",
+      "line": 60,
+      "name": "NotationLoopOff_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Notation.cs",
+      "line": 61,
+      "name": "NotationSeek_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Notation.cs",
+      "line": 67,
+      "name": "VerifyNotationIntegratedAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Notation.cs",
+      "line": 79,
+      "name": "RefreshNotation",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Overview.cs",
+      "line": 11,
+      "name": "ApplyNavigationTask",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Overview.cs",
+      "line": 20,
+      "name": "PlanDone",
+      "returnType": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Overview.cs",
+      "line": 21,
+      "name": "CurrentPlanTasks",
+      "returnType": "IReadOnlyList<PlanTask>",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Overview.cs",
+      "line": 26,
+      "name": "DailyTarget",
+      "returnType": "NavigationTarget",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Overview.cs",
+      "line": 27,
+      "name": "BuildOverview",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Overview.cs",
+      "line": 61,
+      "name": "TaskTitle",
+      "returnType": "string",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Overview.cs",
+      "line": 67,
+      "name": "OpenPlanTask",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Overview.cs",
+      "line": 68,
+      "name": "RefreshPlanControls",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Overview.cs",
+      "line": 69,
+      "name": "ReturnPlan_Click",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Overview.cs",
+      "line": 70,
+      "name": "CompletePlan_Click",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Overview.cs",
+      "line": 74,
+      "name": "VerifyOverviewLiveAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PalmMute.cs",
+      "line": 14,
+      "name": "ResetPalmRuntime",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PalmMute.cs",
+      "line": 15,
+      "name": "PalmProfileMatches",
+      "returnType": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PalmMute.cs",
+      "line": 16,
+      "name": "BuildPalmMute",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PalmMute.cs",
+      "line": 42,
+      "name": "UpdatePalm",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PalmMute.cs",
+      "line": 48,
+      "name": "CancelPalm",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PalmMute.cs",
+      "line": 49,
+      "name": "PalmContext",
+      "returnType": "string",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PalmMute.cs",
+      "line": 50,
+      "name": "PreparePalmAsync",
+      "returnType": "Task<AnalysisSnapshot>",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PalmMute.cs",
+      "line": 56,
+      "name": "BaselinePalm",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PalmMute.cs",
+      "line": 57,
+      "name": "RefreshPalmMute",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PalmMute.cs",
+      "line": 74,
+      "name": "VerifyRhythmAndPalmAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Persistence.cs",
+      "line": 14,
+      "name": "InitializePersistenceAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Persistence.cs",
+      "line": 54,
+      "name": "ShowPersistenceError",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Persistence.cs",
+      "line": 56,
+      "name": "SaveSettings",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Persistence.cs",
+      "line": 58,
+      "name": "SaveLessonProgress",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Persistence.cs",
+      "line": 64,
+      "name": "VerifyPersistenceAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeChecks.cs",
+      "line": 8,
+      "name": "SendMessageW",
+      "returnType": "nint",
+      "modifiers": "private static extern"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeChecks.cs",
+      "line": 9,
+      "name": "VerifyPracticeAndProfileAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeSession.cs",
+      "line": 14,
+      "name": "InitializePracticeTracking",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeSession.cs",
+      "line": 19,
+      "name": "TrackPracticeInteraction",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeSession.cs",
+      "line": 23,
+      "name": "RefreshPractice",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeSession.cs",
+      "line": 33,
+      "name": "RefreshPracticeWithoutAudio",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeSession.cs",
+      "line": 39,
+      "name": "FinishPracticeObservation",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeSession.cs",
+      "line": 40,
+      "name": "ObservePractice",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeSession.cs",
+      "line": 44,
+      "name": "FlushPractice",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeSession.cs",
+      "line": 48,
+      "name": "SaveProgressAndAchievements",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeSession.cs",
+      "line": 52,
+      "name": "PracticeStart_Click",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeSession.cs",
+      "line": 56,
+      "name": "PracticePause_Click",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeSession.cs",
+      "line": 57,
+      "name": "PracticeEnd_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeSession.cs",
+      "line": 58,
+      "name": "RefreshPracticeControls",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeWorkspace.cs",
+      "line": 13,
+      "name": "InitializePracticeWorkspace",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeWorkspace.cs",
+      "line": 18,
+      "name": "SavePracticeWorkspaceAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeWorkspace.cs",
+      "line": 27,
+      "name": "CurrentSearchEntry",
+      "returnType": "SearchEntry",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeWorkspace.cs",
+      "line": 33,
+      "name": "RefreshFavoriteButton",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeWorkspace.cs",
+      "line": 42,
+      "name": "ToggleFavoriteAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeWorkspace.cs",
+      "line": 53,
+      "name": "FavoriteView_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeWorkspace.cs",
+      "line": 58,
+      "name": "BuildSearchIndexAsync",
+      "returnType": "Task<SearchEntry[]>",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeWorkspace.cs",
+      "line": 80,
+      "name": "OpenSearchEntryAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeWorkspace.cs",
+      "line": 104,
+      "name": "Search_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeWorkspace.cs",
+      "line": 105,
+      "name": "Favorites_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeWorkspace.cs",
+      "line": 106,
+      "name": "ShowSearchAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeWorkspace.cs",
+      "line": 148,
+      "name": "CapturePracticeSetup",
+      "returnType": "PracticeSetup",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeWorkspace.cs",
+      "line": 158,
+      "name": "SaveSetup_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeWorkspace.cs",
+      "line": 174,
+      "name": "Setups_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeWorkspace.cs",
+      "line": 216,
+      "name": "ApplyPracticeSetupAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeWorkspace.cs",
+      "line": 269,
+      "name": "BuildPracticeShortcuts",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.PracticeWorkspace.cs",
+      "line": 280,
+      "name": "Shortcut",
+      "returnType": "Button",
+      "modifiers": "private static"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Preparation.cs",
+      "line": 9,
+      "name": "BeginPreparation",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Preparation.cs",
+      "line": 17,
+      "name": "CancelPreparation_Click",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Preparation.cs",
+      "line": 24,
+      "name": "ShowPreparationCancelled",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Preparation.cs",
+      "line": 29,
+      "name": "EndPreparation",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Progress.cs",
+      "line": 8,
+      "name": "BuildProgress",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Progress.cs",
+      "line": 16,
+      "name": "ExerciseTitle",
+      "returnType": "string",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "line": 23,
+      "name": "InitializeRecordingsAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "line": 29,
+      "name": "BuildRecordingControls",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "line": 40,
+      "name": "BuildRecordings",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "line": 61,
+      "name": "ReloadRecordingsAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "line": 67,
+      "name": "AskRecordingNameAsync",
+      "returnType": "Task<string?>",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "line": 72,
+      "name": "StartCaptureAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "line": 86,
+      "name": "StopCaptureAsync",
+      "returnType": "Task<bool>",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "line": 101,
+      "name": "RefreshRecording",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "line": 110,
+      "name": "PlayRecordingAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "line": 114,
+      "name": "EditRecordingMarkersAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "line": 123,
+      "name": "ExportRecordingAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "line": 137,
+      "name": "BuildRecordingExport",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recordings.cs",
+      "line": 141,
+      "name": "VerifyRecordingsAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.RecordingWaveform.cs",
+      "line": 20,
+      "name": "BuildRecordingWaveform",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.RecordingWaveform.cs",
+      "line": 89,
+      "name": "RecordingWaveformReady",
+      "returnType": "bool",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.RecordingWaveform.cs",
+      "line": 91,
+      "name": "WaveformSeconds",
+      "returnType": "double",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.RecordingWaveform.cs",
+      "line": 92,
+      "name": "SetRecordingRange",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.RecordingWaveform.cs",
+      "line": 100,
+      "name": "PreviewRecordingAsync",
+      "returnType": "Task<bool>",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.RecordingWaveform.cs",
+      "line": 119,
+      "name": "DrawRecordingWaveform",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.RecordingWaveform.cs",
+      "line": 152,
+      "name": "RefreshRecordingWaveform",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Recovery.cs",
+      "line": 9,
+      "name": "ShowColdRecovery",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "line": 22,
+      "name": "InitializeTraining",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "line": 28,
+      "name": "RecordTempo",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "line": 33,
+      "name": "BuildRhythmTrainer",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "line": 56,
+      "name": "CurrentRhythmChord",
+      "returnType": "PowerChord?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "line": 61,
+      "name": "ShowRhythmChord",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "line": 66,
+      "name": "StopRhythmUiAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "line": 78,
+      "name": "StoreRhythmRecord",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "line": 83,
+      "name": "RefreshRhythm",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "line": 90,
+      "name": "InstrumentFingerprint",
+      "returnType": "string",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Rhythm.cs",
+      "line": 91,
+      "name": "PalmDeviceFingerprint",
+      "returnType": "string",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Riffs.cs",
+      "line": 11,
+      "name": "BuildRiffs",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Riffs.cs",
+      "line": 31,
+      "name": "DrawRiffTab",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Riffs.cs",
+      "line": 37,
+      "name": "RefreshRiff",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Secrets.cs",
+      "line": 9,
+      "name": "BuildSecretSettings",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Settings.cs",
+      "line": 12,
+      "name": "SettingsAudioSummary",
+      "returnType": "string",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Settings.cs",
+      "line": 13,
+      "name": "RefreshSettingsControls",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Settings.cs",
+      "line": 19,
+      "name": "BuildSettings",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Settings.cs",
+      "line": 29,
+      "name": "AddSettingsLink",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 29,
+      "name": "InitializeShell",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 64,
+      "name": "TrackWindowBounds",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 69,
+      "name": "Navigate",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 70,
+      "name": "ShowWorkspace",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 107,
+      "name": "EnsureVideoAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 113,
+      "name": "Navigation_SelectionChanged",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 117,
+      "name": "Navigation_BackRequested",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 118,
+      "name": "Back_Click",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 119,
+      "name": "GoBack",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 120,
+      "name": "Forward_Click",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 121,
+      "name": "NavigateMenu_Click",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 122,
+      "name": "Theme_Click",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 123,
+      "name": "ApplyTheme",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 130,
+      "name": "Shell_SizeChanged",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 138,
+      "name": "Stack",
+      "returnType": "StackPanel",
+      "modifiers": "private static"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 139,
+      "name": "Text",
+      "returnType": "TextBlock",
+      "modifiers": "private static"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 140,
+      "name": "Card",
+      "returnType": "Border",
+      "modifiers": "private static"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 141,
+      "name": "BuildWorkspace",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 174,
+      "name": "Guide_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 185,
+      "name": "About_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 193,
+      "name": "RegisterCloseGuard",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 194,
+      "name": "RemoveCloseGuard",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 195,
+      "name": "Shell_Closing",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 236,
+      "name": "VerifyShellAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Shell.cs",
+      "line": 278,
+      "name": "WriteShellDiagnostic",
+      "returnType": "void",
+      "modifiers": "private static"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 29,
+      "name": "InitializeSongs",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 34,
+      "name": "BuildSong",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 69,
+      "name": "SongNumber",
+      "returnType": "NumberBox",
+      "modifiers": "private static"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 70,
+      "name": "RelocateSongAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 75,
+      "name": "WaitForSongAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 80,
+      "name": "RestoreSongPlaybackAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 95,
+      "name": "OpenSongFileAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 111,
+      "name": "ChangeSongSpeedAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 126,
+      "name": "ApplySongLoopAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 132,
+      "name": "SaveSongSectionAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 139,
+      "name": "SaveSong",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 140,
+      "name": "RefreshSong",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 150,
+      "name": "CancelSongRampAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 156,
+      "name": "PrepareSongRampAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 163,
+      "name": "DrawSongWaveform",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Songs.cs",
+      "line": 169,
+      "name": "VerifySongsAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 24,
+      "name": "ResetStudioWorkspace",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 25,
+      "name": "BuildStudio",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 55,
+      "name": "InvalidateStudioPlaybackAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 56,
+      "name": "SetStudioEditorEnabled",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 57,
+      "name": "RememberStudio",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 58,
+      "name": "SaveStudioAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 62,
+      "name": "ReloadStudioListsAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 66,
+      "name": "AttachStudioRecordingAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 70,
+      "name": "ImportStudioTrackAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 75,
+      "name": "RefreshStudio",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 80,
+      "name": "EditStudioTrackAsync",
+      "returnType": "Task",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 84,
+      "name": "DrainStudioEditsAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 89,
+      "name": "BuildStudioTrackEditor",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 102,
+      "name": "DrawStudioTimeline",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 106,
+      "name": "StudioAudioTracks",
+      "returnType": "IReadOnlyList<ProjectAudioTrack>",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 110,
+      "name": "PrepareStudioAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 114,
+      "name": "StartStudioCaptureAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 124,
+      "name": "AttachStudioCaptureAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 137,
+      "name": "ExportStudioAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Studio.cs",
+      "line": 140,
+      "name": "VerifyStudioAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Surgical.cs",
+      "line": 16,
+      "name": "SurgicalObservation",
+      "returnType": "PlayedNoteObservation",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Surgical.cs",
+      "line": 21,
+      "name": "BuildSurgical",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Surgical.cs",
+      "line": 40,
+      "name": "UpdateSurgical",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Surgical.cs",
+      "line": 48,
+      "name": "RefreshSurgical",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Surgical.cs",
+      "line": 55,
+      "name": "VerifySurgical",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 28,
+      "name": "AllTunings",
+      "returnType": "CustomTuning[]",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 29,
+      "name": "CurrentTuning",
+      "returnType": "CustomTuning",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 30,
+      "name": "TunerFrequency",
+      "returnType": "double",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 31,
+      "name": "NoteLabel",
+      "returnType": "string",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 32,
+      "name": "BuildTuner",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 54,
+      "name": "RefreshTuningSelector",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 56,
+      "name": "RebuildTunerStrings",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 62,
+      "name": "PlayTunerReferenceAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 64,
+      "name": "StopTunerReferenceAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 65,
+      "name": "RefreshTuner",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 81,
+      "name": "PlayTunerConfirmation",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 82,
+      "name": "InitializeTuner",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 84,
+      "name": "SaveTuning_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 91,
+      "name": "DeleteTuning_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Tuner.cs",
+      "line": 96,
+      "name": "VerifyTunerAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Updates.cs",
+      "line": 21,
+      "name": "InstalledBuild",
+      "returnType": "(string Commit, long Run)",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Updates.cs",
+      "line": 32,
+      "name": "BuildUpdates",
+      "returnType": "FrameworkElement",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Updates.cs",
+      "line": 68,
+      "name": "RefreshUpdateControls",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Updates.cs",
+      "line": 77,
+      "name": "Updates_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Updates.cs",
+      "line": 82,
+      "name": "CheckUpdatesAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Updates.cs",
+      "line": 107,
+      "name": "DownloadUpdateAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Updates.cs",
+      "line": 124,
+      "name": "InstallUpdateAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Updates.cs",
+      "line": 139,
+      "name": "LaunchPendingInstaller",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Ux.cs",
+      "line": 9,
+      "name": "PrimaryAction",
+      "returnType": "Button",
+      "modifiers": "private static"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Ux.cs",
+      "line": 14,
+      "name": "WorkspaceDescription",
+      "returnType": "string",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Ux.cs",
+      "line": 31,
+      "name": "RefreshWorkspaceChrome",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Ux.cs",
+      "line": 51,
+      "name": "ToggleMedia_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Ux.cs",
+      "line": 63,
+      "name": "VerifyWorkspaceUxAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Video.cs",
+      "line": 18,
+      "name": "InitializeVideoAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Video.cs",
+      "line": 100,
+      "name": "SetVideoControls",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Video.cs",
+      "line": 104,
+      "name": "VideoLoad_Click",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Video.cs",
+      "line": 111,
+      "name": "LoadVideo",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Video.cs",
+      "line": 115,
+      "name": "SendVideo",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Video.cs",
+      "line": 121,
+      "name": "WithVideoToken",
+      "returnType": "Dictionary<string,object?>",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Video.cs",
+      "line": 125,
+      "name": "VideoPlay_Click",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Video.cs",
+      "line": 126,
+      "name": "VideoPause_Click",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Video.cs",
+      "line": 127,
+      "name": "VideoStop_Click",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Video.cs",
+      "line": 128,
+      "name": "VideoRate_Changed",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Video.cs",
+      "line": 132,
+      "name": "VideoExternal_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.Video.cs",
+      "line": 139,
+      "name": "WriteVideoReport",
+      "returnType": "void",
+      "modifiers": "private static"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.VideoPractice.cs",
+      "line": 11,
+      "name": "InitializeVideoPractice",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.VideoPractice.cs",
+      "line": 15,
+      "name": "RefreshSavedVideoLoops",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.VideoPractice.cs",
+      "line": 16,
+      "name": "PersistVideoLoops",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.VideoPractice.cs",
+      "line": 17,
+      "name": "SelectedVideoLoop",
+      "returnType": "SavedVideoLoop?",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.VideoPractice.cs",
+      "line": 18,
+      "name": "VideoMark_Click",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.VideoPractice.cs",
+      "line": 19,
+      "name": "ApplyVideoLoop",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.VideoPractice.cs",
+      "line": 23,
+      "name": "VideoApplyLoop_Click",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.VideoPractice.cs",
+      "line": 24,
+      "name": "VideoLoop_Changed",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.VideoPractice.cs",
+      "line": 29,
+      "name": "TryRestoreVideoLoop",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.VideoPractice.cs",
+      "line": 34,
+      "name": "VideoSaveLoop_Click",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.VideoPractice.cs",
+      "line": 38,
+      "name": "VideoOpenLoop_Click",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.VideoPractice.cs",
+      "line": 39,
+      "name": "VideoRenameLoop_Click",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.VideoPractice.cs",
+      "line": 40,
+      "name": "VideoDeleteLoop_Click",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.VideoPractice.cs",
+      "line": 41,
+      "name": "VideoUndoLoop_Click",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.VideoPractice.cs",
+      "line": 42,
+      "name": "SeekVideo",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.VideoPractice.cs",
+      "line": 43,
+      "name": "VideoSeek_Released",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.VideoPractice.cs",
+      "line": 44,
+      "name": "VideoSeek_KeyUp",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.VideoPractice.cs",
+      "line": 45,
+      "name": "VerifyVideoPracticeAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.VideoPractice.cs",
+      "line": 53,
+      "name": "VideoSharedAudio_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.WorkspaceChecks.cs",
+      "line": 12,
+      "name": "VerifyWorkspaceEnhancementsAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.WorkspaceFixture.cs",
+      "line": 10,
+      "name": "CreateWorkspaceWaveformFixtureAsync",
+      "returnType": "Task<RecordingData>",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 55,
+      "name": "Start_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 62,
+      "name": "Stop_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 67,
+      "name": "RefreshState",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 117,
+      "name": "ShowError",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 125,
+      "name": "Xml_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 127,
+      "name": "Gp_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 129,
+      "name": "OpenScore_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 143,
+      "name": "LoadScoreAsync",
+      "returnType": "Task",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 156,
+      "name": "Score_PointerPressed",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 161,
+      "name": "ExportMidi_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 180,
+      "name": "SetBusy",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 193,
+      "name": "OpenMedia_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 209,
+      "name": "PlayMedia_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 216,
+      "name": "PlayScore_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 234,
+      "name": "Rewind_Click",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 239,
+      "name": "Speed_Changed",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 248,
+      "name": "Volume_Changed",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 254,
+      "name": "Position_Released",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 260,
+      "name": "IsSeekKey",
+      "returnType": "bool",
+      "modifiers": "private static"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 264,
+      "name": "Position_KeyDown",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 265,
+      "name": "Position_KeyUp",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 270,
+      "name": "SeekPosition",
+      "returnType": "void",
+      "modifiers": "private async"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 276,
+      "name": "FormatTime",
+      "returnType": "string",
+      "modifiers": "private static"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 281,
+      "name": "Close_Click",
+      "returnType": "void",
+      "modifiers": "private"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml.cs",
+      "line": 283,
+      "name": "WriteNotationReport",
+      "returnType": "void",
+      "modifiers": "private static"
+    }
+  ],
+  "namedXamlControls": [
+    {
+      "path": "windows/Rocker.Probe/Controls/ChordDiagram.xaml",
+      "name": "ChordTitle",
+      "type": "TextBlock"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/ChordDiagram.xaml",
+      "name": "Diagram",
+      "type": "Canvas"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/ChordDiagram.xaml",
+      "name": "Description",
+      "type": "TextBlock"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/FretboardDiagram.xaml",
+      "name": "Board",
+      "type": "Grid"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/FretboardDiagram.xaml",
+      "name": "SelectedNote",
+      "type": "TextBlock"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/LevelMeter.xaml",
+      "name": "MeterLabel",
+      "type": "TextBlock"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/LevelMeter.xaml",
+      "name": "SegmentFace",
+      "type": "Border"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/LevelMeter.xaml",
+      "name": "Segments",
+      "type": "Grid"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/LevelMeter.xaml",
+      "name": "DbScale",
+      "type": "Grid"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/LevelMeter.xaml",
+      "name": "AnalogFace",
+      "type": "Border"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/LevelMeter.xaml",
+      "name": "AnalogView",
+      "type": "Viewbox"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/LevelMeter.xaml",
+      "name": "AnalogCanvas",
+      "type": "Canvas"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/LevelMeter.xaml",
+      "name": "AnalogNeedle",
+      "type": "Line"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/LevelMeter.xaml",
+      "name": "ClipLamp",
+      "type": "Ellipse"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/LevelMeter.xaml",
+      "name": "Meter",
+      "type": "ProgressBar"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/LevelMeter.xaml",
+      "name": "Reading",
+      "type": "TextBlock"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/PitchGauge.xaml",
+      "name": "GaugeCanvas",
+      "type": "Canvas"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/PitchGauge.xaml",
+      "name": "Pointer",
+      "type": "Line"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/PitchGauge.xaml",
+      "name": "Pivot",
+      "type": "Ellipse"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/ValueDial.xaml",
+      "name": "ParameterLabel",
+      "type": "TextBlock"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/ValueDial.xaml",
+      "name": "DialFace",
+      "type": "Canvas"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/ValueDial.xaml",
+      "name": "Needle",
+      "type": "Line"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/ValueDial.xaml",
+      "name": "Number",
+      "type": "NumberBox"
+    },
+    {
+      "path": "windows/Rocker.Probe/Controls/ValueDial.xaml",
+      "name": "Position",
+      "type": "Slider"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "ShellInteractionRoot",
+      "type": "ContentControl"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "ShellRoot",
+      "type": "Grid"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "MainMenu",
+      "type": "MenuBar"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "RecentFilesMenu",
+      "type": "MenuFlyoutSubItem"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "CancelFileMenu",
+      "type": "MenuFlyoutItem"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "OpenMediaMenu",
+      "type": "MenuFlyoutItem"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "OpenScoreMenu",
+      "type": "MenuFlyoutItem"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "ExportMidiMenu",
+      "type": "MenuFlyoutItem"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "PlayMenu",
+      "type": "MenuFlyoutItem"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "BackMenu",
+      "type": "MenuFlyoutItem"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "ForwardMenu",
+      "type": "MenuFlyoutItem"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "Navigation",
+      "type": "NavigationView"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "WorkspaceScroll",
+      "type": "ScrollViewer"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "WorkspaceTitle",
+      "type": "TextBlock"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "WorkspaceTools",
+      "type": "StackPanel"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "SearchButton",
+      "type": "Button"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "FavoriteViewButton",
+      "type": "Button"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "FocusExitButton",
+      "type": "Button"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "WorkspaceTrail",
+      "type": "TextBlock"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "ShellNotice",
+      "type": "InfoBar"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "WorkspaceContent",
+      "type": "ContentControl"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "NotationPanel",
+      "type": "StackPanel"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "ScoreButtons",
+      "type": "StackPanel"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "XmlButton",
+      "type": "Button"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "GpButton",
+      "type": "Button"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "OpenScoreButton",
+      "type": "Button"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "PlayScoreButton",
+      "type": "Button"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "NotationControls",
+      "type": "StackPanel"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "NotationTrackBox",
+      "type": "ComboBox"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "NotationAllTracks",
+      "type": "CheckBox"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "NotationZoom",
+      "type": "ComboBox"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "NotationBar",
+      "type": "NumberBox"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "NotationFollow",
+      "type": "CheckBox"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "NotationLoopFirst",
+      "type": "NumberBox"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "NotationLoopLast",
+      "type": "NumberBox"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "NotationOccurrence",
+      "type": "ComboBox"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "NotationAccessible",
+      "type": "TextBlock"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "NotationStatus",
+      "type": "TextBlock"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "ScoreCanvas",
+      "type": "Canvas"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "ScoreImage",
+      "type": "Image"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "NotationPlayhead",
+      "type": "Border"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "SelectionBox",
+      "type": "Border"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "SelectionStatus",
+      "type": "TextBlock"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "ExportMidiButton",
+      "type": "Button"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "VideoPanel",
+      "type": "Border"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "VideoUrl",
+      "type": "TextBox"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "VideoButtons",
+      "type": "StackPanel"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "VideoLoadButton",
+      "type": "Button"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "VideoPlayButton",
+      "type": "Button"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "VideoPauseButton",
+      "type": "Button"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "VideoStopButton",
+      "type": "Button"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "VideoRates",
+      "type": "ComboBox"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "VideoSeek",
+      "type": "Slider"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "VideoLoopA",
+      "type": "NumberBox"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "VideoLoopB",
+      "type": "NumberBox"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "VideoMarkA",
+      "type": "Button"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "VideoMarkB",
+      "type": "Button"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "VideoApplyLoop",
+      "type": "Button"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "VideoLoopEnabled",
+      "type": "CheckBox"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "VideoLoopLabel",
+      "type": "TextBox"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "VideoSavedLoops",
+      "type": "ListView"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "VideoLoopStatus",
+      "type": "TextBlock"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "VideoPosition",
+      "type": "TextBlock"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "VideoView",
+      "type": "WebView2"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "VideoStatus",
+      "type": "TextBlock"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "DevicePanel",
+      "type": "Border"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "DeviceControls",
+      "type": "ContentControl"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "DeviceBackendBox",
+      "type": "ComboBox"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "DeviceInputBox",
+      "type": "ComboBox"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "DeviceOutputBox",
+      "type": "ComboBox"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "DeviceChannelBox",
+      "type": "ComboBox"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "DevicePairBox",
+      "type": "ComboBox"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "DeviceRateBox",
+      "type": "ComboBox"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "DeviceBufferBox",
+      "type": "ComboBox"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "ApplyDeviceButton",
+      "type": "Button"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "DevicePanelButton",
+      "type": "Button"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "DeviceSelectionStatus",
+      "type": "TextBlock"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "StartButton",
+      "type": "Button"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "DeviceText",
+      "type": "TextBlock"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "MediaPanel",
+      "type": "Border"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "PracticeRestNotice",
+      "type": "InfoBar"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "PracticeRow",
+      "type": "Grid"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "PracticeButtons",
+      "type": "StackPanel"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "PracticeStart",
+      "type": "Button"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "PracticePause",
+      "type": "Button"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "PracticeEnd",
+      "type": "Button"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "PracticeStatus",
+      "type": "TextBlock"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "PlanButtons",
+      "type": "StackPanel"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "ReturnPlan",
+      "type": "Button"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "CompletePlan",
+      "type": "Button"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "PlanTaskLabel",
+      "type": "TextBlock"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "MediaTransportRow",
+      "type": "Grid"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "MediaTitle",
+      "type": "TextBlock"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "MediaButtons",
+      "type": "CommandBar"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "PlayMediaButton",
+      "type": "AppBarButton"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "StopButton",
+      "type": "AppBarButton"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "VolumeSlider",
+      "type": "Slider"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "OpenMediaButton",
+      "type": "AppBarButton"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "RewindButton",
+      "type": "AppBarButton"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "SpeedBox",
+      "type": "ComboBox"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "MediaStatus",
+      "type": "TextBlock"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "MediaSeekRow",
+      "type": "Grid"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "PositionSlider",
+      "type": "Slider"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "PositionText",
+      "type": "TextBlock"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "StatusText",
+      "type": "TextBlock"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "GlobalMuteButton",
+      "type": "Button"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "ShellStateText",
+      "type": "TextBlock"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "PreparationNotice",
+      "type": "InfoBar"
+    },
+    {
+      "path": "windows/Rocker.Probe/MainWindow.xaml",
+      "name": "PreparationCancelButton",
+      "type": "Button"
+    }
+  ]
+}

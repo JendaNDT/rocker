@@ -1,6 +1,6 @@
 {
   "result": "passed",
-  "validatedAtUtc": "2026-10-13T16:29:02.835326+00:00",
+  "validatedAtUtc": "2026-10-13T16:53:35.711421+00:00",
   "kind": "implementation-plan-document-validation",
   "applicationChanged": false,
   "runtimeVerified": false,
@@ -13,13 +13,13 @@
     "title": "Rocker 0.2.0 RC6 — viditelné retro kyvadlo a doby metronomu"
   },
   "planFile": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
-  "planSha256": "96b3933b0b33e3373c048ff6e53f08492dfb0775d28085b70e600d18c71f97e2",
+  "planSha256": "5e196db53e17fd7d243d562b2747dd8715f40d9ef03aa6c35254df4b43c3d75f",
   "steps": [
     {
       "id": "D01",
       "title": "Zafixovat desktopový výchozí stav",
       "dependsOn": [],
-      "status": "planned"
+      "status": "completed"
     },
     {
       "id": "D02",
@@ -807,24 +807,17 @@
     },
     {
       "from": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
+      "target": "docs/windows/desktop/baseline.md"
+    },
+    {
+      "from": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
+      "target": "docs/windows/desktop/baseline-validation.json"
+    },
+    {
+      "from": "WINDOWS_DESKTOP_REBUILD_PLAN.md",
       "target": "AGENTS.md"
-    },
-    {
-      "from": "README.md",
-      "target": "WINDOWS_DESKTOP_REBUILD_PLAN.md"
-    },
-    {
-      "from": "WINDOWS_ROADMAP.md",
-      "target": "WINDOWS_DESKTOP_REBUILD_PLAN.md"
-    },
-    {
-      "from": "PROJECT_STATUS.md",
-      "target": "WINDOWS_DESKTOP_REBUILD_PLAN.md"
-    },
-    {
-      "from": "docs/windows/desktop/README.md",
-      "target": "../../../WINDOWS_DESKTOP_REBUILD_PLAN.md"
     }
   ],
-  "errors": []
+  "errors": [],
+  "implementationAuthorized": true
 }
