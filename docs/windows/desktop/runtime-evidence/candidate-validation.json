@@ -1,0 +1,110 @@
+{
+  "actualLatencyVerified": false,
+  "manualHardwareVerified": false,
+  "correspondingSourcesSeparate": true,
+  "nativeSuites": 22,
+  "windowsRun": "https://github.com/JendaNDT/rocker/actions/runs/38437376867",
+  "sourceCommit": "11242c965c9074f1cb6a22933482121661733f33",
+  "result": "passed",
+  "narratorAndHighContrastManualVerified": false,
+  "nativeWorkspaces": 32,
+  "onlineYouTubeVerified": false,
+  "onlineAiVerified": false,
+  "installer": "Rocker-Windows-Setup-0.2.0-x64.exe",
+  "smartAppControlVerified": false,
+  "reports": [
+    {
+      "report": "domain-checks.json",
+      "result": "passed"
+    },
+    {
+      "report": "storage-checks.json",
+      "result": "passed"
+    },
+    {
+      "report": "notation-checks.json",
+      "result": "passed"
+    },
+    {
+      "report": "media-checks.json",
+      "result": "passed"
+    },
+    {
+      "report": "transport-checks.json",
+      "result": "passed"
+    },
+    {
+      "report": "browser-ui-import.json",
+      "result": "passed"
+    },
+    {
+      "report": "browser-bookmark-import.json",
+      "result": "passed"
+    },
+    {
+      "report": "power-recovery.json",
+      "result": "passed"
+    },
+    {
+      "report": "performance-checks.json",
+      "result": "passed"
+    },
+    {
+      "report": "accessibility.json",
+      "result": "passed"
+    },
+    {
+      "report": "design-views.json",
+      "result": "passed"
+    },
+    {
+      "report": "ux-layout.json",
+      "result": "passed"
+    },
+    {
+      "report": "workspace-enhancements.json",
+      "result": "passed"
+    },
+    {
+      "report": "retro-instruments.json",
+      "result": "passed"
+    },
+    {
+      "report": "metronome-visualization.json",
+      "result": "passed"
+    },
+    {
+      "report": "visual-finish.json",
+      "result": "passed"
+    },
+    {
+      "report": "desktop-host-experiment.json",
+      "result": "passed"
+    },
+    {
+      "report": "practice-profile.json",
+      "result": "passed"
+    },
+    {
+      "report": "overview-live.json",
+      "result": "passed"
+    },
+    {
+      "report": "first-run.json",
+      "result": "passed"
+    },
+    {
+      "report": "file-commands.json",
+      "result": "passed"
+    },
+    {
+      "report": "window-smoke.json",
+      "result": "passed"
+    },
+    {
+      "report": "installer/installer-smoke.json",
+      "result": "passed"
+    }
+  ],
+  "wallClockHourOnHardwareVerified": false
+}

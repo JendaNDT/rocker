@@ -1,0 +1,239 @@
+{
+  "result": "passed",
+  "validatedAtUtc": "2026-10-13T17:42:12.061708+00:00",
+  "runId": 38437376867,
+  "runUrl": "https://github.com/JendaNDT/rocker/actions/runs/38437376867",
+  "sourceCommit": "11242c965c9074f1cb6a22933482121661733f33",
+  "desktopRuntimeChecks": 19,
+  "diagnosticProfilesVerified": 2,
+  "nativeSuites": 22,
+  "existingFunctionalViews": 32,
+  "sharedAudioHosts": 1,
+  "applicationPackagedAndInstallerCycleVerified": true,
+  "newSourceSwitchModelsIncluded": false,
+  "evidenceScope": "D03 isolated runtime experiment; production desktop shell is a later step",
+  "checks": {
+    "result": "passed",
+    "checks": [
+      {
+        "name": "experimentBeginsWithStoppedAudio",
+        "passed": true
+      },
+      {
+        "name": "nativeWorkspaceLoaded",
+        "passed": true
+      },
+      {
+        "name": "localWebViewLoadsWithoutNetwork",
+        "passed": true
+      },
+      {
+        "name": "actualScoreSourceAvailable",
+        "passed": true
+      },
+      {
+        "name": "detachedNativeWindowHasSeparateHwnd",
+        "passed": true
+      },
+      {
+        "name": "documentHasExactlyOneHost",
+        "passed": true
+      },
+      {
+        "name": "movePreservesTextZoomAndSelection",
+        "passed": true
+      },
+      {
+        "name": "moveChangesActualXamlRoot",
+        "passed": true
+      },
+      {
+        "name": "webViewSurvivesDetachWithoutRecreation",
+        "passed": true
+      },
+      {
+        "name": "detachedWindowUsesOwnRasterizationScale",
+        "passed": true
+      },
+      {
+        "name": "documentWindowHasNoToolOwner",
+        "passed": true
+      },
+      {
+        "name": "toolSingletonActivatesExistingHost",
+        "passed": true
+      },
+      {
+        "name": "toolHasExplicitNativeOwner",
+        "passed": true
+      },
+      {
+        "name": "dialogUsesDetachedDocumentRoot",
+        "passed": true
+      },
+      {
+        "name": "dialogCancelRetainsDocument",
+        "passed": true
+      },
+      {
+        "name": "reattachMovesSameViewAndKeepsWebViewState",
+        "passed": true
+      },
+      {
+        "name": "closingToolKeepsDocumentAlive",
+        "passed": true
+      },
+      {
+        "name": "closingEmptyDocumentHostKeepsWorkspaceAlive",
+        "passed": true
+      },
+      {
+        "name": "windowOperationsNeverStartOrRestartAudio",
+        "passed": true
+      }
+    ],
+    "nativeWindowsCreated": 3,
+    "singleDocumentId": "ea2b5ea71f284e60b162a50463ca71fb",
+    "webViewRecreatedDuringMove": false,
+    "actualScoreSourceUsed": true,
+    "soundStarted": false,
+    "dragDropHandlersInstalled": true,
+    "actualPointerDragVerified": false,
+    "hardwareVerified": false,
+    "physicalMultiMonitorVerified": false,
+    "physicalAltTabVerified": false,
+    "productionShellReplaced": false
+  },
+  "candidate": {
+    "actualLatencyVerified": false,
+    "manualHardwareVerified": false,
+    "correspondingSourcesSeparate": true,
+    "nativeSuites": 22,
+    "windowsRun": "https://github.com/JendaNDT/rocker/actions/runs/38437376867",
+    "sourceCommit": "11242c965c9074f1cb6a22933482121661733f33",
+    "result": "passed",
+    "narratorAndHighContrastManualVerified": false,
+    "nativeWorkspaces": 32,
+    "onlineYouTubeVerified": false,
+    "onlineAiVerified": false,
+    "installer": "Rocker-Windows-Setup-0.2.0-x64.exe",
+    "smartAppControlVerified": false,
+    "reports": [
+      {
+        "report": "domain-checks.json",
+        "result": "passed"
+      },
+      {
+        "report": "storage-checks.json",
+        "result": "passed"
+      },
+      {
+        "report": "notation-checks.json",
+        "result": "passed"
+      },
+      {
+        "report": "media-checks.json",
+        "result": "passed"
+      },
+      {
+        "report": "transport-checks.json",
+        "result": "passed"
+      },
+      {
+        "report": "browser-ui-import.json",
+        "result": "passed"
+      },
+      {
+        "report": "browser-bookmark-import.json",
+        "result": "passed"
+      },
+      {
+        "report": "power-recovery.json",
+        "result": "passed"
+      },
+      {
+        "report": "performance-checks.json",
+        "result": "passed"
+      },
+      {
+        "report": "accessibility.json",
+        "result": "passed"
+      },
+      {
+        "report": "design-views.json",
+        "result": "passed"
+      },
+      {
+        "report": "ux-layout.json",
+        "result": "passed"
+      },
+      {
+        "report": "workspace-enhancements.json",
+        "result": "passed"
+      },
+      {
+        "report": "retro-instruments.json",
+        "result": "passed"
+      },
+      {
+        "report": "metronome-visualization.json",
+        "result": "passed"
+      },
+      {
+        "report": "visual-finish.json",
+        "result": "passed"
+      },
+      {
+        "report": "desktop-host-experiment.json",
+        "result": "passed"
+      },
+      {
+        "report": "practice-profile.json",
+        "result": "passed"
+      },
+      {
+        "report": "overview-live.json",
+        "result": "passed"
+      },
+      {
+        "report": "first-run.json",
+        "result": "passed"
+      },
+      {
+        "report": "file-commands.json",
+        "result": "passed"
+      },
+      {
+        "report": "window-smoke.json",
+        "result": "passed"
+      },
+      {
+        "report": "installer/installer-smoke.json",
+        "result": "passed"
+      }
+    ],
+    "wallClockHourOnHardwareVerified": false
+  },
+  "screenshots": [
+    {
+      "path": "runtime-screens/detached.png",
+      "sha256": "92184ffb2351f8099b8e92e347fc781ba8ae9af2ba74105ddd77e5fce421e36c",
+      "kind": "real WinUI XAML content; native frame and GPU layers are outside RenderTargetBitmap"
+    },
+    {
+      "path": "runtime-screens/tool.png",
+      "sha256": "dd6a8cb16ae4dd5fdf94d8f0b37f49259da864839473888d8ea6565daa42c6e0",
+      "kind": "real WinUI XAML content; native frame and GPU layers are outside RenderTargetBitmap"
+    },
+    {
+      "path": "runtime-screens/workspace.png",
+      "sha256": "5e2919af673ab924af459afd668cf24ed213864b81ce2ba659c2e4c8c44d2511",
+      "kind": "real WinUI XAML content; native frame and GPU layers are outside RenderTargetBitmap"
+    }
+  ],
+  "hardwareVerified": false,
+  "actualPointerDragVerified": false,
+  "physicalMultiMonitorVerified": false,
+  "productionShellReplaced": false,
+  "publishedToUser": false
+}

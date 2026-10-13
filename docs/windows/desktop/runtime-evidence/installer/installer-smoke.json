@@ -1,0 +1,19 @@
+{
+  "result": "passed",
+  "hardwareVerified": false,
+  "unicodeProjectActivation": true,
+  "offlineSelfContainedStart": true,
+  "installedInventoryMatchesPortableArchive": true,
+  "installedNativeWindow": true,
+  "historicBinaryDowngradeVerified": false,
+  "adminRequired": false,
+  "versionTransitionPreservedDataAndPriorBinary": true,
+  "smartAppControlVerified": false,
+  "perUserInstall": true,
+  "uninstallPreservedDatabaseAndSentinel": true,
+  "preUpdateFullBackupAndRawDatabase": true,
+  "exactDllRepair": true,
+  "failedUpdatePreservedShortcutAndAssociation": true,
+  "projectAssociationRegistered": true,
+  "transitionUsesSameCandidateBinariesWithSyntheticVersionLabels": true
+}

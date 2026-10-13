@@ -1,6 +1,6 @@
 # D03 — skutečné Windows hostování dokumentů a nástrojů
 
-Stav: technický řez implementovaný, skutečné Windows ověření probíhá.
+Stav: technický řez implementovaný a skutečné Windows ověření prošlo.
 Zdrojová revize 11242c965c9074f1cb6a22933482121661733f33,
 [Windows běh 38437376867](https://github.com/JendaNDT/rocker/actions/runs/38437376867).
 Linux semantic check ověřil 65 C# souborů bez chyb s reálnými WinUI
@@ -72,3 +72,18 @@ Po úspěšném běhu sem uložit vybrané důkazy, ověřit cleanup a navázat 
 Pokud přesun WebView2 nebo jiná hranice selže, nejdřív změnit technické
 rozhodnutí podle zjištěné příčiny a ověřit opravený scénář; neodstraňovat
 assertion jen pro dosažení úspěšného buildu.
+
+## Dokončená Windows přejímka
+
+[windows-validation.json](windows-validation.json) a runtime-evidence
+obsahují skutečné výsledky běhu 38437376867. Všech 19 kontrol prošlo v
+obou diagnostických profilech, zůstala jedna audio instance. Prošlo také
+všech 22 původních native sad, 32 existujících funkcí, sestavení, balení a
+instalační cyklus. Tři snímky v runtime-screens zachycují skutečný WinUI
+obsah experimentu. Textové/GPU vrstvy a systémový rám nemusí být v
+RenderTargetBitmap zachycené; uchování stavu potvrzují přímé assertiony.
+
+Přesun lokálního WebView2 v tomto běhu zachoval stejný core a JavaScript
+stav bez znovuvytvoření. Tato strategie je použitelný základ D22, s
+odloženou specifickou přejímkou skutečného online embed.
+Produkční přestavba ani hardwarová přejímka nejsou touto kontrolou hotové.
