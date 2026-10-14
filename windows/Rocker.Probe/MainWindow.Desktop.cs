@@ -121,7 +121,7 @@ public sealed partial class MainWindow
             string identity=route.Destination==DesktopDestination.Settings?"settings":target.ViewId;
             if(desktopTools.TryGetValue(identity,out var existing)){
                 if(!floatingHosts.ContainsKey(existing.Tab) && !toolTabs.TabItems.Contains(existing.Tab))toolTabs.TabItems.Add(existing.Tab);
-                if(route.Destination==DesktopDestination.Settings && existing.Session.Target!=target){existing.Session.Target=target;using var settingsScope=documentContext.Enter(existing.Session);existing.Tab.Content=BuildDesktopSettingsContent(existing.Session,target);existing.Tab.Header=WorkspaceViews.Get(target.ViewId).Title;}
+                if(route.Destination==DesktopDestination.Settings && existing.Session.Target!=target){existing.Session.Target=target;using var settingsScope=documentContext.Enter(existing.Session);SetDesktopTabContent(existing.Tab,BuildDesktopSettingsContent(existing.Session,target));existing.Tab.Header=WorkspaceViews.Get(target.ViewId).Title;}
                 ActivateDesktopTab(existing.Tab);return existing.Session;}
             var session=new DocumentSession(target);using var scope=documentContext.Enter(session);
             FrameworkElement page=route.Destination==DesktopDestination.Settings?BuildDesktopSettingsContent(session,target):route.Destination==DesktopDestination.Tool?ComposeDesktopInstrument(target.ViewId,BuildWorkspace(target)):BuildWorkspace(target);
@@ -162,12 +162,20 @@ public sealed partial class MainWindow
     {
         var view=WorkspaceViews.Get(session.Target.ViewId);
         var scroll=DesktopDocumentContent(page);
-        var item=new TabViewItem{Header=view.Title,Tag=session,Content=scroll,IsClosable=true};
+        var contentHost=new ContentControl{Content=scroll,Tag="desktop-content-host",HorizontalContentAlignment=HorizontalAlignment.Stretch,VerticalContentAlignment=VerticalAlignment.Stretch};
+        var item=new TabViewItem{Header=view.Title,Tag=session,Content=contentHost,IsClosable=true};
         void FocusSession(){if(!session.IsAlive)return;documentContext.Select(session);if(HostWindow(session)==this)desktopMainActive=session;}
-        page.GotFocus+=(_,_)=>FocusSession();page.AddHandler(UIElement.PointerPressedEvent,new PointerEventHandler((_,_)=>FocusSession()),true);
+        contentHost.GotFocus+=(_,_)=>FocusSession();contentHost.AddHandler(UIElement.PointerPressedEvent,new PointerEventHandler((_,_)=>FocusSession()),true);
         var menu=new MenuFlyout();var detach=new MenuFlyoutItem{Text="Otevřít v samostatném okně"};detach.Click+=(_,_)=>DetachDesktopTab(item);menu.Items.Add(detach);var attach=new MenuFlyoutItem{Text="Připojit do pracovní plochy"};attach.Click+=(_,_)=>AttachDesktopTab(item);menu.Items.Add(attach);
         var favorite=new MenuFlyoutItem{Text="Přidat / odebrat z oblíbených"};favorite.Click+=async(_,_)=>{using var scope=documentContext.Enter(session);try{if(session.IsAlive)await ToggleFavoriteAsync(CurrentSearchEntry().Key);}catch(Exception error){ShowPersistenceError(error.Message);}};menu.Items.Add(favorite);item.ContextFlyout=menu;
         LabelNativeControls(page);return item;
+    }
+    private void SetDesktopTabContent(TabViewItem tab,FrameworkElement page)
+    {
+        // TabView copies the selected item's Content into its own presenter on selection.
+        // Keep that host stable; ContentControl observes child changes even while selected.
+        if(tab.Content is not ContentControl{Tag:"desktop-content-host"} host)throw new InvalidOperationException("Dokument nemá stabilního hostitele obsahu.");
+        host.Content=DesktopDocumentContent(page);
     }
     private void BindDesktopTabs(TabView tabs,DesktopWindow? targetHost=null)
     {

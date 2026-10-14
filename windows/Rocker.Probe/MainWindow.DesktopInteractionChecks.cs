@@ -21,11 +21,13 @@ public sealed partial class MainWindow
         await OpenDesktopSongAsync(path,"První syntetický zdroj",null);var first=OpenDesktop(new("07"),DesktopDocumentKey.ForCanonicalFile("07",path));
         using(documentContext.Enter(first)){await ClaimDesktopSourceAsync(first);Check(audio.GetTransport().Ready!=0 && audio.GetTransport().Playing==0,"explicit-source-preparation-remains-paused");}
         ulong ticket=await audio.GetMediaSourceTicketAsync();
+        var recordingDocument=OpenDesktop(new("14",fixture.Id));var originalContentHost=desktopDocuments[recordingDocument].Content;
         await OpenDesktopRecordingAsync(fixture);var second=OpenDesktop(new("14",fixture.Id));
+        Check(ReferenceEquals(originalContentHost,desktopDocuments[second].Content),"loading-recording-keeps-the-selected-content-host");
         await Task.Delay(100);ShellRoot.UpdateLayout();
         using(documentContext.Enter(second))
         {
-            var editor=(FrameworkElement)desktopDocuments[second].Content;
+            var editor=(FrameworkElement)((ContentControl)desktopDocuments[second].Content).Content;
             var layoutDeadline=DateTime.UtcNow.AddSeconds(5);
             while((!editor.IsLoaded || recordingWaveform!.ActualHeight<179) && DateTime.UtcNow<layoutDeadline){await Task.Delay(25);ShellRoot.UpdateLayout();}
             WriteShellDiagnostic("desktop-recording-layout.json",new{sourceCommit=Environment.GetEnvironmentVariable("GITHUB_SHA"),editorType=editor.GetType().FullName,editorLoaded=editor.IsLoaded,editorWidth=editor.ActualWidth,editorHeight=editor.ActualHeight,waveLoaded=recordingWaveform!.IsLoaded,waveWidth=recordingWaveform.ActualWidth,waveHeight=recordingWaveform.ActualHeight,waveMinHeight=recordingWaveform.MinHeight,rootWidth=ShellRoot.ActualWidth,rootHeight=ShellRoot.ActualHeight,selected=ReferenceEquals(documentTabs.SelectedItem,desktopDocuments[second]),rangeAParent=recordingRangeA?.Parent?.GetType().FullName,rangeBParent=recordingRangeB?.Parent?.GetType().FullName});
@@ -71,7 +73,10 @@ public sealed partial class MainWindow
         int windowsBefore=desktopWindows.Count,documentsBefore=services.Documents.All.Count,hosts=services.Audio.HostsCreated;
         for(int i=0;i<12;++i){var cycle=OpenDesktop(new("21","cycle-"+i));var tab=desktopDocuments[cycle];DetachDesktopTab(tab);await Task.Delay(20);AttachDesktopTab(tab);await CloseDesktopTabAsync(tab);}
         Check(desktopWindows.Count==windowsBefore && services.Documents.All.Count==documentsBefore && services.Audio.HostsCreated==hosts,"repeated-open-transfer-close-releases-window-and-document-registries");
-        var settings=OpenDesktop(new("29"));OpenDesktop(new("28"));Check(OpenDesktop(new("29"))==settings,"settings-categories-reuse-the-same-window-and-device-panel");
+        var settings=OpenDesktop(new("29"));var settingsHost=(ContentControl)TabFor(settings)!.Content;var deviceContent=settingsHost.Content;
+        OpenDesktop(new("28"));await Task.Delay(100);
+        Check(!ReferenceEquals(deviceContent,settingsHost.Content) && settingsHost.Content is FrameworkElement{IsLoaded:true},"settings-category-updates-the-visible-selected-content");
+        Check(OpenDesktop(new("29"))==settings,"settings-categories-reuse-the-same-window-and-device-panel");
         var previousSettings=appSettings;appSettings=appSettings with{SetupStep=0};var wizard=ShowDesktopDialogAsync(new("31"));var deadline=DateTime.UtcNow.AddSeconds(5);while(desktopFirstRunDialog?.IsLoaded!=true && !wizard.IsCompleted && DateTime.UtcNow<deadline)await Task.Delay(25);
         Check(desktopFirstRunDialog?.IsLoaded==true,"first-run-opens-one-owned-desktop-dialog");
         var oldContent=desktopFirstRunDialog!.Content;SetSetupStep(1);Check(appSettings.SetupStep==1 && !ReferenceEquals(oldContent,desktopFirstRunDialog.Content),"first-run-advances-within-the-existing-dialog");DismissDesktopFirstRun();await wizard;appSettings=previousSettings;SaveSettings();

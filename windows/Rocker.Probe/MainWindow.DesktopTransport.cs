@@ -63,7 +63,7 @@ public sealed partial class MainWindow
         if(!session.IsAlive || !desktopDocuments.TryGetValue(session,out var tab))return;
         using var scope=documentContext.Enter(session);
         if(session.Target.ViewId is "08" or "20")return;
-        var page=BuildDesktopDocumentPage(session.Target);tab.Content=DesktopDocumentContent(page);
+        var page=BuildDesktopDocumentPage(session.Target);SetDesktopTabContent(tab,page);
         tab.Header=session.Target.ViewId=="07"?song?.Name??"Skladba":session.Target.ViewId=="15"?studioProject?.Name??"Studio":session.Target.ViewId=="14"?playingRecording?.Name??"Nahrávka":WorkspaceViews.Get(session.Target.ViewId).Title;
     }
     private async Task ClaimDesktopSourceAsync(DocumentSession requested)
