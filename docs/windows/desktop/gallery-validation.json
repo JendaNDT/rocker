@@ -1,13 +1,12 @@
 {
   "result": "passed",
-  "sourceCommit": "69f6c8896593c48b6c43d011bf442f4c1d737a6b",
-  "windowsRun": 38477297083,
-  "imageModalThemeCases": 64,
-  "imageDecodeVerified": true,
-  "escapeFocusReturnVerified": true,
+  "sourceCommit": "3ca755016f54f2fc36ef5e2f5d4147afa35018e7",
+  "windowsRun": 38491131359,
+  "imagesDecoded": 64,
+  "modalViews": 64,
+  "keyboardFocusReturned": true,
   "searchVerified": true,
-  "mobileWidth": 390,
-  "mobileOverflow": false,
-  "actualWindowsCaptures": true,
-  "hardwareVerified": false
+  "mobile390NoHorizontalOverflow": true,
+  "browserTransport": "internal HTTP",
+  "offlineFileProtocolVerified": false
 }

@@ -1,14 +1,15 @@
-Rocker 0.3.0 RC1 přináší pracovní plochu se záložkami, skutečnými samostatnými okny Windows a připojitelnými nástroji ve Vintage vzhledu.
+Rocker 0.3.1 RC1 mění pracovní prostředí Windows aplikace: stálá pracovní lišta, přehlednější průzkumník, velké editory a samostatná okna hudebních nástrojů.
 
-- Studio, noty, skladby, nahrávky, lekce a tréninky mají vlastní dokumentové relace. Záložky lze odpojit, seskupit a vrátit do hlavního okna.
-- Ladička, metronom, aparát a looper mají jedinou instanci; Live a nastavení jsou vlastní okna. Příkazy, klávesnice, dialogy a souborové operace respektují správný dokument.
-- Zvuk používá jedno společné C++/JUCE jádro. Prohlížení další skladby nebo nahrávky nepřepíná přehrávání; zdroj přebírá výslovný příkaz. Stav monitoringu je viditelný u výsledného mixu.
-- Rozložení zachovává skupiny záložek, polohy oken a volby editorů. Hudební data zůstávají kompatibilní; rozložení lze předat samostatně jako .rockerlayout.
+- Ladička, metronom, aparát a Looper se otevírají ve vlastních Windows oknech. Připojení zpět zůstává volitelné; zavření nástroje zachová jeho stav.
+- Jednořádkový přehrávač uvolňuje místo dokumentům. Zahájení, pauza, čas cvičení a denní plán jsou pod tlačítkem Cvičení…
+- Editor nahrávky má velkou zvukovou vlnu, pravítko, značky a pevné hranice A/B vedle sebe. Studio má čitelnou časovou osu s oddělenými stopami a vlastnostmi.
+- Opravená obnova vybrané záložky: načtení souboru i přepnutí nastavení aktualizuje viditelný obsah ihned. Staré rozložení se převede při zachování hudebních dat a dokumentů.
+- Světlý i tmavý Vintage používá materiály reagující na změnu vzhledu. O aplikaci ukazuje verzi 0.3.1 a zdrojové sestavení.
 
-Stáhni **Rocker-Windows-Setup-0.3.0-x64.exe**, zavři původní Rocker a spusť instalátor. Vyžaduje Windows 11 x64 od 24H2. Vývojové nástroje nepotřebuješ. Zdrojové kódy jsou samostatný volitelný balík.
+Stáhni **Rocker-Windows-Setup-0.3.1-x64.exe**, zavři původní Rocker a spusť instalátor. Po instalaci spusť novou aplikaci přímo z instalátoru nebo nabídky Start; v Nápověda → O aplikaci Rocker ověříš 0.3.1. Vývojové nástroje nepotřebuješ. Vyžaduje Windows 11 x64 od 24H2; zdroje jsou samostatný volitelný balík.
 
-**Rocker-Windows-desktop-gallery.zip** obsahuje interaktivní galerii všech 32 funkcí ve tmavém i světlém vzhledu. Rozbal ZIP a otevři gallery.html; snímky lze zvětšit a filtrovat. Jde o skutečný obsah WinUI oken z izolovaného kontrolního profilu. Ukázkové nahrávky jsou syntetické.
+**Rocker-Windows-desktop-gallery.zip**: rozbal a otevři gallery.html. Obsahuje skutečné snímky všech 32 funkcí ve dvou vzhledech ze stejné revize aplikace. Kontrolní profil a zvukové soubory jsou syntetické.
 
-Windows build ověřil 43 kontrol oken a dokumentových interakcí, všech 32 funkcí ve dvou vzhledech, 22 native sad, původní funkční/datové kontroly a celý cyklus instalace, opravy, Unicode aktivace projektu a odinstalace se zachováním dat. Kontrolní součty balíků jsou v SHA256SUMS.txt.
+Sestavení `3ca755016f54f2fc36ef5e2f5d4147afa35018e7`, [Windows běh 38491131359](https://github.com/JendaNDT/rocker/actions/runs/38491131359): 49 kontrol oken a interakcí, tři různé skutečné šířky okna, všech 32 pohledů v obou vzhledech, 22 nativních sad a instalační cyklus prošly. Balíky mají kontrolní součty v SHA256SUMS.txt.
 
-Skutečný poslech, celkovou odezvu M-Track Solo, online služby a fyzické zkoušky monitorů či přístupnosti musí potvrdit závěrečná ruční přejímka. Toto je funkčně ucelený testovací kandidát, ne tvrzení o dokončeném měření na bratrově kartě.
+Toto je testovací kandidát. Skutečný poslech, celkovou odezvu M-Track Solo, online služby a fyzické zkoušky monitorů či přístupnosti automatická přejímka nepotvrzuje. Posouzení výsledného vzhledu zůstává na Jendovi.
