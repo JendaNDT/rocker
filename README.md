@@ -1,19 +1,19 @@
 # Rocker
 
-> PWA kytarový asistent pro učení a hraní na elektrickou kytaru.
-> Jeden zdroj, mobil i desktop, žádný server.
+> Kytarový pomocník: původní PWA a nativní Windows studio.
+> Výuka, cvičení, zvuk a nahrávání.
 
-**Živá verze:** https://rocker-rust.vercel.app
+**Živá webová verze:** https://rocker-rust.vercel.app
 
-**Nativní Windows verze 0.2.0:** implementovaný je rozsah W04–W43 — všech 32 pohledů ve Vintage designu, WinUI 3 ovládání, C++/JUCE zvukové jádro, výuka, nástroje, nahrávky, Looper, Studio, data a instalátor. Závěrečné automatické sestavení a instalační přejímka prošly. [Stáhnout hotový instalátor](https://github.com/JendaNDT/rocker/releases/tag/windows-0.2.0-rc3-20261012); [konkrétní Windows důkaz](docs/windows/w43/windows-validation.json). [Návod a matice úplnosti](docs/windows/w43/README.md), [aktuální stav](PROJECT_STATUS.md), [roadmapa](WINDOWS_ROADMAP.md) a [skutečné snímky všech obrazovek](docs/windows/w36/native-gallery/index.html).
+**Windows 0.3.1 RC1 — nová pracovní plocha:** pevná pracovní lišta, průzkumník, dokumentové záložky, samostatná okna hudebních nástrojů a kompaktní přehrávač. Zachovává všech 32 funkcí včetně výuky, C++/JUCE zvuku, nahrávek, Looperu, Studia a dat.
 
-[Propracování Vintage grafiky](docs/windows/graphics/README.md) a [detailní galerie](docs/windows/graphics/gallery.html) navazují na přehlednější UI/UX.
+[Otevřít sestavené vydání 0.3.1](https://github.com/JendaNDT/rocker/releases/tag/untagged-b2ab831b9bb79eaacd0c) — neveřejný koncept pro vlastníka a spolupracovníky s přístupem ke konceptům. Stáhni **Rocker-Windows-Setup-0.3.1-x64.exe**; zdroje ani vývojové nástroje nepotřebuješ. Samostatný **Rocker-Windows-desktop-gallery.zip** obsahuje aktuální náhledy.
 
-**Plán další přestavby:** [profesionální desktopové prostředí D01–D36](WINDOWS_DESKTOP_REBUILD_PLAN.md) — pracovní plocha, dokumenty, samostatné Live, plovoucí nástroje a sdílené služby. Zahrnuje převod všech 32 funkcí, Vintage grafiku, data, testování a sestavené předání. Jde o nový implementační plán; víceokenní přestavba zatím není implementovaná.
+[Úspěšný Windows build](https://github.com/JendaNDT/rocker/actions/runs/38491131359), [přejímací důkaz](docs/windows/desktop/candidate-validation.json), [ověření nahraných souborů](docs/windows/releases/delivery-validation.json), [skutečná galerie](docs/windows/desktop/gallery.html), [návod](docs/windows/w43/user-guide.md) a [aktuální stav](PROJECT_STATUS.md).
 
-[Společná galerie všech 32 desktopových návrhů](docs/windows/desktop/design-gallery.html) a [specifikace nového UX](docs/windows/desktop/design-spec.md) jsou připravené v D02. Jde o návrhy s ukázkovými údaji. Vývoj a aktuální důkazy sleduje [desktopová dokumentace](docs/windows/desktop/README.md).
+[Desktopová přestavba D01–D36](WINDOWS_DESKTOP_REBUILD_PLAN.md) je implementovaná; [revize pracovní plochy 2](docs/windows/desktop/workbench-revision-2.md) opravuje nedostatečnou změnu vzhledu 0.3.0. Windows běh ověřil 49 kontrol oken a interakcí, 32 funkcí ve dvou motivech, kontrast vlny i instalační cyklus. Ruční posouzení vzhledu a skutečná hra na M-Track Solo zůstávají oddělené od automatických testů.
 
-Bratr dostane sestavený instalátor; zdroje jsou samostatně a nic nemusí kompilovat. Skutečné hraní na M-Track Solo a měření celkové odezvy následují ve W44. [Původní návrhy](docs/windows/design/vsechny-navrhy.md) zůstávají referencí. Main a živá PWA se nemění; následující části popisují původní webovou aplikaci.
+[Původní návrhy desktopu](docs/windows/desktop/design-gallery.html), [specifikace UX](docs/windows/desktop/design-spec.md) a [starší grafické podklady](docs/windows/graphics/README.md) zůstávají referencí. Aktuální implementaci a důkazy shrnuje [desktopová dokumentace](docs/windows/desktop/README.md). Main a živá PWA se nemění; následující části popisují původní webovou aplikaci.
 
 ## Co to je
 

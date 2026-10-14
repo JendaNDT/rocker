@@ -1,43 +1,43 @@
 {
   "result": "passed",
-  "sourceCommit": "69f6c8896593c48b6c43d011bf442f4c1d737a6b",
-  "windowsRun": 38477297083,
-  "publisherRun": 38479952180,
-  "url": "https://github.com/JendaNDT/rocker/releases/tag/untagged-2c740c526ba4bfde626b",
+  "sourceCommit": "3ca755016f54f2fc36ef5e2f5d4147afa35018e7",
+  "windowsRun": 38491131359,
+  "publisherRun": 38492841440,
+  "url": "https://github.com/JendaNDT/rocker/releases/tag/untagged-b2ab831b9bb79eaacd0c",
   "repositoryVisibility": "public",
-  "delivery": "private GitHub draft; collaborator access required",
+  "delivery": "private GitHub draft; owner/collaborator draft access required",
   "publiclyPublished": false,
   "allUploadedBytesVerified": true,
   "assets": [
     {
-      "name": "candidate-validation.json",
-      "bytes": 2942,
-      "sha256": "01d5f22a43981e22199ed3bf2ed523ecc8ae80113bc7a957b8c1ca0a147277e9"
+      "name": "Rocker-Windows-Setup-0.3.1-x64.exe",
+      "bytes": 70486753,
+      "sha256": "d95756ac538c16948c4385b002b64f224fd845146c4c8d1504c335ff25c7a64e"
     },
     {
       "name": "Rocker-Windows-desktop-gallery.zip",
-      "bytes": 3611650,
-      "sha256": "52d5d4520dc06ca3cf0f6c6571aae1a45f8da34470bc6c8fe93562e66662d9dd"
-    },
-    {
-      "name": "Rocker-Windows-Setup-0.3.0-x64.exe",
-      "bytes": 70463205,
-      "sha256": "0011b8bc33054eb9c5da8234035aad9b86f7969a9c532af12a1d4c135cab66da"
+      "bytes": 4286029,
+      "sha256": "5a84547574f68b26fe0e980571fb64f53de775f1c957ad20924e98fbc243f182"
     },
     {
       "name": "Rocker-Windows-sources.zip",
-      "bytes": 138392947,
-      "sha256": "0d709d75d21fac7578c30725e1f7b9151bea3848f182ed83e578b2c3308ea26a"
+      "bytes": 141953625,
+      "sha256": "aeca626b9885d479801c38503b5427444ec1c4181f528940f507e762c42fe3a2"
     },
     {
       "name": "Rocker-Windows-x64.zip",
-      "bytes": 104050237,
-      "sha256": "784cccd45476da84673b5e103b8a0575bdb50f8d76a08a496b1c3ccbbba11564"
+      "bytes": 104065681,
+      "sha256": "1c4e5c80aa6d277a62249fe022de481cc03a4486fe2deaaab838f3ac3c696a8a"
     },
     {
       "name": "SHA256SUMS.txt",
       "bytes": 388,
-      "sha256": "ae80852e570c059ae7a1793645489402640fa63105531ca75081d1bd4a6130c8"
+      "sha256": "9059473e20c790bb6eac1ff3cc2a1812a9b06336dd7a1fc1de4873c9fad709e9"
+    },
+    {
+      "name": "candidate-validation.json",
+      "bytes": 2942,
+      "sha256": "1966b9e4f8231adf6207f88342dcb66ade12044bc450803318b568b42b3d55e3"
     }
   ],
   "manualHardwareVerified": false

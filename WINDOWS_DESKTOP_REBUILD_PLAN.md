@@ -1,6 +1,6 @@
 # Rocker — implementační plán přestavby desktopového prostředí
 
-**Znovuotevřená vizuální přejímka:** verze 0.3.0 byla funkčně sestavená, ale Jenda její rozložení oprávněně vyhodnotil jako příliš podobné původní aplikaci. [Revize pracovní plochy 2](docs/windows/desktop/workbench-revision-2.md) opravuje výchozí okna, ovládání a vlastní editory. Historická označení dokončení níže nejsou schválením finálního UI.
+**Znovuotevřená vizuální přejímka:** verze 0.3.0 byla funkčně sestavená, ale Jenda její rozložení oprávněně vyhodnotil jako příliš podobné původní aplikaci. [Revize pracovní plochy 2](docs/windows/desktop/workbench-revision-2.md) opravuje výchozí okna, ovládání a vlastní editory. Pracovní plocha 2 je nyní předaná jako sestavený kandidát 0.3.1 RC1; historická označení dokončení ani automatické testy nejsou Jendovým schválením výsledného UI.
 
 Datum: 13. 10. 2026. Stav: **realizace D01–D36 schválená; D01–D35 dokončené a automaticky ověřené; D36 dokončené jako soukromé předání testovacího kandidáta**.
 
@@ -452,7 +452,7 @@ se předá až po D35/D36.
 - Hotovo, když: duplicate open aktivuje stávající relaci, přesun nemění její ID a neznámé/poškozené vstupy se odmítnou.
 - Ověření: doménové scénáře open/move/close/cancel, limitů rozložení a převodu všech starých ID.
 
-Aktuální realizační poznámky: [implementace](docs/windows/desktop/implementation.md), [migrace a návrat](docs/windows/desktop/migration.md). Finální Windows přejímka `69f6c88` v běhu 38477297083 uspěla: 43 desktopových kontrol, všech 32 funkcí ve dvou vzhledech, 22 native sad a celý instalační cyklus. [Skutečná galerie](docs/windows/desktop/gallery.html), [přejímací důkaz](docs/windows/desktop/candidate-validation.json). D36 rozlišuje automaticky dokončeného kandidáta od ruční hardwarové přejímky.
+Aktuální realizační poznámky: [implementace](docs/windows/desktop/implementation.md), [revize pracovní plochy 2](docs/windows/desktop/workbench-revision-2.md), [migrace](docs/windows/desktop/migration.md). Windows přejímka `3ca7550` v běhu 38491131359 uspěla: 49 kontrol oken/interakcí, 32 funkcí ve dvou motivech, kontrast vlny, 22 native sad a celý instalační cyklus. [Skutečná galerie](docs/windows/desktop/gallery.html), [důkaz](docs/windows/desktop/candidate-validation.json). Ruční hardware i posouzení vzhledu zůstávají oddělené.
 
 #### D05 — Zavést aplikační služby a koordinaci operací
 
@@ -809,7 +809,7 @@ Aktuální realizační poznámky: [implementace](docs/windows/desktop/implement
 
 #### D36 — Sestavit, předat a uzavřít desktopového kandidáta
 
-- Stav: automaticky dokončeno. [Neveřejný koncept vydání](https://github.com/JendaNDT/rocker/releases/tag/untagged-2c740c526ba4bfde626b), [ověření všech nahraných souborů](docs/windows/releases/delivery-validation.json), Windows běh 38477297083, publisher 38479952180. Veřejný repozitář nevedl k veřejnému vydání. Ruční hardware/stabilní přejímka W44–W48 zůstává neprovedená.
+- Stav: automaticky dokončeno jako kandidát 0.3.1 RC1. [Neveřejný koncept vydání](https://github.com/JendaNDT/rocker/releases/tag/untagged-b2ab831b9bb79eaacd0c), [ověření nahraných souborů](docs/windows/releases/delivery-validation.json), Windows běh 38491131359, publisher 38492841440. Veřejný repozitář nevedl k veřejnému vydání binárního balíku. Ruční hardware a posouzení UI zůstávají samostatnou přejímkou.
 
 - Závislosti: D01–D35.
 - Změna: dokončit Windows build, nativní/datové/UI kontroly a instalační cyklus, vybrat přesnou revizi/tag; publikovat soukromý instalátor a zdroje zvlášť.

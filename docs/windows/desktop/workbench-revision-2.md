@@ -26,15 +26,12 @@ bylo předčasné.
   rozložení se při dalším spuštění znovu nepřepisuje.
 - Dialog O aplikaci ukazuje verzi, revizi pracovní plochy a sestavení.
 
-## Ověření
+## Ověření a předání
 
-Lokálně prošly typy webové aplikace, 567 testů, doménové kontroly a
-datové kontroly včetně rozpoznání starého rozložení a uchování nové revize.
-Windows přejímka musí navíc ověřit skutečné otevření nástrojových oken,
-výšku přehrávače při třech šířkách, editor nahrávky, všech 32 pohledů,
-instalaci a opravu. Samotné snímky a tyto kontroly nepotvrzují fyzický
-poslech, celkovou odezvu, Narrator ani práci na více monitorech.
+[Windows běh 38491131359](https://github.com/JendaNDT/rocker/actions/runs/38491131359) nad `3ca755016f54f2fc36ef5e2f5d4147afa35018e7` prošel včetně sestavení, obou UI profilů, 32 funkcí v obou motivech a nainstalované aplikace. Celkem 49 kontrol oken/interakcí, tři různé skutečné šířky a 22 native sad. Instalační cyklus ověřil opravu DLL, Unicode aktivaci projektu a zachování dat po odinstalaci.
 
-Nový instalátor lze nabídnout teprve po úspěšném Windows běhu a vizuální
-kontrole jeho snímků. Předchozí galerie a kandidát 0.3.0 nejsou důkazem
-tohoto vzhledu.
+Regresní kontroly zachytily a odstranily dvojí rodičovství A/B a neobnovený obsah právě vybrané záložky. Editor po načtení má skutečný načtený vizuální strom a měřenou výšku zvukové vlny. Oba motivy mají ověřený kontrast křivky proti jejímu skutečnému pozadí (7,66 a 5,51). Při přepnutí nastavení se mění také viditelný obsah, nejen záhlaví.
+
+Lokálně prošlo 567 testů, typy, lint, přenosné doménové a datové kontroly. Galerie prošla dekódováním všech 64 obrázků, 64 zvětšenými pohledy, hledáním, návratem fokusu a kontrolou šířky 390 px. Prohlížečová kontrola běžela přes interní HTTP; souborový protokol blokuje politika zdejšího spravovaného prohlížeče, jeho offline ověření se netvrdí.
+
+[Soukromé předání 0.3.1 RC1](https://github.com/JendaNDT/rocker/releases/tag/untagged-b2ab831b9bb79eaacd0c), [ověření přesných nahraných souborů](../releases/delivery-validation.json), [skutečná galerie](gallery.html). Starší 0.3.0 zůstává oddělené. Poslech, celková odezva, fyzické monitory, Narrator, online služby a Jendovo posouzení vzhledu zůstávají samostatnou přejímkou.

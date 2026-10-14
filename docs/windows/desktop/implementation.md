@@ -58,20 +58,18 @@ potvrzení nezahodí dřívější dokument; neúspěšné uložení zablokuje v
 navržená zahození. Shutdown flushne data, zastaví zvuk a jednou uvolní
 aplikační služby. Sleep zpráva se zpracuje jednou a monitoring se neobnoví.
 
-## Finální automatická Windows evidence
+## Aktuální automatická Windows evidence
 
-Revize `69f6c8896593c48b6c43d011bf442f4c1d737a6b`, úspěšný běh
-[38477297083](https://github.com/JendaNDT/rocker/actions/runs/38477297083):
+Revize `3ca755016f54f2fc36ef5e2f5d4147afa35018e7`, úspěšný běh [38491131359](https://github.com/JendaNDT/rocker/actions/runs/38491131359), kandidát 0.3.1 RC1:
 
-- 20 produkčních window/session kontrol a 23 dalších interakcí;
-- všech 32 funkcí vykreslených ve tmavém i světlém Vintage;
-- stejné kontroly v obou diagnostických profilech i po instalaci;
-- 22 native sad, 39 aplikačních service kontraktů, datová a původní funkční přejímka;
-- úplný instalační cyklus, přesná oprava DLL, Unicode aktivace projektu,
-  zachování asociace při selhání aktualizace a ponechání dat po odinstalaci.
+- 21 kontrol oken/relací a 28 dalších interakcí; stejné kontroly v obou profilech i po instalaci;
+- všech 32 funkcí ve tmavém i světlém Vintage; vlastní vizuální kontrola nahrávky, aparátu, Studia, ladičky a metronomu;
+- přehrávač 49 DIP při třech různých skutečných šířkách okna;
+- skutečný kontrast křivky 7,66 v tmavém a 5,51 ve světlém motivu;
+- 22 native sad, přenosné aplikační/datové kontrakty a úplná instalační přejímka.
 
-[Galerie](gallery.html), [její revize](gallery-data.json),
-[přejímka](candidate-validation.json), [matice scénářů](acceptance.md).
-Starší neúspěšné běhy nejsou použité pro předání. Galerie používá izolovaný
-profil a syntetické soubory; nepotvrzuje fyzický poslech, M-Track Solo ani
-celkovou odezvu. Ruční část pokračuje v přejímce s bratrem.
+Záložka má trvalý ContentControl se stretch zarovnáním; při přestavbě editoru se mění jeho dítě. TabView kopíruje Content vybrané položky do vlastního presenteru při změně výběru, proto přímá výměna TabViewItem.Content nechávala viditelný starý placeholder. Kontroly načtené nahrávky a přepnutí nastavení ověřují skutečný IsLoaded a rozměry aktuálního obsahu. Události zaměření jsou na trvalém hostiteli a přežívají přestavbu stránky.
+
+Nástroje se otevírají jako samostatná okna, běžné dokumenty zůstávají v pracovním prostoru. Vlastnosti a jednotlivé oblasti editorů se posouvají samostatně; nástroje lze dobrovolně připojit. Waveform používá ThemeResource styly místo kopie již vyhodnoceného brush z jiného prvku. [Podrobná revize](workbench-revision-2.md).
+
+[Galerie](gallery.html), [revize](gallery-data.json), [kandidát](candidate-validation.json), [matice a omezení](acceptance.md), [předané soubory](../releases/delivery-validation.json). Starší běhy slouží historii. Syntetický profil nepotvrzuje fyzický poslech, latenci M-Track Solo, Narrator ani skutečné online služby.
