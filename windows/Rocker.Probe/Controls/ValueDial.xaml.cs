@@ -17,6 +17,12 @@ public sealed partial class ValueDial : UserControl
     public event EventHandler? ValueChanged;
     private bool initialized, updating;
     public ValueDial() { InitializeComponent(); initialized = true; BuildScale(); Update(); }
+    public void UseCompactLayout()
+    {
+        Tag="desktop-compact-dial";
+        if(Content is StackPanel panel){panel.MinWidth=128;panel.MaxWidth=160;panel.Spacing=4;}
+        ParameterLabel.FontSize=12;Position.MinHeight=32;Position.Height=32;
+    }
     private void BuildScale()
     {
         // Raised bakelite ridges remain decorative; Slider and NumberBox own input.

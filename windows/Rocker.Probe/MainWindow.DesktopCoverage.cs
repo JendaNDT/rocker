@@ -10,7 +10,7 @@ public sealed partial class MainWindow
     {
         var coverage=new List<object>();string? folder=Environment.GetEnvironmentVariable("ROCKER_DIAGNOSTICS_DIR");if(string.IsNullOrEmpty(folder))return;
         Directory.CreateDirectory(Path.Combine(folder,"desktop-screens"));
-        bool previousInspector=desktopInspectorVisible;desktopInspectorVisible=false;RefreshDesktopPaneWidths();
+        bool previousNotice=ShellNotice.IsOpen;ShellNotice.IsOpen=false;bool previousInspector=desktopInspectorVisible;desktopInspectorVisible=false;RefreshDesktopPaneWidths();
         foreach(var view in WorkspaceViews.All)
         {
             var target=new NavigationTarget(view.Id);var route=DesktopRoutes.Resolve(target);string name="desktop-screens/view-"+view.Id+".png";
@@ -38,7 +38,7 @@ public sealed partial class MainWindow
             }
             coverage.Add(new{viewId=view.Id,view.Title,destination=route.Destination.ToString(),file=name,widthDip=root.ActualWidth,heightDip=root.ActualHeight,rendered=true,lightFile=name.Replace(".png","-light.png"),themes=new[]{"dark","light"}});
         }
-        desktopInspectorVisible=previousInspector;RefreshDesktopPaneWidths();OpenDesktop(new("01"));
+        ShellNotice.IsOpen=previousNotice;desktopInspectorVisible=previousInspector;RefreshDesktopPaneWidths();OpenDesktop(new("01"));
         string links=string.Join("",WorkspaceViews.All.Select(v=>$"<article><h2>{System.Net.WebUtility.HtmlEncode(v.Title)}</h2><a href='desktop-screens/view-{v.Id}.png'><img src='desktop-screens/view-{v.Id}.png' alt='{System.Net.WebUtility.HtmlEncode(v.Title)}'></a></article>"));
         await File.WriteAllTextAsync(Path.Combine(folder,"desktop-gallery.html"),"<!doctype html><html lang='cs'><meta charset='utf-8'><title>Rocker — desktop Windows</title><style>body{font:16px system-ui;background:#221e19;color:#eee2d0;margin:24px}main{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px}img{width:100%}</style><h1>Pracovní plocha a skutečná Windows okna</h1><p>Automatický kontrolní profil. Snímky nepotvrzují skutečnou zvukovku, poslech ani online služby.</p><main>"+links+"</main></html>");
         WriteShellDiagnostic("desktop-functional-coverage.json",new{result="passed",views=coverage,viewCount=coverage.Count,sourceCommit=Environment.GetEnvironmentVariable("GITHUB_SHA"),actualWindows=true,hardwareVerified=false});

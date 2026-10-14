@@ -232,7 +232,7 @@ public sealed partial class MainWindow
             }
             desktopWindows.Remove(window);
         };
-        if(item.Tag is DocumentSession toolSession && DesktopRoutes.ToolViews.Contains(toolSession.Target.ViewId))window.AppWindow.Resize(toolSession.Target.ViewId=="13"?new(1100,760):toolSession.Target.ViewId=="04"?new(940,760):new(820,740));
+        if(item.Tag is DocumentSession toolSession && DesktopRoutes.ToolViews.Contains(toolSession.Target.ViewId))window.AppWindow.Resize(toolSession.Target.ViewId=="13"?new(1400,800):toolSession.Target.ViewId=="04"?new(940,760):new(820,740));
         window.Activate();
     }
     private void AttachDesktopTab(TabViewItem? item)

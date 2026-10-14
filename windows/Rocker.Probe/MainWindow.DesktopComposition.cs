@@ -12,7 +12,7 @@ public sealed partial class MainWindow
         var timelineHost=elements.OfType<ScrollViewer>().FirstOrDefault(s=>ReferenceEquals(s.Content,studioTimeline))??new ScrollViewer{Content=studioTimeline};timelineHost.MaxHeight=double.PositiveInfinity;
         var tracks=studioTrackList;var outline=Stack();outline.Children.Add(new TextBlock{Text="STOPY",FontSize=12,CharacterSpacing=80});
         WriteShellDiagnostic("desktop-composition-stage.json",new{stage="attach-track-list",parent=tracks?.Parent?.GetType().Name,session=documentContext.Current.Id,removedFromSource=tracks is null || !source.Children.Contains(tracks)});
-        if(tracks is not null)outline.Children.Add(tracks);
+        if(tracks is not null){tracks.Header=null;outline.Children.Add(tracks);}
         var inspector=Stack();var card=elements.OfType<Border>().FirstOrDefault(b=>ReferenceEquals(b.Child,studioTrackEditor));if(card is not null)card.Child=null;if(studioTrackEditor is not null)inspector.Children.Add(studioTrackEditor);
         var surface=new DocumentSurface(timelineHost,outline,inspector);
         var fileActions=Stack();var recordActions=Stack();var exportActions=Stack();

@@ -93,7 +93,7 @@ if(audio is not null && (!desktopEnabled || services.Transport.Owner==documentCo
     private void RefreshStudio()
     {
         if(studioReading is not null)studioReading.Text=studioProject is null?"Vytvoř nebo otevři projekt.":$"{studioProject.Name} · {studioProject.Tracks.Count} stop · {studioProject.SampleRate} Hz · průběžné ukládání projektu";
-        if(studioTrackList is not null && studioProject is not null){var selected=(studioTrackList.SelectedItem as ProjectTrack)?.Id;studioUpdating=true;studioTrackList.ItemsSource=studioProject.Tracks;studioTrackList.SelectedItem=studioProject.Tracks.FirstOrDefault(t=>t.Id==selected);studioUpdating=false;}DrawStudioTimeline();
+        if(studioTrackList is not null && studioProject is not null){var selected=(studioTrackList.SelectedItem as ProjectTrack)?.Id;studioUpdating=true;studioTrackList.ItemsSource=studioProject.Tracks;studioTrackList.SelectedItem=studioProject.Tracks.FirstOrDefault(t=>t.Id==selected)??(desktopEnabled?studioProject.Tracks.FirstOrDefault():null);studioUpdating=false;if(desktopEnabled)BuildStudioTrackEditor();}DrawStudioTimeline();
     }
     private Task EditStudioTrackAsync(ProjectTrack value,bool timeline=false)
     {

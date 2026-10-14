@@ -33,6 +33,7 @@ public sealed partial class MainWindow
             WriteShellDiagnostic("desktop-recording-layout.json",new{sourceCommit=Environment.GetEnvironmentVariable("GITHUB_SHA"),editorType=editor.GetType().FullName,editorLoaded=editor.IsLoaded,editorWidth=editor.ActualWidth,editorHeight=editor.ActualHeight,waveLoaded=recordingWaveform!.IsLoaded,waveWidth=recordingWaveform.ActualWidth,waveHeight=recordingWaveform.ActualHeight,waveMinHeight=recordingWaveform.MinHeight,rootWidth=ShellRoot.ActualWidth,rootHeight=ShellRoot.ActualHeight,selected=ReferenceEquals(documentTabs.SelectedItem,desktopDocuments[second]),rangeAParent=recordingRangeA?.Parent?.GetType().FullName,rangeBParent=recordingRangeB?.Parent?.GetType().FullName});
             await CaptureDesktopElementAsync(ShellRoot,"desktop-recording-layout.png");
             Check(editor is Desktop.DocumentSurface && recordingWaveform.ActualHeight>=179,"recording-editor-uses-a-bounded-resizable-waveform");
+            await VerifyRecordingContrastAsync();Check(true,"recording-waveform-remains-visible-in-both-themes");
             var bottom=recordingRangeB!.TransformToVisual(ShellRoot).TransformPoint(new Windows.Foundation.Point(0,recordingRangeB.ActualHeight));
             Check(recordingRangeA!.ActualWidth>0 && recordingRangeB.ActualWidth>0 && bottom.Y<=ShellRoot.ActualHeight,"recording-selection-a-and-b-remain-in-the-visible-editor");
         }

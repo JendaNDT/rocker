@@ -13,8 +13,8 @@ public sealed partial class MainWindow
     }
     private static FrameworkElement ResponsiveInstrumentColumns(params FrameworkElement[] panels)
     {
-        var grid=new Grid{ColumnSpacing=20,RowSpacing=20};foreach(var panel in panels)grid.Children.Add(panel);int current=0;
-        void Layout(double width){int columns=width>=480?3:width>=300?2:1;if(columns==current)return;current=columns;grid.ColumnDefinitions.Clear();grid.RowDefinitions.Clear();for(int i=0;i<columns;++i)grid.ColumnDefinitions.Add(new(){Width=new GridLength(1,GridUnitType.Star)});for(int i=0;i<(panels.Length+columns-1)/columns;++i)grid.RowDefinitions.Add(new(){Height=GridLength.Auto});for(int i=0;i<panels.Length;++i){Grid.SetRow(panels[i],i/columns);Grid.SetColumn(panels[i],i%columns);}}
+        bool compact=panels.All(p=>p.Tag as string=="desktop-compact-dial");var grid=new Grid{ColumnSpacing=compact?12:20,RowSpacing=20};foreach(var panel in panels)grid.Children.Add(panel);int current=0;
+        void Layout(double width){int columns=compact?(width>=700?5:width>=560?4:width>=420?3:width>=280?2:1):(width>=480?3:width>=300?2:1);if(columns==current)return;current=columns;grid.ColumnDefinitions.Clear();grid.RowDefinitions.Clear();for(int i=0;i<columns;++i)grid.ColumnDefinitions.Add(new(){Width=new GridLength(1,GridUnitType.Star)});for(int i=0;i<(panels.Length+columns-1)/columns;++i)grid.RowDefinitions.Add(new(){Height=GridLength.Auto});for(int i=0;i<panels.Length;++i){Grid.SetRow(panels[i],i/columns);Grid.SetColumn(panels[i],i%columns);}}
         Layout(0);grid.SizeChanged+=(_,e)=>Layout(e.NewSize.Width);return grid;
     }
     private static IEnumerable<DependencyObject> Descendants(DependencyObject root)

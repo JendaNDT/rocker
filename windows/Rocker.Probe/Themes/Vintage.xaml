@@ -212,6 +212,21 @@
         <Setter Property="Stroke" Value="{ThemeResource VintagePanelStroke}" />
         <Setter Property="StrokeThickness" Value="1" />
     </Style>
+    <Style x:Key="VintageRecordingWaveStyle" TargetType="Polyline">
+        <Setter Property="Stroke" Value="{ThemeResource VintageAccent}" />
+        <Setter Property="StrokeThickness" Value="1" />
+    </Style>
+    <Style x:Key="VintageRecordingSelectionStyle" TargetType="Rectangle">
+        <Setter Property="Fill" Value="{ThemeResource VintageAccent}" />
+    </Style>
+    <Style x:Key="VintageRecordingMarkerStyle" TargetType="Line">
+        <Setter Property="Stroke" Value="{ThemeResource TextFillColorSecondaryBrush}" />
+        <Setter Property="StrokeThickness" Value="1" />
+    </Style>
+    <Style x:Key="VintageRecordingPlayheadStyle" TargetType="Line">
+        <Setter Property="Stroke" Value="{ThemeResource VintageAccent}" />
+        <Setter Property="StrokeThickness" Value="2" />
+    </Style>
     <Style x:Key="VintageBodyTextStyle" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
         <Setter Property="FontSize" Value="14" />

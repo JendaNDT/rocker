@@ -30,7 +30,7 @@ public sealed partial class MainWindow
         var controls=new List<FrameworkElement>();ampDials.Clear();
         foreach(var (id,label) in parameters)
         {
-            var dial=new ValueDial{Label=label+" (%)",Minimum=id is "bass" or "mid" or "treble"?-100:0,Maximum=100,Value=AmpValue(id)*100};ampDials.Add(id,dial);
+            var dial=new ValueDial{Label=label+" (%)",Minimum=id is "bass" or "mid" or "treble"?-100:0,Maximum=100,Value=AmpValue(id)*100};if(desktopEnabled)dial.UseCompactLayout();ampDials.Add(id,dial);
             dial.ValueChanged+=(_,_)=>{using var documentScope=documentContext.Enter(capturedDocument);if(!capturedDocument.IsAlive)return;if(ampUiUpdating)return;SetAmpValue(id,dial.Value/100);QueueAmplifier();};controls.Add(dial);
         }
         panel.Children.Add(ResponsiveInstrumentColumns(controls.ToArray()));

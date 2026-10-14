@@ -8,6 +8,11 @@ if (!folder || !/^[a-f0-9]{40}$/.test(expectedCommit ?? '')) throw new Error('Us
 const json = async name => JSON.parse((await readFile(path.join(folder, name), 'utf8')).replace(/^\uFEFF/, ''));
 const reports = await Promise.all(['desktop-runtime.json', 'desktop-interactions.json', 'desktop-functional-coverage.json'].map(json));
 const workbench = await json('desktop-workbench.json');
+const contrast = await json('desktop-recording-contrast.json');
+if (contrast.result !== 'passed' || contrast.sourceCommit !== expectedCommit || contrast.samples?.length !== 2 ||
+    contrast.samples.map(sample => sample.theme).join(',') !== 'dark,light' || !contrast.samples.every(sample => sample.contrast >= 3)) {
+  throw new Error('Both waveform themes require actual visible contrast against their background.');
+}
 if (workbench.result !== 'passed' || workbench.sourceCommit !== expectedCommit || workbench.interfaceRevision !== 2 ||
     workbench.samples?.length !== 3 || new Set(workbench.samples.map(sample => Math.round(sample.clientWidthDip))).size !== 3 || !workbench.samples.every(sample => sample.documentHeightDip >= 300 && sample.transportHeightDip >= 32 && sample.transportHeightDip <= 62)) {
   throw new Error('The compact workbench requires fresh geometry checks at three window widths.');
